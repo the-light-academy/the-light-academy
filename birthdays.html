@@ -95,6 +95,22 @@
     }
     .nav-links a.cta:hover { background: var(--sun-dark); color: var(--white); }
 
+    /* ── LANGUAGE TOGGLE ── */
+    .lang-toggle {
+      background: var(--sun-light);
+      border: 2px solid var(--sun);
+      color: var(--sun-dark);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-left: auto;
+      margin-right: 1rem;
+    }
+    .lang-toggle:hover { background: var(--sun); color: var(--white); }
+
     /* ── HERO ── */
     .hero {
       background: linear-gradient(135deg, #FFF0EB 0%, #FFE5D5 60%, #FFD0A8 100%);
@@ -290,40 +306,41 @@
       <a href="index.html#contact">Contact</a>
       <a href="birthdays.html" class="cta active">🎂 Birthday Parties</a>
     </div>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">EN</button>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
     <span class="hero-emoji">🎂</span>
-    <h1>Unforgettable Birthday Parties<br>at Light Academy</h1>
-    <p>Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!</p>
-    <a href="#book" class="btn btn-primary">Book a Party</a>
+    <h1 data-i18n="hero.title">Unforgettable Birthday Parties<br>at Light Academy</h1>
+    <p data-i18n="hero.subtitle">Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!</p>
+    <a href="#book" class="btn btn-primary" data-i18n="hero.btn">Book a Party</a>
   </section>
 
   <!-- HOW IT WORKS -->
   <div class="steps">
-    <p class="steps-title">How It Works</p>
+    <p class="steps-title" data-i18n="steps.title">How It Works</p>
     <div class="divider"></div>
     <div class="steps-grid">
       <div class="step-card">
         <div class="step-num">1</div>
-        <h3>Pick a Theme</h3>
-        <p>Art, theater, science, or mix them all — we craft the party around your child's passions.</p>
+        <h3 data-i18n="steps.step1.title">Pick a Theme</h3>
+        <p data-i18n="steps.step1.text">Art, theater, science, or mix them all — we craft the party around your child's passions.</p>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
-        <h3>Book a Date</h3>
-        <p>Call or message us to check availability and confirm your party date and time.</p>
+        <h3 data-i18n="steps.step2.title">Book a Date</h3>
+        <p data-i18n="steps.step2.text">Call or message us to check availability and confirm your party date and time.</p>
       </div>
       <div class="step-card">
         <div class="step-num">3</div>
-        <h3>We Prepare</h3>
-        <p>We handle all the activities, materials, and decoration. You just bring the birthday child!</p>
+        <h3 data-i18n="steps.step3.title">We Prepare</h3>
+        <p data-i18n="steps.step3.text">We handle all the activities, materials, and decoration. You just bring the birthday child!</p>
       </div>
       <div class="step-card">
         <div class="step-num">4</div>
-        <h3>Celebrate!</h3>
-        <p>2 hours of guided fun, creativity, and memories that last a lifetime.</p>
+        <h3 data-i18n="steps.step4.title">Celebrate!</h3>
+        <p data-i18n="steps.step4.text">2 hours of guided fun, creativity, and memories that last a lifetime.</p>
       </div>
     </div>
   </div>
@@ -331,101 +348,239 @@
   <!-- PACKAGES -->
   <div class="packages-bg" id="book">
     <div class="packages-inner">
-      <p class="packages-title">Party Packages</p>
+      <p class="packages-title" data-i18n="packages.title">Party Packages</p>
       <div class="packages-divider"></div>
       <div class="packages-grid">
 
         <div class="package-card">
           <div class="package-emoji">🎨</div>
-          <h3>Little Artist Party</h3>
-          <div class="price">от 250 лв <span>/ party</span></div>
+          <h3 data-i18n="packages.card1.title">Little Artist Party</h3>
+          <div class="price"><span data-i18n="packages.card1.price">от 250 лв</span> <span>/ party</span></div>
           <ul class="feature-list">
-            <li>Up to 10 children</li>
-            <li>2 hours of painting activities</li>
-            <li>All materials included</li>
-            <li>Each child takes home their artwork</li>
-            <li>Decorated party space</li>
+            <li data-i18n="packages.card1.f1">Up to 10 children</li>
+            <li data-i18n="packages.card1.f2">2 hours of painting activities</li>
+            <li data-i18n="packages.card1.f3">All materials included</li>
+            <li data-i18n="packages.card1.f4">Each child takes home their artwork</li>
+            <li data-i18n="packages.card1.f5">Decorated party space</li>
           </ul>
-          <a href="tel:+359885501283" class="btn btn-sun" style="width:100%; text-align:center;">Book This Party</a>
+          <a href="tel:+359885501283" class="btn btn-sun" style="width:100%; text-align:center;" data-i18n="packages.bookBtn">Book This Party</a>
         </div>
 
         <div class="package-card featured">
-          <div class="package-badge">Most Popular ⭐</div>
+          <div class="package-badge" data-i18n="packages.badge">Most Popular ⭐</div>
           <div class="package-emoji">🎭</div>
-          <h3>Theater Star Party</h3>
-          <div class="price">от 320 лв <span>/ party</span></div>
+          <h3 data-i18n="packages.card2.title">Theater Star Party</h3>
+          <div class="price"><span data-i18n="packages.card2.price">от 320 лв</span> <span>/ party</span></div>
           <ul class="feature-list">
-            <li>Up to 12 children</li>
-            <li>2 hours of theater games &amp; mini-show</li>
-            <li>Costumes &amp; props provided</li>
-            <li>Short performance for parents at the end</li>
-            <li>Decorated party space</li>
-            <li>Photo moment with the cast</li>
+            <li data-i18n="packages.card2.f1">Up to 12 children</li>
+            <li data-i18n="packages.card2.f2">2 hours of theater games & mini-show</li>
+            <li data-i18n="packages.card2.f3">Costumes & props provided</li>
+            <li data-i18n="packages.card2.f4">Short performance for parents at the end</li>
+            <li data-i18n="packages.card2.f5">Decorated party space</li>
+            <li data-i18n="packages.card2.f6">Photo moment with the cast</li>
           </ul>
-          <a href="tel:+359885501283" class="btn btn-primary" style="width:100%; text-align:center;">Book This Party</a>
+          <a href="tel:+359885501283" class="btn btn-primary" style="width:100%; text-align:center;" data-i18n="packages.bookBtn">Book This Party</a>
         </div>
 
         <div class="package-card">
           <div class="package-emoji">✨</div>
-          <h3>Magic Mix Party</h3>
-          <div class="price">от 400 лв <span>/ party</span></div>
+          <h3 data-i18n="packages.card3.title">Magic Mix Party</h3>
+          <div class="price"><span data-i18n="packages.card3.price">от 400 лв</span> <span>/ party</span></div>
           <ul class="feature-list">
-            <li>Up to 15 children</li>
-            <li>2.5 hours — art + theater + surprise activity</li>
-            <li>All materials &amp; costumes included</li>
-            <li>Personalized activity for the birthday child</li>
-            <li>Fully decorated space</li>
-            <li>Diploma for each child</li>
-            <li>Option to add catering</li>
+            <li data-i18n="packages.card3.f1">Up to 15 children</li>
+            <li data-i18n="packages.card3.f2">2.5 hours — art + theater + surprise activity</li>
+            <li data-i18n="packages.card3.f3">All materials & costumes included</li>
+            <li data-i18n="packages.card3.f4">Personalized activity for the birthday child</li>
+            <li data-i18n="packages.card3.f5">Fully decorated space</li>
+            <li data-i18n="packages.card3.f6">Diploma for each child</li>
+            <li data-i18n="packages.card3.f7">Option to add catering</li>
           </ul>
-          <a href="tel:+359885501283" class="btn btn-sun" style="width:100%; text-align:center;">Book This Party</a>
+          <a href="tel:+359885501283" class="btn btn-sun" style="width:100%; text-align:center;" data-i18n="packages.bookBtn">Book This Party</a>
         </div>
 
       </div>
-      <p style="font-size:13px; color:var(--light-text); margin-top:1.5rem;">* Prices are indicative. Final price depends on number of children and chosen extras. Contact us for a custom quote.</p>
+      <p style="font-size:13px; color:var(--light-text); margin-top:1.5rem;" data-i18n="packages.note">* Prices are indicative. Final price depends on number of children and chosen extras. Contact us for a custom quote.</p>
     </div>
   </div>
 
   <!-- BIRTHDAY GALLERY -->
   <section class="section">
-    <p class="section-title">Party Moments</p>
+    <p class="section-title" data-i18n="gallery.title">Party Moments</p>
     <div class="section-divider"></div>
     <div class="gallery-grid">
       <div class="gallery-item">
         <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Party photo 1
+        <span data-i18n="gallery.photo">Party photo</span> 1
       </div>
       <div class="gallery-item">
         <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Party photo 2
+        <span data-i18n="gallery.photo">Party photo</span> 2
       </div>
       <div class="gallery-item">
         <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Party photo 3
+        <span data-i18n="gallery.photo">Party photo</span> 3
       </div>
       <div class="gallery-item">
         <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Party photo 4
+        <span data-i18n="gallery.photo">Party photo</span> 4
       </div>
     </div>
   </section>
 
   <!-- BOOKING CTA -->
   <div class="cta-strip">
-    <h2>Ready to Plan the Perfect Party?</h2>
-    <p>Get in touch and we'll help you create an unforgettable celebration for your child.</p>
+    <h2 data-i18n="cta.title">Ready to Plan the Perfect Party?</h2>
+    <p data-i18n="cta.intro">Get in touch and we'll help you create an unforgettable celebration for your child.</p>
     <div class="contact-info">
       <div class="contact-row">📞 <a href="tel:+359885501283" style="color:#E8C890; text-decoration:none;">+359 885 501 283</a></div>
       <div class="contact-row">✉️ <a href="mailto:info@lightacademy.bg" style="color:#E8C890; text-decoration:none;">info@lightacademy.bg</a></div>
-      <div class="contact-row">📍 Lozenets, Gorski Patnik 56</div>
+      <div class="contact-row">📍 <span data-i18n="cta.address">Lozenets, Gorski Patnik 56</span></div>
     </div>
-    <a href="tel:+359885501283" class="btn btn-sun">Call to Book Now</a>
+    <a href="tel:+359885501283" class="btn btn-sun" data-i18n="cta.btn">Call to Book Now</a>
   </div>
 
   <!-- FOOTER -->
   <footer>
-    <p>© 2026 Light Academy Sofia · <a href="index.html">Home</a> · <a href="birthdays.html">Birthday Parties</a> · <a href="mailto:info@lightacademy.bg">info@lightacademy.bg</a></p>
+    <p><span data-i18n="footer.copyright">© 2026 Light Academy Sofia</span> · <a href="index.html" data-i18n="footer.home">Home</a> · <a href="birthdays.html" data-i18n="footer.birthdays">Birthday Parties</a> · <a href="mailto:info@lightacademy.bg">info@lightacademy.bg</a></p>
   </footer>
 
+  <script>
+    // Translation data for Birthday page
+    const translations = {
+      en: {
+        "hero.title": "Unforgettable Birthday Parties<br>at Light Academy",
+        "hero.subtitle": "Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!",
+        "hero.btn": "Book a Party",
+        "steps.title": "How It Works",
+        "steps.step1.title": "Pick a Theme",
+        "steps.step1.text": "Art, theater, science, or mix them all — we craft the party around your child's passions.",
+        "steps.step2.title": "Book a Date",
+        "steps.step2.text": "Call or message us to check availability and confirm your party date and time.",
+        "steps.step3.title": "We Prepare",
+        "steps.step3.text": "We handle all the activities, materials, and decoration. You just bring the birthday child!",
+        "steps.step4.title": "Celebrate!",
+        "steps.step4.text": "2 hours of guided fun, creativity, and memories that last a lifetime.",
+        "packages.title": "Party Packages",
+        "packages.badge": "Most Popular ⭐",
+        "packages.card1.title": "Little Artist Party",
+        "packages.card1.price": "from 250 BGN",
+        "packages.card1.f1": "Up to 10 children",
+        "packages.card1.f2": "2 hours of painting activities",
+        "packages.card1.f3": "All materials included",
+        "packages.card1.f4": "Each child takes home their artwork",
+        "packages.card1.f5": "Decorated party space",
+        "packages.card2.title": "Theater Star Party",
+        "packages.card2.price": "from 320 BGN",
+        "packages.card2.f1": "Up to 12 children",
+        "packages.card2.f2": "2 hours of theater games & mini-show",
+        "packages.card2.f3": "Costumes & props provided",
+        "packages.card2.f4": "Short performance for parents at the end",
+        "packages.card2.f5": "Decorated party space",
+        "packages.card2.f6": "Photo moment with the cast",
+        "packages.card3.title": "Magic Mix Party",
+        "packages.card3.price": "from 400 BGN",
+        "packages.card3.f1": "Up to 15 children",
+        "packages.card3.f2": "2.5 hours — art + theater + surprise activity",
+        "packages.card3.f3": "All materials & costumes included",
+        "packages.card3.f4": "Personalized activity for the birthday child",
+        "packages.card3.f5": "Fully decorated space",
+        "packages.card3.f6": "Diploma for each child",
+        "packages.card3.f7": "Option to add catering",
+        "packages.bookBtn": "Book This Party",
+        "packages.note": "* Prices are indicative. Final price depends on number of children and chosen extras. Contact us for a custom quote.",
+        "gallery.title": "Party Moments",
+        "gallery.photo": "Party photo",
+        "cta.title": "Ready to Plan the Perfect Party?",
+        "cta.intro": "Get in touch and we'll help you create an unforgettable celebration for your child.",
+        "cta.address": "Lozenets, Gorski Patnik 56",
+        "cta.btn": "Call to Book Now",
+        "footer.copyright": "© 2026 Light Academy Sofia",
+        "footer.home": "Home",
+        "footer.birthdays": "Birthday Parties"
+      },
+      bg: {
+        "hero.title": "Незабравими детски рождени дни<br>в Light Academy",
+        "hero.subtitle": "Творчески, забавни и магически празненства за деца на възраст 4-14 години. Изберете от изкуство, театър, наука и още много!",
+        "hero.btn": "Резервирай парти",
+        "steps.title": "Как работи",
+        "steps.step1.title": "Избери тема",
+        "steps.step1.text": "Изкуство, театър, наука или всичко заедно - ние създаваме партито около страстите на твоето дете.",
+        "steps.step2.title": "Резервирай дата",
+        "steps.step2.text": "Позвони ни или изпрати съобщение, за да провериш наличност и потвърдиш дата и час на партито.",
+        "steps.step3.title": "Ние подготвяме",
+        "steps.step3.text": "Ние се справяме с всички дейности, материали и украса. Ти само донеси рожденото дете!",
+        "steps.step4.title": "Празнувай!",
+        "steps.step4.text": "2 часа ръководена забава, творчество и спомени, които трават цял живот.",
+        "packages.title": "Пакети с парти",
+        "packages.badge": "Най-популярна ⭐",
+        "packages.card1.title": "Партито на малкия художник",
+        "packages.card1.price": "от 250 лв",
+        "packages.card1.f1": "До 10 деца",
+        "packages.card1.f2": "2 часа активности с рисуване",
+        "packages.card1.f3": "Всички материали включени",
+        "packages.card1.f4": "Всяко дете отнася дома своето произведение",
+        "packages.card1.f5": "Украсено място за партито",
+        "packages.card2.title": "Театралната звезда парти",
+        "packages.card2.price": "от 320 лв",
+        "packages.card2.f1": "До 12 деца",
+        "packages.card2.f2": "2 часа театрални игри и мини-шоу",
+        "packages.card2.f3": "Костюми и реквизит предоставени",
+        "packages.card2.f4": "Кратко представление за родителите в края",
+        "packages.card2.f5": "Украсено място за партито",
+        "packages.card2.f6": "Момент за снимка с актьорския състав",
+        "packages.card3.title": "Магическото мешаме парти",
+        "packages.card3.price": "от 400 лв",
+        "packages.card3.f1": "До 15 деца",
+        "packages.card3.f2": "2,5 часа - изкуство + театър + изненадна дейност",
+        "packages.card3.f3": "Всички материали и костюми включени",
+        "packages.card3.f4": "Персонализирана дейност за рожденото дете",
+        "packages.card3.f5": "Напълно украсено място",
+        "packages.card3.f6": "Диплома за всяко дете",
+        "packages.card3.f7": "Възможност да добавиш кетъринг",
+        "packages.bookBtn": "Резервирай това партито",
+        "packages.note": "* Цените са преносими. Окончателната цена зависи от броя деца и избраните допълнения. Свържи се с нас за персонализирана оферта.",
+        "gallery.title": "Моменти от партията",
+        "gallery.photo": "Снимка от партията",
+        "cta.title": "Готов ли си да планираш перфектното партито?",
+        "cta.intro": "Свържи се с нас и ще ти помогнем да създадеш незабравимо торжество за твоето дете.",
+        "cta.address": "Лозенец, Горски Патник 56",
+        "cta.btn": "Позвони за резервация",
+        "footer.copyright": "© 2026 Light Academy София",
+        "footer.home": "Начало",
+        "footer.birthdays": "Детски рождени дни"
+      }
+    };
+
+    // Initialize language from localStorage
+    function initLanguage() {
+      const savedLang = localStorage.getItem('language') || 'en';
+      setLanguage(savedLang);
+    }
+
+    // Set language function
+    function setLanguage(lang) {
+      localStorage.setItem('language', lang);
+      document.documentElement.lang = lang;
+      document.getElementById('langToggle').textContent = lang === 'en' ? 'БГ' : 'EN';
+      
+      // Update all data-i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          element.innerHTML = translations[lang][key];
+        }
+      });
+    }
+
+    // Toggle language
+    function toggleLanguage() {
+      const current = localStorage.getItem('language') || 'en';
+      const newLang = current === 'en' ? 'bg' : 'en';
+      setLanguage(newLang);
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', initLanguage);
+  </script>
 </body>
 </html>
