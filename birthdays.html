@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Parties – Light Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sun: #F5A623;
+      --sun-light: #FFF3D6;
+      --sun-dark: #C07A0A;
+      --peach: #FF7043;
+      --peach-light: #FFF0EB;
+      --cream: #FFFDF7;
+      --dark: #2D1F0E;
+      --mid: #7A5C3A;
+      --light-text: #A07850;
+      --white: #ffffff;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      background: var(--sun);
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .top-bar a { color: var(--dark); text-decoration: none; }
+    .top-bar span { display: flex; align-items: center; gap: 6px; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--white);
+      border-bottom: 2px solid var(--sun-light);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--sun-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--sun);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--mid);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .nav-links a:hover { background: var(--sun-light); color: var(--sun-dark); }
+    .nav-links a.active { background: var(--sun-light); color: var(--sun-dark); }
+    .nav-links a.cta {
+      background: var(--sun);
+      color: var(--dark);
+      margin-left: 8px;
+    }
+    .nav-links a.cta:hover { background: var(--sun-dark); color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #FFF0EB 0%, #FFE5D5 60%, #FFD0A8 100%);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      background: var(--peach);
+      opacity: 0.1;
+      border-radius: 50%;
+    }
+    .hero-emoji { font-size: 4rem; display: block; margin-bottom: 1rem; animation: bounce 2s infinite; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--peach);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--mid);
+      max-width: 580px;
+      margin: 0 auto 2rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .btn-primary { background: var(--peach); color: var(--white); }
+    .btn-sun { background: var(--sun); color: var(--dark); }
+
+    /* ── HOW IT WORKS ── */
+    .steps { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .steps-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--sun-dark);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .divider { width: 60px; height: 4px; background: var(--peach); border-radius: 4px; margin: 0.75rem auto 2.5rem; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+    .step-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      border: 2px solid var(--sun-light);
+    }
+    .step-num {
+      width: 48px; height: 48px;
+      background: var(--peach);
+      border-radius: 50%;
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .step-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; }
+    .step-card p { font-size: 14px; color: var(--mid); }
+
+    /* ── PACKAGES ── */
+    .packages-bg { background: var(--peach-light); padding: 4rem 2rem; }
+    .packages-inner { max-width: 1100px; margin: 0 auto; }
+    .packages-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--peach);
+      margin-bottom: 0.5rem;
+    }
+    .packages-divider { width: 60px; height: 4px; background: var(--peach); border-radius: 4px; margin: 0.75rem 0 2.5rem; }
+    .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .package-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .package-card:hover { border-color: var(--sun); }
+    .package-card.featured { border-color: var(--peach); }
+    .package-badge {
+      display: inline-block;
+      background: var(--peach);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+    }
+    .package-emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .package-card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .package-card .price { font-size: 1.5rem; font-weight: 800; color: var(--peach); margin-bottom: 1rem; }
+    .package-card .price span { font-size: 14px; font-weight: 400; color: var(--light-text); }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+    .feature-list li { font-size: 14px; color: var(--mid); display: flex; align-items: center; gap: 8px; }
+    .feature-list li::before { content: '✓'; color: var(--peach); font-weight: 800; }
+
+    /* ── GALLERY ── */
+    .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--sun-dark); margin-bottom: 0.5rem; }
+    .section-divider { width: 60px; height: 4px; background: var(--sun); border-radius: 4px; margin: 0.75rem 0 2rem; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .gallery-item {
+      background: var(--peach-light);
+      border-radius: var(--radius-sm);
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--light-text);
+      font-size: 13px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .gallery-item:hover { transform: scale(1.03); }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background: var(--dark);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .cta-strip h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--sun);
+      margin-bottom: 1rem;
+    }
+    .cta-strip p { color: #C8A87A; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .cta-strip .contact-info { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+    .cta-strip .contact-row { display: flex; align-items: center; gap: 10px; color: #E8C890; font-weight: 700; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1E1308;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      color: #6A4E2A;
+      font-size: 13px;
+    }
+    footer a { color: var(--sun); text-decoration: none; }
+
+    @media (max-width: 700px) {
+      nav { padding: 0 1rem; }
+      .nav-links a { padding: 8px 10px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <span>📍 ул. Примерна 12, София</span>
+    <span><a href="tel:+359888000000">📞 +359 888 000 000</a></span>
+    <span><a href="mailto:info@lightacademy.bg">✉️ info@lightacademy.bg</a></span>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      Light Academy
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#gallery">Gallery</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="birthdays.html" class="cta active">🎂 Birthday Parties</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="hero-emoji">🎂</span>
+    <h1>Unforgettable Birthday Parties<br>at Light Academy</h1>
+    <p>Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!</p>
+    <a href="#book" class="btn btn-primary">Book a Party</a>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div class="steps">
+    <p class="steps-title">How It Works</p>
+    <div class="divider"></div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Pick a Theme</h3>
+        <p>Art, theater, science, or mix them all — we craft the party around your child's passions.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Book a Date</h3>
+        <p>Call or message us to check availability and confirm your party date and time.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>We Prepare</h3>
+        <p>We handle all the activities, materials, and decoration. You just bring the birthday child!</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>Celebrate!</h3>
+        <p>2 hours of guided fun, creativity, and memories that last a lifetime.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKAGES -->
+  <div class="packages-bg" id="book">
+    <div class="packages-inner">
+      <p class="packages-title">Party Packages</p>
+      <div class="packages-divider"></div>
+      <div class="packages-grid">
+
+        <div class="package-card">
+          <div class="package-emoji">🎨</div>
+          <h3>Little Artist Party</h3>
+          <div class="price">от 250 лв <span>/ party</span></div>
+          <ul class="feature-list">
+            <li>Up to 10 children</li>
+            <li>2 hours of painting activities</li>
+            <li>All materials included</li>
+            <li>Each child takes home their artwork</li>
+            <li>Decorated party space</li>
+          </ul>
+          <a href="tel:+359888000000" class="btn btn-sun" style="width:100%; text-align:center;">Book This Party</a>
+        </div>
+
+        <div class="package-card featured">
+          <div class="package-badge">Most Popular ⭐</div>
+          <div class="package-emoji">🎭</div>
+          <h3>Theater Star Party</h3>
+          <div class="price">от 320 лв <span>/ party</span></div>
+          <ul class="feature-list">
+            <li>Up to 12 children</li>
+            <li>2 hours of theater games &amp; mini-show</li>
+            <li>Costumes &amp; props provided</li>
+            <li>Short performance for parents at the end</li>
+            <li>Decorated party space</li>
+            <li>Photo moment with the cast</li>
+          </ul>
+          <a href="tel:+359888000000" class="btn btn-primary" style="width:100%; text-align:center;">Book This Party</a>
+        </div>
+
+        <div class="package-card">
+          <div class="package-emoji">✨</div>
+          <h3>Magic Mix Party</h3>
+          <div class="price">от 400 лв <span>/ party</span></div>
+          <ul class="feature-list">
+            <li>Up to 15 children</li>
+            <li>2.5 hours — art + theater + surprise activity</li>
+            <li>All materials &amp; costumes included</li>
+            <li>Personalized activity for the birthday child</li>
+            <li>Fully decorated space</li>
+            <li>Diploma for each child</li>
+            <li>Option to add catering</li>
+          </ul>
+          <a href="tel:+359888000000" class="btn btn-sun" style="width:100%; text-align:center;">Book This Party</a>
+        </div>
+
+      </div>
+      <p style="font-size:13px; color:var(--light-text); margin-top:1.5rem;">* Prices are indicative. Final price depends on number of children and chosen extras. Contact us for a custom quote.</p>
+    </div>
+  </div>
+
+  <!-- BIRTHDAY GALLERY -->
+  <section class="section">
+    <p class="section-title">Party Moments</p>
+    <div class="section-divider"></div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Party photo 1
+      </div>
+      <div class="gallery-item">
+        <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Party photo 2
+      </div>
+      <div class="gallery-item">
+        <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Party photo 3
+      </div>
+      <div class="gallery-item">
+        <svg width="40" height="40" fill="none" stroke="#FF7043" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Party photo 4
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING CTA -->
+  <div class="cta-strip">
+    <h2>Ready to Plan the Perfect Party?</h2>
+    <p>Get in touch and we'll help you create an unforgettable celebration for your child.</p>
+    <div class="contact-info">
+      <div class="contact-row">📞 <a href="tel:+359888000000" style="color:#E8C890; text-decoration:none;">+359 888 000 000</a></div>
+      <div class="contact-row">✉️ <a href="mailto:info@lightacademy.bg" style="color:#E8C890; text-decoration:none;">info@lightacademy.bg</a></div>
+      <div class="contact-row">📍 ул. Примерна 12, София</div>
+    </div>
+    <a href="tel:+359888000000" class="btn btn-sun">Call to Book Now</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Light Academy Sofia · <a href="index.html">Home</a> · <a href="birthdays.html">Birthday Parties</a> · <a href="mailto:info@lightacademy.bg">info@lightacademy.bg</a></p>
+  </footer>
+
+</body>
+</html>
