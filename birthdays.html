@@ -283,6 +283,30 @@
     .cta-strip .contact-info { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
     .cta-strip .contact-row { display: flex; align-items: center; gap: 10px; color: #E8C890; font-weight: 700; }
 
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      background: var(--sun);
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px 2rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .bottom-bar a { color: var(--dark); text-decoration: none; }
+    .bottom-bar span { display: flex; align-items: center; gap: 6px; }
+    .bottom-bar .discount-badge {
+      background: var(--dark);
+      color: var(--sun);
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     /* ── FOOTER ── */
     footer {
       background: #1E1308;
@@ -367,54 +391,70 @@
       <div class="packages-divider"></div>
       <div class="packages-grid">
 
+        <!-- BASIC -->
         <div class="package-card">
-          <div class="package-emoji">🎨</div>
-          <h3 data-i18n="packages.card1.title">Little Artist Party</h3>
-          <div class="price"><span data-i18n="packages.card1.price">от 250 лв</span> <span>/ party</span></div>
+          <div class="package-emoji">🎈</div>
+          <h3 data-i18n="packages.card1.title">BASIC</h3>
+          <div class="price">
+            <span data-i18n="packages.card1.price">99 €</span>
+            <span style="text-decoration:line-through; color:#bbb; font-size:1rem; margin-left:6px;" data-i18n="packages.card1.oldprice">149 €</span>
+          </div>
+          <div style="font-size:12px; color:var(--peach); font-weight:800; margin:-6px 0 10px;" data-i18n="packages.card1.promo">Opening price until Aug 31</div>
+          <div style="font-size:13px; color:var(--mid); margin-bottom:10px;" data-i18n="packages.card1.desc">For parents who want a cosy and beautiful space and prefer to organise the food and celebration themselves.</div>
           <ul class="feature-list">
-            <li data-i18n="packages.card1.f1">Up to 10 children</li>
-            <li data-i18n="packages.card1.f2">2 hours of painting activities</li>
-            <li data-i18n="packages.card1.f3">All materials included</li>
-            <li data-i18n="packages.card1.f4">Each child takes home their artwork</li>
-            <li data-i18n="packages.card1.f5">Decorated party space</li>
+            <li data-i18n="packages.card1.f1">2 hours of party venue use</li>
+            <li data-i18n="packages.card1.f2">Up to 15 children &amp; up to 8 adults</li>
+            <li data-i18n="packages.card1.f3">LEGO zone</li>
+            <li data-i18n="packages.card1.f4">Creative art workshop for all children</li>
+            <li data-i18n="packages.card1.f5">Equipped kitchen</li>
+            <li data-i18n="packages.card1.f6">Festively arranged tables</li>
+            <li data-i18n="packages.card1.f7">Cleaning after the event</li>
           </ul>
+          <div style="font-size:12px; color:var(--mid); margin-bottom:1rem;" data-i18n="packages.card1.duration">per 2 hours</div>
           <a href="tel:+359885501283" class="btn btn-sun" style="width:100%; text-align:center;" data-i18n="packages.bookBtn">Book This Party</a>
         </div>
 
+        <!-- STANDARD -->
         <div class="package-card featured">
           <div class="package-badge" data-i18n="packages.badge">Most Popular ⭐</div>
-          <div class="package-emoji">🎭</div>
-          <h3 data-i18n="packages.card2.title">Theater Star Party</h3>
-          <div class="price"><span data-i18n="packages.card2.price">от 320 лв</span> <span>/ party</span></div>
+          <div class="package-emoji">🎉</div>
+          <h3 data-i18n="packages.card2.title">STANDARD</h3>
+          <div class="price">
+            <span data-i18n="packages.card2.price">249 €</span>
+            <span style="text-decoration:line-through; color:#bbb; font-size:1rem; margin-left:6px;" data-i18n="packages.card2.oldprice">289 €</span>
+          </div>
+          <div style="font-size:12px; color:var(--peach); font-weight:800; margin:-6px 0 10px;" data-i18n="packages.card2.promo">Opening price until Aug 31</div>
+          <div style="font-size:13px; color:var(--mid); margin-bottom:10px;" data-i18n="packages.card2.desc">The most preferred package. We take care of the fun and the food, you enjoy the celebration.</div>
           <ul class="feature-list">
-            <li data-i18n="packages.card2.f1">Up to 12 children</li>
-            <li data-i18n="packages.card2.f2">2 hours of theater games & mini-show</li>
-            <li data-i18n="packages.card2.f3">Costumes & props provided</li>
-            <li data-i18n="packages.card2.f4">Short performance for parents at the end</li>
-            <li data-i18n="packages.card2.f5">Decorated party space</li>
-            <li data-i18n="packages.card2.f6">Photo moment with the cast</li>
+            <li data-i18n="packages.card2.f1">Everything from BASIC</li>
+            <li data-i18n="packages.card2.f2">Animator for 2 hours</li>
+            <li data-i18n="packages.card2.f3">Catering for the children</li>
+            <li data-i18n="packages.card2.f4">Festive welcome &amp; games</li>
           </ul>
+          <div style="font-size:12px; color:var(--mid); margin-bottom:1rem;" data-i18n="packages.card2.duration">per 2 hours</div>
           <a href="tel:+359885501283" class="btn btn-primary" style="width:100%; text-align:center;" data-i18n="packages.bookBtn">Book This Party</a>
         </div>
 
+        <!-- PREMIUM -->
         <div class="package-card">
           <div class="package-emoji">✨</div>
-          <h3 data-i18n="packages.card3.title">Magic Mix Party</h3>
-          <div class="price"><span data-i18n="packages.card3.price">от 400 лв</span> <span>/ party</span></div>
+          <h3 data-i18n="packages.card3.title">PREMIUM</h3>
+          <div class="price">
+            <span data-i18n="packages.card3.price">299 €</span>
+            <span style="text-decoration:line-through; color:#bbb; font-size:1rem; margin-left:6px;" data-i18n="packages.card3.oldprice">399 €</span>
+          </div>
+          <div style="font-size:12px; color:var(--peach); font-weight:800; margin:-6px 0 10px;" data-i18n="packages.card3.promo">Opening price until Aug 31</div>
+          <div style="font-size:13px; color:var(--mid); margin-bottom:10px;" data-i18n="packages.card3.desc">For parents who want a fully organised birthday with attention to every detail.</div>
           <ul class="feature-list">
-            <li data-i18n="packages.card3.f1">Up to 15 children</li>
-            <li data-i18n="packages.card3.f2">2.5 hours — art + theater + surprise activity</li>
-            <li data-i18n="packages.card3.f3">All materials & costumes included</li>
-            <li data-i18n="packages.card3.f4">Personalized activity for the birthday child</li>
-            <li data-i18n="packages.card3.f5">Fully decorated space</li>
-            <li data-i18n="packages.card3.f6">Diploma for each child</li>
-            <li data-i18n="packages.card3.f7">Option to add catering</li>
+            <li data-i18n="packages.card3.f1">Everything from STANDARD</li>
+            <li data-i18n="packages.card3.f2">Catering for parents (120 selected cocktail bites)</li>
           </ul>
+          <div style="font-size:12px; color:var(--mid); margin-bottom:1rem;" data-i18n="packages.card3.duration">per 2 hours</div>
           <a href="tel:+359885501283" class="btn btn-sun" style="width:100%; text-align:center;" data-i18n="packages.bookBtn">Book This Party</a>
         </div>
 
       </div>
-      <p style="font-size:13px; color:var(--light-text); margin-top:1.5rem;" data-i18n="packages.note">* Prices are indicative. Final price depends on number of children and chosen extras. Contact us for a custom quote.</p>
+      <p style="font-size:13px; color:var(--light-text); margin-top:1.5rem;" data-i18n="packages.note">* Opening prices valid until 31 August. -10% discount on weekdays.</p>
     </div>
   </div>
 
@@ -454,6 +494,14 @@
     <a href="tel:+359885501283" class="btn btn-sun" data-i18n="cta.btn">Call to Book Now</a>
   </div>
 
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <span>📍 Lozenets, Gorski Patnik 56</span>
+    <span>📞 <a href="tel:+359885501283">+359 885 501 283</a></span>
+    <span>✉️ <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span>
+    <span class="discount-badge">🗓️ -10% отстъпка за делнични дни</span>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <p><span data-i18n="footer.copyright">© 2026 Light Academy Sofia</span> · <a href="index.html" data-i18n="footer.home">Home</a> · <a href="birthdays.html" data-i18n="footer.birthdays">Birthday Parties</a> · <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></p>
@@ -477,32 +525,39 @@
         "steps.step4.text": "2 hours of guided fun, creativity, and memories that last a lifetime.",
         "packages.title": "Party Packages",
         "packages.badge": "Most Popular ⭐",
-        "packages.card1.title": "Little Artist Party",
-        "packages.card1.price": "from 250 BGN",
-        "packages.card1.f1": "Up to 10 children",
-        "packages.card1.f2": "2 hours of painting activities",
-        "packages.card1.f3": "All materials included",
-        "packages.card1.f4": "Each child takes home their artwork",
-        "packages.card1.f5": "Decorated party space",
-        "packages.card2.title": "Theater Star Party",
-        "packages.card2.price": "from 320 BGN",
-        "packages.card2.f1": "Up to 12 children",
-        "packages.card2.f2": "2 hours of theater games & mini-show",
-        "packages.card2.f3": "Costumes & props provided",
-        "packages.card2.f4": "Short performance for parents at the end",
-        "packages.card2.f5": "Decorated party space",
-        "packages.card2.f6": "Photo moment with the cast",
-        "packages.card3.title": "Magic Mix Party",
-        "packages.card3.price": "from 400 BGN",
-        "packages.card3.f1": "Up to 15 children",
-        "packages.card3.f2": "2.5 hours — art + theater + surprise activity",
-        "packages.card3.f3": "All materials & costumes included",
-        "packages.card3.f4": "Personalized activity for the birthday child",
-        "packages.card3.f5": "Fully decorated space",
-        "packages.card3.f6": "Diploma for each child",
-        "packages.card3.f7": "Option to add catering",
+        "packages.card1.title": "BASIC",
+        "packages.card1.price": "99 €",
+        "packages.card1.oldprice": "149 €",
+        "packages.card1.promo": "Opening price until Aug 31",
+        "packages.card1.desc": "For parents who want a cosy and beautiful space and prefer to organise the food and celebration themselves.",
+        "packages.card1.f1": "2 hours of party venue use",
+        "packages.card1.f2": "Up to 15 children & up to 8 adults",
+        "packages.card1.f3": "LEGO zone",
+        "packages.card1.f4": "Creative art workshop for all children",
+        "packages.card1.f5": "Equipped kitchen",
+        "packages.card1.f6": "Festively arranged tables",
+        "packages.card1.f7": "Cleaning after the event",
+        "packages.card1.duration": "per 2 hours",
+        "packages.card2.title": "STANDARD",
+        "packages.card2.price": "249 €",
+        "packages.card2.oldprice": "289 €",
+        "packages.card2.promo": "Opening price until Aug 31",
+        "packages.card2.desc": "The most preferred package. We take care of the fun and the food, you enjoy the celebration.",
+        "packages.card2.f1": "Everything from BASIC",
+        "packages.card2.f2": "Animator for 2 hours",
+        "packages.card2.f3": "Catering for the children",
+        "packages.card2.f4": "Festive welcome & games",
+        "packages.card2.duration": "per 2 hours",
+        "packages.card3.title": "PREMIUM",
+        "packages.card3.price": "299 €",
+        "packages.card3.oldprice": "399 €",
+        "packages.card3.promo": "Opening price until Aug 31",
+        "packages.card3.desc": "For parents who want a fully organised birthday with attention to every detail.",
+        "packages.card3.f1": "Everything from STANDARD",
+        "packages.card3.f2": "Catering for parents (120 selected cocktail bites)",
+        "packages.card3.duration": "per 2 hours",
         "packages.bookBtn": "Book This Party",
-        "packages.note": "* Prices are indicative. Final price depends on number of children and chosen extras. Contact us for a custom quote.",
+        "packages.note": "* Opening prices valid until 31 August. -10% discount on weekdays.",
         "gallery.title": "Party Moments",
         "gallery.photo": "Party photo",
         "cta.title": "Ready to Plan the Perfect Party?",
@@ -527,33 +582,40 @@
         "steps.step4.title": "Празнувай!",
         "steps.step4.text": "2 часа ръководена забава, творчество и спомени, които трават цял живот.",
         "packages.title": "Пакети с парти",
-        "packages.badge": "Най-популярна ⭐",
-        "packages.card1.title": "Партито на малкия художник",
-        "packages.card1.price": "от 250 лв",
-        "packages.card1.f1": "До 10 деца",
-        "packages.card1.f2": "2 часа активности с рисуване",
-        "packages.card1.f3": "Всички материали включени",
-        "packages.card1.f4": "Всяко дете отнася дома своето произведение",
-        "packages.card1.f5": "Украсено място за партито",
-        "packages.card2.title": "Театралната звезда парти",
-        "packages.card2.price": "от 320 лв",
-        "packages.card2.f1": "До 12 деца",
-        "packages.card2.f2": "2 часа театрални игри и мини-шоу",
-        "packages.card2.f3": "Костюми и реквизит предоставени",
-        "packages.card2.f4": "Кратко представление за родителите в края",
-        "packages.card2.f5": "Украсено място за партито",
-        "packages.card2.f6": "Момент за снимка с актьорския състав",
-        "packages.card3.title": "Магическото мешаме парти",
-        "packages.card3.price": "от 400 лв",
-        "packages.card3.f1": "До 15 деца",
-        "packages.card3.f2": "2,5 часа - изкуство + театър + изненадна дейност",
-        "packages.card3.f3": "Всички материали и костюми включени",
-        "packages.card3.f4": "Персонализирана дейност за рожденото дете",
-        "packages.card3.f5": "Напълно украсено място",
-        "packages.card3.f6": "Диплома за всяко дете",
-        "packages.card3.f7": "Възможност да добавиш кетъринг",
-        "packages.bookBtn": "Резервирай това партито",
-        "packages.note": "* Цените са преносими. Окончателната цена зависи от броя деца и избраните допълнения. Свържи се с нас за персонализирана оферта.",
+        "packages.badge": "Най-популярен ⭐",
+        "packages.card1.title": "BASIC",
+        "packages.card1.price": "99 €",
+        "packages.card1.oldprice": "149 €",
+        "packages.card1.promo": "Откривааща цена до 31 август",
+        "packages.card1.desc": "За родители, които искат уютно и красиво място, а предпочитат сами да организират храната и празника.",
+        "packages.card1.f1": "2 часа ползване на парти центъра",
+        "packages.card1.f2": "До 15 деца и до 8 възрастни",
+        "packages.card1.f3": "LEGO зона",
+        "packages.card1.f4": "Творческа арт работилница за всички деца",
+        "packages.card1.f5": "Оборудвана кухня",
+        "packages.card1.f6": "Празнично подредена маса",
+        "packages.card1.f7": "Почистване след събитието",
+        "packages.card1.duration": "за 2 часа",
+        "packages.card2.title": "STANDARD",
+        "packages.card2.price": "249 €",
+        "packages.card2.oldprice": "289 €",
+        "packages.card2.promo": "Откривааща цена до 31 август",
+        "packages.card2.desc": "Най-предпочитаният пакет. Ние се грижим за забавлението и храната, а вие се наслаждавате на празника.",
+        "packages.card2.f1": "Всичко от Basic",
+        "packages.card2.f2": "Аниматор за 2 часа",
+        "packages.card2.f3": "Кетъринг за децата",
+        "packages.card2.f4": "Празнично посрещане и игри",
+        "packages.card2.duration": "за 2 часа",
+        "packages.card3.title": "PREMIUM",
+        "packages.card3.price": "299 €",
+        "packages.card3.oldprice": "399 €",
+        "packages.card3.promo": "Откривааща цена до 31 август",
+        "packages.card3.desc": "За родители, които искат напълно организиран рожден ден с внимание към всеки детайл.",
+        "packages.card3.f1": "Всичко от Standard",
+        "packages.card3.f2": "Кетъринг за родители (120 подбрани коктейлни хапки)",
+        "packages.card3.duration": "за 2 часа",
+        "packages.bookBtn": "Резервирай",
+        "packages.note": "* Откриващи цени валидни до 31 август. -10% отстъпка за делнични дни.",
         "gallery.title": "Моменти от партията",
         "gallery.photo": "Снимка от партията",
         "cta.title": "Готов ли си да планираш перфектното партито?",
