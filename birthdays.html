@@ -71,11 +71,12 @@
     }
     .logo-icon {
       width: 36px; height: 36px;
-      background: var(--sun);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
+      overflow: hidden;
+      background: transparent;
     }
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .nav-links { display: flex; gap: 0.25rem; align-items: center; }
     .nav-links a {
       text-decoration: none;
@@ -146,18 +147,19 @@
       max-width: 580px;
       margin: 0 auto 2rem;
     }
-    .btn {
-      display: inline-block;
-      padding: 12px 28px;
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 1rem;
-      text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
+    nav {
+      background: var(--white);
+      border-bottom: 2px solid var(--sun-light);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
-    .btn-primary { background: var(--peach); color: var(--white); }
-    .btn-sun { background: var(--sun); color: var(--dark); }
 
     /* ── HOW IT WORKS ── */
     .steps { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
@@ -291,12 +293,13 @@
     <span>📍 Lozenets, Gorski Patnik 56</span>
     <span><a href="tel:+359885501283">📞 +359 885 501 283</a></span>
     <span><a href="mailto:the.light.academy56@gmail.com">✉️ the.light.academy56@gmail.com</a></span>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">EN</button>
   </div>
 
   <!-- NAV -->
   <nav>
     <a href="index.html" class="logo">
-      <span class="logo-icon">✦</span>
+      <span class="logo-icon"><img src="theLightAcademyLogo.png" alt="Logo"></span>
       Light Academy
     </a>
     <div class="nav-links">
@@ -306,7 +309,6 @@
       <a href="index.html#contact">Contact</a>
       <a href="birthdays.html" class="cta active">🎂 Birthday Parties</a>
     </div>
-    <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">EN</button>
   </nav>
 
   <!-- HERO -->
