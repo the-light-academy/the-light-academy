@@ -156,6 +156,18 @@
       display: inline-flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
       position: relative;
     }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .btn-primary { background: var(--sun); color: var(--dark); }
     nav {
       background: var(--white);
       border-bottom: 2px solid var(--sun-light);
