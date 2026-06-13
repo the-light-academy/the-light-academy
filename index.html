@@ -216,7 +216,7 @@
     .divider { width: 60px; height: 4px; background: var(--sun); border-radius: 4px; margin: 0.75rem 0 2rem; }
 
     /* ── ABOUT ── */
-    .about-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; justify-items: center; text-align: center; max-width: 600px; margin: 0 auto; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
     .about-img {
       background: var(--sun-light);
       border-radius: var(--radius);
@@ -226,12 +226,10 @@
       gap: 0.75rem;
       color: var(--light-text);
       font-size: 14px;
-      width: 100%;
-      max-width: 400px;
     }
     .about-img svg { opacity: 0.5; }
-    .about-text p { color: var(--mid); margin-bottom: 1rem; text-align: center; }
-    .about-text .divider { margin-left: auto; margin-right: auto; }
+    .about-text p { color: var(--mid); margin-bottom: 1rem; }
+    .about-text .divider { margin: 0; }
 
     /* ── UPDATES ── */
     .updates-bg { background: var(--sun-light); padding: 4rem 2rem; }
@@ -364,12 +362,12 @@
     <div class="about-grid">
       <div class="about-grid">
         <div class="about-img">
-          <img src="photos\about_photo_1.jpg" alt="Profile Photo" style="width: 100%; height: auto; object-fit: cover;">
+          <img src="photos\about_photo_1.jpeg" alt="Profile Photo" style="width: 100%; height: auto; object-fit: cover;">
         </div>
       <div class="about-text">
         <p class="section-title" data-i18n="about.title">A Place to Learn &amp; Grow</p>
         <div class="divider"></div>
-        <p data-i18n="about.text1">Light Academy is a creative educational centre for children in Sofia. We believe that learning should be joyful, personal, and full of discovery.</p>
+        <p data-i18n="about.text1"> The Light Academy is a creative educational centre for children in Sofia. We believe that learning should be joyful, personal, and full of discovery.</p>
         <p data-i18n="about.text2">Our small groups mean every child gets the attention they deserve. Whether your child needs help with maths, wants to write their first story, explore a role on stage, or paint their world — we have a class for them.</p>
         <p data-i18n="about.text3">Founded with love and dedication to childhood education, Light Academy is a place where children feel safe, inspired, and proud of what they create.</p>
         <a href="#contact" class="btn btn-primary" style="margin-top:1rem; display:inline-block;" data-i18n="about.btn">Get in Touch</a>
