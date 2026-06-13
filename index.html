@@ -315,7 +315,7 @@
 
   <!-- TOP BAR -->
   <div class="top-bar">
-    <span>📍 Gorski Patnik 56</span>
+    <span>📍 <span data-i18n="topbar.address">Gorski Patnik 56</span></span>
     <span><a href="tel:+359885501283">+359 885 501 283</a></span>
     <span><a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span>
     <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">EN</button>
@@ -328,12 +328,12 @@
       The Light Academy
     </a>
     <div class="nav-links">
-      <a href="index.html" class="active">Home</a>
-      <a href="#about">About</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#updates">News</a>
-      <a href="#contact">Contact</a>
-      <a href="birthdays.html" class="cta">🎂 Birthday Parties</a>
+      <a href="index.html" class="active" data-i18n="nav.home">Home</a>
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
+      <a href="#updates" data-i18n="nav.news">News</a>
+      <a href="#contact" data-i18n="nav.contact">Contact</a>
+      <a href="birthdays.html" class="cta" data-i18n="nav.birthdays">🎂 Birthday Parties</a>
     </div>
     
   </nav>
@@ -381,6 +381,16 @@
       <p class="section-title" style="font-family:'Playfair Display',serif; font-size:2rem; color:#C07A0A;" data-i18n="updates.title">Latest News &amp; Updates</p>
       <div class="divider"></div>
       <div class="updates-grid">
+        <div class="update-card">
+          <div class="update-date" data-i18n="updates.date.bulgarian">June 2026</div>
+          <h3 data-i18n="updates.card.bulgarian.title">New Bulgarian Language Course</h3>
+          <p data-i18n="updates.card.bulgarian.text">We are happy to announce that we are adding Bulgarian language to our courses — working both individually and in small groups to help children consolidate knowledge, catch up on gaps, and build confidence. 📍 Lozenets · Small groups · Write to us for more info and available spots.</p>
+        </div>
+        <div class="update-card">
+          <div class="update-date" data-i18n="updates.date.art">June 2026</div>
+          <h3 data-i18n="updates.card.art.title">Art & Theater Workshop</h3>
+          <p data-i18n="updates.card.art.text">We are excited to present our new Art & Theater Workshop for children! Two hours of creativity: 1 hour of painting + 1 hour of theater exercises and études. 📅 June 26 · 💶 15 EUR per child · 📍 Lozenets, Gorski Patnik 56 · Only 10 spots! <a href="https://forms.gle/Xqve1i5ZstN4NHRD9" target="_blank" style="color:var(--sun-dark); font-weight:700;">Register here →</a></p>
+        </div>
         <div class="update-card">
           <div class="update-date" data-i18n="updates.date1">June 2025</div>
           <h3 data-i18n="updates.card1.title">Summer Enrollment Open</h3>
@@ -477,6 +487,13 @@
     // Translation data
     const translations = {
       en: {
+        "topbar.address": "Gorski Patnik 56",
+        "nav.home": "Home",
+        "nav.about": "About",
+        "nav.gallery": "Gallery",
+        "nav.news": "News",
+        "nav.contact": "Contact",
+        "nav.birthdays": "🎂 Birthday Parties",
         "hero.title": "Where Curious Minds<br>Shine Bright",
         "hero.subtitle": "Math, English, Bulgarian, Theater & Painting — all under one roof. A warm place where children grow, create, and discover.",
         "hero.btn1": "Discover the Academy",
@@ -493,6 +510,12 @@
         "about.text3": "Founded with love and dedication to childhood education, Light Academy is a place where children feel safe, inspired, and proud of what they create.",
         "about.btn": "Get in Touch",
         "updates.title": "Latest News & Updates",
+        "updates.date.bulgarian": "June 2026",
+        "updates.card.bulgarian.title": "New Bulgarian Language Course at The Light Academy",
+        "updates.card.bulgarian.text": "Following many enquiries, we are happy to announce we are adding Bulgarian language to our courses — working both individually and in small groups to help children consolidate knowledge, catch up over the summer, and build confidence. For us it's not just about rules — it's about reading with understanding, expressing thoughts clearly, and loving the language. 📍 Lozenets · Small groups · Write to us for more info and available spots.",
+        "updates.date.art": "June 2026",
+        "updates.card.art.title": "Art & Theater Workshop for Children!",
+        "updates.card.art.text": "We are thrilled to present our new Art & Theater workshop! In two hours, children will unleash their imagination and discover new talents. 1 hour Painting: A journey through colours and forms. 1 hour Theater exercises & études: Fun games for confidence, expression and teamwork. 📅 June 26 · 💶 15 EUR per child (2 hrs) · 📍 Lozenets, Gorski Patnik 56 · Only 10 spots for personal attention! <a href='https://forms.gle/Xqve1i5ZstN4NHRD9' target='_blank' style='color:var(--sun-dark); font-weight:700;'>Register here →</a>",
         "updates.date1": "June 2025",
         "updates.date2": "May 2025",
         "updates.date3": "April 2025",
@@ -516,6 +539,13 @@
         "footer.birthdays": "Birthday Parties"
       },
       bg: {
+        "topbar.address": "Горски пътник 56",
+        "nav.home": "Начало",
+        "nav.about": "За нас",
+        "nav.gallery": "Галерия",
+        "nav.news": "Новини",
+        "nav.contact": "Контакти",
+        "nav.birthdays": "🎂 Детски рождени дни",
         "hero.title": "Където любознателните умове<br>блестят ярко",
         "hero.subtitle": "Математика, английски, български, театър и живопис - всичко под един покрив. Топло място, където децата растат, създават и открояват.",
         "hero.btn1": "Открий академията",
@@ -532,6 +562,12 @@
         "about.text3": "Основана с любов и посвещение на детското образование, The Light Academy е място, където децата се вдухновяват и развиват.",
         "about.btn": "Свържи се с нас",
         "updates.title": "Най-актуалното при нас",
+        "updates.date.bulgarian": "Юни 2026",
+        "updates.card.bulgarian.title": "Нов курс по български език в The Light Academy",
+        "updates.card.bulgarian.text": "Тъй като имахме запитвания, решихме с радост да обявим, че към нашите курсове добавяме и български език. Работим както индивидуално, така и в малки групи, като помагаме на децата да затвърдят знанията си, да използват лятото, за да наваксат пропуски, и да изградят увереност. За нас е важно не просто да учим правила, а да развиваме умението да четем с разбиране, да изразяваме мислите си ясно и да обичаме езика си. 📍 Лозенец · Малки групи · Пишете ни за повече информация и свободни места.",
+        "updates.date.art": "Юни 2026",
+        "updates.card.art.title": "АРТ и ТЕАТЪР работилничка за деца!",
+        "updates.card.art.text": "С голямо вълнение ви представяме нашата нова АРТ и ТЕАТЪР работилница! В рамките на два часа малчуганите ще развихрят въображението си и ще открият нови таланти! 1 час Рисуване с бои: Пътешествие в света на цветовете и формите. 1 час Театрални упражнения и етюди: Забавни игри за увереност, изразителност и екипна работа. 📅 26 юни · 💶 15 евро на дете (2 часа) · 📍 Лозенец, ул. Горски пътник 56 · Само 10 места! <a href='https://forms.gle/Xqve1i5ZstN4NHRD9' target='_blank' style='color:var(--sun-dark); font-weight:700;'>Запишете се тук →</a>",
         "updates.date1": "Юни 2025",
         "updates.date2": "Май 2025",
         "updates.date3": "Април 2025",
