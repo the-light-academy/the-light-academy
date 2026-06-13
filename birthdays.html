@@ -111,22 +111,36 @@
     }
     .lang-toggle:hover { background: var(--sun); color: var(--white); }
 
-    /* ── HERO ── */
+    /* ── HERO SLIDESHOW ── */
     .hero {
-      background: linear-gradient(135deg, #FFF0EB 0%, #FFE5D5 60%, #FFD0A8 100%);
-      padding: 5rem 2rem 4rem;
-      text-align: center;
       position: relative;
       overflow: hidden;
+      height: 92vh;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
-    .hero::before {
-      content: '';
+    .slide {
       position: absolute;
-      top: -60px; right: -60px;
-      width: 300px; height: 300px;
-      background: var(--peach);
-      opacity: 0.1;
-      border-radius: 50%;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+    }
+    .slide.active { opacity: 1; }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.45) 100%);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
     }
     .hero-emoji { font-size: 4rem; display: block; margin-bottom: 1rem; animation: bounce 2s infinite; }
     @keyframes bounce {
@@ -136,16 +150,61 @@
     .hero h1 {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2rem, 5vw, 3.2rem);
-      color: var(--peach);
+      color: #fff;
       line-height: 1.2;
       margin-bottom: 1rem;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
     }
     .hero p {
       font-size: 1.1rem;
-      color: var(--mid);
+      color: rgba(255,255,255,0.92);
       max-width: 580px;
       margin: 0 auto 2rem;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.35);
     }
+
+    /* Prev / Next arrows */
+    .slide-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      background: rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.55);
+      color: #fff;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s;
+    }
+    .slide-arrow:hover { background: rgba(255,255,255,0.38); }
+    .slide-arrow.prev { left: 1.2rem; }
+    .slide-arrow.next { right: 1.2rem; }
+
+    /* Pause button */
+    .slide-pause {
+      position: absolute;
+      bottom: 1.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      background: rgba(255,255,255,0.18);
+      border: 2px solid rgba(255,255,255,0.55);
+      color: #fff;
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s;
+      display: flex; align-items: center; gap: 7px;
+      font-family: 'Nunito', sans-serif;
+    }
+    .slide-pause:hover { background: rgba(255,255,255,0.35); }
     nav {
       background: var(--white);
       border-bottom: 2px solid var(--sun-light);
@@ -348,12 +407,28 @@
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <span class="hero-emoji">🎂</span>
-    <h1 data-i18n="hero.title">Unforgettable Birthday Parties<br>at Light Academy</h1>
-    <p data-i18n="hero.subtitle">Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!</p>
-    <a href="#book" class="btn btn-primary" data-i18n="hero.btn">Book a Party</a>
+  <!-- HERO SLIDESHOW -->
+  <section class="hero" id="heroSlideshow">
+    <!-- Slides will be injected by JS -->
+    <div class="hero-overlay"></div>
+
+    <!-- Prev / Next -->
+    <button class="slide-arrow prev" onclick="slideMove(-1)" aria-label="Previous">&#8592;</button>
+    <button class="slide-arrow next" onclick="slideMove(1)" aria-label="Next">&#8594;</button>
+
+    <!-- Content -->
+    <div class="hero-content">
+      <span class="hero-emoji">🎂</span>
+      <h1 data-i18n="hero.title">Unforgettable Birthday Parties<br>at Light Academy</h1>
+      <p data-i18n="hero.subtitle">Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!</p>
+      <a href="#book" class="btn btn-primary" data-i18n="hero.btn">Book a Party</a>
+    </div>
+
+    <!-- Pause -->
+    <button class="slide-pause" id="pauseBtn" onclick="togglePause()">
+      <span id="pauseIcon">⏸</span>
+      <span id="pauseLabel">Pause</span>
+    </button>
   </section>
 
   <!-- HOW IT WORKS -->
@@ -657,7 +732,65 @@
     }
 
     // Initialize on page load
-    document.addEventListener('DOMContentLoaded', initLanguage);
+    document.addEventListener('DOMContentLoaded', function() {
+      initLanguage();
+      initSlideshow();
+    });
+
+    // ── SLIDESHOW ──
+    const PHOTOS = Array.from({length: 17}, (_, i) => `photos/${i + 1}.jpg`);
+    let currentSlide = 0;
+    let slideTimer = null;
+    let isPaused = false;
+    const INTERVAL = 5000;
+
+    function initSlideshow() {
+      const hero = document.getElementById('heroSlideshow');
+      // Insert slides before the overlay
+      const overlay = hero.querySelector('.hero-overlay');
+      PHOTOS.forEach((src, i) => {
+        const div = document.createElement('div');
+        div.className = 'slide' + (i === 0 ? ' active' : '');
+        div.style.backgroundImage = `url('${src}')`;
+        hero.insertBefore(div, overlay);
+      });
+      startTimer();
+    }
+
+    function getSlides() {
+      return document.querySelectorAll('#heroSlideshow .slide');
+    }
+
+    function goToSlide(index) {
+      const slides = getSlides();
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (index + PHOTOS.length) % PHOTOS.length;
+      slides[currentSlide].classList.add('active');
+    }
+
+    function slideMove(dir) {
+      goToSlide(currentSlide + dir);
+      if (!isPaused) { clearInterval(slideTimer); startTimer(); }
+    }
+
+    function startTimer() {
+      slideTimer = setInterval(() => goToSlide(currentSlide + 1), INTERVAL);
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      const icon = document.getElementById('pauseIcon');
+      const label = document.getElementById('pauseLabel');
+      if (isPaused) {
+        clearInterval(slideTimer);
+        icon.textContent = '▶';
+        label.textContent = 'Play';
+      } else {
+        startTimer();
+        icon.textContent = '⏸';
+        label.textContent = 'Pause';
+      }
+    }
   </script>
 </body>
 </html>
