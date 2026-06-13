@@ -245,21 +245,46 @@
     .divider { width: 60px; height: 4px; background: var(--peach); border-radius: 4px; margin: 0.75rem auto 2.5rem; }
     .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
     .step-card {
-      background: var(--white);
       border-radius: var(--radius);
       padding: 1.75rem 1.25rem;
       text-align: center;
-      border: 2px solid var(--sun-light);
+      border: 2px solid rgba(255,255,255,0.7);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      transition: transform .25s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .step-card:nth-child(1) {
+      background: #fff9d8;
+    }
+
+    .step-card:nth-child(2) {
+      background: #fff0e8;
+    }
+
+    .step-card:nth-child(3) {
+      background: #eef8ff;
+    }
+
+    .step-card:nth-child(4) {
+      background: #eefbec;
     }
     .step-num {
-      width: 48px; height: 48px;
-      background: var(--peach);
+      width: 48px;
+      height: 48px;
+      background: var(--sun);
       border-radius: 50%;
-      color: var(--white);
+      color: var(--dark);
       font-weight: 800;
       font-size: 1.25rem;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin: 0 auto 1rem;
+      box-shadow: 0 6px 15px rgba(245,166,35,0.35);
     }
     .step-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; }
     .step-card p { font-size: 14px; color: var(--mid); }
@@ -270,7 +295,7 @@
     .packages-title {
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
-      color: var(--peach);
+      color: #fff4ab;
       margin-bottom: 0.5rem;
     }
     .packages-divider { width: 60px; height: 4px; background: var(--peach); border-radius: 4px; margin: 0.75rem 0 2.5rem; }
@@ -590,14 +615,14 @@
         "hero.subtitle": "Creative, fun, and magical celebrations for children aged 4–14. Choose from art, theater, science, and more!",
         "hero.btn": "Take a look",
         "steps.title": "How It Works",
-        "steps.step1.title": "Pick a Theme",
-        "steps.step1.text": "Art, theater, science, or mix them all — we craft the party around your child's passions.",
+        "steps.step1.title": "Choose a Package",
+        "steps.step1.text": "Tailored to the preferences and interests of every guest – from the youngest to the oldest.",
         "steps.step2.title": "Book a Date",
         "steps.step2.text": "Call or message us to check availability and confirm your party date and time.",
         "steps.step3.title": "We Prepare",
-        "steps.step3.text": "We handle all the activities, materials, and decoration. You just bring the birthday child!",
+        "steps.step3.text": "We take care of the games, decorations, materials and every little detail. You only need to bring the birthday child and the good mood! 🎉",
         "steps.step4.title": "Celebrate!",
-        "steps.step4.text": "2 hours of guided fun, creativity, and memories that last a lifetime.",
+        "steps.step4.text": "Two hours filled with laughter, games, creativity and unforgettable memories.",
         "packages.title": "Party Packages",
         "packages.badge": "Most Popular ⭐",
         "packages.card1.title": "BASIC",
@@ -648,14 +673,14 @@
         "hero.subtitle": "Творчески, забавни и магически празненства за деца на възраст 4-14 години. Изберете от изкуство, театър, наука и още много!",
         "hero.btn": "Виж пакетите",
         "steps.title": "Как работи",
-        "steps.step1.title": "Избери тема",
-        "steps.step1.text": "Изкуство, театър, наука или всичко заедно - ние създаваме партито около интересите на твоето дете.",
+        "steps.step1.title": "Избери пакет",
+        "steps.step1.text": "Според предпочитанията и интересите на всеки гост – от най-малкия до най-големия.",
         "steps.step2.title": "Резервирай дата",
         "steps.step2.text": "Позвънете ни или ни изпратете съобщение, за да проверите наличност и потвърдите датата и часа на партито.",
         "steps.step3.title": "Ние подготвяме",
-        "steps.step3.text": "Ние ще се погрижим за всички детайли, игри, материали и украса. Вие само доведете рожденика!",
-        "steps.step4.title": "Празнувай!",
-        "steps.step4.text": "2 часа забава и игри, творчество и спомени, които остават цял живот.",
+        "steps.step3.text": "Ние ще се погрижим за игрите, украсата, материалите и всички малки детайли. Вие само доведете рожденика и доброто настроение! 🎉",
+        "steps.step4.title": "Празнувайте!",
+        "steps.step4.text": "2 часа изпълнени със смях, игри, творчество и незабравими спомени за всички гости.",
         "packages.title": "Нашите парти пакети",
         "packages.badge": "Най-популярен ⭐",
         "packages.card1.title": "BASIC",
@@ -738,7 +763,21 @@
     });
 
     // ── SLIDESHOW ──
-    const PHOTOS = Array.from({length: 17}, (_, i) => `photos/${i + 1}.jpg`);
+    const PHOTOS = [
+      'photos/2.jpg',
+      'photos/3.jpg',
+      'photos/4.jpg',
+      'photos/5.jpg',
+      'photos/6.jpg',
+      'photos/7.jpg',
+      'photos/8.jpg',
+      'photos/9.jpg',
+      'photos/10.jpg',
+      'photos/13.jpg',
+      'photos/14.jpg',
+      'photos/15.jpg',
+      'photos/16.jpg'
+    ];
     let currentSlide = 0;
     let slideTimer = null;
     let isPaused = false;
