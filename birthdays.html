@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cloudflare.com" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -329,6 +330,30 @@
     .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
     .feature-list li { font-size: 14px; color: var(--mid); display: flex; align-items: center; gap: 8px; }
     .feature-list li::before { content: '✓'; color: var(--peach); font-weight: 800; }
+
+
+    /* Layout styling for the container rows */
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;          /* Adds perfect spacing between icon and text */
+      margin-bottom: 8px; /* Adds spacing between rows */
+    }
+
+    /* Base style for the brand icons */
+    .contact-row i {
+      font-size: 18px;    /* Matches the size of your text */
+      color: #E8C890;     /* Matches your golden link color */
+      width: 20px;        /* Keeps icons perfectly aligned vertically */
+      text-align: center;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    /* Optional: Individual brand hover colors if you want them */
+    .contact-row:hover i.fa-facebook { color: #1877F2; transform: translateY(-2px); }
+    .contact-row:hover i.fa-instagram { color: #E1306C; transform: translateY(-2px); }
+    .contact-row:hover i.fa-youtube { color: #FF0000; transform: translateY(-2px); }
+
 
     /* ── GALLERY ── */
     .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
@@ -768,6 +793,18 @@
       <div class="contact-row">📞 <a href="tel:+359885501283" style="color:#E8C890; text-decoration:none;">+359 885 501 283</a></div>
       <div class="contact-row">✉️ <a href="mailto:the.light.academy56@gmail.com" style="color:#E8C890; text-decoration:none;">the.light.academy56@gmail.com</a></div>
       <div class="contact-row">📍 <span data-i18n="cta.address">Lozenets, Gorski Patnik 56</span></div>
+      <div class="contact-row">
+        <i class="fa-brands fa-facebook"></i> 
+        <a href="#" style="color:#E8C890; text-decoration:none;">Facebook</a>
+      </div>
+      <div class="contact-row">
+        <i class="fa-brands fa-instagram"></i> 
+        <a href="#" style="color:#E8C890; text-decoration:none;">Instagram</a>
+      </div>
+      <div class="contact-row">
+        <i class="fa-brands fa-youtube"></i> 
+        <a href="#" style="color:#E8C890; text-decoration:none;">YouTube</a>
+      </div>
     </div>
     <a href="tel:+359885501283" class="btn btn-sun" data-i18n="cta.btn">Call to Book Now</a>
   </div>
@@ -907,7 +944,7 @@
         "gallery.title": "Парти атмосфера",
         "gallery.photo": "Снимки от партитата",
         "cta.title": "Готови ли сте да подарите най-веселото парти?",
-        "cta.intro": "Свържи се с нас и ще ти помогнем да създадеш незабравимо тържество за твоето дете.",
+        "cta.intro": "Свържете се с нас и ще създадем незабравимо тържество за Вашето дете.",
         "cta.address": "Лозенец, Горски Пътник 56",
         "cta.btn": "Обадете се за резервация",
         "footer.copyright": "© 2026 Light Academy София",
