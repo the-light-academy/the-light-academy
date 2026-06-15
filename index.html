@@ -369,6 +369,35 @@
         font-size: 11px;
         padding: 5px 10px;
       }
+      /* Mobile gallery carousel styles */
+      .mobile-carousel {
+        position: relative;
+        width: 100%;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+      .mobile-carousel img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+      }
+      .mobile-carousel .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 4;
+        background: rgba(255,255,255,0.9);
+        border: 1px solid rgba(0,0,0,0.06);
+        width: 44px; height: 44px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+      }
+      .mobile-carousel .carousel-arrow.left { left: 8px; }
+      .mobile-carousel .carousel-arrow.right { right: 8px; }
+      .mobile-carousel .carousel-counter {
+        position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; z-index: 4;
+        background: rgba(0,0,0,0.45); color: #fff; padding: 6px 10px; border-radius: 20px; font-weight:700; font-size:12px;
+      }
     }
   </style>
 </head>
@@ -705,7 +734,79 @@
     }
 
     // Initialize on page load
-    document.addEventListener('DOMContentLoaded', initLanguage);
+    document.addEventListener('DOMContentLoaded', function() {
+      initLanguage();
+      initMobileGalleries();
+    });
+
+    // Mobile gallery: convert .gallery-grid into a single-photo carousel on small screens
+    function createCarouselFromGrid(grid) {
+      const images = Array.from(grid.querySelectorAll('img')).map(img => ({src: img.src, alt: img.alt || ''}));
+      if (!images.length) return;
+
+      const carousel = document.createElement('div');
+      carousel.className = 'mobile-carousel';
+
+      const imgEl = document.createElement('img');
+      imgEl.src = images[0].src;
+      imgEl.alt = images[0].alt;
+      carousel.appendChild(imgEl);
+
+      const counter = document.createElement('div');
+      counter.className = 'carousel-counter';
+      counter.textContent = `1 / ${images.length}`;
+      carousel.appendChild(counter);
+
+      let idx = 0;
+
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'carousel-arrow left';
+      prevBtn.setAttribute('aria-label', 'Previous');
+      prevBtn.innerHTML = '&#8592;';
+      prevBtn.addEventListener('click', () => {
+        idx = (idx - 1 + images.length) % images.length;
+        imgEl.src = images[idx].src;
+        imgEl.alt = images[idx].alt;
+        counter.textContent = `${idx + 1} / ${images.length}`;
+      });
+      carousel.appendChild(prevBtn);
+
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'carousel-arrow right';
+      nextBtn.setAttribute('aria-label', 'Next');
+      nextBtn.innerHTML = '&#8594;';
+      nextBtn.addEventListener('click', () => {
+        idx = (idx + 1) % images.length;
+        imgEl.src = images[idx].src;
+        imgEl.alt = images[idx].alt;
+        counter.textContent = `${idx + 1} / ${images.length}`;
+      });
+      carousel.appendChild(nextBtn);
+
+      grid.style.display = 'none';
+      grid.parentNode.insertBefore(carousel, grid.nextSibling);
+    }
+
+    function initMobileGalleries() {
+      if (window.innerWidth > 768) return;
+      document.querySelectorAll('.gallery-grid').forEach(grid => {
+        if (grid.dataset.mobileCarousel === 'done') return;
+        createCarouselFromGrid(grid);
+        grid.dataset.mobileCarousel = 'done';
+      });
+    }
+
+    // Re-run on resize (debounced)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (window.innerWidth <= 768) initMobileGalleries();
+        else {
+          if (document.querySelector('.mobile-carousel')) location.reload();
+        }
+      }, 200);
+    });
   </script>
 </body>
 </html>
