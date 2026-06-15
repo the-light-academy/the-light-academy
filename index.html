@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-MdZSUjQXOQ+G2jf0F/yK9xWZt+r2EzlGnRw5PSF8ayC8v0bQAHA5UgVbLh4tWcH1Rh5Sn3Cj5B4H0b9Z7f3Gaw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -285,6 +286,16 @@
     .contact-bg p { color: #C8A87A; margin-bottom: 1.5rem; }
     .contact-info { display: flex; flex-direction: column; gap: 1rem; }
     .contact-row { display: flex; align-items: center; gap: 12px; color: #E8C890; font-weight: 600; }
+    .contact-row i {
+      font-size: 18px;
+      color: #E8C890;
+      width: 20px;
+      text-align: center;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .contact-row:hover i.fa-facebook { color: #1877F2; transform: translateY(-2px); }
+    .contact-row:hover i.fa-instagram { color: #E1306C; transform: translateY(-2px); }
+    .contact-row:hover i.fa-youtube { color: #FF0000; transform: translateY(-2px); }
     .contact-icon {
       width: 40px; height: 40px; border-radius: 50%;
       background: rgba(245,166,35,0.2);
@@ -582,6 +593,18 @@
           <div class="contact-row">
             <div class="contact-icon">🕐</div>
             <span data-i18n="contact.hours">Mon–Fri: 9:00 – 19:00 | Sat: 10:00 – 15:00</span>
+          </div>
+          <div class="contact-row">
+            <i class="fa-brands fa-facebook"></i>
+            <a href="https://www.facebook.com/profile.php?id=61573284162647&locale=bg_BG" target="_blank" style="color:#E8C890; text-decoration:none;">Facebook</a>
+          </div>
+          <div class="contact-row">
+            <i class="fa-brands fa-instagram"></i>
+            <a href="https://www.instagram.com/the_light_academy1/" target="_blank" style="color:#E8C890; text-decoration:none;">Instagram</a>
+          </div>
+          <div class="contact-row">
+            <i class="fa-brands fa-youtube"></i>
+            <a href="https://www.youtube.com/@TheLightAcademy56" target="_blank" style="color:#E8C890; text-decoration:none;">YouTube</a>
           </div>
         </div>
       </div>
