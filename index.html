@@ -227,18 +227,80 @@
     .divider { width: 60px; height: 4px; background: var(--sun); border-radius: 4px; margin: 0.75rem 0 2rem; }
 
       /* ── ABOUT ── */
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
-    .about-img {
-      background: var(--sun-light);
-      border-radius: var(--radius);
-      aspect-ratio: 4/3;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column;
-      gap: 0.75rem;
-      color: var(--light-text);
-      font-size: 14px;
+    .about-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3.5rem; align-items: center; }
+
+    .about-photos {
+      position: relative;
+      width: 260px;
+      height: 420px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .about-img svg { opacity: 0.5; }
+    .about-blob {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .about-blob.blob-1 { width: 300px; height: 300px; background: var(--sun); opacity: 0.12; top: -10px; left: -10px; }
+    .about-blob.blob-2 { width: 220px; height: 220px; background: var(--peach); opacity: 0.10; bottom: -20px; right: 0; }
+
+    .about-photo-circle {
+      position: relative;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 6px solid var(--white);
+      box-shadow: 0 10px 30px rgba(245,166,35,0.25), 0 4px 12px rgba(0,0,0,0.06);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      z-index: 2;
+    }
+    .about-photo-circle img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.5s ease;
+    }
+    .about-photo-circle .photo-fallback {
+      display: none;
+      width: 100%; height: 100%;
+      align-items: center; justify-content: center;
+      background: var(--sun-light);
+      color: var(--sun-dark);
+      font-size: 1.8rem;
+    }
+    .about-photo-circle:hover {
+      transform: translateY(-6px) scale(1.04);
+      box-shadow: 0 18px 40px rgba(245,166,35,0.35), 0 8px 18px rgba(0,0,0,0.1);
+    }
+    .about-photo-circle:hover img { transform: scale(1.1); }
+
+    .photo-main { width: 260px; height: 260px; z-index: 2; }
+    .photo-secondary { border-width: 5px; }
+    .photo-secondary-1 {
+      position: absolute;
+      width: 180px; height: 180px;
+      bottom: -36px; right: -54px;
+      z-index: 1;
+    }
+    .photo-secondary-2 {
+      position: absolute;
+      width: 110px; height: 110px;
+      bottom: 14px; right: -72px;
+      z-index: 3;
+    }
+
+    .about-eyebrow {
+      display: inline-block;
+      background: var(--peach-light);
+      color: var(--peach);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 50px;
+      margin-bottom: 0.75rem;
+    }
     .about-text p { color: var(--mid); margin-bottom: 1rem; }
 
     /* ── UPDATES ── */
@@ -329,6 +391,25 @@
       .contact-inner {
         grid-template-columns: 1fr;
       }
+
+      .about-photos {
+        width: 100%;
+        max-width: 380px;
+        height: auto;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0.5rem 0 1.5rem;
+      }
+      .about-blob { display: none; }
+      .photo-main,
+      .photo-secondary-1,
+      .photo-secondary-2 {
+        position: relative;
+        top: auto; left: auto; right: auto; bottom: auto;
+      }
+      .photo-main { width: 150px; height: 150px; }
+      .photo-secondary-1 { width: 120px; height: 120px; }
+      .photo-secondary-2 { width: 90px; height: 90px; }
 
       /* Top yellow line */
       .top-bar {
@@ -471,10 +552,27 @@
   <!-- ABOUT -->
   <section class="section" id="about">
     <div class="about-grid">
-      <div class="about-img">
-        <img src="photos/about_photo_1.jpeg" alt="Light Academy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+      <div class="about-photos">
+        <div class="about-blob blob-1"></div>
+        <div class="about-blob blob-2"></div>
+
+        <div class="about-photo-circle photo-secondary photo-secondary-1">
+          <img src="photos/about_photo_2.jpeg" alt="Light Academy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="photo-fallback"><i class="fa-solid fa-child-reaching"></i></div>
+        </div>
+
+        <div class="about-photo-circle photo-main">
+          <img src="photos/about_photo_1.jpeg" alt="Light Academy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="photo-fallback"><i class="fa-solid fa-image"></i></div>
+        </div>
+
+        <div class="about-photo-circle photo-secondary photo-secondary-2">
+          <img src="photos/about_photo_3.jpeg" alt="Light Academy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="photo-fallback"><i class="fa-solid fa-palette"></i></div>
+        </div>
       </div>
       <div class="about-text">
+        <span class="about-eyebrow" data-i18n="about.eyebrow">About Us</span>
         <p class="section-title" data-i18n="about.title">A Place to Learn &amp; Grow</p>
         <div class="divider"></div>
         <p data-i18n="about.text1">Light Academy is a creative educational centre for children in Sofia. We believe that learning should be joyful, personal, and full of discovery.</p>
@@ -650,6 +748,7 @@
         "subjects.theater": "🎭 Theater",
         "subjects.painting": "🎨 Painting",
         "about.photoPlaceholder": "Calm and cosy atmosphere",
+        "about.eyebrow": "About Us",
         "about.title": "A Place to Learn & Grow",
         "about.text1": "The Light Academy is a creative educational centre for children in Sofia. We believe that learning should be joyful, personal, and full of discovery.",
         "about.text2": "Our small groups mean every child gets the attention they deserve. Whether your child needs help with maths, wants to write their first story, explore a role on stage, or paint their world — we have a class for them.",
@@ -694,7 +793,7 @@
         "nav.birthdays": "🎂 Детски рождени дни",
         "hero.title": "Където любознателните умове<br>блестят ярко",
         "hero.subtitle": "Математика, английски, български, театър и рисуване - всичко под един покрив.",
-        "hero.btn1": "Открий академията",
+        "hero.btn1": "Открийте академията",
         "hero.btn2": "🎂 Детски рождени дни",
         "subjects.math": "📐 Математика",
         "subjects.english": "📖 Английски",
@@ -702,6 +801,7 @@
         "subjects.theater": "🎭 Театър",
         "subjects.painting": "🎨 Рисуване",
         "about.photoPlaceholder": "Уютна и спокойна атмосфера",
+        "about.eyebrow": "За нас",
         "about.title": " Бутикова академия за деца, в която знанието среща креативността.",
         "about.text1": "🌟 The Light Academy е бутиков образователен център в кв. Лозенец, София 📍, който предлага курсове и извънкласни занимания за деца в малки групи с индивидуално внимание към всяко дете 💡❤️",
         "about.text2": "✨ Нашите малки групи означават, че всяко дете получава вниманието, което заслужава ❤️. Независимо дали детето Ви се нуждае от помощ с математиката, желае да съчини първата си история, да се въплъти в роля на сцената или да рисува своя свят ние имаме подходящите курсове за него",
