@@ -6,7 +6,7 @@
   <title>The Light Academy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Caveat+Brush&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -140,10 +140,11 @@
       border-radius: 50%;
     }
     .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-family: 'Caveat Brush', cursive;
+      font-weight: 400;
+      font-size: clamp(2.6rem, 6.5vw, 4.4rem);
       color: var(--sun-dark);
-      line-height: 1.2;
+      line-height: 1.25;
       margin-bottom: 1rem;
       position: relative;
     }
@@ -302,6 +303,12 @@
       margin-bottom: 0.75rem;
     }
     .about-text p { color: var(--mid); margin-bottom: 1rem; }
+    .about-title {
+      font-family: 'Caveat Brush', cursive;
+      font-weight: 400;
+      font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+      line-height: 1.3;
+    }
 
     /* ── UPDATES ── */
     .updates-bg { background: var(--sun-light); padding: 4rem 2rem; }
@@ -565,7 +572,7 @@
         <div class="about-blob blob-2"></div>
 
         <div class="about-photo-circle photo-secondary photo-secondary-1">
-          <img src="photos/about_photo_2.jpg" alt="Light Academy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <img src="photos/about_photo_2.jpeg" alt="Light Academy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="photo-fallback"><i class="fa-solid fa-child-reaching"></i></div>
         </div>
 
@@ -581,7 +588,7 @@
       </div>
       <div class="about-text">
         <span class="about-eyebrow" data-i18n="about.eyebrow">About Us</span>
-        <p class="section-title" data-i18n="about.title">A Place to Learn &amp; Grow</p>
+        <p class="section-title about-title" data-i18n="about.title">A Place to Learn &amp; Grow</p>
         <div class="divider"></div>
         <p data-i18n="about.text1">Light Academy is a creative educational centre for children in Sofia. We believe that learning should be joyful, personal, and full of discovery.</p>
         <p data-i18n="about.text2">Our small groups mean every child gets the attention they deserve. Whether your child needs help with maths, wants to write their first story, explore a role on stage, or paint their world — we have a class for them.</p>
