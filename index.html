@@ -184,6 +184,12 @@
       height: 64px;
     }
     .btn-outline { background: transparent; color: var(--sun-dark); border: 2px solid var(--sun); }
+    .btn-nvo { background: #E8580A; color: #fff; border: 2px solid #E8580A; }
+    .btn-nvo:hover { background: #C24508; border-color: #C24508; color: #fff; }
+
+    /* ── SCROLL PROGRESS ── */
+    #scroll-progress { position: sticky; top: 64px; width: 100%; height: 4px; background: rgba(232, 88, 10, 0.18); z-index: 105; }
+    #scroll-progress__fill { width: 0; height: 100%; background: #E8580A; transition: width 0.15s ease; }
 
     /* ── SUBJECTS STRIP ── */
     .subjects {
@@ -348,6 +354,8 @@
     .update-date { font-size: 13px; color: var(--light-text); font-weight: 700; margin-bottom: 6px; }
     .update-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; color: var(--dark); }
     .update-card p { font-size: 14px; color: var(--mid); }
+    .update-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+    .update-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
 
     /* ── GALLERY ── */
     .gallery-grid {
@@ -564,10 +572,12 @@
       <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="#updates" data-i18n="nav.news">News</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
-      <a href="nvo7.html" data-i18n="nav.birthdays">📐 NVO 7th Grade</a>
+      <a href="birthdays.html" data-i18n="nav.birthdays">🎂 Birthday Parties</a>
+      <a href="nvo7.html" class="cta btn-nvo" data-i18n="nav.nvo">📐 NVO 7th Grade</a>
     </div>
     
   </nav>
+  <div id="scroll-progress"><div id="scroll-progress__fill"></div></div>
 
   <!-- HERO -->
   <section class="hero">
@@ -575,7 +585,7 @@
     <p data-i18n="hero.subtitle">Courses in mathematics, Bulgarian, English, Spanish and NVO preparation — in the heart of Lozenets.</p>
     <div class="hero-cta">
       <a href="#about" class="btn btn-primary" data-i18n="hero.btn1">Discover the Academy</a>
-      <a href="nvo7.html" class="btn btn-outline" data-i18n="hero.btn2">📐 NVO 7th Grade</a>
+      <a href="nvo7.html" class="btn btn-nvo" data-i18n="hero.btn2">📐 NVO 7th Grade</a>
     </div>
   </section>
 
@@ -811,7 +821,8 @@
         "nav.gallery": "Gallery",
         "nav.news": "News",
         "nav.contact": "Contact",
-        "nav.birthdays": "📐 NVO 7th Grade",
+        "nav.birthdays": "🎂 Birthday Parties",
+        "nav.nvo": "📐 NVO 7th Grade",
         "hero.title": "Where Knowledge<br>Meets Creativity",
         "hero.subtitle": "Courses in mathematics, Bulgarian, English, Spanish and NVO preparation — in the heart of Lozenets.",
         "hero.btn1": "Discover the Academy",
@@ -858,7 +869,7 @@
         "contact.mapPlaceholder": "Open in Google Maps",
         "footer.copyright": "© 2026 The Light Academy Sofia",
         "footer.home": "Home",
-        "footer.birthdays": "NVO 7th Grade"
+        "footer.birthdays": "Birthday Parties"
       },
       bg: {
         "topbar.address": "Горски пътник 56",
@@ -867,7 +878,8 @@
         "nav.gallery": "Галерия",
         "nav.news": "Новини",
         "nav.contact": "Контакти",
-        "nav.birthdays": "📐 НВО 7 клас",
+        "nav.birthdays": "🎂 Детски рождени дни",
+        "nav.nvo": "📐 НВО 7 клас",
         "hero.title": "Където знанието<br>среща креативността",
         "hero.subtitle": "Курсове по математика, български, английски, испански и подготовка за НВО – в сърцето на Лозенец.",
         "hero.btn1": "Открийте академията",
@@ -914,7 +926,7 @@
         "contact.mapPlaceholder": "Отворете в Google Maps",
         "footer.copyright": "© 2026 The Light Academy Sofia",
         "footer.home": "Начало",
-        "footer.birthdays": "НВО 7 клас"
+        "footer.birthdays": "Детски рождени дни"
       }
     };
 
@@ -950,7 +962,10 @@
     document.addEventListener('DOMContentLoaded', function() {
       initLanguage();
       initMobileGalleries();
+      updateScrollProgress();
     });
+
+    window.addEventListener('scroll', updateScrollProgress);
 
     // Mobile gallery: convert .gallery-grid into a single-photo carousel on small screens
     function createCarouselFromGrid(grid) {
@@ -1007,6 +1022,14 @@
         createCarouselFromGrid(grid);
         grid.dataset.mobileCarousel = 'done';
       });
+    }
+
+    function updateScrollProgress() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const fill = document.getElementById('scroll-progress__fill');
+      if (fill) fill.style.width = `${progress}%`;
     }
 
     // Re-run on resize (debounced)
