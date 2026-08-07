@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-551MW59126"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-551MW59126');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Light Academy</title>
@@ -241,8 +232,8 @@
 
     .about-photos {
       position: relative;
-      width: 280px;
-      height: 440px;
+      width: 320px;
+      height: 480px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -284,17 +275,17 @@
     }
     .about-photo-circle:hover img { transform: scale(1.1); }
 
-    .photo-main { width: 280px; height: 280px; z-index: 2; }
+    .photo-main { width: 320px; height: 320px; z-index: 2; }
     .photo-secondary { border-width: 5px; }
     .photo-secondary-1 {
       position: absolute;
-      width: 195px; height: 195px;
+      width: 230px; height: 230px;
       bottom: -20px; left: -90px;
       z-index: 1;
     }
     .photo-secondary-2 {
       position: absolute;
-      width: 130px; height: 130px;
+      width: 155px; height: 155px;
       bottom: 60px; left: -170px;
       z-index: 3;
     }
@@ -328,7 +319,32 @@
       border-radius: var(--radius);
       padding: 1.5rem;
       border-left: 4px solid var(--sun);
+      position: relative;
     }
+    .update-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .update-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 16px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .update-icon.orange { background: #E8580A; }
+    .update-icon.green { background: #3AA76D; }
+    .update-icon.purple { background: #8E63D2; }
+    .update-icon.blue { background: #3B82F6; }
+    .update-icon.pink { background: #EC4899; }
+    .update-icon.teal { background: #0F766E; }
     .update-date { font-size: 13px; color: var(--light-text); font-weight: 700; margin-bottom: 6px; }
     .update-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; color: var(--dark); }
     .update-card p { font-size: 14px; color: var(--mid); }
@@ -402,10 +418,10 @@
 
     /* ── TABLET / NARROW DESKTOP: keep the photo cluster from spilling into the text column ── */
     @media (max-width: 1024px) and (min-width: 769px) {
-      .about-photos { width: 230px; height: 360px; }
-      .photo-main { width: 230px; height: 230px; }
-      .photo-secondary-1 { width: 160px; height: 160px; bottom: -15px; left: -50px; }
-      .photo-secondary-2 { width: 105px; height: 105px; bottom: 45px; left: -85px; }
+      .about-photos { width: 270px; height: 400px; }
+      .photo-main { width: 270px; height: 270px; }
+      .photo-secondary-1 { width: 190px; height: 190px; bottom: -15px; left: -50px; }
+      .photo-secondary-2 { width: 125px; height: 125px; bottom: 45px; left: -85px; }
     }
 
     /* ── MOBILE RESPONSIVE ── */
@@ -434,7 +450,6 @@
       .photo-secondary-1 { width: 145px; height: 145px; }
       .photo-main { width: 175px; height: 175px; margin-left: -30px; }
       .photo-secondary-2 { width: 110px; height: 110px; margin-left: -26px; }
-
       /* Top yellow line */
       .top-bar {
         padding: 6px 10px;
@@ -549,19 +564,18 @@
       <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="#updates" data-i18n="nav.news">News</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
-      <a href="birthdays.html" class="cta" data-i18n="nav.birthdays">🎂 Birthday Parties</a>
-      <a href="nvo7.html" style="background:#E8580A; color:#fff; margin-left:4px; padding:8px 14px; border-radius:8px; font-weight:700; font-size:15px; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='#C24508'" onmouseout="this.style.background='#E8580A'">📐 НВО 7 клас</a>
+      <a href="nvo7.html" data-i18n="nav.birthdays">📐 NVO 7th Grade</a>
     </div>
     
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <h1 data-i18n="hero.title">Where Curious Minds<br>Shine Bright</h1>
-    <p data-i18n="hero.subtitle">Math, English, Bulgarian, Theater & Painting — all under one roof. A warm place where children grow, create, and discover.</p>
+    <h1 data-i18n="hero.title">Where Knowledge<br>Meets Creativity</h1>
+    <p data-i18n="hero.subtitle">Courses in mathematics, Bulgarian, English, Spanish and NVO preparation — in the heart of Lozenets.</p>
     <div class="hero-cta">
       <a href="#about" class="btn btn-primary" data-i18n="hero.btn1">Discover the Academy</a>
-      <a href="birthdays.html" class="btn btn-outline" data-i18n="hero.btn2">🎂 Birthday Parties</a>
+      <a href="nvo7.html" class="btn btn-outline" data-i18n="hero.btn2">📐 NVO 7th Grade</a>
     </div>
   </section>
 
@@ -570,8 +584,8 @@
     <div class="subject-pill" data-i18n="subjects.math">📐 Mathematics</div>
     <div class="subject-pill" data-i18n="subjects.english">📖 English</div>
     <div class="subject-pill" data-i18n="subjects.bulgarian">🇧🇬 Bulgarian</div>
-    <div class="subject-pill" data-i18n="subjects.theater">🎭 Theater</div>
-    <div class="subject-pill" data-i18n="subjects.painting">🎨 Painting</div>
+    <div class="subject-pill" data-i18n="subjects.spanish">🇪🇸 Spanish</div>
+    <div class="subject-pill" data-i18n="subjects.nvo">📐 NVO 7th Grade</div>
   </div>
 
   <!-- ABOUT -->
@@ -614,29 +628,64 @@
       <p class="section-title" style="font-family:'Playfair Display',serif; font-size:2rem; color:#C07A0A;" data-i18n="updates.title">Latest News &amp; Updates</p>
       <div class="divider"></div>
       <div class="updates-grid">
+        <div class="update-card" style="border-left: 4px solid #E8580A; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%);">
+          <div class="update-card-top">
+            <div class="update-icon orange"><i class="fa-solid fa-calculator"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date.nvo" style="color:#E8580A;">Август 2026</div>
+              <h3 data-i18n="updates.card.nvo.title">📐 Подготовка за НВО 7 клас по математика</h3>
+            </div>
+          </div>
+          <p data-i18n="updates.card.nvo.text">Записването за нашата програма за подготовка за НВО по математика е открито! Входящ тест, малки групи, целият материал за 7. клас и пробни изпити в реален формат. Местата са ограничени. <a href="nvo7.html" style="color:#E8580A; font-weight:700;">Разгледай програмата →</a></p>
+        </div>
         <div class="update-card">
-          <div class="update-date" data-i18n="updates.date.bulgarian">June 2026</div>
-          <h3 data-i18n="updates.card.bulgarian.title">New Bulgarian Language Course</h3>
+          <div class="update-card-top">
+            <div class="update-icon green"><i class="fa-solid fa-book-open"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date.bulgarian">June 2026</div>
+              <h3 data-i18n="updates.card.bulgarian.title">New Bulgarian Language Course</h3>
+            </div>
+          </div>
           <p data-i18n="updates.card.bulgarian.text">We are happy to announce that we are adding Bulgarian language to our courses — working both individually and in small groups to help children consolidate knowledge, catch up on gaps, and build confidence. 📍 Lozenets · Small groups · Write to us for more info and available spots.</p>
         </div>
         <div class="update-card">
-          <div class="update-date" data-i18n="updates.date.art">June 2026</div>
-          <h3 data-i18n="updates.card.art.title">Art & Theater Workshop</h3>
+          <div class="update-card-top">
+            <div class="update-icon purple"><i class="fa-solid fa-palette"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date.art">June 2026</div>
+              <h3 data-i18n="updates.card.art.title">Art & Theater Workshop</h3>
+            </div>
+          </div>
           <p data-i18n="updates.card.art.text">We are excited to present our new Art & Theater Workshop for children! Two hours of creativity: 1 hour of painting + 1 hour of theater exercises and études. 📅 June 26 · 💶 15 EUR per child · 📍 Lozenets, Gorski Patnik 56 · Only 10 spots! <a href="https://forms.gle/Xqve1i5ZstN4NHRD9" target="_blank" style="color:var(--sun-dark); font-weight:700;">Register here →</a></p>
         </div>
         <div class="update-card">
-          <div class="update-date" data-i18n="updates.date1">June 2025</div>
-          <h3 data-i18n="updates.card1.title">Summer Enrollment Open</h3>
+          <div class="update-card-top">
+            <div class="update-icon blue"><i class="fa-solid fa-sun"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date1">June 2025</div>
+              <h3 data-i18n="updates.card1.title">Summer Enrollment Open</h3>
+            </div>
+          </div>
           <p data-i18n="updates.card1.text">Spots are now available for our summer programs in math, English, and painting. Limited places — enroll early!</p>
         </div>
         <div class="update-card">
-          <div class="update-date" data-i18n="updates.date2">May 2025</div>
-          <h3 data-i18n="updates.card2.title">Theater Showcase Night</h3>
+          <div class="update-card-top">
+            <div class="update-icon pink"><i class="fa-solid fa-masks-theater"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date2">May 2025</div>
+              <h3 data-i18n="updates.card2.title">Theater Showcase Night</h3>
+            </div>
+          </div>
           <p data-i18n="updates.card2.text">Our theater students put on a wonderful show! Thank you to all families who came to support the children.</p>
         </div>
         <div class="update-card">
-          <div class="update-date" data-i18n="updates.date3">April 2025</div>
-          <h3 data-i18n="updates.card3.title">New Painting Workshop</h3>
+          <div class="update-card-top">
+            <div class="update-icon teal"><i class="fa-solid fa-brush"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date3">April 2025</div>
+              <h3 data-i18n="updates.card3.title">New Painting Workshop</h3>
+            </div>
+          </div>
           <p data-i18n="updates.card3.text">We launched a new Saturday painting workshop for children aged 6–12. A big hit from week one!</p>
         </div>
       </div>
@@ -762,16 +811,16 @@
         "nav.gallery": "Gallery",
         "nav.news": "News",
         "nav.contact": "Contact",
-        "nav.birthdays": "🎂 Birthday Parties",
-        "hero.title": "Where Curious Minds<br>Shine Bright",
-        "hero.subtitle": "Math, English, Bulgarian, Theater & Painting — all under one roof. A warm place where children grow, create, and discover.",
+        "nav.birthdays": "📐 NVO 7th Grade",
+        "hero.title": "Where Knowledge<br>Meets Creativity",
+        "hero.subtitle": "Courses in mathematics, Bulgarian, English, Spanish and NVO preparation — in the heart of Lozenets.",
         "hero.btn1": "Discover the Academy",
-        "hero.btn2": "🎂 Birthday Parties",
+        "hero.btn2": "📐 NVO 7th Grade",
         "subjects.math": "📐 Mathematics",
         "subjects.english": "📖 English",
         "subjects.bulgarian": "🇧🇬 Bulgarian",
-        "subjects.theater": "🎭 Theater",
-        "subjects.painting": "🎨 Painting",
+        "subjects.spanish": "🇪🇸 Spanish",
+        "subjects.nvo": "📐 NVO 7th Grade",
         "about.photoPlaceholder": "Calm and cosy atmosphere",
         "about.eyebrow": "About Us",
         "about.title": "A Place to Learn & Grow",
@@ -780,6 +829,9 @@
         "about.text3": "Founded with love and dedication to childhood education, Light Academy is a place where children feel safe, inspired, and proud of what they create.",
         "about.btn": "Get in Touch",
         "updates.title": "Latest News & Updates",
+        "updates.date.nvo": "August 2026",
+        "updates.card.nvo.title": "📐 НВО 7th Grade Maths Preparation",
+        "updates.card.nvo.text": "Enrolment is now open for our structured НВО maths preparation programme — entry test, small groups, full 7th grade curriculum and mock exams in real format. Limited spots. <a href='nvo7.html' style='color:#E8580A; font-weight:700;'>See the programme →</a>",
         "updates.date.bulgarian": "June 2026",
         "updates.card.bulgarian.title": "New Bulgarian Language Course at The Light Academy",
         "updates.card.bulgarian.text": "Following many enquiries, we are happy to announce we are adding Bulgarian language to our courses — working both individually and in small groups to help children consolidate knowledge, catch up over the summer, and build confidence. For us it's not just about rules — it's about reading with understanding, expressing thoughts clearly, and loving the language. 📍 Lozenets · Small groups · Write to us for more info and available spots.",
@@ -806,7 +858,7 @@
         "contact.mapPlaceholder": "Open in Google Maps",
         "footer.copyright": "© 2026 The Light Academy Sofia",
         "footer.home": "Home",
-        "footer.birthdays": "Birthday Parties"
+        "footer.birthdays": "NVO 7th Grade"
       },
       bg: {
         "topbar.address": "Горски пътник 56",
@@ -815,16 +867,16 @@
         "nav.gallery": "Галерия",
         "nav.news": "Новини",
         "nav.contact": "Контакти",
-        "nav.birthdays": "🎂 Детски рождени дни",
-        "hero.title": "Където любознателните умове<br>блестят ярко",
-        "hero.subtitle": "Математика, английски, български, театър и рисуване - всичко под един покрив.",
+        "nav.birthdays": "📐 НВО 7 клас",
+        "hero.title": "Където знанието<br>среща креативността",
+        "hero.subtitle": "Курсове по математика, български, английски, испански и подготовка за НВО – в сърцето на Лозенец.",
         "hero.btn1": "Открийте академията",
-        "hero.btn2": "🎂 Детски рождени дни",
+        "hero.btn2": "📐 НВО 7 клас",
         "subjects.math": "📐 Математика",
         "subjects.english": "📖 Английски",
         "subjects.bulgarian": "🇧🇬 Български",
-        "subjects.theater": "🎭 Театър",
-        "subjects.painting": "🎨 Рисуване",
+        "subjects.spanish": "🇪🇸 Испански",
+        "subjects.nvo": "📐 НВО 7 клас",
         "about.photoPlaceholder": "Уютна и спокойна атмосфера",
         "about.eyebrow": "За нас",
         "about.title": " Бутикова академия за деца, в която знанието среща креативността.",
@@ -833,6 +885,9 @@
         "about.text3": "💛Основана с любов и посвещение към детското образование, The Light Academy е място, където децата се вдъхновяват, учат и развиват своя потенциал. 🌟",
         "about.btn": "Свържете се с нас",
         "updates.title": "Най-актуалното при нас",
+        "updates.date.nvo": "Август 2026",
+        "updates.card.nvo.title": "📐 Подготовка за НВО 7 клас по математика",
+        "updates.card.nvo.text": "Записването за нашата програма за подготовка за НВО по математика е открито! Входящ тест, малки групи, целият материал за 7. клас и пробни изпити в реален формат. Местата са ограничени. <a href='nvo7.html' style='color:#E8580A; font-weight:700;'>Разгледай програмата →</a>",
         "updates.date.bulgarian": "Юни 2026",
         "updates.card.bulgarian.title": "Нов курс по български език в The Light Academy",
         "updates.card.bulgarian.text": "Тъй като имахме запитвания, решихме с радост да обявим, че към нашите курсове добавяме и български език. Работим както индивидуално, така и в малки групи, като помагаме на децата да затвърдят знанията си, да използват лятото, за да наваксат пропуски, и да изградят увереност.",
@@ -859,7 +914,7 @@
         "contact.mapPlaceholder": "Отворете в Google Maps",
         "footer.copyright": "© 2026 The Light Academy Sofia",
         "footer.home": "Начало",
-        "footer.birthdays": "Детски рождени дни"
+        "footer.birthdays": "НВО 7 клас"
       }
     };
 
