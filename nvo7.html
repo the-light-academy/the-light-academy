@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НВО 7 клас Математика – The Light Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Bad+Script&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sun: #F5A623;
+      --sun-light: #FFF3D6;
+      --sun-dark: #C07A0A;
+      --peach: #FF7043;
+      --peach-light: #FFF0EB;
+      --cream: #FFFDF7;
+      --dark: #2D1F0E;
+      --mid: #7A5C3A;
+      --light-text: #A07850;
+      --white: #ffffff;
+      --teal: #1A8C85;
+      --teal-light: #E0F4F3;
+      --orange: #E8580A;
+      --orange-light: #FEE8DC;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      background: var(--sun);
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .top-bar a { color: var(--dark); text-decoration: none; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--white);
+      border-bottom: 2px solid var(--sun-light);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--sun-dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: transparent;
+    }
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--mid);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .nav-links a:hover { background: var(--sun-light); color: var(--sun-dark); }
+    .nav-links a.cta-birthdays {
+      background: var(--sun);
+      color: var(--dark);
+      margin-left: 4px;
+    }
+    .nav-links a.cta-birthdays:hover { background: var(--sun-dark); color: var(--white); }
+    .nav-links a.cta-nvo {
+      background: var(--orange);
+      color: var(--white);
+      margin-left: 4px;
+    }
+    .nav-links a.cta-nvo:hover { background: #C24508; color: var(--white); }
+    .nav-links a.active { background: var(--orange-light); color: var(--orange); }
+
+    /* ── HAMBURGER (mobile) ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 3px;
+      background: var(--mid);
+      border-radius: 3px;
+      transition: all 0.3s;
+    }
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: var(--white);
+      border-bottom: 2px solid var(--sun-light);
+      padding: 1rem 2rem;
+      gap: 0.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      text-decoration: none;
+      color: var(--mid);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+    }
+    .mobile-menu a.cta-nvo {
+      background: var(--orange);
+      color: var(--white);
+      text-align: center;
+    }
+    .mobile-menu a.cta-birthdays {
+      background: var(--sun);
+      color: var(--dark);
+      text-align: center;
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: linear-gradient(135deg, #1A2B3C 0%, #0F2030 60%, #162535 100%);
+      padding: 4.5rem 2rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      background: var(--orange);
+      opacity: 0.15;
+      border-radius: 50%;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 260px; height: 260px;
+      background: var(--teal);
+      opacity: 0.2;
+      border-radius: 50%;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232,88,10,0.2);
+      border: 1px solid rgba(232,88,10,0.5);
+      color: #FFA06A;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+    .page-hero h1 {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .page-hero h1 span { color: var(--sun); }
+    .page-hero p {
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+      max-width: 580px;
+      margin: 0 auto 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-pills {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-pill {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.85);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* ── JOURNEY / SCROLL TIMELINE ── */
+    .journey {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem 2rem;
+    }
+
+    /* The vertical line */
+    .timeline-track {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--sun-light);
+      border-radius: 4px;
+      z-index: 0;
+    }
+    .timeline-fill {
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, var(--orange) 0%, var(--sun) 60%, var(--teal) 100%);
+      border-radius: 4px;
+      transition: height 0.1s linear;
+    }
+
+    /* ── EACH SECTION ROW ── */
+    .step {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      align-items: center;
+      gap: 0 1rem;
+      margin-bottom: 5rem;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .step.visible { opacity: 1; transform: translateY(0); }
+
+    /* The dot on the timeline */
+    .step-dot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 3px solid var(--sun-light);
+      color: var(--light-text);
+      font-weight: 800;
+      font-size: 14px;
+      margin: 0 auto;
+      transition: border-color 0.4s, background 0.4s, color 0.4s, box-shadow 0.4s;
+      z-index: 2;
+    }
+    .step.visible .step-dot {
+      border-color: var(--orange);
+      background: var(--orange);
+      color: var(--white);
+      box-shadow: 0 0 0 6px rgba(232,88,10,0.15);
+    }
+
+    /* Image card */
+    .step-image {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      position: relative;
+      aspect-ratio: 4/5;
+      cursor: pointer;
+    }
+    .step-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.55s ease;
+    }
+    .step-image:hover img { transform: scale(1.06); }
+    .step-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(26,44,60,0.55) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .step-image:hover::after { opacity: 1; }
+    .step-image-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.2rem 1.5rem;
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1.05rem;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .step-image:hover .step-image-label { opacity: 1; transform: translateY(0); }
+
+    /* Text block */
+    .step-text { padding: 1rem 1.5rem; }
+    .step-eyebrow {
+      display: inline-block;
+      background: var(--orange-light);
+      color: var(--orange);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 50px;
+      margin-bottom: 0.75rem;
+    }
+    .step-title {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      color: var(--dark);
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+    }
+    .step-divider {
+      width: 48px; height: 3px;
+      background: var(--orange);
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .step-body {
+      color: var(--mid);
+      font-size: 1rem;
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .step-bullets { list-style: none; padding: 0; }
+    .step-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--mid);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+    .step-bullets li::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Flip for odd steps (image on right) */
+    .step.flip .step-image { order: 3; }
+    .step.flip .step-dot { order: 2; }
+    .step.flip .step-text { order: 1; text-align: right; }
+    .step.flip .step-eyebrow { float: right; }
+    .step.flip .step-divider { margin-left: auto; }
+    .step.flip .step-bullets li { flex-direction: row-reverse; text-align: right; }
+    .step.flip .step-bullets li::before { margin-top: 2px; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      background: linear-gradient(135deg, #1A2B3C 0%, #0F2030 100%);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+    .cta-section p {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2.5rem;
+      font-size: 1.05rem;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--orange);
+      color: var(--white);
+      padding: 15px 32px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      box-shadow: 0 4px 20px rgba(232,88,10,0.4);
+    }
+    .btn-cta-primary:hover {
+      transform: translateY(-3px);
+      background: #C24508;
+      box-shadow: 0 8px 28px rgba(232,88,10,0.5);
+    }
+    .btn-cta-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--white);
+      padding: 15px 32px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 2px solid rgba(255,255,255,0.35);
+      transition: transform 0.2s, background 0.2s, border-color 0.2s;
+    }
+    .btn-cta-outline:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,30,0.65);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem 2rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--sun-light);
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--mid);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--sun); color: var(--dark); }
+    .modal-icon {
+      width: 56px; height: 56px;
+      background: var(--orange-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      color: var(--orange);
+      margin: 0 auto 1rem;
+    }
+    .modal-title {
+      font-family: 'Bad Script', cursive;
+      font-size: 1.7rem;
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 0.4rem;
+    }
+    .modal-sub {
+      font-size: 0.9rem;
+      color: var(--light-text);
+      text-align: center;
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--mid);
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--sun-light);
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      color: var(--dark);
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(232,88,10,0.12);
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--orange);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-top: 1.5rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-submit:hover { background: #C24508; transform: translateY(-2px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .form-success {
+      text-align: center;
+      padding: 1rem 0 0.5rem;
+    }
+    .success-icon {
+      width: 56px; height: 56px;
+      background: #E0F4F3;
+      color: var(--teal);
+      border-radius: 50%;
+      font-size: 1.6rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .form-success h4 {
+      font-size: 1.2rem;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+    .form-success p { color: var(--mid); font-size: 0.92rem; }
+    .form-error {
+      background: #FFF0EB;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--peach);
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .form-error a { color: var(--peach); font-weight: 700; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1A2B3C;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+    }
+    footer a { color: var(--sun); text-decoration: none; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .step {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 1.25rem 0;
+        margin-bottom: 3rem;
+      }
+      .step-dot { display: none; }
+      .step-image { aspect-ratio: 4/3; order: 1 !important; }
+      .step-text { order: 2 !important; text-align: left !important; padding: 0.25rem 0; }
+      .step.flip .step-eyebrow { float: none; }
+      .step.flip .step-divider { margin-left: 0; }
+      .step.flip .step-bullets li { flex-direction: row; text-align: left; }
+
+      .timeline-track { display: none; }
+
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <span>📍 Горски пътник 56, Лозенец</span>
+    <span><a href="tel:+359885501283">+359 885 501 283</a></span>
+    <span><a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">
+      <span class="logo-icon"><img src="theLightAcademyLogo.png" alt="Logo"></span>
+      The Light Academy
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Начало</a>
+      <a href="index.html#about">За нас</a>
+      <a href="index.html#gallery">Галерия</a>
+      <a href="index.html#updates">Новини</a>
+      <a href="index.html#contact">Контакт</a>
+      <a href="birthdays.html" class="cta-birthdays">🎂 Рождени дни</a>
+      <a href="nvo7.html" class="cta-nvo active">📐 НВО 7 клас</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Начало</a>
+    <a href="index.html#about">За нас</a>
+    <a href="index.html#gallery">Галерия</a>
+    <a href="index.html#updates">Новини</a>
+    <a href="index.html#contact">Контакт</a>
+    <a href="birthdays.html" class="cta-birthdays">🎂 Рождени дни</a>
+    <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+  </div>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="hero-badge">📐 НВО · 7. клас · Математика</div>
+    <h1>Подготовка за <span>НВО</span><br>7 клас по математика</h1>
+    <p>Структурирана, персонализирана и ефективна подготовка — от входящ тест до пробен изпит в реален формат.</p>
+    <div class="hero-pills">
+      <span class="hero-pill">✔ Входящ тест</span>
+      <span class="hero-pill">✔ Малки групи</span>
+      <span class="hero-pill">✔ Обратна връзка</span>
+      <span class="hero-pill">✔ Пробни изпити</span>
+    </div>
+  </section>
+
+  <!-- JOURNEY -->
+  <div class="journey">
+
+    <!-- Animated vertical line -->
+    <div class="timeline-track">
+      <div class="timeline-fill" id="timelineFill"></div>
+    </div>
+
+    <!-- 1: Входящ тест — image LEFT -->
+    <div class="step" data-step="1">
+      <div class="step-image">
+        <img src="photos/nvo_1.jpg" alt="Входящ тест">
+        <div class="step-image-label">Входящ тест</div>
+      </div>
+      <div class="step-dot">01</div>
+      <div class="step-text">
+        <span class="step-eyebrow">Стъпка 1</span>
+        <h2 class="step-title">Входящ тест</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Започваме с ясен поглед. Входящият тест ни показва точно къде се намира детето — кои теми са усвоени добре и кои се нуждаят от внимание. Без предположения, само факти.</p>
+        <ul class="step-bullets">
+          <li>Диагностика на силните страни</li>
+          <li>Идентифициране на пропуски</li>
+          <li>Индивидуален план от ден 1</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2: Основи — image RIGHT -->
+    <div class="step flip" data-step="2">
+      <div class="step-text">
+        <span class="step-eyebrow">Стъпка 2</span>
+        <h2 class="step-title">Основи</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Успехът на НВО се гради върху здрава основа. Работим методично върху пропуснатото от 5. и 6. клас — числа, дроби, алгебрични изрази, равенства — за да може детето да се движи напред с увереност.</p>
+        <ul class="step-bullets">
+          <li>Числа и дроби</li>
+          <li>Алгебрични изрази</li>
+          <li>Равенства и неравенства</li>
+        </ul>
+      </div>
+      <div class="step-dot">02</div>
+      <div class="step-image">
+        <img src="photos/nvo_2.jpg" alt="Основи">
+        <div class="step-image-label">Пропуски от 5. и 6. клас</div>
+      </div>
+    </div>
+
+    <!-- 3: Малки групи — image LEFT -->
+    <div class="step" data-step="3">
+      <div class="step-image">
+        <img src="photos/nvo_3.jpg" alt="Малки групи">
+        <div class="step-image-label">Малки групи — лично внимание</div>
+      </div>
+      <div class="step-dot">03</div>
+      <div class="step-text">
+        <span class="step-eyebrow">Нашият подход</span>
+        <h2 class="step-title">Малки групи</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Максимум 4 деца в група. Всяко дете получава индивидуален подход, бърза обратна връзка и подкрепа точно когато му е нужна. Никой не остава назад.</p>
+        <ul class="step-bullets">
+          <li>До 4 деца в група</li>
+          <li>Индивидуален темп на усвояване</li>
+          <li>Директна обратна връзка от учителя</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 4: Обратна връзка — image RIGHT -->
+    <div class="step flip" data-step="4">
+      <div class="step-text">
+        <span class="step-eyebrow">За родителите</span>
+        <h2 class="step-title">Обратна връзка</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Родителите са в течение след всеки урок. Споделяме какво е работено, как се справя детето и какво предстои. Без изненади — само ясна картина за прогреса.</p>
+        <ul class="step-bullets">
+          <li>Прогреса на детето</li>
+          <li>Върху какво се работи</li>
+          <li>Учебен план за следващата седмица</li>
+        </ul>
+      </div>
+      <div class="step-dot">04</div>
+      <div class="step-image">
+        <img src="photos/nvo_4.jpg" alt="Обратна връзка">
+        <div class="step-image-label">Родителите са в течение</div>
+      </div>
+    </div>
+
+    <!-- 5: Материалът — image LEFT -->
+    <div class="step" data-step="5">
+      <div class="step-image">
+        <img src="photos/nvo_5.jpg" alt="Материалът за 7. клас">
+        <div class="step-image-label">Системно и разбираемо</div>
+      </div>
+      <div class="step-dot">05</div>
+      <div class="step-text">
+        <span class="step-eyebrow">Учебна програма</span>
+        <h2 class="step-title">Материалът за 7. клас</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Целият материал за 7. клас — системно и разбираемо. Покриваме всичко стъпка по стъпка: рационални числа, геометрия, уравнения, статистика и вероятности.</p>
+        <ul class="step-bullets">
+          <li>Рационални числа</li>
+          <li>Геометрия</li>
+          <li>Статистика и вероятности</li>
+          <li>Подготовка за НВО формат</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 6: Задачи НВО — image RIGHT -->
+    <div class="step flip" data-step="6">
+      <div class="step-text">
+        <span class="step-eyebrow">Формат на изпита</span>
+        <h2 class="step-title">Задачи в НВО формат</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Свикваме с формата на изпита постепенно. Ясна структура, типови задачи, нарастваща сложност. Детето идва на НВО с познат формат — без изненади.</p>
+        <ul class="step-bullets">
+          <li>Задачи като на реален изпит</li>
+          <li>Ясна структура и подредба</li>
+          <li>Постепенно нарастваща сложност</li>
+          <li>Повече увереност на изпита</li>
+        </ul>
+      </div>
+      <div class="step-dot">06</div>
+      <div class="step-image">
+        <img src="photos/nvo_6.jpg" alt="Задачи в НВО формат">
+        <div class="step-image-label">Задачи точно в НВО формат</div>
+      </div>
+    </div>
+
+    <!-- 7: Пробни изпити — image LEFT -->
+    <div class="step" data-step="7">
+      <div class="step-image">
+        <img src="photos/nvo_7.jpg" alt="Пробни изпити">
+        <div class="step-image-label">Подготви се уверено за успех</div>
+      </div>
+      <div class="step-dot">07</div>
+      <div class="step-text">
+        <span class="step-eyebrow">Финал</span>
+        <h2 class="step-title">Пробни изпити</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Симулираме НВО условия — тайминг, структура, психологическа подготовка. Резултатите се обсъждат задълбочено, така детето знае точно върху какво да работи преди реалния изпит.</p>
+        <ul class="step-bullets">
+          <li>Реален НВО формат и тайминг</li>
+          <li>Задълбочен разбор на резултатите</li>
+          <li>Психологическа подготовка</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- end .journey -->
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Готови ли сте да започнем?</h2>
+    <p>Запишете детето за безплатен входящ тест и вижте точно откъде да тръгнем.</p>
+    <div class="cta-buttons">
+      <button onclick="openModal()" class="btn-cta-primary">
+        <i class="fa-solid fa-pen-to-square"></i>
+        Запиши се за безплатен входящ тест
+      </button>
+      <a href="tel:+359885501283" class="btn-cta-outline">
+        <i class="fa-solid fa-phone"></i>
+        Обади се за оферта
+      </a>
+    </div>
+  </section>
+
+  <!-- MODAL FORM -->
+  <div id="formModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()" aria-label="Затвори">✕</button>
+      <div class="modal-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <h3 class="modal-title">Безплатен входящ тест</h3>
+      <p class="modal-sub">Оставете данните си и ние ще се свържем с вас, за да уточним час.</p>
+
+      <form id="regForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label for="studentName">Име на ученика</label>
+          <input type="text" id="studentName" name="studentName" placeholder="Иван Иванов" required />
+        </div>
+        <div class="form-group">
+          <label for="parentPhone">Телефон на родителя</label>
+          <input type="tel" id="parentPhone" name="parentPhone" placeholder="+359 8XX XXX XXX" required />
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <i class="fa-solid fa-paper-plane"></i>
+          Изпрати
+        </button>
+      </form>
+
+      <div id="formSuccess" class="form-success" style="display:none;">
+        <div class="success-icon">✓</div>
+        <h4>Получихме заявката!</h4>
+        <p>Ще се свържем с вас скоро, за да уточним час за входящия тест.</p>
+      </div>
+      <div id="formError" class="form-error" style="display:none;">
+        <p>Нещо се обърка. Моля обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 The Light Academy Sofia · <a href="index.html">Начало</a> · <a href="birthdays.html">Рождени дни</a> · <a href="nvo7.html">НВО 7 клас</a> · <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></p>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // Modal
+    function openModal() {
+      document.getElementById('formModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('formModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Form submission via Formspree
+    // ⚠️  Replace YOUR_FORM_ID below with the ID from formspree.io (free, takes 2 min to set up)
+    async function submitForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Изпращане...';
+
+      const studentName = document.getElementById('studentName').value;
+      const parentPhone = document.getElementById('parentPhone').value;
+
+      try {
+        const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            'Име на ученика': studentName,
+            'Телефон на родителя': parentPhone,
+            _subject: `Нова заявка за входящ тест — ${studentName}`
+          })
+        });
+
+        if (res.ok) {
+          document.getElementById('regForm').style.display = 'none';
+          document.getElementById('formSuccess').style.display = 'block';
+        } else {
+          throw new Error('server error');
+        }
+      } catch {
+        document.getElementById('formError').style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Изпрати';
+      }
+    }
+
+    // Scroll-triggered step reveals
+    const steps = document.querySelectorAll('.step');
+    const timelineFill = document.getElementById('timelineFill');
+    const journey = document.querySelector('.journey');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.2 });
+
+    steps.forEach(step => observer.observe(step));
+
+    // Timeline fill grows with scroll
+    function updateTimeline() {
+      if (!journey) return;
+      const journeyTop = journey.getBoundingClientRect().top + window.scrollY;
+      const progress = Math.min(Math.max((window.scrollY + window.innerHeight * 0.6 - journeyTop) / journey.offsetHeight, 0), 1);
+      timelineFill.style.height = (progress * 100) + '%';
+    }
+    window.addEventListener('scroll', updateTimeline, { passive: true });
+    updateTimeline();
+  </script>
+</body>
+</html>
