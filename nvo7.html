@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     :root {
       --sun: #F5A623;
@@ -239,6 +240,15 @@
       padding: 7px 16px;
       border-radius: 50px;
       border: 1px solid rgba(255,255,255,0.15);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .hero-pill:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.35);
+      color: #fff;
     }
 
     /* ── JOURNEY / SCROLL TIMELINE ── */
@@ -617,18 +627,59 @@
     footer a { color: var(--sun); text-decoration: none; }
 
     /* ── MOBILE ── */
+
+    /* ── Math parallax background (mobile only) ── */
+    #mathParallax {
+      display: none;
+    }
     @media (max-width: 768px) {
+      #mathParallax {
+        display: block;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+        opacity: 0.055;
+      }
+      #mathParallax svg {
+        width: 100%;
+        height: 300vh;
+        position: absolute;
+        top: 0; left: 0;
+      }
+
+      /* all content must sit above the parallax layer */
+      nav, .top-bar, .page-hero, .journey, .cta-section,
+      .modal-overlay, footer, .mobile-menu {
+        position: relative;
+        z-index: 1;
+      }
+
       .nav-links { display: none; }
       .hamburger { display: flex; }
 
       .step {
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        gap: 1.25rem 0;
-        margin-bottom: 3rem;
+        grid-template-rows: auto auto;
+        gap: 1rem 0;
+        margin-bottom: 2.5rem;
       }
       .step-dot { display: none; }
-      .step-image { aspect-ratio: 4/3; order: 1 !important; }
+
+      /* ── FIX: show full image without cropping ── */
+      .step-image {
+        aspect-ratio: unset !important;
+        order: 1 !important;
+        border-radius: 12px;
+      }
+      .step-image img {
+        width: 100%;
+        height: auto !important;
+        object-fit: fill !important;
+      }
+
       .step-text { order: 2 !important; text-align: left !important; padding: 0.25rem 0; }
       .step.flip .step-eyebrow { float: none; }
       .step.flip .step-divider { margin-left: 0; }
@@ -642,6 +693,53 @@
   </style>
 </head>
 <body>
+
+  <!-- PARALLAX MATH BACKGROUND (mobile only) -->
+  <div id="mathParallax">
+    <svg viewBox="0 0 400 1200" xmlns="http://www.w3.org/2000/svg"
+         font-family="Georgia, serif" fill="#C07A0A">
+      <!-- Row 1 -->
+      <text x="18"  y="80"  font-size="22">a² + b² = c²</text>
+      <text x="220" y="55"  font-size="18">∫₀¹ x dx</text>
+      <text x="310" y="110" font-size="26">π</text>
+      <text x="60"  y="135" font-size="16">sin²θ + cos²θ = 1</text>
+      <!-- Row 2 -->
+      <text x="15"  y="210" font-size="20">√(x² + y²)</text>
+      <text x="240" y="195" font-size="17">x = (-b ± √Δ) / 2a</text>
+      <text x="330" y="250" font-size="22">∑</text>
+      <text x="70"  y="270" font-size="15">P(A∩B) = P(A)·P(B)</text>
+      <!-- Row 3 -->
+      <text x="20"  y="360" font-size="19">V = ⅓πr²h</text>
+      <text x="230" y="340" font-size="16">S = (a+b)·h / 2</text>
+      <text x="310" y="395" font-size="24">∞</text>
+      <text x="55"  y="415" font-size="16">log_a(xy) = log_a x + log_a y</text>
+      <!-- Row 4 -->
+      <text x="15"  y="500" font-size="21">f(x) = ax² + bx + c</text>
+      <text x="255" y="480" font-size="18">Δ = b² − 4ac</text>
+      <text x="320" y="540" font-size="22">α β γ</text>
+      <text x="50"  y="560" font-size="15">C(n,k) = n! / k!(n-k)!</text>
+      <!-- Row 5 -->
+      <text x="18"  y="650" font-size="20">a² + b² = c²</text>
+      <text x="235" y="630" font-size="17">∫ f(x) dx</text>
+      <text x="325" y="685" font-size="24">π²</text>
+      <text x="60"  y="710" font-size="16">E = mc²</text>
+      <!-- Row 6 -->
+      <text x="20"  y="800" font-size="19">√x · √y = √(xy)</text>
+      <text x="240" y="780" font-size="16">n! = n·(n-1)·…·1</text>
+      <text x="315" y="840" font-size="22">∑ n</text>
+      <text x="55"  y="865" font-size="15">sin(α+β) = sinα·cosβ + cosα·sinβ</text>
+      <!-- Row 7 -->
+      <text x="15"  y="950" font-size="20">x₁ + x₂ = -b/a</text>
+      <text x="240" y="930" font-size="17">x₁ · x₂ = c/a</text>
+      <text x="320" y="990" font-size="22">∫∑</text>
+      <text x="50"  y="1015" font-size="15">P(A) = m / n</text>
+      <!-- Row 8 -->
+      <text x="18"  y="1100" font-size="21">a² + b² = c²</text>
+      <text x="230" y="1080" font-size="16">V = l · w · h</text>
+      <text x="315" y="1135" font-size="24">Δ</text>
+      <text x="55"  y="1160" font-size="15">(a+b)² = a² + 2ab + b²</text>
+    </svg>
+  </div>
 
   <!-- TOP BAR -->
   <div class="top-bar">
@@ -687,10 +785,10 @@
     <h1>Подготовка за <span>НВО</span><br>7 клас по математика</h1>
     <p>Структурирана, персонализирана и ефективна подготовка — от входящ тест до пробен изпит в реален формат.</p>
     <div class="hero-pills">
-      <span class="hero-pill">✔ Входящ тест</span>
-      <span class="hero-pill">✔ Малки групи</span>
-      <span class="hero-pill">✔ Обратна връзка</span>
-      <span class="hero-pill">✔ Пробни изпити</span>
+      <a href="#section-vhodyasht" class="hero-pill">✔ Входящ тест</a>
+      <a href="#section-malki-grupi" class="hero-pill">✔ Малки групи</a>
+      <a href="#section-obratna" class="hero-pill">✔ Обратна връзка</a>
+      <a href="#section-probni" class="hero-pill">✔ Пробни изпити</a>
     </div>
   </section>
 
@@ -703,7 +801,7 @@
     </div>
 
     <!-- 1: Входящ тест — image LEFT -->
-    <div class="step" data-step="1">
+    <div id="section-vhodyasht" class="step" data-step="1">
       <div class="step-image">
         <img src="photos/nvo_1.jpg" alt="Входящ тест">
         <div class="step-image-label">Входящ тест</div>
@@ -743,7 +841,7 @@
     </div>
 
     <!-- 3: Малки групи — image LEFT -->
-    <div class="step" data-step="3">
+    <div id="section-malki-grupi" class="step" data-step="3">
       <div class="step-image">
         <img src="photos/nvo_3.jpg" alt="Малки групи">
         <div class="step-image-label">Малки групи — лично внимание</div>
@@ -763,7 +861,7 @@
     </div>
 
     <!-- 4: Обратна връзка — image RIGHT -->
-    <div class="step flip" data-step="4">
+    <div id="section-obratna" class="step flip" data-step="4">
       <div class="step-text">
         <span class="step-eyebrow">За родителите</span>
         <h2 class="step-title">Обратна връзка</h2>
@@ -825,7 +923,7 @@
     </div>
 
     <!-- 7: Пробни изпити — image LEFT -->
-    <div class="step" data-step="7">
+    <div id="section-probni" class="step" data-step="7">
       <div class="step-image">
         <img src="photos/nvo_7.jpg" alt="Пробни изпити">
         <div class="step-image-label">Подготви се уверено за успех</div>
@@ -907,6 +1005,29 @@
       document.getElementById('mobileMenu').classList.toggle('open');
     }
 
+    // Smooth scroll for hero pills — offset for sticky nav
+    document.querySelectorAll('a.hero-pill[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+        const navH = document.querySelector('nav').offsetHeight;
+        const y = target.getBoundingClientRect().top + window.scrollY - navH - 16;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      });
+    });
+
+    // Parallax math background (mobile only)
+    const mathParallax = document.getElementById('mathParallax');
+    function applyParallax() {
+      if (window.innerWidth <= 768 && mathParallax) {
+        // Move the layer upward at 28% of scroll speed → appears to float behind
+        mathParallax.querySelector('svg').style.transform =
+          `translateY(${-window.scrollY * 0.28}px)`;
+      }
+    }
+    window.addEventListener('scroll', applyParallax, { passive: true });
+
     // Modal
     function openModal() {
       document.getElementById('formModal').classList.add('open');
@@ -962,7 +1083,7 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.15 });
 
     steps.forEach(step => observer.observe(step));
 
