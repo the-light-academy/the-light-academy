@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News | The Light Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sun: #D9A961;
+      --sun-light: #FFF4D9;
+      --sun-dark: #A17522;
+      --cream: #FEF7EB;
+      --white: #ffffff;
+      --dark: #3A2E1F;
+      --mid: #7D6245;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.7; }
+    a { color: inherit; text-decoration: none; }
+    .page-header { background: var(--sun-light); padding: 2.5rem 2rem; text-align: center; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--sun-dark); margin-bottom: 0.5rem; }
+    .page-header p { color: var(--mid); font-size: 1rem; max-width: 700px; margin: 0 auto; }
+    nav { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 2rem; flex-wrap: wrap; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--sun-dark); }
+    .nav-links { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+    .nav-links a { padding: 10px 16px; border-radius: 999px; background: var(--sun-light); color: var(--mid); font-weight: 700; }
+    .nav-links a:hover { background: var(--sun); color: var(--white); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .article-card { background: var(--white); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.5rem; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 14px 30px rgba(0,0,0,0.04); }
+    .article-card:hover { transform: translateY(-2px); box-shadow: 0 18px 34px rgba(0,0,0,0.06); }
+    .article-top { display: flex; align-items: flex-start; gap: 0.85rem; margin-bottom: 1rem; }
+    .article-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--sun); color: var(--white); display: grid; place-items: center; font-size: 1.1rem; }
+    .article-meta { display: grid; gap: 0.3rem; }
+    .article-meta time { font-size: 0.92rem; color: var(--mid); }
+    .article-title { font-size: 1.2rem; color: var(--dark); margin: 0; }
+    .article-snippet { color: var(--mid); margin: 1rem 0 0; }
+    .article-body { margin-top: 1.5rem; color: var(--dark); line-height: 1.9; }
+    .article-body h2 { font-size: 1.1rem; color: var(--sun-dark); margin-top: 1.5rem; }
+    .article-body p { margin-top: 1rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: var(--sun-dark); font-weight: 700; }
+    .back-link:hover { text-decoration: underline; }
+    @media (max-width: 768px) { .nav-inner { padding: 1rem; } .article-top { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">The Light Academy</div>
+      <div class="nav-links">
+        <a href="index.html">Начало</a>
+        <a href="index.html#about">За нас</a>
+        <a href="index.html#courses">Курсове</a>
+        <a href="index.html#gallery">Галерия</a>
+        <a href="index.html#contact">Контакти</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <h1>Новини и статии</h1>
+    <p>Прегледайте последните новини и семейни статии от The Light Academy. Натиснете заглавие, за да прочетете цялата статия.</p>
+  </header>
+
+  <main class="container">
+    <article class="article-card" id="article-nvo">
+      <div class="article-top">
+        <div class="article-icon">📐</div>
+        <div class="article-meta">
+          <time datetime="2026-08-01">Август 2026</time>
+          <h2 class="article-title">НВО 7 клас - подготовка по математика</h2>
+        </div>
+      </div>
+      <p class="article-snippet">Записването за НВО подготовка по математика е отворено. Разгледайте подробностите за малките групи, входящия тест и пробните изпити.</p>
+      <div class="article-body">
+        <p>Нашата програма за НВО подготовка по математика е създадена за ученици от 7. клас, които търсят сигурност и увереност преди изпита.</p>
+        <h2>Какво включва програмата</h2>
+        <p>• Входящ тест, който помага да определим индивидуалните нужди на детето.</p>
+        <p>• Математика в малки групи, за да гарантираме бърз прогрес.</p>
+        <p>• Пробни изпити в реални условия и детайлна обратна връзка.</p>
+        <h2>Защо да изберете тази програма</h2>
+        <p>Работим с ясна структура и разбираеми обяснения, за да помогнем на учениците да превърнат стреса в спокойствие. Местата са ограничени, затова е добре да резервирате предварително.</p>
+      </div>
+    </article>
+
+    <article class="article-card" id="article-bulgarian">
+      <div class="article-top">
+        <div class="article-icon">📚</div>
+        <div class="article-meta">
+          <time datetime="2026-06-01">Юни 2026</time>
+          <h2 class="article-title">Нов курс по български език</h2>
+        </div>
+      </div>
+      <p class="article-snippet">Нов курс по български език в The Light Academy — фокус върху четене, писане и увереност в езика.</p>
+      <div class="article-body">
+        <p>Курсът по български език e подходящ за деца, които искат да развият грамотността си и да обикнат езика.</p>
+        <h2>Как преминава обучението</h2>
+        <p>• Упражнения по четене с разбиране.</p>
+        <p>• Работа върху писмени изложения и творческо писане.</p>
+        <p>• Граматически обяснения, които се превръщат в работещи умения.</p>
+        <h2>Кой може да се включи</h2>
+        <p>Подходящо е както за ученици, които искат да наваксат, така и за тези, които желаят да развият увереността си в училище.</p>
+      </div>
+    </article>
+
+    <article class="article-card" id="article-art">
+      <div class="article-top">
+        <div class="article-icon">🎭</div>
+        <div class="article-meta">
+          <time datetime="2026-06-01">Юни 2026</time>
+          <h2 class="article-title">Арт & театър работилница</h2>
+        </div>
+      </div>
+      <p class="article-snippet">Творчески уъркшоп за деца с рисуване и театрални упражнения — за повече смелост и въображение.</p>
+      <div class="article-body">
+        <p>Нашата арт и театър работилница комбинира визуалните изкуства и сценичните практики в един вдъхновяващ час.</p>
+        <h2>Какво ще правим</h2>
+        <p>• 1 час рисуване с цветове, форми и експерименти.</p>
+        <p>• 1 час театрални игри за изразяване, увереност и екипна работа.</p>
+        <h2>Кой ще се хареса</h2>
+        <p>Деца, които обичат да творят, да се изразяват и да играят в безопасна и подкрепяща атмосфера.</p>
+      </div>
+    </article>
+
+    <article class="article-card" id="article-summer">
+      <div class="article-top">
+        <div class="article-icon">☀️</div>
+        <div class="article-meta">
+          <time datetime="2025-06-01">Юни 2025</time>
+          <h2 class="article-title">Лятна програма е отворена</h2>
+        </div>
+      </div>
+      <p class="article-snippet">Лятната програма включва математика, английски и рисуване — с ограничени места за децата от Лозенец.</p>
+      <div class="article-body">
+        <p>Програмата е подходяща за деца, които искат занимания през ваканцията, без да се претоварват.</p>
+        <h2>Какво предлага</h2>
+        <p>• Разнообразни теми по математика и английски.</p>
+        <p>• Арт и творчески задачи, които развиват мисленето.</p>
+        <h2>За кого е</h2>
+        <p>За деца, които искат полезна, спокойна и творческа лятна програма.</p>
+      </div>
+    </article>
+
+    <article class="article-card" id="article-painting">
+      <div class="article-top">
+        <div class="article-icon">🎨</div>
+        <div class="article-meta">
+          <time datetime="2025-04-01">Април 2025</time>
+          <h2 class="article-title">Нова работилница по рисуване</h2>
+        </div>
+      </div>
+      <p class="article-snippet">Съботна работилница за деца 6–12 години — първа група вече започна с голям успех.</p>
+      <div class="article-body">
+        <p>Работилницата по рисуване е специално създадена за децата, които искат да опитат нови техники и да се забавляват.</p>
+        <h2>Какво правим</h2>
+        <p>• Разнообразни материали: бои, маркери и акварел.</p>
+        <p>• Малки групи, в които всеки получава внимание.</p>
+        <h2>Първите впечатления</h2>
+        <p>Децата се включиха ентусиазирано и вече са нетърпеливи за следващите занятия.</p>
+      </div>
+    </article>
+
+    <a href="index.html" class="back-link">← Върни се на началната страница</a>
+  </main>
+</body>
+</html>

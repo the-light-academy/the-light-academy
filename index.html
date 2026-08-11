@@ -11,15 +11,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --sun: #F5A623;
-      --sun-light: #FFF3D6;
-      --sun-dark: #C07A0A;
-      --peach: #FF7043;
-      --peach-light: #FFF0EB;
-      --cream: #FFFDF7;
-      --dark: #2D1F0E;
-      --mid: #7A5C3A;
-      --light-text: #A07850;
+      --sun: #D9A961;
+      --sun-light: #FFF4D9;
+      --sun-dark: #A17522;
+      --peach: #E2A07D;
+      --peach-light: #FDE9D9;
+      --cream: #FEF7EB;
+      --dark: #3A2E1F;
+      --mid: #7D6245;
+      --light-text: #9C7F5E;
       --white: #ffffff;
       --radius: 16px;
       --radius-sm: 8px;
@@ -34,7 +34,7 @@
 
     /* ── TOP BAR ── */
     .top-bar {
-      background: var(--sun);
+      background: var(--sun-light);
       color: var(--dark);
       font-size: 14px;
       font-weight: 700;
@@ -115,7 +115,7 @@
 
     /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, #FFF8E6 0%, #FFEFD0 60%, #FFE0A8 100%);
+      background: linear-gradient(135deg, #FFFAEF 0%, #FFF2D5 60%, #F8E3B4 100%);
       padding: 5rem 2rem 4rem;
       text-align: center;
       position: relative;
@@ -127,7 +127,7 @@
       top: -60px; right: -60px;
       width: 300px; height: 300px;
       background: var(--sun);
-      opacity: 0.12;
+      opacity: 0.1;
       border-radius: 50%;
     }
     .hero::after {
@@ -136,7 +136,7 @@
       bottom: -80px; left: -40px;
       width: 240px; height: 240px;
       background: var(--peach);
-      opacity: 0.1;
+      opacity: 0.08;
       border-radius: 50%;
     }
     .hero h1 {
@@ -214,7 +214,7 @@
 
     /* ADD THIS NEW RULE RIGHT BELOW IT FOR THE HOVER EFFECT */
     .subject-pill:hover {
-      background-color: #f7ad19;
+      background-color: #F4C772;
       color: var(--dark);
       transform: translateY(-4px);
     }
@@ -436,14 +436,14 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .reviews-track .review-card:nth-child(2n+1) {
-      background: #f7ad19;
-      color: #2d1f0e;
-      border-color: rgba(255,255,255,0.55);
+      background: #FFF3D6;
+      color: #3A2E1F;
+      border-color: rgba(255,255,255,0.65);
     }
     .reviews-track .review-card:nth-child(2n) {
-      background: #fff4ab;
-      color: #2d1f0e;
-      border-color: rgba(255,255,255,0.65);
+      background: #FFF9E8;
+      color: #3A2E1F;
+      border-color: rgba(255,255,255,0.55);
     }
     .review-card:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,0.08); }
     .review-stars {
@@ -514,15 +514,19 @@
     }
 
     /* ── UPDATES ── */
-    .updates-bg { background: var(--sun-light); padding: 4rem 2rem; }
+    .updates-bg { background: #FEF5E5; padding: 4rem 2rem; }
     .updates-inner { max-width: 1100px; margin: 0 auto; }
     .updates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
     .update-card {
+      display: block;
       background: var(--white);
       border-radius: var(--radius);
       padding: 1.5rem;
       border-left: 4px solid var(--sun);
       position: relative;
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
     }
     .update-card-top {
       display: flex;
@@ -771,7 +775,7 @@
       <a href="#about" data-i18n="nav.about">About</a>
       <a href="#courses" data-i18n="nav.courses">Courses</a>
       <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
-      <a href="#updates" data-i18n="nav.news">News</a>
+      <a href="news.html" data-i18n="nav.news">News</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
       <a href="birthdays.html" data-i18n="nav.birthdays">🎂 Birthday Parties</a>
       <a href="nvo7.html" class="cta btn-nvo" data-i18n="nav.nvo">📐 NVO 7th Grade</a>
@@ -885,66 +889,56 @@
       <p class="section-title" style="font-family:'Playfair Display',serif; font-size:2rem; color:#C07A0A;" data-i18n="updates.title">Latest News &amp; Updates</p>
       <div class="divider"></div>
       <div class="updates-grid">
-        <div class="update-card" style="border-left: 4px solid #E8580A; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%);">
+        <a class="update-card" href="news.html#article-nvo">
           <div class="update-card-top">
             <div class="update-icon orange"><i class="fa-solid fa-calculator"></i></div>
             <div>
-              <div class="update-date" data-i18n="updates.date.nvo" style="color:#E8580A;">Август 2026</div>
-              <h3 data-i18n="updates.card.nvo.title">📐 Подготовка за НВО 7 клас по математика</h3>
+              <div class="update-date" data-i18n="updates.date.nvo" style="color:#B27335;">Август 2026</div>
+              <h3 data-i18n="updates.card.nvo.title">📐 НВО 7 клас - подготовка по математика</h3>
             </div>
           </div>
-          <p data-i18n="updates.card.nvo.text">Записването за нашата програма за подготовка за НВО по математика е открито! Входящ тест, малки групи, целият материал за 7. клас и пробни изпити в реален формат. Местата са ограничени. <a href="nvo7.html" style="color:#E8580A; font-weight:700;">Разгледай програмата →</a></p>
-        </div>
-        <div class="update-card">
+          <p>Енролмънтът за НВО подготовка по математика е открит. Малки групи, пробни изпити и ограничени места.</p>
+        </a>
+        <a class="update-card" href="news.html#article-bulgarian">
           <div class="update-card-top">
             <div class="update-icon green"><i class="fa-solid fa-book-open"></i></div>
             <div>
-              <div class="update-date" data-i18n="updates.date.bulgarian">June 2026</div>
-              <h3 data-i18n="updates.card.bulgarian.title">New Bulgarian Language Course</h3>
+              <div class="update-date" data-i18n="updates.date.bulgarian">Юни 2026</div>
+              <h3 data-i18n="updates.card.bulgarian.title">Нов курс по български език</h3>
             </div>
           </div>
-          <p data-i18n="updates.card.bulgarian.text">We are happy to announce that we are adding Bulgarian language to our courses — working both individually and in small groups to help children consolidate knowledge, catch up on gaps, and build confidence. 📍 Lozenets · Small groups · Write to us for more info and available spots.</p>
-        </div>
-        <div class="update-card">
+          <p>Нов курс по български език в малки групи, за да засилване увереността при четене и писане.</p>
+        </a>
+        <a class="update-card" href="news.html#article-art">
           <div class="update-card-top">
             <div class="update-icon purple"><i class="fa-solid fa-palette"></i></div>
             <div>
-              <div class="update-date" data-i18n="updates.date.art">June 2026</div>
-              <h3 data-i18n="updates.card.art.title">Art & Theater Workshop</h3>
+              <div class="update-date" data-i18n="updates.date.art">Юни 2026</div>
+              <h3 data-i18n="updates.card.art.title">Арт & театър работилница</h3>
             </div>
           </div>
-          <p data-i18n="updates.card.art.text">We are excited to present our new Art & Theater Workshop for children! Two hours of creativity: 1 hour of painting + 1 hour of theater exercises and études. 📅 June 26 · 💶 15 EUR per child · 📍 Lozenets, Gorski Patnik 56 · Only 10 spots! <a href="https://forms.gle/Xqve1i5ZstN4NHRD9" target="_blank" style="color:var(--sun-dark); font-weight:700;">Register here →</a></p>
-        </div>
-        <div class="update-card">
+          <p>Творчески уъркшоп: 1 час рисуване и 1 час театрални упражнения. Само 10 места.</p>
+        </a>
+        <a class="update-card" href="news.html#article-summer">
           <div class="update-card-top">
             <div class="update-icon blue"><i class="fa-solid fa-sun"></i></div>
             <div>
-              <div class="update-date" data-i18n="updates.date1">June 2025</div>
-              <h3 data-i18n="updates.card1.title">Summer Enrollment Open</h3>
+              <div class="update-date" data-i18n="updates.date1">Юни 2025</div>
+              <h3 data-i18n="updates.card1.title">Лятна програма е отворена</h3>
             </div>
           </div>
-          <p data-i18n="updates.card1.text">Spots are now available for our summer programs in math, English, and painting. Limited places — enroll early!</p>
-        </div>
-        <div class="update-card">
-          <div class="update-card-top">
-            <div class="update-icon pink"><i class="fa-solid fa-masks-theater"></i></div>
-            <div>
-              <div class="update-date" data-i18n="updates.date2">May 2025</div>
-              <h3 data-i18n="updates.card2.title">Theater Showcase Night</h3>
-            </div>
-          </div>
-          <p data-i18n="updates.card2.text">Our theater students put on a wonderful show! Thank you to all families who came to support the children.</p>
-        </div>
-        <div class="update-card">
+          <p>Записването за летни програми по математика, английски и рисуване е отворено. Местата са ограничени.</p>
+        </a>
+        <a class="update-card" href="news.html#article-painting">
           <div class="update-card-top">
             <div class="update-icon teal"><i class="fa-solid fa-brush"></i></div>
             <div>
-              <div class="update-date" data-i18n="updates.date3">April 2025</div>
-              <h3 data-i18n="updates.card3.title">New Painting Workshop</h3>
+              <div class="update-date" data-i18n="updates.date3">Април 2025</div>
+              <h3 data-i18n="updates.card3.title">Нова рисувателна работилница</h3>
             </div>
           </div>
-          <p data-i18n="updates.card3.text">We launched a new Saturday painting workshop for children aged 6–12. A big hit from week one!</p>
-        </div>
+          <p>Новата съботна работилница по рисуване за деца 6–12 години започва със забавни уроци.</p>
+        </a>
       </div>
     </div>
   </div>
