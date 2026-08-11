@@ -368,6 +368,104 @@
     }
     .about-photo-circle:hover img { transform: scale(1.1); }
 
+    .reviews-section {
+      background: var(--white);
+      padding: 4rem 2rem;
+    }
+    .reviews-intro {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .reviews-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+      color: var(--sun-dark);
+      margin: 0;
+    }
+    .review-source {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--mid);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .google-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.15rem;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .google-logo span:nth-child(1) { color: #4285F4; }
+    .google-logo span:nth-child(2) { color: #DB4437; }
+    .google-logo span:nth-child(3) { color: #F4B400; }
+    .google-logo span:nth-child(4) { color: #4285F4; }
+    .google-logo span:nth-child(5) { color: #0F9D58; }
+    .google-logo span:nth-child(6) { color: #DB4437; }
+
+    .reviews-carousel {
+      overflow: hidden;
+      position: relative;
+      padding: 1rem 0;
+    }
+    .reviews-track {
+      display: flex;
+      gap: 1rem;
+      animation: scroll-left 55s linear infinite;
+      will-change: transform;
+      align-items: stretch;
+    }
+    .reviews-carousel:hover .reviews-track {
+      animation-duration: 110s;
+    }
+    .review-card {
+      min-width: 320px;
+      max-width: 320px;
+      flex: 0 0 auto;
+      border-radius: var(--radius);
+      background: #f7f8fb;
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .review-card:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,0.08); }
+    .review-stars {
+      display: inline-flex;
+      gap: 4px;
+      color: #F4B400;
+      margin-bottom: 0.75rem;
+    }
+    .review-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.92rem;
+      color: var(--mid);
+    }
+    .review-meta strong { color: var(--sun-dark); }
+    .review-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--dark);
+      min-height: 10rem;
+      white-space: pre-wrap;
+    }
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+      /* ── ABOUT ── */
     .photo-main { width: 320px; height: 320px; z-index: 2; }
     .photo-secondary { border-width: 5px; }
     .photo-secondary-1 {
@@ -839,6 +937,123 @@
     </div>
   </div>
 
+  <section class="reviews-section" id="reviews">
+    <div class="reviews-intro">
+      <div>
+        <p class="reviews-title" data-i18n="reviews.title">Отзиви от нашите клиенти</p>
+        <div class="google-logo">
+          <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+        </div>
+      </div>
+      <div class="review-source" data-i18n="reviews.source">От Google</div>
+    </div>
+    <div class="reviews-carousel" aria-label="Customer reviews carousel">
+      <div class="reviews-track">
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Ellie Tsekova</strong><span>юни 2026</span></div>
+          <p class="review-text">Впечатляващо е отношението - лично, с грижа, целящо доверие, с желание за по-добро, за развитие и израстване на поверените им деца! Работят мотивирани и с големи сърца хора, които носят и даряват светлина ☀️ Всеки, престъпил прага на академията, е преживял това!</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Ростислав Русев</strong><span>юли 2026</span></div>
+          <p class="review-text">The Light Academy създава много уютна и мотивираща среда.
+
+Прави впечатление спокойната обстановка и вниманието, което се отделя на всеки благодарение на работата в малки групи.
+
+Харесва ми подходът, при който ученето се случва чрез игри, творчество и занимания, развиващи както английския език, така и логиката и въображението.
+
+Лятната академия е чудесна възможност за интересно, полезно и забавно прекарване на ваканцията.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Александър Стоянов</strong><span>май 2026</span></div>
+          <p class="review-text">The Light Academy е много приятно и вдъхновяващо място за децата в Лозенец
+
+Спокойна атмосфера, малки групи и лично отношение към всяко дете.
+
+Харесва ми идеята за съчетаване на творчество, английски език и логическо мислене по интересен и ненатоварващ начин.
+
+Лятната занималня е много добро решение за осмислено и забавно време през ваканцията!</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Мая Петрова</strong><span>май 2026</span></div>
+          <p class="review-text">Много сме доволни от заниманията по математика в The Light Academy. Детето ми ходи с желание и постепенно започна да се чувства много по-уверено в решаването на задачи. Харесва ни, че не се набляга само на механичното решаване, а се развива логическото мислене и разбирането на материала. Малките групи и индивидуалното внимание също са голям плюс. Препоръчвам академията на родители, които търсят качествено обучение по математика в Лозенец.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Ellie Tsekova</strong><span>юни 2026</span></div>
+          <p class="review-text">Впечатляващо е отношението - лично, с грижа, целящо доверие, с желание за по-добро, за развитие и израстване на поверените им деца! Работят мотивирани и с големи сърца хора, които носят и даряват светлина ☀️ Всеки, престъпил прага на академията, е преживял това!</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Ростислав Русев</strong><span>юли 2026</span></div>
+          <p class="review-text">The Light Academy създава много уютна и мотивираща среда.
+
+Прави впечатление спокойната обстановка и вниманието, което се отделя на всеки благодарение на работата в малки групи.
+
+Харесва ми подходът, при който ученето се случва чрез игри, творчество и занимания, развиващи както английския език, така и логиката и въображението.
+
+Лятната академия е чудесна възможност за интересно, полезно и забавно прекарване на ваканцията.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Александър Стоянов</strong><span>май 2026</span></div>
+          <p class="review-text">The Light Academy е много приятно и вдъхновяващо място за децата в Лозенец
+
+Спокойна атмосфера, малки групи и лично отношение към всяко дете.
+
+Харесва ми идеята за съчетаване на творчество, английски език и логическо мислене по интересен и ненатоварващ начин.
+
+Лятната занималня е много добро решение за осмислено и забавно време през ваканцията!</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Мая Петрова</strong><span>май 2026</span></div>
+          <p class="review-text">Много сме доволни от заниманията по математика в The Light Academy. Детето ми ходи с желание и постепенно започна да се чувства много по-уверено в решаването на задачи. Харесва ни, че не се набляга само на механичното решаване, а се развива логическото мислене и разбирането на материала. Малките групи и индивидуалното внимание също са голям плюс. Препоръчвам академията на родители, които търсят качествено обучение по математика в Лозенец.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Даниела Иванова</strong><span>юли 2026</span></div>
+          <p class="review-text">Уникално спокойствие и фокус върху детето. Учителите са мили и много търпеливи, а програмата е съобразена с индивидуалните нужди. Горещо препоръчвам The Light Academy за всеки родител, търсещ качествена образователна среда.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Ellie Tsekova</strong><span>юни 2026</span></div>
+          <p class="review-text">Впечатляващо е отношението - лично, с грижа, целящо доверие, с желание за по-добро, за развитие и израстване на поверените им деца! Работят мотивирани и с големи сърца хора, които носят и даряват светлина ☀️ Всеки, престъпил прага на академията, е преживял това!</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Ростислав Русев</strong><span>юли 2026</span></div>
+          <p class="review-text">The Light Academy създава много уютна и мотивираща среда.
+
+Прави впечатление спокойната обстановка и вниманието, което се отделя на всеки благодарение на работата в малки групи.
+
+Харесва ми подходът, при който ученето се случва чрез игри, творчество и занимания, развиващи както английския език, така и логиката и въображението.
+
+Лятната академия е чудесна възможност за интересно, полезно и забавно прекарване на ваканцията.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Александър Стоянов</strong><span>май 2026</span></div>
+          <p class="review-text">The Light Academy е много приятно и вдъхновяващо място за децата в Лозенец
+
+Спокойна атмосфера, малки групи и лично отношение към всяко дете.
+
+Харесва ми идеята за съчетаване на творчество, английски език и логическо мислене по интересен и ненатоварващ начин.
+
+Лятната занималня е много добро решение за осмислено и забавно време през ваканцията!</p>
+        </article>
+        <article class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-meta"><strong>Мая Петрова</strong><span>май 2026</span></div>
+          <p class="review-text">Много сме доволни от заниманията по математика в The Light Academy. Детето ми ходи с желание и постепенно започна да се чувства много по-уверено в решаването на задачи. Харесва ни, че не се набляга само на механичното решаване, а се развива логическото мислене и разбирането на материала. Малките групи и индивидуалното внимание също са голям плюс. Препоръчвам академията на родители, които търсят качествено обучение по математика в Лозенец.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
 <!-- GALLERY -->
   <section class="section" id="gallery">
     <p class="section-title" data-i18n="gallery.title">Gallery</p>
@@ -989,6 +1204,8 @@
         "courses.spanish.point1": "Fun vocabulary and conversation practice.",
         "courses.spanish.point2": "Games and exercises for retention.",
         "courses.spanish.point3": "Practical skills for everyday use.",
+        "reviews.title": "Customer Reviews",
+        "reviews.source": "From Google",
         "about.photoPlaceholder": "Calm and cosy atmosphere",
         "about.eyebrow": "About Us",
         "about.title": "A Place to Learn & Grow",
@@ -1066,6 +1283,8 @@
         "courses.spanish.point1": "Забавна работа с речник и разговори.",
         "courses.spanish.point2": "Игри и упражнения за запомняне.",
         "courses.spanish.point3": "Практически умения за всекидневна употреба.",
+        "reviews.title": "Отзиви от нашите клиенти",
+        "reviews.source": "От Google",
         "about.photoPlaceholder": "Уютна и спокойна атмосфера",
         "about.eyebrow": "За нас",
         "about.title": "The Light Academy",
