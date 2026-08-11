@@ -594,6 +594,9 @@
         background: rgba(0,0,0,0.45); color: #fff; padding: 6px 10px; border-radius: 20px; font-weight:700; font-size:12px;
       }
     }
+    /* Typing caret for hero title animation */
+    .typing-caret { display: inline-block; margin-left: 8px; color: var(--sun-dark); font-weight:800; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
   </style>
 </head>
 <body>
@@ -1009,9 +1012,9 @@
         "hero.btn1": "Открийте академията",
         "hero.btn2": "📐 НВО 7 клас",
         "subjects.math": "📐 Математика",
-        "subjects.english": "📖 Английски",
-        "subjects.bulgarian": "🇧🇬 Български",
-        "subjects.spanish": "🇪🇸 Испански",
+        "subjects.english": "📖 Английски език",
+        "subjects.bulgarian": "🇧🇬 Български език",
+        "subjects.spanish": "🇪🇸 Испански език",
         "subjects.nvo": "📐 НВО 7 клас",
         "courses.title": "Нашите курсове",
         "courses.subtitle": "Традиционното училище вече не е достатъчно. Поколението Z учи по различен начин – те имат нужда от динамика, която да задържи вниманието им и да събуди любопитството им. Ние превеждаме сложния материал на техния език, защото съвременното образование изисква нов подход.",
@@ -1028,7 +1031,7 @@
         "courses.bulgarian.point1": "Укрепване на граматиката и писането.",
         "courses.bulgarian.point2": "Четене с разбиране и увереност.",
         "courses.bulgarian.point3": "Подкрепа за училище и изпити.",
-        "courses.spanish.title": "🇪🇸 Испански",
+        "courses.spanish.title": "🇪🇸 Испански език",
         "courses.spanish.point1": "Забавна работа с речник и разговори.",
         "courses.spanish.point2": "Игри и упражнения за запомняне.",
         "courses.spanish.point3": "Практически умения за всекидневна употреба.",
@@ -1072,32 +1075,64 @@
       }
     };
 
-    // Initialize language from localStorage
+    // Initialize language from localStorage (animate hero on first load)
     function initLanguage() {
       const savedLang = localStorage.getItem('language') || 'en';
-      setLanguage(savedLang);
+      setLanguage(savedLang, { animateHero: true });
+    }
+
+    // Typing helper for the hero title (honours <br> as line breaks)
+    function typeHeroTitle(element, htmlText, speed = 40) {
+      const parts = htmlText.split('<br>');
+      element.innerHTML = '';
+      const spans = parts.map(() => {
+        const s = document.createElement('span');
+        element.appendChild(s);
+        return s;
+      });
+      for (let i = 0; i < parts.length - 1; i++) {
+        element.insertBefore(document.createElement('br'), spans[i + 1]);
+      }
+      const caret = document.createElement('span');
+      caret.className = 'typing-caret';
+      caret.textContent = '|';
+      element.appendChild(caret);
+
+      let p = 0, c = 0;
+      function step() {
+        if (p >= parts.length) { caret.remove(); return; }
+        spans[p].textContent = parts[p].slice(0, c);
+        if (c < parts[p].length) { c++; setTimeout(step, speed); }
+        else { p++; c = 0; setTimeout(step, speed); }
+      }
+      step();
     }
 
     // Set language function
-    function setLanguage(lang) {
+    function setLanguage(lang, opts = {}) {
+      const animateHero = opts.animateHero === true;
       localStorage.setItem('language', lang);
       document.documentElement.lang = lang;
       document.getElementById('langToggle').textContent = lang === 'en' ? 'БГ' : 'EN';
-      
-      // Update all data-i18n elements
+
+      // Update all data-i18n elements; animate hero.title only when requested
       document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
+        if (!(translations[lang] && translations[lang][key])) return;
+        if (key === 'hero.title') {
+          if (animateHero) typeHeroTitle(element, translations[lang][key]);
+          else element.innerHTML = translations[lang][key];
+        } else {
           element.innerHTML = translations[lang][key];
         }
       });
     }
 
-    // Toggle language
+    // Toggle language (do not animate on toggle)
     function toggleLanguage() {
       const current = localStorage.getItem('language') || 'en';
       const newLang = current === 'en' ? 'bg' : 'en';
-      setLanguage(newLang);
+      setLanguage(newLang, { animateHero: false });
     }
 
     // Initialize on page load
