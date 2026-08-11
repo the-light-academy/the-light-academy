@@ -1179,20 +1179,39 @@
 
       // Ensure poster/button visible initially
       btn.classList.remove('hidden');
+      // Check whether the video file is reachable; if not, show a poster fallback
+      (function checkVideoExists() {
+        if (!video.src) return onMissing();
+        try {
+          fetch(video.src, { method: 'HEAD' }).then(res => {
+            if (!res.ok) onMissing();
+          }).catch(() => onMissing());
+        } catch (e) {
+          onMissing();
+        }
+      })();
 
+      function onMissing() {
+        video.removeAttribute('src');
+        video.poster = 'photos/about_photo_1.jpeg';
+        btn.innerHTML = '<i class="fa-solid fa-image"></i>';
+        btn.setAttribute('aria-label', 'Open gallery');
+        btn.classList.remove('hidden');
+        btn.addEventListener('click', () => {
+          const g = document.getElementById('gallery');
+          if (g) g.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+
+      // Normal play/pause handlers when video is available
       btn.addEventListener('click', () => {
-        video.play();
-        btn.classList.add('hidden');
+        if (video.paused) video.play();
+        else video.pause();
       });
 
       video.addEventListener('click', () => {
-        if (video.paused) {
-          video.play();
-          btn.classList.add('hidden');
-        } else {
-          video.pause();
-          btn.classList.remove('hidden');
-        }
+        if (video.paused) video.play();
+        else video.pause();
       });
 
       video.addEventListener('play', () => btn.classList.add('hidden'));
