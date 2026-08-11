@@ -230,6 +230,55 @@
     .section-sub { color: var(--light-text); font-size: 1rem; margin-bottom: 2.5rem; }
     .divider { width: 60px; height: 4px; background: var(--sun); border-radius: 4px; margin: 0.75rem 0 2rem; }
 
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .course-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .course-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.1); }
+    .course-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+    .course-card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+    }
+    .course-card h3 {
+      font-size: 1.25rem;
+      color: var(--sun-dark);
+      margin-bottom: 0.5rem;
+    }
+    .course-features {
+      list-style: disc;
+      padding-left: 1.25rem;
+      color: var(--mid);
+      margin: 0;
+      display: grid;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .course-features li { font-size: 0.95rem; line-height: 1.6; }
+    .course-card .btn {
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
       /* ── ABOUT ── */
     .about-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3.5rem; align-items: center; }
 
@@ -628,6 +677,63 @@
     </div>
   </section>
 
+  <!-- COURSES -->
+  <section class="section" id="courses">
+    <p class="section-title" data-i18n="courses.title">Our Courses</p>
+    <p class="section-sub" data-i18n="courses.subtitle">Explore four core subjects with a photo, benefits, and a quick overview.</p>
+    <div class="divider"></div>
+    <div class="courses-grid">
+      <article class="course-card">
+        <img src="photos/gallery_1.jpeg" alt="Mathematics course photo">
+        <div class="course-card-body">
+          <h3 data-i18n="courses.math.title">📐 Mathematics</h3>
+          <ul class="course-features">
+            <li data-i18n="courses.math.point1">Point one placeholder text</li>
+            <li data-i18n="courses.math.point2">Point two placeholder text</li>
+            <li data-i18n="courses.math.point3">Point three placeholder text</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline" data-i18n="courses.more">More details</a>
+        </div>
+      </article>
+      <article class="course-card">
+        <img src="photos/gallery_2.jpeg" alt="English course photo">
+        <div class="course-card-body">
+          <h3 data-i18n="courses.english.title">📖 English</h3>
+          <ul class="course-features">
+            <li data-i18n="courses.english.point1">Point one placeholder text</li>
+            <li data-i18n="courses.english.point2">Point two placeholder text</li>
+            <li data-i18n="courses.english.point3">Point three placeholder text</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline" data-i18n="courses.more">More details</a>
+        </div>
+      </article>
+      <article class="course-card">
+        <img src="photos/gallery_3.jpeg" alt="Bulgarian course photo">
+        <div class="course-card-body">
+          <h3 data-i18n="courses.bulgarian.title">🇧🇬 Български</h3>
+          <ul class="course-features">
+            <li data-i18n="courses.bulgarian.point1">Point one placeholder text</li>
+            <li data-i18n="courses.bulgarian.point2">Point two placeholder text</li>
+            <li data-i18n="courses.bulgarian.point3">Point three placeholder text</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline" data-i18n="courses.more">More details</a>
+        </div>
+      </article>
+      <article class="course-card">
+        <img src="photos/gallery_4.jpeg" alt="Spanish course photo">
+        <div class="course-card-body">
+          <h3 data-i18n="courses.spanish.title">🇪🇸 Spanish</h3>
+          <ul class="course-features">
+            <li data-i18n="courses.spanish.point1">Point one placeholder text</li>
+            <li data-i18n="courses.spanish.point2">Point two placeholder text</li>
+            <li data-i18n="courses.spanish.point3">Point three placeholder text</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline" data-i18n="courses.more">More details</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <!-- UPDATES -->
   <div class="updates-bg" id="updates">
     <div class="updates-inner">
@@ -828,6 +934,25 @@
         "subjects.bulgarian": "🇧🇬 Bulgarian",
         "subjects.spanish": "🇪🇸 Spanish",
         "subjects.nvo": "📐 NVO 7th Grade",
+        "courses.title": "Our Courses",
+        "courses.subtitle": "Explore four core subjects with a photo, benefits, and a quick overview.",
+        "courses.more": "More details",
+        "courses.math.title": "📐 Mathematics",
+        "courses.math.point1": "Overview of key concepts and exam support.",
+        "courses.math.point2": "Small groups for focused learning.",
+        "courses.math.point3": "Friendly guidance for every student.",
+        "courses.english.title": "📖 English",
+        "courses.english.point1": "Practice reading, writing and speaking.",
+        "courses.english.point2": "Lessons tailored to each child.",
+        "courses.english.point3": "Confidence-building communication skills.",
+        "courses.bulgarian.title": "🇧🇬 Bulgarian",
+        "courses.bulgarian.point1": "Strengthening grammar and writing.",
+        "courses.bulgarian.point2": "Reading with comprehension and confidence.",
+        "courses.bulgarian.point3": "Support for school and exams.",
+        "courses.spanish.title": "🇪🇸 Spanish",
+        "courses.spanish.point1": "Fun vocabulary and conversation practice.",
+        "courses.spanish.point2": "Games and exercises for retention.",
+        "courses.spanish.point3": "Practical skills for everyday use.",
         "about.photoPlaceholder": "Calm and cosy atmosphere",
         "about.eyebrow": "About Us",
         "about.title": "A Place to Learn & Grow",
@@ -885,6 +1010,25 @@
         "subjects.bulgarian": "🇧🇬 Български",
         "subjects.spanish": "🇪🇸 Испански",
         "subjects.nvo": "📐 НВО 7 клас",
+        "courses.title": "Нашите курсове",
+        "courses.subtitle": "Разгледайте четири основни предмета с изображение, ползи и бърз преглед.",
+        "courses.more": "Виж повече",
+        "courses.math.title": "📐 Математика",
+        "courses.math.point1": "Преглед на ключови теми и изпитна подготовка.",
+        "courses.math.point2": "Малки групи за индивидуално внимание.",
+        "courses.math.point3": "Подкрепа, която изяснява всяка стъпка.",
+        "courses.english.title": "📖 Английски",
+        "courses.english.point1": "Практика за четене, писане и говорене.",
+        "courses.english.point2": "Занятия адаптирани към детето.",
+        "courses.english.point3": "Увереност в комуникацията на английски.",
+        "courses.bulgarian.title": "🇧🇬 Български",
+        "courses.bulgarian.point1": "Укрепване на граматиката и писането.",
+        "courses.bulgarian.point2": "Четене с разбиране и увереност.",
+        "courses.bulgarian.point3": "Подкрепа за училище и изпити.",
+        "courses.spanish.title": "🇪🇸 Испански",
+        "courses.spanish.point1": "Забавна работа с речник и разговори.",
+        "courses.spanish.point2": "Игри и упражнения за запомняне.",
+        "courses.spanish.point3": "Практически умения за всекидневна употреба.",
         "about.photoPlaceholder": "Уютна и спокойна атмосфера",
         "about.eyebrow": "За нас",
         "about.title": "The Light Academy",
