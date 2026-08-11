@@ -652,9 +652,15 @@
 
       /* all content must sit above the parallax layer */
       nav, .top-bar, .page-hero, .journey, .cta-section,
-      .modal-overlay, footer, .mobile-menu {
+      footer, .mobile-menu {
         position: relative;
         z-index: 1;
+      }
+
+      /* modal must stay fixed and on top of everything */
+      .modal-overlay {
+        position: fixed !important;
+        z-index: 9999 !important;
       }
 
       .nav-links { display: none; }
@@ -689,6 +695,23 @@
 
       .cta-buttons { flex-direction: column; align-items: center; }
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
+
+      /* bottom-sheet modal on mobile */
+      .modal-overlay {
+        align-items: flex-end !important;
+        padding: 0 !important;
+      }
+      .modal-box {
+        border-radius: 20px 20px 0 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 2rem 1.5rem 2.5rem !important;
+        animation: sheetUp 0.35s ease !important;
+      }
+      @keyframes sheetUp {
+        from { transform: translateY(100%); }
+        to   { transform: translateY(0); }
+      }
     }
   </style>
 </head>
@@ -1040,35 +1063,44 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     // Form submission via Formspree
-    // ⚠️  Replace YOUR_FORM_ID below with the ID from formspree.io (free, takes 2 min to set up)
     async function submitForm(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
+      const errBox = document.getElementById('formError');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Изпращане...';
+      errBox.style.display = 'none';
 
-      const studentName = document.getElementById('studentName').value;
-      const parentPhone = document.getElementById('parentPhone').value;
+      const studentName = document.getElementById('studentName').value.trim();
+      const parentPhone  = document.getElementById('parentPhone').value.trim();
+
+      // FormData is what Formspree handles natively — no Content-Type header needed
+      const body = new FormData();
+      body.append('Име на ученика', studentName);
+      body.append('Телефон на родителя', parentPhone);
+      body.append('_subject', `Нова заявка за входящ тест — ${studentName}`);
 
       try {
         const res = await fetch('https://formspree.io/f/mnpaddna', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({
-            'Име на ученика': studentName,
-            'Телефон на родителя': parentPhone,
-            _subject: `Нова заявка за входящ тест — ${studentName}`
-          })
+          headers: { 'Accept': 'application/json' },
+          body
         });
 
         if (res.ok) {
           document.getElementById('regForm').style.display = 'none';
           document.getElementById('formSuccess').style.display = 'block';
         } else {
-          throw new Error('server error');
+          const data = await res.json().catch(() => ({}));
+          const hint = data?.error || data?.errors?.[0]?.message || `Код ${res.status}`;
+          errBox.innerHTML = `<p>⚠️ ${hint} — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>`;
+          errBox.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Изпрати';
         }
       } catch {
-        document.getElementById('formError').style.display = 'block';
+        errBox.innerHTML = `<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>`;
+        errBox.style.display = 'block';
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Изпрати';
       }
