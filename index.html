@@ -1951,17 +1951,28 @@ The Light Academy прави впечатление с малките групи
       const navLinks = document.querySelector('.nav-links');
       if (!toggle || !navLinks) return;
 
+      function closeMenu() {
+        navLinks.classList.remove('open');
+        toggle.classList.remove('open');
+      }
+
       toggle.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
-        toggle.classList.toggle('open');
+        const isOpen = navLinks.classList.contains('open');
+        navLinks.classList.toggle('open', !isOpen);
+        toggle.classList.toggle('open', !isOpen);
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          closeMenu();
+        });
       });
 
       document.addEventListener('click', (event) => {
         if (!navLinks.classList.contains('open')) return;
         if (toggle.contains(event.target)) return;
         if (navLinks.contains(event.target)) return;
-        navLinks.classList.remove('open');
-        toggle.classList.remove('open');
+        closeMenu();
       });
     }
 
