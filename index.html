@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -250,51 +250,156 @@
 
     .courses-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
       gap: 1.5rem;
+      align-items: stretch;
     }
+
     .course-card {
-      background: var(--white);
-      border-radius: var(--radius);
+      position: relative;
       overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+      min-height: 280px;
+      padding: 1.35rem 1.4rem 1.2rem;
+      border-radius: 26px;
+      border: 1px solid rgba(11, 32, 58, 0.10);
+      box-shadow: 0 18px 40px rgba(20, 30, 58, 0.08);
       display: flex;
       flex-direction: column;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      justify-content: space-between;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      isolation: isolate;
     }
-    .course-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.1); }
-    .course-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
+
+    .course-card::before {
+      content: "";
+      position: absolute;
+      inset: -30% auto auto -10%;
+      width: 180px;
+      height: 180px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 50%;
+      filter: blur(10px);
+      z-index: -1;
     }
-    .course-card-body {
-      padding: 1.5rem;
+
+    .course-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 24px 52px rgba(20, 30, 58, 0.15);
+      filter: saturate(1.06);
+    }
+
+    .course-card--nvo {
+      background: linear-gradient(135deg, #f7d66d 0%, #f5b63f 35%, #ee8d1d 100%);
+      color: #1c2d42;
+    }
+
+    .course-card--school {
+      background: linear-gradient(135deg, #f3c978 0%, #f39d39 55%, #d97528 100%);
+      color: #1c2d42;
+    }
+
+    .course-card--languages {
+      background: linear-gradient(135deg, #0f2242 0%, #183b60 50%, #0d1f35 100%);
+      color: #fef7eb;
+    }
+
+    .course-card--science {
+      background: linear-gradient(135deg, #153c62 0%, #0c2a46 42%, #1a4b74 100%);
+      color: #fef7eb;
+    }
+
+    .course-card__header {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
       gap: 1rem;
-      flex: 1;
+      margin-bottom: 1rem;
     }
+
+    .course-card__label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.24);
+      border: 1px solid rgba(255,255,255,0.28);
+      backdrop-filter: blur(8px);
+    }
+
+    .course-card--languages .course-card__label,
+    .course-card--science .course-card__label {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .course-card__icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.28);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
     .course-card h3 {
-      font-size: 1.25rem;
-      color: var(--sun-dark);
-      margin-bottom: 0.5rem;
+      font-size: clamp(1.25rem, 2vw, 1.6rem);
+      line-height: 1.2;
+      margin-bottom: 0.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
-    .course-features {
-      list-style: disc;
-      padding-left: 1.25rem;
-      color: var(--mid);
-      margin: 0;
-      display: grid;
-      gap: 0.5rem;
-      flex: 1;
-    }
-    .course-features li { font-size: 0.95rem; line-height: 1.6; }
-    .course-card .btn {
-      align-self: flex-start;
+
+    .course-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
       margin-top: auto;
+    }
+
+    .course-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 0.6rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(17, 20, 31, 0.08);
+      background: rgba(255,255,255,0.78);
+      color: inherit;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-shadow: 0 8px 20px rgba(22, 32, 48, 0.08);
+    }
+
+    .course-card--languages .course-chip,
+    .course-card--science .course-chip {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.16);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .course-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(21, 30, 43, 0.12);
+      background: rgba(255,255,255,0.9);
+    }
+
+    .course-card--languages .course-chip:hover,
+    .course-card--science .course-chip:hover {
+      background: rgba(255,255,255,0.18);
     }
 
       /* ── ABOUT ── */
@@ -885,56 +990,71 @@
 
   <!-- COURSES -->
   <section class="section" id="courses">
-    <p class="section-title" data-i18n="courses.title">Our Courses</p>
-    <p class="section-sub" data-i18n="courses.subtitle">Explore four core subjects with a photo, benefits, and a quick overview.</p>
+    <p class="section-title">Нашите курсове</p>
+    <p class="section-sub">Подходящи програми за всички етапи на детското развитие — от ранна подготовка до НВО.</p>
     <div class="divider"></div>
+
     <div class="courses-grid">
-      <article class="course-card">
-        <img src="photos\math_course.jpg" alt="Mathematics course photo">
-        <div class="course-card-body">
-          <h3 data-i18n="courses.math.title">📐 Mathematics</h3>
-          <ul class="course-features">
-            <li data-i18n="courses.math.point1">Point one placeholder text</li>
-            <li data-i18n="courses.math.point2">Point two placeholder text</li>
-            <li data-i18n="courses.math.point3">Point three placeholder text</li>
-          </ul>
-          <a href="#courses" class="btn btn-outline" data-i18n="courses.more">More details</a>
+      <article class="course-card course-card--nvo">
+        <div class="course-card__header">
+          <span class="course-card__label">НВО</span>
+          <span class="course-card__icon">📐</span>
+        </div>
+
+        <div>
+          <h3>Подготовка за НВО</h3>
+        </div>
+
+        <div class="course-card__tags">
+          <a href="#" class="course-chip">7 клас</a>
+          <a href="#" class="course-chip">4 клас</a>
+          <a href="#" class="course-chip">6 клас ранна подготовка</a>
         </div>
       </article>
-      <article class="course-card">
-        <img src="photos\english_course.jpg" alt="English course photo">
-        <div class="course-card-body">
-          <h3 data-i18n="courses.english.title">📖 English</h3>
-          <ul class="course-features">
-            <li data-i18n="courses.english.point1">Point one placeholder text</li>
-            <li data-i18n="courses.english.point2">Point two placeholder text</li>
-            <li data-i18n="courses.english.point3">Point three placeholder text</li>
-          </ul>
-          <a href="#courses" class="btn btn-outline" data-i18n="courses.more">More details</a>
+
+      <article class="course-card course-card--school">
+        <div class="course-card__header">
+          <span class="course-card__label">Училище</span>
+          <span class="course-card__icon">✏️</span>
+        </div>
+
+        <div>
+          <h3>Училищна подготовка</h3>
+        </div>
+
+        <div class="course-card__tags">
+          <a href="#" class="course-chip">5 клас</a>
         </div>
       </article>
-      <article class="course-card">
-        <img src="photos\bg_course.jpg" alt="Bulgarian course photo">
-        <div class="course-card-body">
-          <h3 data-i18n="courses.bulgarian.title">🇧🇬 Български</h3>
-          <ul class="course-features">
-            <li data-i18n="courses.bulgarian.point1">Point one placeholder text</li>
-            <li data-i18n="courses.bulgarian.point2">Point two placeholder text</li>
-            <li data-i18n="courses.bulgarian.point3">Point three placeholder text</li>
-          </ul>
-          <a href="#courses" class="btn btn-outline" data-i18n="courses.more">More details</a>
+
+      <article class="course-card course-card--languages">
+        <div class="course-card__header">
+          <span class="course-card__label">Езици</span>
+          <span class="course-card__icon">🌍</span>
+        </div>
+
+        <div>
+          <h3>Чужди езици</h3>
+        </div>
+
+        <div class="course-card__tags">
+          <a href="#" class="course-chip">Английски език</a>
+          <a href="#" class="course-chip">Испански език</a>
         </div>
       </article>
-      <article class="course-card">
-        <img src="photos\spain_course.jpg" alt="Spanish course photo">
-        <div class="course-card-body">
-          <h3 data-i18n="courses.spanish.title">🇪🇸 Spanish</h3>
-          <ul class="course-features">
-            <li data-i18n="courses.spanish.point1">Point one placeholder text</li>
-            <li data-i18n="courses.spanish.point2">Point two placeholder text</li>
-            <li data-i18n="courses.spanish.point3">Point three placeholder text</li>
-          </ul>
-          <a href="#courses" class="btn btn-outline" data-i18n="courses.more">More details</a>
+
+      <article class="course-card course-card--science">
+        <div class="course-card__header">
+          <span class="course-card__label">Науки</span>
+          <span class="course-card__icon">🧪</span>
+        </div>
+
+        <div>
+          <h3>Природни науки</h3>
+        </div>
+
+        <div class="course-card__tags">
+          <a href="#" class="course-chip">Химия</a>
         </div>
       </article>
     </div>
@@ -1400,9 +1520,9 @@ The Light Academy прави впечатление с малките групи
       }
     };
 
-    // Initialize language from localStorage (animate hero on first load)
+    // Initialize language from localStorage (default to Bulgarian for first load)
     function initLanguage() {
-      const savedLang = localStorage.getItem('language') || 'en';
+      const savedLang = localStorage.getItem('language') || 'bg';
       setLanguage(savedLang, { animateHero: true });
     }
 
