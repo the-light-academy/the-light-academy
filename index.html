@@ -213,6 +213,19 @@
       z-index: 0;
       overflow: hidden;
     }
+    .scroll-parallax-wash {
+      position: absolute;
+      top: -20%;
+      left: -10%;
+      width: 120%;
+      height: 140%;
+      will-change: transform;
+      background:
+        radial-gradient(ellipse 55% 45% at 15% 25%, rgba(92, 74, 50, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 85% 55%, rgba(58, 46, 31, 0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 50% 85%, rgba(125, 98, 69, 0.09) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(58, 46, 31, 0.04) 0%, rgba(92, 74, 50, 0.08) 50%, rgba(58, 46, 31, 0.05) 100%);
+    }
     .scroll-line-svg {
       position: absolute;
       top: 0;
@@ -220,7 +233,7 @@
       transform: translateX(-50%);
       width: min(120vw, 1440px);
       height: 400vh;
-      opacity: 0.085;
+      opacity: 0.28;
       will-change: transform;
     }
     .scroll-line-path {
@@ -229,19 +242,20 @@
       stroke-linejoin: round;
     }
     .scroll-line-path--primary {
-      stroke: var(--sun);
-      stroke-width: 2.5;
+      stroke: var(--mid);
+      stroke-width: 3.5;
     }
     .scroll-line-path--secondary {
-      stroke: var(--peach);
-      stroke-width: 1.5;
-      opacity: 0.65;
+      stroke: #5C4A32;
+      stroke-width: 2;
+      opacity: 0.85;
     }
     @media (max-width: 480px) {
-      .scroll-line-svg { opacity: 0.05; }
+      .scroll-line-svg { opacity: 0.18; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .scroll-line-svg { transform: translateX(-50%) !important; }
+      .scroll-line-svg,
+      .scroll-parallax-wash { transform: none !important; }
     }
 
     /* Content layers above scroll line */
@@ -258,7 +272,9 @@
       flex-wrap: wrap;
       gap: 12px;
       padding: 2rem;
-      background: var(--white);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       border-bottom: 1px solid var(--sun-light);
     }
     .subject-pill {
@@ -283,7 +299,14 @@
     }
 
     /* ── SECTIONS ── */
-    .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(254, 247, 235, 0.78);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
     .section-title {
       font-family: 'Playfair Display', serif;
       font-size: clamp(1.6rem, 3vw, 2.2rem);
@@ -392,18 +415,18 @@
     }
 
     .course-card--school {
-      background: linear-gradient(135deg, #f3c978 0%, #f39d39 55%, #d97528 100%);
-      color: #1c2d42;
+      background: linear-gradient(135deg, #F3E8D4 0%, #E6D2B3 55%, #D4BC96 100%);
+      color: #3A2E1F;
     }
 
     .course-card--languages {
-      background: linear-gradient(135deg, #0f2242 0%, #183b60 50%, #0d1f35 100%);
-      color: #fef7eb;
+      background: linear-gradient(135deg, #FAF3E8 0%, #EDE0CC 50%, #DFCDB0 100%);
+      color: #3A2E1F;
     }
 
     .course-card--science {
-      background: linear-gradient(135deg, #153c62 0%, #0c2a46 42%, #1a4b74 100%);
-      color: #fef7eb;
+      background: linear-gradient(135deg, #E8D9C4 0%, #C9AD8C 42%, #A8896A 100%);
+      color: #3A2E1F;
     }
 
     .course-card__header {
@@ -437,8 +460,9 @@
 
     .course-card--languages .course-card__label,
     .course-card--science .course-card__label {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.18);
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(58, 46, 31, 0.12);
+      color: #3A2E1F;
     }
 
     .course-card__icon {
@@ -472,10 +496,6 @@
       position: relative;
       z-index: 1;
     }
-    .course-card--languages .course-card__desc,
-    .course-card--science .course-card__desc {
-      opacity: 0.75;
-    }
 
     .course-card__body {
       position: relative;
@@ -485,8 +505,12 @@
     .course-card__tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.6rem;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
       margin-top: auto;
+      width: 100%;
+      padding-top: 0.5rem;
       position: relative;
       z-index: 1;
     }
@@ -495,37 +519,28 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 36px;
-      padding: 0.6rem 0.9rem;
+      min-height: 44px;
+      padding: 0.75rem 1.35rem;
       border-radius: 999px;
-      border: 1px solid rgba(17, 20, 31, 0.08);
-      background: rgba(255,255,255,0.78);
-      color: inherit;
+      border: 1px solid rgba(58, 46, 31, 0.12);
+      background: rgba(255, 255, 255, 0.88);
+      color: #3A2E1F;
       font-weight: 800;
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       cursor: pointer;
       text-decoration: none;
       transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      box-shadow: 0 8px 20px rgba(22, 32, 48, 0.08);
+      box-shadow: 0 10px 24px rgba(58, 46, 31, 0.10);
     }
 
-    .course-card--languages .course-chip,
-    .course-card--science .course-chip {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.16);
-      color: #fff;
-      box-shadow: none;
+    .course-card--nvo .course-chip {
+      color: inherit;
     }
 
     .course-chip:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 12px 24px rgba(21, 30, 43, 0.14);
-      background: rgba(255,255,255,0.95);
-    }
-
-    .course-card--languages .course-chip:hover,
-    .course-card--science .course-chip:hover {
-      background: rgba(255,255,255,0.18);
+      box-shadow: 0 14px 28px rgba(58, 46, 31, 0.16);
+      background: rgba(255, 255, 255, 0.98);
     }
 
       /* ── ABOUT ── */
@@ -618,7 +633,9 @@
     .about-photo-circle:hover img { transform: scale(1.1); }
 
     .reviews-section {
-      background: var(--white);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       padding: 4rem 2rem;
     }
     .reviews-intro {
@@ -790,7 +807,12 @@
     }
 
     /* ── UPDATES ── */
-    .updates-bg { background: #FEF5E5; padding: 4rem 2rem; }
+    .updates-bg {
+      background: rgba(254, 245, 229, 0.80);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      padding: 4rem 2rem;
+    }
     .updates-inner { max-width: 1100px; margin: 0 auto; }
     .updates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
     .update-card {
@@ -1096,6 +1118,7 @@
 
   <!-- Page-wide parallax scroll line -->
   <div class="scroll-line-bg" aria-hidden="true">
+    <div class="scroll-parallax-wash" aria-hidden="true"></div>
     <svg class="scroll-line-svg" viewBox="0 0 1440 4000" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg">
       <path class="scroll-line-path scroll-line-path--primary" d="M720 0 C 520 400, 920 800, 720 1200 S 520 2000, 720 2400 S 920 3200, 720 3600 L 720 4000" />
       <path class="scroll-line-path scroll-line-path--secondary" d="M780 120 C 980 520, 580 920, 780 1320 S 980 2120, 780 2520 S 580 3320, 780 3720 L 780 4000" />
@@ -1759,6 +1782,7 @@ The Light Academy прави впечатление с малките групи
 
     function initScrollLineParallax() {
       const svg = document.querySelector('.scroll-line-svg');
+      const wash = document.querySelector('.scroll-parallax-wash');
       const paths = document.querySelectorAll('.scroll-line-path');
       if (!svg) return;
 
@@ -1774,6 +1798,9 @@ The Light Academy прави впечатление с малките групи
 
         if (!prefersReduced) {
           svg.style.transform = `translateX(-50%) translateY(${-scrollY * 0.22}px)`;
+          if (wash) {
+            wash.style.transform = `translateY(${-scrollY * 0.12}px)`;
+          }
         }
 
         paths.forEach((path, i) => {
