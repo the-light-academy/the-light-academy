@@ -485,7 +485,7 @@
       font-weight: 800;
       letter-spacing: -0.02em;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .course-card__desc {
@@ -494,13 +494,40 @@
       opacity: 0.82;
       margin-bottom: 0.5rem;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .course-card__body {
       position: relative;
+      z-index: 0;
+    }
+
+    /* Background helpers for course cards */
+    .course-bg {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      color: #fff;
+    }
+
+    .course-bg::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
       z-index: 1;
     }
+
+    .course-bg > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .bg-nvo { background-image: url('photos/site_courses_math_nvo.jpg'); }
+    .bg-school { background-image: url('photos/site_courses_math_5and6.jpg'); }
+    .bg-languages { background-image: url('photos/site_courses_languages.jpg'); }
+    .bg-science { background-image: url('photos/site_courses_chemistry.jpg'); }
 
     .course-card__tags {
       display: flex;
@@ -1215,7 +1242,7 @@
           <span class="course-card__icon">📐</span>
         </div>
 
-        <div class="course-card__body" style="background-image: url('photos/site_courses_math_nvo.jpg'); background-size: cover; background-position: center;">
+        <div class="course-card__body course-bg bg-nvo">
           <h3 data-i18n="courses.nvo.title">Подготовка за НВО</h3>
           <p class="course-card__desc" data-i18n="courses.nvo.desc">Малки групи · Пробни изпити · Индивидуален подход</p>
         </div>
@@ -1232,7 +1259,7 @@
           <span class="course-card__icon">✏️</span>
         </div>
 
-        <div class="course-card__body" style="background-image: url('photos/site_courses_math_5and6.jpg'); background-size: cover; background-position: center;">
+        <div class="course-card__body course-bg bg-school">
           <h3 data-i18n="courses.school.title">Училищна подготовка</h3>
           <p class="course-card__desc" data-i18n="courses.school.desc">Систематично усвояване · Увереност в клас</p>
         </div>
@@ -1249,7 +1276,7 @@
           <span class="course-card__icon">🌍</span>
         </div>
 
-        <div class="course-card__body">
+        <div class="course-card__body course-bg bg-languages">
           <h3 data-i18n="courses.lang.title">Чужди езици</h3>
           <p class="course-card__desc" data-i18n="courses.lang.desc">Разговорна практика · Игри и творчество</p>
         </div>
@@ -1266,7 +1293,7 @@
           <span class="course-card__icon">🧪</span>
         </div>
 
-        <div class="course-card__body">
+        <div class="course-card__body course-bg bg-science">
           <h3 data-i18n="courses.science.title">Природни науки</h3>
           <p class="course-card__desc" data-i18n="courses.science.desc">Експерименти · Разбиране на материала</p>
         </div>
