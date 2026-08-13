@@ -356,22 +356,37 @@
       border-radius: 26px;
       border: 1px solid rgba(255, 255, 255, 0.22);
       box-shadow: 0 18px 40px rgba(20, 30, 58, 0.08);
+
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease, opacity 0.6s ease;
+
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        filter 0.35s ease,
+        opacity 0.6s ease;
+
       isolation: isolate;
+
+      /* IMPORTANT */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .course-card > * {
+    position: relative;
+    z-index: 2;
     }
 
     .course-card::before {
       content: "";
       position: absolute;
-      inset: -30% auto auto -10%;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(255,255,255,0.28) 0%, transparent 70%);
-      border-radius: 50%;
-      filter: blur(12px);
+      inset: 0;
+
+      background: rgba(0, 0, 0, 0.42);
+
       z-index: 0;
       pointer-events: none;
     }
@@ -410,23 +425,23 @@
     }
 
     .course-card--nvo {
-      background: linear-gradient(135deg, #f7d66d 0%, #f5b63f 35%, #ee8d1d 100%);
-      color: #1c2d42;
+      grid-column: span 7;
+      background-image: url('photos/site_courses_math_nvo.jpg');
     }
 
     .course-card--school {
-      background: linear-gradient(135deg, #F3E8D4 0%, #E6D2B3 55%, #D4BC96 100%);
-      color: #3A2E1F;
+      grid-column: span 5;
+      background-image: url('photos/site_courses_math_5and6.jpg');
     }
 
     .course-card--languages {
-      background: linear-gradient(135deg, #FAF3E8 0%, #EDE0CC 50%, #DFCDB0 100%);
-      color: #3A2E1F;
+      grid-column: span 6;
+      background-image: url('photos/site_courses_languages.jpg');
     }
 
     .course-card--science {
-      background: linear-gradient(135deg, #E8D9C4 0%, #C9AD8C 42%, #A8896A 100%);
-      color: #3A2E1F;
+      grid-column: span 6;
+      background-image: url('photos/site_courses_chemistry.jpg');
     }
 
     .course-card__header {
@@ -504,30 +519,15 @@
 
     /* Background helpers for course cards */
     .course-bg {
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
       position: relative;
       color: #fff;
-    }
-
-    .course-bg::before {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; top: 0; bottom: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 1;
+      z-index: 2;
     }
 
     .course-bg > * {
       position: relative;
       z-index: 2;
     }
-
-    .bg-nvo { background-image: url('photos/site_courses_math_nvo.jpg'); }
-    .bg-school { background-image: url('photos/site_courses_math_5and6.jpg'); }
-    .bg-languages { background-image: url('photos/site_courses_languages.jpg'); }
-    .bg-science { background-image: url('photos/site_courses_chemistry.jpg'); }
 
     .course-card__tags {
       display: flex;
@@ -1049,10 +1049,6 @@
       }
       .courses-header .divider::after { display: none; }
 
-      .course-card img { height: 200px; }
-      .course-card-body { padding: 1.25rem; }
-      .course-card h3 { font-size: 1.15rem; }
-      .course-features li { font-size: 0.92rem; }
 
       .about-grid,
       .contact-inner,
