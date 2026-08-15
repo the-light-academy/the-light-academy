@@ -232,6 +232,40 @@
       position: relative;
       z-index: 1;
     }
+
+    /* ── HERO: акцент върху входящия тест ── */
+    .hero-test-block {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 2.25rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero-test-block .hero-test-line1 {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .hero-test-block .hero-test-line2 {
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 1.5rem;
+    }
+    .hero-test-block .hero-test-meta {
+      margin-top: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      letter-spacing: 0.01em;
+    }
+    .hero-test-block .hero-test-seats {
+      margin-top: 0.5rem;
+      color: rgba(255,160,106,0.85);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
     .hero-pill {
       background: rgba(255,255,255,0.1);
       color: rgba(255,255,255,0.85);
@@ -1050,6 +1084,17 @@
       <a href="#section-probni" class="hero-pill">✔ Пробни изпити</a>
       <a href="#section-tseni" class="hero-pill">✔ Цени</a>
     </div>
+
+    <div class="hero-test-block">
+      <p class="hero-test-line1">Не започвайте подготовката за НВО на сляпо.</p>
+      <p class="hero-test-line2">Проверете знанията на детето от 5. и 6. клас с нашия безплатен входящ тест.</p>
+      <a href="entrance_test.html" class="btn-cta-primary">
+        <i class="fa-solid fa-pen-to-square"></i>
+        Направи безплатния тест
+      </a>
+      <div class="hero-test-meta">20 задачи • 25 минути • резултат по категории</div>
+      <div class="hero-test-seats">Само 2 групи × 8 деца</div>
+    </div>
   </section>
 
   <!-- JOURNEY -->
@@ -1296,7 +1341,7 @@
       </button>
       <a href="tel:+359885501283" class="btn-cta-outline">
         <i class="fa-solid fa-phone"></i>
-        Обади се за оферта
+        Обадете се за повече детайли
       </a>
     </div>
   </section>
