@@ -148,8 +148,7 @@
       gap: 0.5rem;
       align-items: center;
       flex-wrap: wrap;
-      max-width: 1200px;
-      margin: 0 auto;
+      width: 100%;
     }
     .top-bar a { color: var(--white); text-decoration: none; }
     .top-bar span { display: flex; align-items: center; gap: 6px; }
@@ -1067,6 +1066,44 @@
       .photo-main { width: 270px; height: 270px; }
       .photo-secondary-1 { width: 190px; height: 190px; bottom: -15px; left: -50px; }
       .photo-secondary-2 { width: 125px; height: 125px; bottom: 45px; left: -85px; }
+
+      /* Nav links overflow at tablet widths — switch to hamburger like mobile */
+      nav { padding: 0 1.2rem; }
+      .nav-toggle { display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center; }
+      .nav-toggle span { background: var(--sun-dark); }
+      .nav-toggle span + span { margin-top: 5px; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+        padding: 1rem 0.9rem 1.2rem;
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(18px);
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 999px;
+      }
+
+      .nav-links a.cta {
+        margin-left: 0;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
     }
 
     /* ── MOBILE RESPONSIVE ── */
@@ -1084,7 +1121,7 @@
         gap: 0.75rem;
       }
 
-      .nav-toggle { display: inline-flex; }
+      .nav-toggle { display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center; }
       .nav-toggle span { background: var(--sun-dark); }
       .nav-toggle span + span { margin-top: 5px; }
 
@@ -1261,9 +1298,8 @@
 
   <!-- TOP BAR -->
   <div class="top-bar">
-    <span>📍 <span data-i18n="topbar.address">Gorski Patnik 56</span></span>
     <span><a href="tel:+359885501283">+359 885 501 283</a></span>
-    <span><a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span>
+    <span><a href="tel:+359885416844">+359 885 416 844</a></span>
     <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">EN</button>
   </div>
 
