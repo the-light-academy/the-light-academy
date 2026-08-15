@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Входящ тест по математика | The Light Academy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
   :root{
@@ -512,6 +514,53 @@
     text-decoration: none;
   }
 
+  .result-download{
+    margin: 22px 0 0;
+    text-align: center;
+  }
+
+  .btn-download{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--card-bg);
+    color: var(--accent-dark);
+    border: 2px solid var(--accent);
+    width: 100%;
+  }
+
+  .btn-download:hover{
+    background: var(--accent-light);
+  }
+
+  .btn-download:disabled{
+    opacity: .6;
+    cursor: not-allowed;
+  }
+
+  .seats-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    margin: 0 0 14px;
+  }
+
+  .seats-badge::before{
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-dark);
+    flex: 0 0 auto;
+  }
+
   .result-disclaimer{
     text-align: left;
     font-size: 12.5px;
@@ -647,12 +696,19 @@
         </div>
       </div>
 
+      <div class="result-download">
+        <button type="button" class="btn btn-download" id="download-pdf-btn">
+          ⬇ Изтегли своя резултат (PDF)
+        </button>
+      </div>
+
       <div class="result-cta">
         <p class="result-cta-title">Готови ли сте да превърнем резултата в план за действие?</p>
         <p class="result-cta-text">
           В The Light Academy подготвяме ученици за НВО по математика в 7. клас
           с малки групи, системна работа и внимание към индивидуалните нужди на всяко дете.
         </p>
+        <span class="seats-badge">Остават 8 места в групата</span>
         <div class="result-cta-buttons">
           <a href="nvo7.html" class="btn btn-primary btn-link">Виж подготовката за НВО – 7. клас</a>
           <a href="index.html" class="btn btn-secondary btn-link">Разгледай The Light Academy</a>
@@ -855,6 +911,7 @@ let questions = [
 
 let currentQuestionIndex = 0;
 let userAnswers = new Array(questions.length).fill(null);
+let lastResults = null; // последно изчислените резултати, ползвани при изтегляне на PDF
 
 /* =========================================================
    DOM ЕЛЕМЕНТИ
@@ -1141,6 +1198,8 @@ function getDiagnosticMessage(percentage){
 }
 
 function renderResultsPlaceholder(results){
+  lastResults = results; // запазваме за бутона "Изтегли своя резултат"
+
   // 1. Общ резултат
   document.getElementById('result-score-fraction').textContent =
     `${results.correctCount} / ${results.totalQuestions}`;
@@ -1190,6 +1249,78 @@ function renderResultsPlaceholder(results){
       </div>
     </div>
   `).join('');
+}
+
+/* =========================================================
+   ИЗТЕГЛЯНЕ НА РЕЗУЛТАТА КАТО PDF
+========================================================= */
+
+const downloadPdfBtn = document.getElementById('download-pdf-btn');
+
+downloadPdfBtn.addEventListener('click', () => {
+  if(!lastResults) return;
+  generateResultPDF();
+});
+
+function generateResultPDF(){
+  const originalLabel = downloadPdfBtn.textContent;
+  downloadPdfBtn.disabled = true;
+  downloadPdfBtn.textContent = 'Подготвяне на PDF...';
+
+  // Елементът, който заснемаме – цялата карта с резултата.
+  // Изключваме бутона за изтегляне и CTA секцията от снимката,
+  // за да остане PDF-ът чист и фокусиран върху самия резултат.
+  const resultCard = document.querySelector('.result-card');
+  const downloadBlock = document.querySelector('.result-download');
+  const ctaBlock = document.querySelector('.result-cta');
+
+  downloadBlock.style.display = 'none';
+  ctaBlock.style.display = 'none';
+
+  html2canvas(resultCard, {
+    scale: 2,
+    backgroundColor: '#ffffff',
+    useCORS: true
+  }).then(canvas => {
+    downloadBlock.style.display = '';
+    ctaBlock.style.display = '';
+    downloadPdfBtn.disabled = false;
+    downloadPdfBtn.textContent = originalLabel;
+
+    const { jsPDF } = window.jspdf;
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 24;
+
+    const imgWidth = pageWidth - margin * 2;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = margin;
+
+    // Първа страница
+    pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - margin * 2);
+
+    // Ако резултатът е по-дълъг от една страница, добавяме допълнителни страници
+    while(heightLeft > 0){
+      position = margin - (imgHeight - heightLeft);
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - margin * 2);
+    }
+
+    pdf.save('rezultat-vhoden-test-The-Light-Academy.pdf');
+  }).catch(() => {
+    downloadBlock.style.display = '';
+    ctaBlock.style.display = '';
+    downloadPdfBtn.disabled = false;
+    downloadPdfBtn.textContent = originalLabel;
+    alert('Възникна грешка при генерирането на PDF. Моля, опитайте отново.');
+  });
 }
 
 /* =========================================================
