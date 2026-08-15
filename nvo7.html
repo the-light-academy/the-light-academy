@@ -794,7 +794,7 @@
       border: 2px solid var(--sun-light);
       border-radius: var(--radius-sm);
       font-family: 'Nunito', sans-serif;
-      font-size: 15px;
+      font-size: 16px;
       color: var(--dark);
       background: var(--cream);
       outline: none;
@@ -1288,7 +1288,7 @@
   <!-- CTA -->
   <section class="cta-section">
     <h2>Готови ли сте да започнем?</h2>
-    <p>Запазете своето място в курса и ние ще се свържем с вас.</p>
+    <p>Запишете детето за безплатен входящ тест и вижте точно откъде да тръгнем.</p>
     <div class="cta-buttons">
       <button onclick="openModal()" class="btn-cta-primary">
         <i class="fa-solid fa-pen-to-square"></i>
@@ -1296,7 +1296,7 @@
       </button>
       <a href="tel:+359885501283" class="btn-cta-outline">
         <i class="fa-solid fa-phone"></i>
-        Обадете са за повече детайли
+        Обади се за оферта
       </a>
     </div>
   </section>
@@ -1312,11 +1312,31 @@
       <form id="regForm" onsubmit="submitForm(event)">
         <div class="form-group">
           <label for="studentName">Име на ученика</label>
-          <input type="text" id="studentName" name="studentName" placeholder="Иван Иванов" required />
+          <input type="text" id="studentName" name="studentName" placeholder="Иван Иванов" autocomplete="name" required />
         </div>
         <div class="form-group">
           <label for="parentPhone">Телефон на родителя</label>
-          <input type="tel" id="parentPhone" name="parentPhone" placeholder="+359 8XX XXX XXX" required />
+          <input
+            type="tel"
+            id="parentPhone"
+            name="parentPhone"
+            placeholder="0888 123 456"
+            inputmode="tel"
+            autocomplete="tel"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="parentEmail">Имейл на родителя</label>
+          <input
+            type="email"
+            id="parentEmail"
+            name="parentEmail"
+            placeholder="ivan.ivanov@example.com"
+            inputmode="email"
+            autocomplete="email"
+            required
+          />
         </div>
         <button type="submit" class="btn-submit" id="submitBtn">
           <i class="fa-solid fa-paper-plane"></i>
@@ -1481,11 +1501,14 @@
 
       const studentName = document.getElementById('studentName').value.trim();
       const parentPhone  = document.getElementById('parentPhone').value.trim();
+      const parentEmail  = document.getElementById('parentEmail').value.trim();
 
       // FormData is what Formspree handles natively — no Content-Type header needed
       const body = new FormData();
       body.append('Име на ученика', studentName);
       body.append('Телефон на родителя', parentPhone);
+      body.append('Имейл на родителя', parentEmail);
+      body.append('_replyto', parentEmail);
       body.append('_subject', `Нова заявка за запазено място — ${studentName}`);
 
       try {
