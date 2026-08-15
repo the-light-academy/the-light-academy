@@ -50,7 +50,7 @@
     /* ── TOP BAR ── */
     .top-bar {
       background: var(--sun);
-      color: var(--dark);
+      color: var(--white);
       font-size: 14px;
       font-weight: 700;
       padding: 8px 2rem;
@@ -62,7 +62,7 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    .top-bar a { color: var(--dark); text-decoration: none; }
+    .top-bar a { color: var(--white); text-decoration: none; }
 
     /* ── NAV ── */
     nav {
@@ -728,6 +728,34 @@
       background: #C24508;
       box-shadow: 0 8px 28px rgba(232,88,10,0.5);
     }
+    .btn-cta-primary.btn-cta-small {
+      padding: 10px 22px;
+      font-size: 0.85rem;
+      gap: 7px;
+      box-shadow: 0 3px 14px rgba(232,88,10,0.35);
+    }
+    .btn-cta-yellow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--sun);
+      color: var(--dark);
+      padding: 15px 32px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      box-shadow: 0 4px 20px rgba(245,166,35,0.45);
+    }
+    .btn-cta-yellow:hover {
+      transform: translateY(-3px);
+      background: #FFC24D;
+      box-shadow: 0 8px 28px rgba(245,166,35,0.55);
+    }
     .btn-cta-outline {
       display: inline-flex;
       align-items: center;
@@ -1037,8 +1065,7 @@
   <!-- TOP BAR -->
   <div class="top-bar">
     <span>📍 Горски пътник 56, Лозенец</span>
-    <span><a href="tel:+359885501283">+359 885 501 283</a></span>
-    <span><a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span>
+    <span><a href="tel:+359885501283">0885 50 12 83</a></span>
   </div>
 
   <!-- NAV -->
@@ -1078,17 +1105,24 @@
     <h1>Подготовка за <span>НВО</span><br>7 клас по математика</h1>
     <p>Структурирана, персонализирана и ефективна подготовка — от входящ тест до пробен изпит в реален формат.</p>
     <div class="hero-pills">
-      <a href="#section-vhodyasht" class="hero-pill">✔ Входящ тест</a>
-      <a href="#section-malki-grupi" class="hero-pill">✔ Малки групи</a>
-      <a href="#section-obratna" class="hero-pill">✔ Обратна връзка</a>
-      <a href="#section-probni" class="hero-pill">✔ Пробни изпити</a>
-      <a href="#section-tseni" class="hero-pill">✔ Цени</a>
+      <a href="#section-vhodyasht" class="hero-pill">Входящ тест →</a>
+      <a href="#section-malki-grupi" class="hero-pill">Малки групи →</a>
+      <a href="#section-obratna" class="hero-pill">Обратна връзка →</a>
+      <a href="#section-probni" class="hero-pill">Пробни изпити →</a>
+      <a href="#section-tseni" class="hero-pill">Цени →</a>
+    </div>
+
+    <div style="margin-top: 1.5rem; position: relative; z-index: 1;">
+      <button onclick="openModal()" class="btn-cta-yellow">
+        <i class="fa-solid fa-pen-to-square"></i>
+        Запазете своето място
+      </button>
     </div>
 
     <div class="hero-test-block">
       <p class="hero-test-line1">Не започвайте подготовката за НВО на сляпо.</p>
       <p class="hero-test-line2">Проверете знанията на детето от 5. и 6. клас с нашия безплатен входящ тест.</p>
-      <a href="entrance_test.html" class="btn-cta-primary">
+      <a href="entrance_test.html" class="btn-cta-primary btn-cta-small">
         <i class="fa-solid fa-pen-to-square"></i>
         Направи безплатния тест
       </a>
@@ -1356,7 +1390,7 @@
       <button class="modal-close" onclick="closeModal()" aria-label="Затвори">✕</button>
       <div class="modal-icon"><i class="fa-solid fa-graduation-cap"></i></div>
       <h3 class="modal-title">Запазете своето място</h3>
-      <p class="modal-sub">Оставете данните си и ние ще се свържем с вас, за да потвърдим записването.</p>
+      <p class="modal-sub">Ще запазим вашето място за следващите 7 дни! През това време наш служител ще се свърже с вас за потвърждение. Към момента не се изисква плащане.</p>
 
       <form id="regForm" onsubmit="submitForm(event)">
         <div class="form-group">
@@ -1389,7 +1423,7 @@
         </div>
         <button type="submit" class="btn-submit" id="submitBtn">
           <i class="fa-solid fa-paper-plane"></i>
-          Изпрати
+          Запази
         </button>
       </form>
 
@@ -1545,7 +1579,7 @@
       const btn = document.getElementById('submitBtn');
       const errBox = document.getElementById('formError');
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Изпращане...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Запазване...';
       errBox.style.display = 'none';
 
       const studentName = document.getElementById('studentName').value.trim();
@@ -1576,13 +1610,13 @@
           errBox.innerHTML = `<p>⚠️ ${hint} — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>`;
           errBox.style.display = 'block';
           btn.disabled = false;
-          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Изпрати';
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Запази';
         }
       } catch {
         errBox.innerHTML = `<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>`;
         errBox.style.display = 'block';
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Изпрати';
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Запази';
       }
     }
 
