@@ -416,6 +416,242 @@
     .step.flip .step-bullets li { flex-direction: row-reverse; text-align: right; }
     .step.flip .step-bullets li::before { margin-top: 2px; }
 
+    /* ── PRICING SECTION ── */
+    .pricing-section {
+      max-width: 1100px;
+      margin: 3.5rem auto 0;
+      padding: 0 1.5rem;
+    }
+    .pricing-heading {
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+    .pricing-heading .eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sun-dark);
+      background: var(--sun-light);
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+    .pricing-heading h2 {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+    .pricing-heading p {
+      color: var(--mid);
+      font-size: 1rem;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--white);
+      border: 1px solid var(--peach-light);
+      border-radius: 24px;
+      box-shadow: 0 20px 45px -20px rgba(45, 31, 14, 0.18);
+      padding: 2.25rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 860px) {
+      .pricing-card {
+        grid-template-columns: 1.05fr 0.95fr;
+        padding: 2.75rem;
+      }
+    }
+
+    /* -- Left: calculator controls -- */
+    .pricing-calculator h3 {
+      font-family: 'Bad Script', cursive;
+      font-size: 1.4rem;
+      color: var(--dark);
+      margin-bottom: 1.1rem;
+    }
+
+    .toggle-group {
+      margin-bottom: 1.6rem;
+    }
+    .toggle-group-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--mid);
+      margin-bottom: 0.6rem;
+    }
+    .toggle-pills {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .toggle-pill {
+      flex: 1 1 auto;
+      min-width: 140px;
+      border: 2px solid var(--peach-light);
+      background: var(--cream);
+      color: var(--dark);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 0.9rem;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+    }
+    .toggle-pill span.sub {
+      display: block;
+      font-weight: 500;
+      font-size: 0.78rem;
+      color: var(--light-text);
+      margin-top: 0.15rem;
+    }
+    .toggle-pill:hover { border-color: var(--sun); transform: translateY(-1px); }
+    .toggle-pill.active {
+      background: var(--sun-light);
+      border-color: var(--sun);
+      color: var(--sun-dark);
+    }
+    .toggle-pill.active span.sub { color: var(--sun-dark); }
+
+    .savings-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--teal-light);
+      color: var(--teal);
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 999px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .savings-badge.show { opacity: 1; transform: translateY(0); }
+
+    /* -- Right: live price display -- */
+    .pricing-display {
+      background: linear-gradient(160deg, var(--sun-light) 0%, var(--peach-light) 100%);
+      border-radius: 20px;
+      padding: 1.9rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .pricing-display-top .price-tag-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--sun-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pricing-display-amount {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(2.6rem, 6vw, 3.4rem);
+      color: var(--dark);
+      line-height: 1.1;
+      margin: 0.3rem 0 0.15rem;
+      transition: transform 0.15s ease;
+    }
+    .pricing-display-amount.bump { transform: scale(1.06); }
+    .pricing-display-caption {
+      font-size: 0.9rem;
+      color: var(--mid);
+      margin-bottom: 1.1rem;
+    }
+
+    .schedule-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-bottom: 1.1rem;
+    }
+    .schedule-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.65);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.85rem;
+      font-size: 0.86rem;
+    }
+    .schedule-list li .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sun);
+      margin-right: 0.55rem;
+    }
+    .schedule-list li .amount { font-weight: 800; color: var(--dark); }
+
+    .pricing-note {
+      font-size: 0.78rem;
+      color: var(--light-text);
+      line-height: 1.5;
+    }
+
+    /* -- Course info cards below calculator -- */
+    .course-info-block {
+      max-width: 1100px;
+      margin: 2.5rem auto 0;
+      padding: 0 1.5rem;
+    }
+    .course-info-block h2 {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .course-info-block > p {
+      color: var(--mid);
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 1.75rem;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 700px) {
+      .info-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .info-card {
+      background: var(--white);
+      border: 1px solid var(--peach-light);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px -18px rgba(45,31,14,0.25);
+    }
+    .info-card strong {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--sun-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.4rem;
+    }
+    .info-card span {
+      color: var(--mid);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
     /* ── CTA SECTION ── */
     .cta-section {
       background: linear-gradient(135deg, #1A2B3C 0%, #0F2030 100%);
@@ -812,6 +1048,7 @@
       <a href="#section-malki-grupi" class="hero-pill">✔ Малки групи</a>
       <a href="#section-obratna" class="hero-pill">✔ Обратна връзка</a>
       <a href="#section-probni" class="hero-pill">✔ Пробни изпити</a>
+      <a href="#section-tseni" class="hero-pill">✔ Цени</a>
     </div>
   </section>
 
@@ -967,14 +1204,95 @@
 
   </div><!-- end .journey -->
 
+  <section id="section-tseni" class="pricing-section">
+    <div class="pricing-heading">
+      <span class="eyebrow">Инвестиция в подготовката</span>
+      <h2>Такса за курса</h2>
+      <p>Изберете размер на групата и начин на плащане, за да видите точната сума — изчислява се веднага.</p>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-calculator">
+        <h3>Изчисли своята такса</h3>
+
+        <div class="toggle-group">
+          <span class="toggle-group-label">Размер на групата</span>
+          <div class="toggle-pills" id="groupToggle">
+            <button type="button" class="toggle-pill active" data-group="big">
+              Група от 5–8 деца
+              <span class="sub">по-достъпна цена</span>
+            </button>
+            <button type="button" class="toggle-pill" data-group="small">
+              Група до 4 деца
+              <span class="sub">по-индивидуално внимание</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <span class="toggle-group-label">Начин на плащане</span>
+          <div class="toggle-pills" id="paymentToggle">
+            <button type="button" class="toggle-pill active" data-payment="installments">
+              3 вноски
+              <span class="sub">разсрочено плащане</span>
+            </button>
+            <button type="button" class="toggle-pill" data-payment="full">
+              Еднократно плащане
+              <span class="sub">със спестяване</span>
+            </button>
+          </div>
+        </div>
+
+        <span class="savings-badge" id="savingsBadge">
+          <i class="fa-solid fa-piggy-bank"></i>
+          <span id="savingsText"></span>
+        </span>
+      </div>
+
+      <div class="pricing-display">
+        <div class="pricing-display-top">
+          <span class="price-tag-label" id="priceLabel">Общо за курса</span>
+          <div class="pricing-display-amount" id="priceAmount">1000 €</div>
+          <div class="pricing-display-caption" id="priceCaption">при група 5–8 деца · еднократно плащане</div>
+
+          <ul class="schedule-list" id="scheduleList"></ul>
+        </div>
+
+        <p class="pricing-note">
+          Първа вноска се дължи при записване. Всички суми са крайни, без скрити такси.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="course-info-block">
+    <h2>При нас...</h2>
+    <p>учениците наистина разбират, защото преподаваме на техния език. Използваме нов подход в образованието – знаем как учат поколенията Z и Alpha и знаем как да постигнем резултати с тях.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <strong>График</strong>
+        <span>1 група – вторник 18.15-20.30<br>2 група – сряда 18.15-20.30</span>
+      </div>
+      <div class="info-card">
+        <strong>Период на обучение</strong>
+        <span>1 група: От 29 септември 2026 г. до 11 май 2027 г.<br>2 група: От 30 септември 2026 г. до 12 май 2027 г.</span>
+      </div>
+      <div class="info-card">
+        <strong>Продължителност</strong>
+        <span>3 учебни часа по 45 минути с 15 мин. почивка</span>
+      </div>
+    </div>
+  </div>
+
   <!-- CTA -->
   <section class="cta-section">
     <h2>Готови ли сте да започнем?</h2>
-    <p>Запишете детето за безплатен входящ тест и вижте точно откъде да тръгнем.</p>
+    <p>Запазете своето място в курса и ние ще се свържем с вас.</p>
     <div class="cta-buttons">
       <button onclick="openModal()" class="btn-cta-primary">
         <i class="fa-solid fa-pen-to-square"></i>
-        Запиши се за безплатен входящ тест
+        Запазете своето място
       </button>
       <a href="tel:+359885501283" class="btn-cta-outline">
         <i class="fa-solid fa-phone"></i>
@@ -988,8 +1306,8 @@
     <div class="modal-box">
       <button class="modal-close" onclick="closeModal()" aria-label="Затвори">✕</button>
       <div class="modal-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-      <h3 class="modal-title">Безплатен входящ тест</h3>
-      <p class="modal-sub">Оставете данните си и ние ще се свържем с вас, за да уточним час.</p>
+      <h3 class="modal-title">Запазете своето място</h3>
+      <p class="modal-sub">Оставете данните си и ние ще се свържем с вас, за да потвърдим записването.</p>
 
       <form id="regForm" onsubmit="submitForm(event)">
         <div class="form-group">
@@ -1008,8 +1326,8 @@
 
       <div id="formSuccess" class="form-success" style="display:none;">
         <div class="success-icon">✓</div>
-        <h4>Получихме заявката!</h4>
-        <p>Ще се свържем с вас скоро, за да уточним час за входящия тест.</p>
+        <h4>Благодарим Ви!</h4>
+        <p>Запазихте своето място в курса на The Light Academy — подготовка за НВО по математика за 7. клас.</p>
       </div>
       <div id="formError" class="form-error" style="display:none;">
         <p>Нещо се обърка. Моля обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>
@@ -1051,6 +1369,96 @@
     }
     window.addEventListener('scroll', applyParallax, { passive: true });
 
+    // ── Pricing calculator ──
+    const PRICING = {
+      big:   { installment: 360, full: 1000, label: "група 5–8 деца" },
+      small: { installment: 400, full: 1100, label: "група до 4 деца" }
+    };
+
+    let selectedGroup = 'big';
+    let selectedPayment = 'installments';
+
+    const groupToggle = document.getElementById('groupToggle');
+    const paymentToggle = document.getElementById('paymentToggle');
+    const priceAmount = document.getElementById('priceAmount');
+    const priceLabel = document.getElementById('priceLabel');
+    const priceCaption = document.getElementById('priceCaption');
+    const scheduleList = document.getElementById('scheduleList');
+    const savingsBadge = document.getElementById('savingsBadge');
+    const savingsText = document.getElementById('savingsText');
+
+    function formatEUR(n) {
+      return n.toLocaleString('bg-BG') + ' €';
+    }
+
+    function renderPricing() {
+      const plan = PRICING[selectedGroup];
+      const installmentTotal = plan.installment * 3;
+      const savings = installmentTotal - plan.full;
+
+      // Amount + labels
+      if (selectedPayment === 'installments') {
+        priceLabel.textContent = 'Месечна вноска';
+        priceAmount.textContent = formatEUR(plan.installment);
+        priceCaption.textContent = `при ${plan.label} · 3 вноски · общо ${formatEUR(installmentTotal)}`;
+      } else {
+        priceLabel.textContent = 'Общо за курса';
+        priceAmount.textContent = formatEUR(plan.full);
+        priceCaption.textContent = `при ${plan.label} · еднократно плащане`;
+      }
+
+      // Bump animation on change
+      priceAmount.classList.remove('bump');
+      void priceAmount.offsetWidth; // force reflow to restart animation
+      priceAmount.classList.add('bump');
+      setTimeout(() => priceAmount.classList.remove('bump'), 150);
+
+      // Schedule
+      scheduleList.innerHTML = '';
+      if (selectedPayment === 'installments') {
+        const rows = [
+          ['Първа вноска — при записване', plan.installment],
+          ['Втора вноска — до 15 декември 2026 г.', plan.installment],
+          ['Трета вноска — до 1 март 2027 г.', plan.installment]
+        ];
+        rows.forEach(([label, amount]) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span><span class="dot"></span>${label}</span><span class="amount">${formatEUR(amount)}</span>`;
+          scheduleList.appendChild(li);
+        });
+      } else {
+        const li = document.createElement('li');
+        li.innerHTML = `<span><span class="dot"></span>Дължи се при записване</span><span class="amount">${formatEUR(plan.full)}</span>`;
+        scheduleList.appendChild(li);
+      }
+
+      // Savings badge — only relevant for one-time payment
+      if (selectedPayment === 'full' && savings > 0) {
+        savingsText.textContent = `Спестявате ${formatEUR(savings)} спрямо разсрочено плащане`;
+        savingsBadge.classList.add('show');
+      } else {
+        savingsBadge.classList.remove('show');
+      }
+    }
+
+    groupToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-pill');
+      if (!btn) return;
+      selectedGroup = btn.dataset.group;
+      [...groupToggle.children].forEach(p => p.classList.toggle('active', p === btn));
+      renderPricing();
+    });
+
+    paymentToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-pill');
+      if (!btn) return;
+      selectedPayment = btn.dataset.payment;
+      [...paymentToggle.children].forEach(p => p.classList.toggle('active', p === btn));
+      renderPricing();
+    });
+
+    renderPricing();
+
     // Modal
     function openModal() {
       document.getElementById('formModal').classList.add('open');
@@ -1078,7 +1486,7 @@
       const body = new FormData();
       body.append('Име на ученика', studentName);
       body.append('Телефон на родителя', parentPhone);
-      body.append('_subject', `Нова заявка за входящ тест — ${studentName}`);
+      body.append('_subject', `Нова заявка за запазено място — ${studentName}`);
 
       try {
         const res = await fetch('https://formspree.io/f/mnpaddna', {
