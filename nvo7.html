@@ -179,6 +179,7 @@
       background: var(--orange);
       opacity: 0.15;
       border-radius: 50%;
+      animation: floatCircle1 14s ease-in-out infinite;
     }
     .page-hero::after {
       content: '';
@@ -188,6 +189,18 @@
       background: var(--teal);
       opacity: 0.2;
       border-radius: 50%;
+      animation: floatCircle2 18s ease-in-out infinite;
+    }
+    @keyframes floatCircle1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-30px, 35px) scale(1.08); }
+    }
+    @keyframes floatCircle2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25px, -30px) scale(1.06); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .page-hero::before, .page-hero::after { animation: none; }
     }
     .hero-badge {
       display: inline-flex;
