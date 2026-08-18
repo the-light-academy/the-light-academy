@@ -236,6 +236,9 @@
     .dropdown-category.open > .dropdown-submenu { display: flex; }
     .dropdown-submenu a { padding: 8px 10px; border-radius: 8px; font-size: 13.5px; color: var(--mid); font-weight: 700; transition: background 0.15s ease, color 0.15s ease; }
     .dropdown-submenu a:hover { background: var(--sun-light); color: var(--sun-dark); }
+    .dropdown-divider { height: 1px; background: rgba(58,46,31,0.1); margin: 6px 8px; }
+    .dropdown-direct-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-direct-link:hover { background: var(--sun-light); color: var(--sun-dark); }
 
     /* ── LANGUAGE TOGGLE ── */
     .lang-toggle {
@@ -1375,6 +1378,8 @@
               <a href="course_chemistry.html" data-i18n="navdrop.scienceChem">Chemistry</a>
             </div>
           </div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-direct-link" href="schedule.html">📅 <span data-i18n="navdrop.schedule">Schedule</span></a>
         </div>
       </div>
       <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
@@ -1936,6 +1941,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.langEs": "Spanish",
         "navdrop.science": "Natural Sciences",
         "navdrop.scienceChem": "Chemistry",
+        "navdrop.schedule": "Schedule",
         "hero.title": "Where Knowledge<br>Meets Creativity",
         "hero.subtitle": "Courses in mathematics, Bulgarian, English, Spanish and NVO preparation — in the heart of Lozenets.",
         "hero.btn1": "Discover the Academy",
@@ -2052,6 +2058,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.langEs": "Испански език",
         "navdrop.science": "Природни науки",
         "navdrop.scienceChem": "Химия",
+        "navdrop.schedule": "График",
         "hero.title": "Където знанието<br>среща креативността",
         "hero.subtitle": "Курсове по математика, български, английски, испански и подготовка за НВО – в сърцето на Лозенец.",
         "hero.btn1": "Открийте академията",

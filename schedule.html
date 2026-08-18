@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>График на курсовете – The Light Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Bad+Script&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sun: #f5a623; --sun-light: #fff3d6; --sun-dark: #b9701a;
+      --orange: #e8580a; --orange-light: #fff0e8;
+      --cream: #fffaf3; --dark: #2d1f0e; --mid: #785d43; --brown: #6f4323;
+      --white: #ffffff; --line: rgba(43, 30, 20, 0.08);
+      --shadow: 0 18px 42px rgba(61, 39, 18, 0.12);
+      --accent: #f7ad19; --accent-light: #fff3d9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.7; }
+    a { text-decoration: none; }
+    button { font-family: 'Nunito', sans-serif; }
+
+    /* ── TOP BAR / NAV (matches site) ── */
+    .top-bar { background: var(--sun); color: var(--dark); font-size: 14px; font-weight: 700; padding: 8px 2rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+    .top-bar a { color: var(--dark); }
+    nav { background: var(--white); border-bottom: 2px solid var(--sun-light); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; height: 64px; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--sun-dark); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: transparent; }
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+    .nav-links a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 8px 14px; border-radius: 10px; }
+    .nav-links a:hover, .nav-links a.active { background: var(--sun-light); color: var(--sun-dark); }
+    .nav-links a.cta-nvo { background: var(--orange); color: var(--white); margin-left: 6px; }
+    .nav-links a.cta-nvo:hover { background: #c24508; }
+    .nav-links a.cta-birthdays { background: var(--sun); color: var(--dark); margin-left: 6px; }
+    .nav-links a.cta-birthdays:hover { background: var(--sun-dark); color: var(--white); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: transparent; border: none; cursor: pointer; padding: 6px; }
+    .hamburger span { display: block; width: 24px; height: 3px; background: var(--mid); border-radius: 3px; }
+    .mobile-menu { display: none; flex-direction: column; background: rgba(255,255,255,0.96); border-bottom: 2px solid var(--sun-light); padding: 1rem 1.2rem; gap: 0.6rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
+    .mobile-menu a.cta-nvo { background: var(--orange); color: var(--white); text-align: center; }
+    .mobile-menu a.cta-birthdays { background: var(--sun); color: var(--dark); text-align: center; }
+    .nav-item-dropdown { position: relative; display: flex; align-items: center; }
+    .dropdown-toggle { background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; color: var(--mid); display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
+    .dropdown-toggle:hover { color: var(--sun-dark); background: var(--sun-light); }
+    .dropdown-toggle[aria-expanded="true"] { transform: rotate(180deg); color: var(--sun-dark); }
+    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
+    .courses-dropdown.open { display: flex; }
+    .dropdown-category-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-category-row:hover { background: var(--sun-light); }
+    .dropdown-category-row .chevron { color: var(--mid); flex-shrink: 0; transition: transform 0.2s ease; }
+    .dropdown-category.open > .dropdown-category-row { color: var(--sun-dark); background: var(--sun-light); }
+    .dropdown-category.open > .dropdown-category-row .chevron { transform: rotate(90deg); }
+    .dropdown-submenu { display: none; flex-direction: column; padding: 2px 6px 6px 20px; gap: 2px; }
+    .dropdown-category.open > .dropdown-submenu { display: flex; }
+    .dropdown-submenu a { padding: 8px 10px; border-radius: 8px; font-size: 13.5px; color: var(--mid); font-weight: 700; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-submenu a:hover { background: var(--orange-light); color: var(--orange); }
+    .dropdown-divider { height: 1px; background: var(--line); margin: 6px 8px; }
+    .dropdown-direct-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-direct-link:hover { background: var(--sun-light); color: var(--sun-dark); }
+    .mobile-dropdown-row { display: flex; align-items: center; justify-content: space-between; }
+    .mobile-dropdown-row a { flex: 1; }
+    .mobile-courses-dropdown { display: none; flex-direction: column; padding: 2px 0 4px 10px; gap: 2px; }
+    .mobile-courses-dropdown.open { display: flex; }
+
+    .schedule-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    /* ── HERO ── */
+    .schedule-hero { background: linear-gradient(135deg, #f9bf51 0%, #f6c96a 30%, #d17f20 100%); border-radius: 28px; padding: 2.8rem 2rem; box-shadow: var(--shadow); position: relative; overflow: hidden; text-align: center; }
+    .schedule-hero::before, .schedule-hero::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,0.12); }
+    .schedule-hero::before { width: 260px; height: 260px; top: -90px; right: -40px; }
+    .schedule-hero::after { width: 200px; height: 200px; bottom: -110px; left: -50px; }
+    .eyebrow { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2); color: #fff9ef; padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .schedule-hero h1 { position: relative; z-index: 1; font-family: 'Bad Script', cursive; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.2; color: var(--dark); margin-top: 1rem; margin-bottom: 0.7rem; }
+    .schedule-hero p { position: relative; z-index: 1; font-size: 1.05rem; color: rgba(45,31,14,0.82); max-width: 620px; margin: 0 auto; }
+
+    /* ── FINDER ── */
+    .finder { margin-top: 1.9rem; background: var(--white); border: 1px solid var(--line); border-radius: 24px; padding: 1.6rem; box-shadow: 0 10px 24px rgba(30, 18, 12, 0.05); }
+    .finder-search { position: relative; display: flex; align-items: center; background: var(--cream); border: 1.5px solid rgba(232,88,10,0.14); border-radius: 999px; padding: 0 16px; margin-bottom: 1.15rem; }
+    .finder-search svg { flex-shrink: 0; color: var(--mid); }
+    .finder-search input { flex: 1; border: none; background: transparent; padding: 13px 10px; font-family: 'Nunito', sans-serif; font-size: 0.98rem; color: var(--dark); outline: none; }
+    .finder-search input::placeholder { color: #a68a68; }
+    .search-clear { border: none; background: rgba(120,93,67,0.14); color: var(--mid); width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 15px; line-height: 1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .search-clear:hover { background: rgba(120,93,67,0.24); }
+    .search-clear[hidden] { display: none; }
+
+    .finder-row { margin-bottom: 1rem; }
+    .finder-row:last-child { margin-bottom: 0; }
+    .quick-filters { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+    .quick-chip { border: 1.5px solid rgba(111,67,35,0.16); background: var(--cream); color: var(--brown); font-weight: 800; font-size: 0.85rem; padding: 8px 16px; border-radius: 999px; cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; white-space: nowrap; }
+    .quick-chip:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .quick-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 8px 18px rgba(247,173,25,0.35); }
+    .quick-filters--tags .quick-chip.active { background: var(--orange); border-color: var(--orange); color: #fff; box-shadow: 0 8px 18px rgba(232,88,10,0.28); }
+
+    .finder-row--controls { display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; justify-content: space-between; }
+    .grade-select-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .grade-select-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mid); }
+    #gradeSelect { border: 1.5px solid rgba(111,67,35,0.18); border-radius: 12px; padding: 10px 14px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.92rem; color: var(--dark); background: var(--white); cursor: pointer; min-width: 210px; }
+    .btn-clear { border: 1.5px solid rgba(111,67,35,0.22); background: transparent; color: var(--mid); font-weight: 800; font-size: 0.85rem; padding: 10px 18px; border-radius: 999px; cursor: pointer; transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease; }
+    .btn-clear:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+
+    /* ── RESULTS ── */
+    .results { margin-top: 2.4rem; display: flex; flex-direction: column; gap: 2.6rem; }
+    .results-heading { margin-bottom: 1.1rem; }
+    .results-heading-badge { display: inline-flex; align-items: center; gap: 8px; font-family: 'Playfair Display', serif; font-size: clamp(1.25rem, 2.4vw, 1.6rem); color: var(--sun-dark); background: var(--sun-light); padding: 8px 22px; border-radius: 999px; }
+    .results-heading-badge--alt { color: var(--orange); background: var(--orange-light); }
+    .results-subtitle { color: var(--mid); font-size: 0.95rem; margin: -0.6rem 0 1.2rem; max-width: 640px; }
+    .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.25rem; }
+
+    .schedule-card { background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 1.4rem; box-shadow: 0 10px 22px rgba(30,18,12,0.05); display: flex; flex-direction: column; gap: 0.65rem; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+    .schedule-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(30,18,12,0.1); border-color: rgba(247,173,25,0.4); }
+    .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+    .badge--group { background: var(--sun-light); color: var(--sun-dark); }
+    .badge--individual { background: var(--orange-light); color: var(--orange); }
+    .badge--exam { background: #fdeee0; color: #a1470c; }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 1.24rem; color: var(--dark); line-height: 1.32; }
+    .card-meta { font-size: 0.88rem; color: var(--mid); font-weight: 700; }
+    .card-schedule { display: flex; gap: 8px; flex-wrap: wrap; }
+    .card-chip { background: var(--cream); border: 1px solid rgba(111,67,35,0.12); padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; color: var(--brown); }
+    .card-start { font-size: 0.83rem; font-weight: 700; color: #1c7a4a; background: #e5f5ec; display: inline-block; padding: 5px 12px; border-radius: 999px; width: fit-content; }
+    .card-price { display: flex; flex-direction: column; gap: 5px; background: var(--cream); border-radius: 14px; padding: 10px 12px; }
+    .price-row { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; }
+    .price-row span { color: var(--mid); font-weight: 700; }
+    .price-row strong { color: var(--brown); font-weight: 800; text-align: right; }
+    .card-desc { font-size: 0.9rem; color: var(--mid); line-height: 1.55; flex: 1; }
+    .card-individual-line { font-size: 0.88rem; font-weight: 700; color: var(--orange); }
+    .card-cta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.3rem; }
+    .btn-info { flex: 1; text-align: center; background: transparent; border: 1.5px solid rgba(111,67,35,0.22); color: var(--brown); font-weight: 800; font-size: 0.85rem; padding: 10px 14px; border-radius: 999px; transition: border-color 0.2s ease, background 0.2s ease; }
+    .btn-info:hover { border-color: var(--sun-dark); background: var(--sun-light); }
+    .btn-enroll-sm { flex: 1; text-align: center; background: var(--orange); color: #fff; font-weight: 800; font-size: 0.85rem; padding: 10px 14px; border-radius: 999px; box-shadow: 0 8px 18px rgba(232,88,10,0.25); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-enroll-sm:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(232,88,10,0.32); }
+    .btn-enroll-sm--wide { flex: 1 1 100%; }
+
+    .no-results { text-align: center; padding: 3rem 1.5rem; background: var(--cream); border-radius: 24px; border: 1.5px dashed rgba(111,67,35,0.22); }
+    .no-results-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--brown); margin-bottom: 0.4rem; }
+    .no-results-text { color: var(--mid); margin-bottom: 1.2rem; }
+
+    /* ── CTA ── */
+    .schedule-cta { margin-top: 2.8rem; text-align: center; background: linear-gradient(135deg, var(--sun-light), var(--orange-light)); border-radius: 28px; padding: 2.8rem 1.5rem; }
+    .schedule-cta h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--dark); margin-bottom: 0.55rem; }
+    .schedule-cta p { color: var(--mid); margin-bottom: 1.35rem; }
+    .schedule-cta-buttons { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+    .btn-outline { border: 1.5px solid var(--orange); color: var(--orange); font-weight: 800; padding: 12px 22px; border-radius: 999px; transition: background 0.2s ease, color 0.2s ease; }
+    .btn-outline:hover { background: var(--orange); color: #fff; }
+    .btn-enroll { display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: var(--white); font-weight: 800; font-size: 0.95rem; padding: 12px 22px; border-radius: 999px; box-shadow: 0 10px 22px rgba(232,88,10,0.28); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-enroll:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(232,88,10,0.34); }
+
+    @media (max-width: 768px) {
+      .top-bar { display: none; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .schedule-page { padding: 1rem 1rem 3rem; }
+      .schedule-hero { padding: 2.1rem 1.2rem; }
+      .finder { padding: 1.1rem; border-radius: 20px; }
+      .quick-filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .quick-filters::-webkit-scrollbar { display: none; }
+      .finder-row--controls { flex-direction: column; align-items: stretch; }
+      #gradeSelect { min-width: 0; width: 100%; }
+      .btn-clear { width: 100%; text-align: center; }
+      .schedule-grid { grid-template-columns: 1fr; }
+      .card-cta { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar"><span>📍 Горски пътник 56</span><span><a href="tel:+359885501283">+359 885 501 283</a></span><span><a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span></div>
+  <nav>
+    <a href="index.html" class="logo"><span class="logo-icon"><img src="theLightAcademyLogo.png" alt="Logo"></span>The Light Academy</a>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+      <a href="index.html" class="active">Начало</a>
+      <a href="index.html#about">За нас</a>
+      <div class="nav-item-dropdown">
+        <a href="index.html#courses">Курсове</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Покажи всички курсове"><svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="courses-dropdown">
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Подготовка за НВО</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="nvo7.html">7 клас</a>
+              <a href="course_nvo_4_class.html">4 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Училищна подготовка</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_math_5_class.html">5 клас</a>
+              <a href="course_math_6_class.html">6 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_english.html">Английски език</a>
+              <a href="course_spanish.html">Испански език</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Природни науки</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_chemistry.html">Химия</a>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-direct-link" href="schedule.html">📅 График</a>
+        </div>
+      </div>
+      <a href="index.html#gallery">Галерия</a>
+      <a href="news.html">Новини</a>
+      <a href="index.html#contact">Контакти</a>
+      <a href="birthdays.html" class="cta-birthdays">🎂 Детски рождени дни</a>
+      <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Начало</a>
+    <a href="index.html#about">За нас</a>
+    <div class="mobile-dropdown">
+      <div class="mobile-dropdown-row">
+        <a href="index.html#courses">Курсове</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Покажи всички курсове"><svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div class="mobile-courses-dropdown">
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Подготовка за НВО</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="nvo7.html">7 клас</a>
+            <a href="course_nvo_4_class.html">4 клас</a>
+          </div>
+        </div>
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Училищна подготовка</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="course_math_5_class.html">5 клас</a>
+            <a href="course_math_6_class.html">6 клас</a>
+          </div>
+        </div>
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="course_english.html">Английски език</a>
+            <a href="course_spanish.html">Испански език</a>
+          </div>
+        </div>
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Природни науки</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="course_chemistry.html">Химия</a>
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-direct-link" href="schedule.html">📅 График</a>
+      </div>
+    </div>
+    <a href="index.html#gallery">Галерия</a>
+    <a href="news.html">Новини</a>
+    <a href="index.html#contact">Контакти</a>
+    <a href="birthdays.html" class="cta-birthdays">🎂 Детски рождени дни</a>
+    <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+  </div>
+
+  <main class="schedule-page">
+    <section class="schedule-hero">
+      <span class="eyebrow">📅 График на курсовете</span>
+      <h1>График на нашите курсове</h1>
+      <p>Изберете класа на детето, вида обучение или потърсете конкретен курс, за да видите подходящите възможности.</p>
+    </section>
+
+    <section class="finder">
+      <div class="finder-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="scheduleSearch" placeholder="Търсете курс, предмет или клас..." autocomplete="off" />
+        <button type="button" class="search-clear" id="searchClearBtn" aria-label="Изчисти търсенето" hidden>✕</button>
+      </div>
+
+      <div class="finder-row">
+        <div class="quick-filters" id="quickFiltersGrade" role="group" aria-label="Бърз филтър по клас">
+          <button type="button" class="quick-chip" data-grade="all">Всички</button>
+          <button type="button" class="quick-chip" data-grade="r13">1–3 клас</button>
+          <button type="button" class="quick-chip" data-grade="4">4 клас</button>
+          <button type="button" class="quick-chip" data-grade="5">5 клас</button>
+          <button type="button" class="quick-chip" data-grade="6">6 клас</button>
+          <button type="button" class="quick-chip" data-grade="7">7 клас</button>
+          <button type="button" class="quick-chip" data-type="individual">Индивидуални уроци</button>
+        </div>
+      </div>
+
+      <div class="finder-row finder-row--controls">
+        <label class="grade-select-wrap">
+          <span class="grade-select-label">Клас на детето</span>
+          <select id="gradeSelect" aria-label="Клас на детето"></select>
+        </label>
+        <button type="button" class="btn-clear" id="clearFiltersBtn">✕ Изчисти филтрите</button>
+      </div>
+
+      <div class="finder-row">
+        <div class="quick-filters quick-filters--tags" id="quickFiltersTag" role="group" aria-label="Бърз филтър по тип">
+          <button type="button" class="quick-chip" data-tag="nvo">🎯 НВО</button>
+          <button type="button" class="quick-chip" data-tag="math">📐 Математика</button>
+          <button type="button" class="quick-chip" data-tag="lang">🌍 Езици</button>
+          <button type="button" class="quick-chip" data-type="individual">🧑‍🏫 Индивидуални уроци</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="results" id="resultsSection">
+      <div class="results-block" id="groupBlock">
+        <h2 class="results-heading"><span class="results-heading-badge">👥 Групови курсове</span></h2>
+        <div class="schedule-grid" id="groupGrid"></div>
+      </div>
+      <div class="results-block" id="individualBlock">
+        <h2 class="results-heading"><span class="results-heading-badge results-heading-badge--alt">🧑‍🏫 Индивидуално обучение</span></h2>
+        <p class="results-subtitle">Индивидуално обучение с преподавател. Изберете предмет и клас според нуждите на детето.</p>
+        <div class="schedule-grid" id="individualGrid"></div>
+      </div>
+      <div class="no-results" id="noResults" hidden>
+        <p class="no-results-title">Не открихме подходящ курс.</p>
+        <p class="no-results-text">Опитайте с друг клас или разгледайте индивидуалните уроци.</p>
+        <button type="button" class="btn-clear" id="showAllBtn">Покажи всички</button>
+      </div>
+    </section>
+
+    <section class="schedule-cta">
+      <h2>Не сте сигурни кое е подходящо за вашето дете?</h2>
+      <p>Свържете се с нас и ще ви помогнем да изберете най-подходящия вариант.</p>
+      <div class="schedule-cta-buttons">
+        <a href="index.html#contact" class="btn-outline">Свържете се с нас</a>
+        <a href="tel:+359885501283" class="btn-enroll">📞 Запиши се</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const toggle = document.querySelector('.hamburger');
+    const menu = document.getElementById('mobileMenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => menu.classList.toggle('open'));
+      menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => menu.classList.remove('open')));
+    }
+  </script>
+
+  <script>
+    (function () {
+      function setupDropdown(root) {
+        const toggleBtn = root.querySelector('.dropdown-toggle');
+        const menuEl = root.querySelector('.courses-dropdown, .mobile-courses-dropdown');
+        if (!toggleBtn || !menuEl) return;
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const isOpen = menuEl.classList.toggle('open');
+          toggleBtn.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        menuEl.querySelectorAll('.dropdown-category-row').forEach(row => {
+          row.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cat = row.parentElement;
+            const wasOpen = cat.classList.contains('open');
+            menuEl.querySelectorAll('.dropdown-category').forEach(c => c.classList.remove('open'));
+            cat.classList.toggle('open', !wasOpen);
+          });
+        });
+      }
+
+      document.querySelectorAll('.nav-item-dropdown, .mobile-dropdown').forEach(setupDropdown);
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.courses-dropdown.open, .mobile-courses-dropdown.open').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+        document.querySelectorAll('.dropdown-category.open').forEach(c => c.classList.remove('open'));
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const PHONE = 'tel:+359885501283';
+      const EMAIL = 'the.light.academy56@gmail.com';
+
+      function range(a, b) {
+        const r = [];
+        for (let i = a; i <= b; i++) r.push(i);
+        return r;
+      }
+
+      function gradesToLabel(grades) {
+        const sorted = [...grades].sort((a, b) => a - b);
+        if (sorted.length === 1) return `${sorted[0]}. клас`;
+        const contiguous = sorted.every((g, i) => i === 0 || g === sorted[i - 1] + 1);
+        if (contiguous) return `${sorted[0]}.–${sorted[sorted.length - 1]}. клас`;
+        return sorted.map(g => `${g}.`).join(', ') + ' клас';
+      }
+
+      /* ── COURSE DATA ──
+         Adding a new offering only requires pushing a new object into
+         GROUP_COURSES or INDIVIDUAL_COURSES — labels, search text and
+         filtering all derive from these fields automatically. */
+      const GROUP_COURSES = [
+        {
+          id: 'en-1-4-tue', type: 'group',
+          title: 'Английски език за деца',
+          subjects: ['Английски'], grades: [1, 2, 3, 4],
+          day: 'Вторник', time: '16:00–17:45',
+          startLabel: 'Старт: 6 октомври 2026 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '110 € / месец' },
+            { tier: 'До 4 деца', amount: '130 € / месец' }
+          ],
+          tags: ['lang'],
+          infoLink: 'course_english.html',
+          description: 'Малки групи, игрови методи и много практика в говоренето — децата изграждат увереност да общуват на английски от най-ранна възраст.'
+        },
+        {
+          id: 'math-nvo-7-tue', type: 'group',
+          title: 'Математика – НВО',
+          subjects: ['Математика'], grades: [7],
+          day: 'Вторник', time: '18:15–20:30',
+          periodLabel: '29 септември 2026 г. – 11 май 2027 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '3 × 360 € или 1000 €' },
+            { tier: 'До 4 деца', amount: '3 × 400 € или 1100 €' }
+          ],
+          tags: ['nvo', 'math'], examBadge: 'НВО',
+          infoLink: 'nvo7.html',
+          description: 'Целогодишна подготовка за държавния изпит след 7. клас — курсът покрива пълния материал с фокус върху типовете задачи от НВО.'
+        },
+        {
+          id: 'math-nvo-7-wed', type: 'group',
+          title: 'Математика – НВО',
+          subjects: ['Математика'], grades: [7],
+          day: 'Сряда', time: '18:15–20:30',
+          periodLabel: '30 септември 2026 г. – 12 май 2027 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '3 × 360 € или 1000 €' },
+            { tier: 'До 4 деца', amount: '3 × 400 € или 1100 €' }
+          ],
+          tags: ['nvo', 'math'], examBadge: 'НВО',
+          infoLink: 'nvo7.html',
+          description: 'Втора седмична група за подготовка за НВО по математика — същата програма, удобна за различен график на семейството.'
+        },
+        {
+          id: 'math-5-wed', type: 'group',
+          title: 'Математика',
+          subjects: ['Математика'], grades: [5],
+          day: 'Сряда', time: '10:00–11:45',
+          startLabel: 'Старт: 7 октомври 2026 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '110 € / месец' },
+            { tier: 'До 4 деца', amount: '130 € / месец' }
+          ],
+          tags: ['math'],
+          infoLink: 'course_math_5_class.html',
+          description: 'Затвърждаване и надграждане на материала от 5. клас с индивидуален подход във всяка малка група.'
+        },
+        {
+          id: 'math-5-thu', type: 'group',
+          title: 'Математика',
+          subjects: ['Математика'], grades: [5],
+          day: 'Четвъртък', time: '16:00–17:45',
+          startLabel: 'Старт: 8 октомври 2026 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '110 € / месец' },
+            { tier: 'До 4 деца', amount: '130 € / месец' }
+          ],
+          tags: ['math'],
+          infoLink: 'course_math_5_class.html',
+          description: 'Втора седмична група по математика за 5. клас — същата програма в друг ден за по-удобно планиране.'
+        },
+        {
+          id: 'math-nvo-early-6-thu', type: 'group',
+          title: 'Математика – ранна подготовка за НВО',
+          subjects: ['Математика'], grades: [6],
+          day: 'Четвъртък', time: '18:15–20:00',
+          periodLabel: '8 октомври 2026 г. – 13 май 2027 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '3 × 280 € или 800 €' },
+            { tier: 'До 4 деца', amount: '3 × 320 € или 900 €' }
+          ],
+          tags: ['nvo', 'math'], examBadge: 'Ранна подготовка за НВО',
+          infoLink: 'course_math_6_class.html',
+          description: 'Стъпка по стъпка изграждане на увереност и логическо мислене — най-добрата основа преди същинската подготовка за НВО в 7. клас.'
+        },
+        {
+          id: 'en-1-4-fri', type: 'group',
+          title: 'Английски език за деца',
+          subjects: ['Английски'], grades: [1, 2, 3, 4],
+          day: 'Петък', time: '10:00–11:45',
+          startLabel: 'Старт: 9 октомври 2026 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '110 € / месец' },
+            { tier: 'До 4 деца', amount: '130 € / месец' }
+          ],
+          tags: ['lang'],
+          infoLink: 'course_english.html',
+          description: 'Втора седмична група по английски език за деца от 1. до 4. клас — сутрешен слот, удобен за уикенд програма.'
+        },
+        {
+          id: 'bel-math-nvo-4-sat', type: 'group',
+          title: 'БЕЛ и Математика – подготовка за НВО',
+          subjects: ['БЕЛ', 'Математика'], grades: [4],
+          day: 'Събота', time: '10:00–11:45',
+          startLabel: 'Старт: 10 октомври 2026 г.',
+          priceRows: [
+            { tier: '5–8 деца', amount: '110 € / месец' },
+            { tier: 'До 4 деца', amount: '130 € / месец' }
+          ],
+          tags: ['nvo', 'math'], examBadge: 'НВО',
+          infoLink: 'course_nvo_4_class.html',
+          description: 'Комбиниран курс по български език и литература и математика — цялостна подготовка за националното външно оценяване след 4. клас.'
+        }
+      ];
+
+      const INDIVIDUAL_COURSES = [
+        {
+          id: 'ind-math', type: 'individual',
+          title: 'Индивидуални уроци по математика',
+          subjects: ['Математика'], grades: range(1, 12),
+          tags: ['math'],
+          description: 'Персонализирани занятия, съобразени изцяло с темпото и пропуските на детето — от основите до подготовка за изпити.'
+        },
+        {
+          id: 'ind-bel', type: 'individual',
+          title: 'Индивидуални уроци по БЕЛ',
+          subjects: ['БЕЛ'], grades: [1, 2, 3, 4],
+          tags: [],
+          description: 'Четене с разбиране, правопис и изразяване — индивидуална работа за увереност по български език и литература.'
+        },
+        {
+          id: 'ind-english', type: 'individual',
+          title: 'Индивидуални уроци по английски език',
+          subjects: ['Английски'], grades: range(1, 7),
+          tags: ['lang'],
+          description: 'Занятия едно към едно, съобразени с нивото на детето — идеални за наваксване или ускорен напредък.'
+        },
+        {
+          id: 'ind-spanish', type: 'individual',
+          title: 'Индивидуални уроци по испански език',
+          subjects: ['Испански'], grades: range(1, 7),
+          tags: ['lang'],
+          description: 'Изучаване на испански в собствено темпо с индивидуално внимание от преподавателя.'
+        },
+        {
+          id: 'ind-chemistry', type: 'individual',
+          title: 'Индивидуални уроци по химия',
+          subjects: ['Химия'], grades: range(5, 12),
+          tags: [],
+          description: 'Помощ с учебния материал по химия — от основни понятия до подготовка за контролни и изпити.'
+        }
+      ];
+
+      const ALL_COURSES = [...GROUP_COURSES, ...INDIVIDUAL_COURSES];
+
+      ALL_COURSES.forEach(c => {
+        c.gradeLabel = gradesToLabel(c.grades);
+        const gradeWords = c.grades.map(g => `${g} клас`).join(' ');
+        const typeWords = c.type === 'individual' ? 'индивидуален урок индивидуални уроци' : 'групов курс';
+        const parts = [
+          c.title, c.subjects.join(' '), c.gradeLabel, gradeWords, typeWords,
+          (c.tags || []).join(' '), c.day || '', c.examBadge || ''
+        ];
+        c.searchText = parts.join(' ').toLowerCase();
+      });
+
+      /* ── STATE ── */
+      const state = { search: '', grade: 'all', type: 'all', tag: 'all' };
+
+      function matchesGrade(course, grade) {
+        if (grade === 'all') return true;
+        if (grade === 'r13') return course.grades.some(g => g <= 3);
+        return course.grades.includes(Number(grade));
+      }
+      function matchesType(course, type) {
+        if (type === 'all') return true;
+        return course.type === type;
+      }
+      function matchesTag(course, tag) {
+        if (tag === 'all') return true;
+        return (course.tags || []).includes(tag);
+      }
+      function matchesSearch(course, q) {
+        if (!q) return true;
+        return course.searchText.includes(q.trim().toLowerCase());
+      }
+
+      /* ── DOM refs ── */
+      const searchInput = document.getElementById('scheduleSearch');
+      const searchClearBtn = document.getElementById('searchClearBtn');
+      const gradeSelect = document.getElementById('gradeSelect');
+      const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+      const showAllBtn = document.getElementById('showAllBtn');
+      const groupGrid = document.getElementById('groupGrid');
+      const individualGrid = document.getElementById('individualGrid');
+      const groupBlock = document.getElementById('groupBlock');
+      const individualBlock = document.getElementById('individualBlock');
+      const noResults = document.getElementById('noResults');
+
+      gradeSelect.innerHTML = '<option value="all">Всички класове</option>' +
+        range(1, 12).map(g => `<option value="${g}">${g} клас</option>`).join('');
+
+      /* ── RENDER ── */
+      function badgesHtml(c) {
+        const typeBadge = c.type === 'individual'
+          ? '<span class="badge badge--individual">Индивидуален урок</span>'
+          : '<span class="badge badge--group">Групов курс</span>';
+        const examBadge = c.examBadge ? `<span class="badge badge--exam">${c.examBadge}</span>` : '';
+        return `<div class="card-badges">${typeBadge}${examBadge}</div>`;
+      }
+
+      function renderGroupCard(c) {
+        const priceHtml = c.priceRows.map(r =>
+          `<div class="price-row"><span>${r.tier}</span><strong>${r.amount}</strong></div>`
+        ).join('');
+        const scheduleHtml = `<div class="card-schedule"><span class="card-chip">📅 ${c.day}</span><span class="card-chip">🕐 ${c.time}</span></div>`;
+        const timelineHtml = c.periodLabel
+          ? `<p class="card-meta">📖 ${c.periodLabel}</p>`
+          : (c.startLabel ? `<p class="card-start">🚀 ${c.startLabel}</p>` : '');
+        return `
+          <article class="schedule-card" data-id="${c.id}">
+            ${badgesHtml(c)}
+            <h3 class="card-title">${c.title}</h3>
+            <p class="card-meta">${c.subjects.join(' + ')} · ${c.gradeLabel}</p>
+            ${scheduleHtml}
+            ${timelineHtml}
+            <div class="card-price">${priceHtml}</div>
+            <p class="card-desc">${c.description}</p>
+            <div class="card-cta">
+              <a href="${c.infoLink}" class="btn-info">Повече информация</a>
+              <a href="${PHONE}" class="btn-enroll-sm">Запиши се</a>
+            </div>
+          </article>`;
+      }
+
+      function renderIndividualCard(c) {
+        const subject = c.subjects[0];
+        const subjectLabels = { 'Математика': 'математика', 'Английски': 'английски език', 'Испански': 'испански език', 'Химия': 'химия', 'БЕЛ': 'БЕЛ' };
+        const subjectPlain = subjectLabels[subject] || subject;
+        const mailSubject = encodeURIComponent(`Запитване за индивидуален урок по ${subject}`);
+        const mailBody = encodeURIComponent(
+          `Здравейте,\n\nБих искал/а повече информация за индивидуални уроци по ${subjectPlain}.\n\nКлас на детето: \nЖелано начало: \n\nБлагодаря!`
+        );
+        const mailto = `mailto:${EMAIL}?subject=${mailSubject}&body=${mailBody}`;
+        return `
+          <article class="schedule-card schedule-card--individual" data-id="${c.id}">
+            ${badgesHtml(c)}
+            <h3 class="card-title">${c.title}</h3>
+            <p class="card-meta">${c.subjects.join(', ')} · ${c.gradeLabel}</p>
+            <p class="card-individual-line">Индивидуално обучение с преподавател</p>
+            <p class="card-desc">${c.description} Изберете предмет и клас според нуждите на детето.</p>
+            <div class="card-cta">
+              <a href="${mailto}" class="btn-enroll-sm btn-enroll-sm--wide">Запитване за индивидуален урок</a>
+            </div>
+          </article>`;
+      }
+
+      function syncFilterUI() {
+        document.querySelectorAll('#quickFiltersGrade .quick-chip[data-grade]').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.grade === state.grade);
+        });
+        document.querySelectorAll('.quick-chip[data-type="individual"]').forEach(btn => {
+          btn.classList.toggle('active', state.type === 'individual');
+        });
+        document.querySelectorAll('#quickFiltersTag .quick-chip[data-tag]').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tag === state.tag);
+        });
+        gradeSelect.value = /^\d+$/.test(state.grade) ? state.grade : 'all';
+        searchClearBtn.hidden = !state.search;
+      }
+
+      function render() {
+        syncFilterUI();
+        const filtered = ALL_COURSES.filter(c =>
+          matchesGrade(c, state.grade) &&
+          matchesType(c, state.type) &&
+          matchesTag(c, state.tag) &&
+          matchesSearch(c, state.search)
+        );
+        const groups = filtered.filter(c => c.type === 'group');
+        const individuals = filtered.filter(c => c.type === 'individual');
+
+        groupGrid.innerHTML = groups.map(renderGroupCard).join('');
+        individualGrid.innerHTML = individuals.map(renderIndividualCard).join('');
+
+        groupBlock.hidden = groups.length === 0;
+        individualBlock.hidden = individuals.length === 0;
+        noResults.hidden = !(groups.length === 0 && individuals.length === 0);
+      }
+
+      function resetFilters() {
+        state.search = ''; state.grade = 'all'; state.type = 'all'; state.tag = 'all';
+        searchInput.value = '';
+        render();
+      }
+
+      /* ── EVENTS ── */
+      searchInput.addEventListener('input', () => { state.search = searchInput.value; render(); });
+      searchClearBtn.addEventListener('click', () => { state.search = ''; searchInput.value = ''; searchInput.focus(); render(); });
+
+      document.getElementById('quickFiltersGrade').addEventListener('click', (e) => {
+        const btn = e.target.closest('.quick-chip');
+        if (!btn) return;
+        if (btn.dataset.grade) { state.grade = btn.dataset.grade; render(); }
+        else if (btn.dataset.type === 'individual') { state.type = state.type === 'individual' ? 'all' : 'individual'; render(); }
+      });
+
+      document.getElementById('quickFiltersTag').addEventListener('click', (e) => {
+        const btn = e.target.closest('.quick-chip');
+        if (!btn) return;
+        if (btn.dataset.tag) { state.tag = state.tag === btn.dataset.tag ? 'all' : btn.dataset.tag; render(); }
+        else if (btn.dataset.type === 'individual') { state.type = state.type === 'individual' ? 'all' : 'individual'; render(); }
+      });
+
+      gradeSelect.addEventListener('change', () => { state.grade = gradeSelect.value; render(); });
+      clearFiltersBtn.addEventListener('click', resetFilters);
+      showAllBtn.addEventListener('click', resetFilters);
+
+      render();
+    })();
+  </script>
+</body>
+</html>
