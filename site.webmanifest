@@ -1,0 +1,11 @@
+{
+  "name": "The Light Academy",
+  "short_name": "The Light Academy",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#f5a623",
+  "background_color": "#fffaf3",
+  "display": "standalone"
+}
