@@ -249,12 +249,50 @@
     font-weight: 700;
     line-height: 1.45;
     margin: 0 0 22px;
+    white-space: pre-line;
   }
 
   .options-list{
     display: flex;
     flex-direction: column;
     gap: 12px;
+  }
+
+  /* ---------- СВОБОДЕН ОТГОВОР (free_text въпроси) ---------- */
+  .free-text-block{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .free-text-instruction{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  .free-text-input{
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .free-text-input:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .free-text-note{
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin: 0;
   }
 
   .option{
@@ -926,179 +964,211 @@
 <script>
 /* =========================================================
    ДАННИ ЗА ВЪПРОСИТЕ
-   По-късно просто замести този масив с всичките 20 въпроса
-   по следната структура:
+   Диагностичен входящ тест – 20 въпроса. Два вида:
 
+   multiple_choice:
    {
+     type: "multiple_choice",
      question: "...",
      options: ["...", "...", "...", "..."],
      correctAnswer: 0,        // индекс на верния отговор (0-3)
      category: "...",
-     gradeLevel: "...",
-     difficulty: "..."
+     difficulty: "...",
+     diagnosticGoal: "..."    // вътрешна бележка какво диагностицира въпроса (не се показва на ученика)
+   }
+
+   free_text (НЕ се оценява автоматично – виж calculateResults()):
+   {
+     type: "free_text",
+     question: "...",
+     instruction: "...",      // кратка инструкция как да отговори ученикът
+     correctAnswer: "...",    // референтен верен отговор – само за учителя, не сравняваме автоматично
+     category: "...",
+     difficulty: "...",
+     diagnosticGoal: "..."
    }
 ========================================================= */
 
 let questions = [
   {
-    question: "48 + 36 : 4 · 2 = ?",
-    options: ["30", "66", "84", "42"],
-    correctAnswer: 1,
+    type: "multiple_choice",
+    question: "Пресметни:\n\n48 : 6 + 7 · 2",
+    options: ["17", "26", "20", "30"],
+    correctAnswer: 0,
     category: "Числа и пресмятане",
-    gradeLevel: "5. клас",
-    difficulty: "easy"
+    difficulty: "easy",
+    diagnosticGoal: "Проверява спазване на реда на действията. Отговор Б е умишлено подвеждащ — получава се при неправилно изпълнение на действията отляво надясно."
   },
   {
-    question: "Кое от числата се дели едновременно на 3 и на 5?",
-    options: ["125", "135", "142", "155"],
+    type: "multiple_choice",
+    question: "Кое е равно на:\n\n3/4 + 1/8",
+    options: ["4/12", "7/8", "4/8", "1"],
     correctAnswer: 1,
+    category: "Дроби",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява събиране на дроби с различни знаменатели. А е типична грешка при събиране на числителите и знаменателите поотделно."
+  },
+  {
+    type: "free_text",
+    question: "Изчисли:\n\n5/6 − 1/3 = ?",
+    instruction: "Напиши отговора си като дроб.",
+    correctAnswer: "1/2",
+    category: "Дроби",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява дали детето разбира привеждането към общ знаменател."
+  },
+  {
+    type: "multiple_choice",
+    question: "Една тениска струва 40 €. Цената е намалена с 25%.\n\nКолко струва тениската след намалението?",
+    options: ["15 €", "25 €", "30 €", "35 €"],
+    correctAnswer: 2,
+    category: "Проценти",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява разбиране на процент като част от цялото. Б е правдоподобен distractor при неправилно изваждане."
+  },
+  {
+    type: "multiple_choice",
+    question: "Кое от следните числа се дели едновременно на 2, 3 и 5?",
+    options: ["120", "135", "150", "165"],
+    correctAnswer: 2,
     category: "Делимост",
-    gradeLevel: "5. клас",
-    difficulty: "easy"
+    difficulty: "medium",
+    diagnosticGoal: "Проверява едновременно използване на признаци за делимост."
   },
   {
-    question: "Коя дроб е равна на 3/4?",
-    options: ["6/10", "9/12", "12/20", "15/24"],
+    type: "free_text",
+    question: "Реши уравнението:\n\n3x + 7 = 22",
+    instruction: "Напиши стойността на x.",
+    correctAnswer: "5",
+    category: "Уравнения",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява базово решаване на линейно уравнение. Важно е да се запази точният въведен отговор на детето за последващ анализ."
+  },
+  {
+    type: "multiple_choice",
+    question: "Кое е равно на:\n\n2³ + 3²",
+    options: ["17", "25", "36", "15"],
     correctAnswer: 1,
-    category: "Дроби и десетични дроби",
-    gradeLevel: "5. клас",
-    difficulty: "easy"
-  },
-  {
-    question: "4,8 + 2,35 = ?",
-    options: ["6,15", "7,05", "7,15", "7,25"],
-    correctAnswer: 2,
-    category: "Дроби и десетични дроби",
-    gradeLevel: "5. клас",
-    difficulty: "easy"
-  },
-  {
-    question: "2³ + 3² = ?",
-    options: ["13", "15", "17", "18"],
-    correctAnswer: 2,
     category: "Степени",
-    gradeLevel: "5. клас",
-    difficulty: "medium"
+    difficulty: "medium",
+    diagnosticGoal: "Проверява разбиране на степенуването. Г е типичен distractor при грешно пресмятане."
   },
   {
-    question: "3x + 7 = 25. Кое е решението?",
-    options: ["4", "5", "6", "7"],
-    correctAnswer: 2,
-    category: "Уравнения и неравенства",
-    gradeLevel: "5. клас",
-    difficulty: "medium"
-  },
-  {
-    question: "В магазин раница струва 80 €. Цената е намалена с 25%. Колко струва раницата след намалението?",
-    options: ["55 €", "60 €", "65 €", "70 €"],
+    type: "multiple_choice",
+    question: "Кое е най-малкото число?",
+    options: ["−2", "−5", "0", "−1"],
     correctAnswer: 1,
-    category: "Проценти и пропорции",
-    gradeLevel: "5-6. клас",
-    difficulty: "medium"
+    category: "Рационални числа",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява разбиране на отрицателните числа."
   },
   {
-    question: "Правоъгълник има дължина 8 cm и ширина 5 cm. Каква е обиколката му?",
-    options: ["13 cm", "26 cm", "40 cm", "80 cm"],
+    type: "free_text",
+    question: "Един автобус изминава 180 km за 3 часа при постоянна скорост.\n\nКолко километра ще измине за 5 часа при същата скорост?",
+    instruction: "Напиши само числото на отговора.",
+    correctAnswer: "300",
+    category: "Текстови задачи",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява намиране на скорост, пропорционално мислене и разбиране на текстово условие. Съхранява се оригиналният отговор за учителски анализ."
+  },
+  {
+    type: "multiple_choice",
+    question: "Ако 4 тетрадки струват 6 €, колко ще струват 10 тетрадки при същата цена за една тетрадка?",
+    options: ["12 €", "15 €", "16 €", "18 €"],
+    correctAnswer: 1,
+    category: "Пропорции",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява пропорционално мислене. А и Г са правдоподобни distractors."
+  },
+  {
+    type: "multiple_choice",
+    question: "Правоъгълник има страни 8 cm и 5 cm.\n\nКакъв е периметърът му?",
+    options: ["13 cm", "26 cm", "40 cm", "18 cm"],
     correctAnswer: 1,
     category: "Геометрия",
-    gradeLevel: "5. клас",
-    difficulty: "medium"
+    difficulty: "easy",
+    diagnosticGoal: "Проверява формулата за периметър. А е distractor при събиране само на двете различни страни. В е distractor при използване на формулата за лице."
   },
   {
-    question: "Едно число е с 12 по-голямо от друго. Сборът на двете числа е 48. Кое е по-голямото число?",
-    options: ["18", "24", "30", "36"],
+    type: "free_text",
+    question: "Триъгълник има основа 10 cm и височина 6 cm.\n\nНамери лицето му.",
+    instruction: "Напиши отговора си в cm².",
+    correctAnswer: "30",
+    category: "Геометрия",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява формула за лице на триъгълник, разбиране на деление на 2 и правилно използване на дадените величини."
+  },
+  {
+    type: "multiple_choice",
+    question: "Два ъгъла са допълнителни. Единият е 65°.\n\nКолко градуса е другият?",
+    options: ["25°", "65°", "115°", "125°"],
     correctAnswer: 2,
-    category: "Текстови и логически задачи",
-    gradeLevel: "5-6. клас",
-    difficulty: "hard"
+    category: "Ъгли",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява разбирането, че сборът на допълнителните ъгли е 180°."
   },
   {
-    question: "Мария има 120 €. Тя изразходва 1/3 от парите си за книги, а след това 1/4 от останалите пари за материали. Колко евро са ѝ останали?",
-    options: ["50 €", "60 €", "70 €", "80 €"],
-    correctAnswer: 1,
-    category: "Дроби и десетични дроби",
-    gradeLevel: "5-6. клас",
-    difficulty: "hard"
-  },
-  {
-    question: "Кое число е най-малко?",
-    options: ["−3", "−7", "0", "4"],
-    correctAnswer: 1,
-    category: "Числа и пресмятане",
-    gradeLevel: "6. клас",
-    difficulty: "easy"
-  },
-  {
-    question: "−3,5 + 5,2 = ?",
-    options: ["−1,7", "1,7", "1,3", "−8,7"],
-    correctAnswer: 1,
-    category: "Дроби и десетични дроби",
-    gradeLevel: "6. клас",
-    difficulty: "medium"
-  },
-  {
-    question: "Ако 3 тетрадки струват 6 €, колко ще струват 8 тетрадки при същата цена за една тетрадка?",
-    options: ["12 €", "14 €", "16 €", "18 €"],
-    correctAnswer: 2,
-    category: "Проценти и пропорции",
-    gradeLevel: "6. клас",
-    difficulty: "medium"
-  },
-  {
-    question: "В клас има 25 ученици. 40% от тях са момичета. Колко са момичетата?",
-    options: ["8", "10", "12", "15"],
-    correctAnswer: 1,
-    category: "Проценти и пропорции",
-    gradeLevel: "6. клас",
-    difficulty: "medium"
-  },
-  {
-    question: "2(x − 3) + 4 = 18. Кое е решението?",
-    options: ["7", "8", "9", "10"],
-    correctAnswer: 3,
-    category: "Уравнения и неравенства",
-    gradeLevel: "6. клас",
-    difficulty: "medium"
-  },
-  {
-    question: "Кое от числата е решение на неравенството: 3x − 5 > 10",
-    options: ["4", "5", "6", "3"],
-    correctAnswer: 2,
-    category: "Уравнения и неравенства",
-    gradeLevel: "6. клас",
-    difficulty: "hard"
-  },
-  {
-    question: "Точка A има координати (−2; 4). В коя координатна четвърт се намира?",
+    type: "multiple_choice",
+    question: "Точка A има координати (−2; 4).\n\nВ кой квадрант се намира точка A?",
     options: ["I", "II", "III", "IV"],
     correctAnswer: 1,
     category: "Координатна система",
-    gradeLevel: "6. клас",
-    difficulty: "medium"
+    difficulty: "medium",
+    diagnosticGoal: "Проверява разпознаване на знаците на координатите."
   },
   {
-    question: "Два ъгъла на триъгълник са 45° и 65°. Колко градуса е третият ъгъл?",
-    options: ["60°", "65°", "70°", "80°"],
+    type: "free_text",
+    question: "Реши:\n\n2x − 7 = 15",
+    instruction: "Напиши стойността на x.",
+    correctAnswer: "11",
+    category: "Уравнения",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява прехвърляне на число, деление и разбиране на линейно уравнение."
+  },
+  {
+    type: "multiple_choice",
+    question: "Ако x = 3, колко е:\n\n2x² + 1",
+    options: ["7", "10", "19", "25"],
     correctAnswer: 2,
+    category: "Алгебрични изрази",
+    difficulty: "medium",
+    diagnosticGoal: "Проверява заместване и ред на действията. Б е умишлен distractor при грешно разбиране на степента."
+  },
+  {
+    type: "multiple_choice",
+    question: "Правоъгълен триъгълник има катети 6 cm и 8 cm.\n\nКолко е хипотенузата?",
+    options: ["10 cm", "12 cm", "14 cm", "48 cm"],
+    correctAnswer: 0,
     category: "Геометрия",
-    gradeLevel: "6. клас",
-    difficulty: "hard"
+    difficulty: "medium",
+    diagnosticGoal: "Проверява използването на Питагоровата теорема. Г е distractor при умножаване на катетите."
   },
   {
-    question: "Кръг има радиус 4 cm. Приемете π ≈ 3,14. Каква е приблизителната му площ?",
-    options: ["12,56 cm²", "25,12 cm²", "50,24 cm²", "100,48 cm²"],
-    correctAnswer: 2,
-    category: "Геометрия",
-    gradeLevel: "6. клас",
-    difficulty: "hard"
+    type: "free_text",
+    question: "Едно число е умножено по 3 и след това към получения резултат е прибавено 5.\n\nПолучава се 26.\n\nКое е числото?",
+    instruction: "Напиши числото.",
+    correctAnswer: "7",
+    category: "Логическо мислене",
+    difficulty: "hard",
+    diagnosticGoal: "Проверява дали детето може да преведе текстово условие в математически модел."
   },
   {
-    question: "Един магазин продава тетрадки по 2,50 € и химикалки по 1,50 €. Мария купува общо 8 предмета и плаща 16 €. Колко тетрадки е купила?",
-    options: ["2", "3", "4", "5"],
+    type: "multiple_choice",
+    question: "В клас има 30 ученици.\n\n3/5 от тях участват в математическо състезание.\n\nКолко ученици участват?",
+    options: ["12", "15", "18", "20"],
     correctAnswer: 2,
-    category: "Текстови и логически задачи",
-    gradeLevel: "6. клас",
-    difficulty: "hard"
+    category: "Текстови задачи",
+    difficulty: "hard",
+    diagnosticGoal: "Проверява прилагане на дроб към количество."
+  },
+  {
+    type: "free_text",
+    question: "Един правоъгълник има периметър 30 cm.\n\nЕдната му страна е 5 cm.\n\nКолко квадратни сантиметра е лицето му?",
+    instruction: "Напиши само числото.",
+    correctAnswer: "50",
+    category: "Комбинирана задача",
+    difficulty: "hard",
+    diagnosticGoal: "Много важна задача за учителски анализ — проверява дали детето може последователно да: 1) използва формулата за периметър, 2) намери неизвестната страна, 3) използва формулата за лице."
   }
 ];
 
@@ -1243,24 +1313,29 @@ function renderQuestion(){
   questionTextEl.textContent = q.question;
   questionCatEl.textContent = q.category || 'Математика';
 
-  // Опции
+  // Опции / свободен отговор
   optionsListEl.innerHTML = '';
-  q.options.forEach((optionText, index) => {
-    const optionEl = document.createElement('button');
-    optionEl.type = 'button';
-    optionEl.className = 'option';
-    if(userAnswers[currentQuestionIndex] === index){
-      optionEl.classList.add('selected');
-    }
 
-    optionEl.innerHTML = `
-      <span class="option-letter">${OPTION_LETTERS[index]}</span>
-      <span class="option-text">${optionText}</span>
-    `;
+  if(q.type === 'free_text'){
+    renderFreeTextInput(q);
+  } else {
+    q.options.forEach((optionText, index) => {
+      const optionEl = document.createElement('button');
+      optionEl.type = 'button';
+      optionEl.className = 'option';
+      if(userAnswers[currentQuestionIndex] === index){
+        optionEl.classList.add('selected');
+      }
 
-    optionEl.addEventListener('click', () => selectAnswer(index));
-    optionsListEl.appendChild(optionEl);
-  });
+      optionEl.innerHTML = `
+        <span class="option-letter">${OPTION_LETTERS[index]}</span>
+        <span class="option-text">${optionText}</span>
+      `;
+
+      optionEl.addEventListener('click', () => selectAnswer(index));
+      optionsListEl.appendChild(optionEl);
+    });
+  }
 
   // Бутони "Предишен" / "Следващ" / "Завърши"
   prevBtn.disabled = currentQuestionIndex === 0;
@@ -1277,6 +1352,47 @@ function renderQuestion(){
 function selectAnswer(index){
   userAnswers[currentQuestionIndex] = index;
   renderQuestion();
+}
+
+/* =========================================================
+   СВОБОДЕН ОТГОВОР (free_text)
+   Отговорът се пази точно както е въведен от ученика – без
+   автоматична проверка/оценка. Използва се само за учителски
+   анализ (виж calculateResults() и buildAnalysisMailtoUrl()).
+========================================================= */
+
+function renderFreeTextInput(q){
+  const wrapEl = document.createElement('div');
+  wrapEl.className = 'free-text-block';
+
+  if(q.instruction){
+    const instructionEl = document.createElement('p');
+    instructionEl.className = 'free-text-instruction';
+    instructionEl.textContent = q.instruction;
+    wrapEl.appendChild(instructionEl);
+  }
+
+  const inputEl = document.createElement('input');
+  inputEl.type = 'text';
+  inputEl.className = 'free-text-input';
+  inputEl.placeholder = 'Твоят отговор...';
+  inputEl.autocomplete = 'off';
+  inputEl.value = typeof userAnswers[currentQuestionIndex] === 'string'
+    ? userAnswers[currentQuestionIndex]
+    : '';
+
+  inputEl.addEventListener('input', () => {
+    userAnswers[currentQuestionIndex] = inputEl.value;
+  });
+
+  wrapEl.appendChild(inputEl);
+
+  const noteEl = document.createElement('p');
+  noteEl.className = 'free-text-note';
+  noteEl.textContent = 'Този въпрос ще бъде прегледан лично от учител.';
+  wrapEl.appendChild(noteEl);
+
+  optionsListEl.appendChild(wrapEl);
 }
 
 /* =========================================================
@@ -1313,15 +1429,35 @@ finishBtn.addEventListener('click', () => {
 ========================================================= */
 
 function calculateResults(){
-  const totalQuestions = questions.length;
   let correctCount = 0;
+  let scorableCount = 0; // само multiple_choice въпросите участват в резултата
 
   // обект за резултати по категории
   // { "Категория": { total: 0, correct: 0 } }
   const categoryStats = {};
 
+  // Свободните отговори (free_text) не се оценяват автоматично –
+  // събират се отделно за учителски анализ и не влияят на резултата/категориите.
+  const teacherReviewAnswers = [];
+
   questions.forEach((q, index) => {
     const userAnswer = userAnswers[index];
+
+    if(q.type === 'free_text'){
+      teacherReviewAnswers.push({
+        questionNumber: index + 1,
+        questionText: q.question,
+        studentAnswer: (typeof userAnswer === 'string' && userAnswer.trim() !== '')
+          ? userAnswer.trim()
+          : '(няма отговор)',
+        expectedAnswer: q.correctAnswer,
+        questionCategory: q.category,
+        requiresTeacherReview: true
+      });
+      return;
+    }
+
+    scorableCount++;
     const isCorrect = userAnswer === q.correctAnswer;
 
     if(isCorrect){
@@ -1337,7 +1473,9 @@ function calculateResults(){
     }
   });
 
-  const overallPercentage = Math.round((correctCount / totalQuestions) * 100);
+  const overallPercentage = scorableCount > 0
+    ? Math.round((correctCount / scorableCount) * 100)
+    : 0;
 
   // превръщаме categoryStats в масив с изчислен процент
   const categoryResults = Object.keys(categoryStats).map(categoryName => {
@@ -1355,10 +1493,11 @@ function calculateResults(){
   });
 
   return {
-    totalQuestions: totalQuestions,
+    totalQuestions: scorableCount,
     correctCount: correctCount,
     overallPercentage: overallPercentage,
-    categoryResults: categoryResults
+    categoryResults: categoryResults,
+    teacherReviewAnswers: teacherReviewAnswers
   };
 }
 
@@ -1566,6 +1705,19 @@ function buildAnalysisMailtoUrl(studentName, results){
   results.categoryResults.forEach(cat => {
     lines.push('- ' + cat.category + ': ' + cat.correct + '/' + cat.total + ' (' + cat.percentage + '%)');
   });
+
+  if(results.teacherReviewAnswers && results.teacherReviewAnswers.length > 0){
+    lines.push('');
+    lines.push('Свободни отговори за учителски анализ:');
+    results.teacherReviewAnswers.forEach(item => {
+      lines.push('');
+      lines.push('Въпрос ' + item.questionNumber + ' (' + item.questionCategory + '):');
+      lines.push(item.questionText);
+      lines.push('Отговор на ученика: ' + item.studentAnswer);
+      lines.push('Референтен верен отговор: ' + item.expectedAnswer);
+    });
+  }
+
   lines.push('');
   lines.push('--');
   lines.push('Изпратено от входящия тест по математика на The Light Academy.');
