@@ -330,19 +330,12 @@
     }
     .scroll-line-path--primary {
       stroke: url(#scrollLineGradient);
-      stroke-width: 7;
-      opacity: 0.95;
-    }
-    .scroll-line-path--secondary {
-      stroke: #E8580A;
-      stroke-width: 3;
-      opacity: 0.35;
+      stroke-width: 6;
+      stroke-dasharray: 46 34;
+      opacity: 0.9;
     }
     @media (max-width: 768px) {
       .scroll-line-bg { display: none; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .scroll-line-path { stroke-dashoffset: 0 !important; }
     }
 
     /* Content layers above scroll line */
@@ -1298,9 +1291,11 @@
           <stop offset="50%" stop-color="#F28C0F" />
           <stop offset="100%" stop-color="#E8580A" />
         </linearGradient>
+        <clipPath id="scrollLineClip">
+          <rect id="scrollLineClipRect" x="0" y="0" width="0" height="0" />
+        </clipPath>
       </defs>
-      <path class="scroll-line-path scroll-line-path--secondary" />
-      <path class="scroll-line-path scroll-line-path--primary" />
+      <path class="scroll-line-path scroll-line-path--primary" clip-path="url(#scrollLineClip)" />
     </svg>
   </div>
 
@@ -2078,16 +2073,19 @@ The Light Academy прави впечатление с малките групи
     // Orange line that winds behind every section, from the very top of the
     // page to the very bottom (desktop only — hidden under 768px in CSS).
     // The line's own d= is generated to match the page's real height, so it
-    // always reaches the footer no matter how long the page is; a scroll-tied
-    // stroke-dashoffset then "draws" it in as you scroll, the same technique
-    // used for the .timeline-fill line on nvo7.html.
+    // always reaches the footer no matter how long the page is. The dashes
+    // are a static stroke-dasharray (see CSS), and a clip-path rect whose
+    // height grows with scroll "reveals" the line downward — the same
+    // progressive-reveal idea as the .timeline-fill line on nvo7.html,
+    // without disturbing the dash pattern itself.
     function initScrollLineParallax() {
       const bg = document.querySelector('.scroll-line-bg');
       const svg = document.getElementById('pageScrollLineSvg');
-      const paths = document.querySelectorAll('.scroll-line-path');
-      if (!bg || !svg || !paths.length) return;
+      const path = document.querySelector('.scroll-line-path--primary');
+      const clipRect = document.getElementById('scrollLineClipRect');
+      if (!bg || !svg || !path || !clipRect) return;
 
-      let pathLengths = [];
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       function buildWigglyPath(width, height, amplitude, wavelength, phase) {
         const step = 26;
@@ -2112,10 +2110,12 @@ The Light Academy прави впечатление с малките групи
         return d;
       }
 
+      let docHeight = 0;
+
       function rebuildPath() {
         if (window.innerWidth <= 768) return;
 
-        const docHeight = document.documentElement.scrollHeight;
+        docHeight = document.documentElement.scrollHeight;
         const width = Math.min(window.innerWidth * 0.9, 1200);
 
         bg.style.height = docHeight + 'px';
@@ -2123,34 +2123,28 @@ The Light Academy прави впечатление с малките групи
         svg.setAttribute('height', docHeight);
         svg.setAttribute('viewBox', `0 0 ${width} ${docHeight}`);
 
-        const dPrimary = buildWigglyPath(width, docHeight, width * 0.22, 950, 0);
-        const dSecondary = buildWigglyPath(width, docHeight, width * 0.16, 780, 1.1);
-
-        document.querySelector('.scroll-line-path--primary').setAttribute('d', dPrimary);
-        document.querySelector('.scroll-line-path--secondary').setAttribute('d', dSecondary);
-
-        pathLengths = Array.from(paths).map(path => {
-          try { return path.getTotalLength(); } catch (e) { return docHeight; }
-        });
+        path.setAttribute('d', buildWigglyPath(width, docHeight, width * 0.22, 950, 0));
+        clipRect.setAttribute('width', width);
 
         update();
       }
 
       function update() {
-        if (window.innerWidth <= 768) return;
+        if (window.innerWidth <= 768 || !docHeight) return;
+
+        if (prefersReduced) {
+          clipRect.setAttribute('height', docHeight);
+          return;
+        }
 
         const scrollY = window.scrollY;
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const maxScroll = docHeight - window.innerHeight;
         const lookahead = window.innerHeight * 0.5; // small head start so the line isn't invisible on first paint
         const progress = maxScroll > 0
           ? Math.min(Math.max((scrollY + lookahead) / (maxScroll + lookahead), 0), 1)
           : 1;
 
-        paths.forEach((path, i) => {
-          const len = pathLengths[i] || 4000;
-          path.style.strokeDasharray = len;
-          path.style.strokeDashoffset = len * (1 - progress);
-        });
+        clipRect.setAttribute('height', progress * docHeight);
       }
 
       let resizeTimer = null;
