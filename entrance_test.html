@@ -514,6 +514,105 @@
     text-decoration: none;
   }
 
+  /* ---------- RESULT SCREEN: 3-степенни CTA бутони ---------- */
+
+  .btn-cta-main{
+    font-size: 17px;
+    padding: 18px 28px;
+    box-shadow: 0 10px 26px rgba(247,173,25,0.45);
+  }
+
+  .btn-cta-main:hover{
+    box-shadow: 0 14px 32px rgba(247,173,25,0.5);
+  }
+
+  .btn-cta-secondary{
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    border: 2px solid var(--accent);
+  }
+
+  .btn-cta-secondary:hover{
+    background: #ffe9bd;
+  }
+
+  .btn-cta-tertiary{
+    display: block;
+    text-align: center;
+    background: transparent;
+    color: var(--text-light);
+    border: none;
+    text-decoration: underline;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+
+  .btn-cta-tertiary:hover{
+    color: var(--accent-dark);
+  }
+
+  /* ---------- "Изпрати резултата за анализ" – модален прозорец (placeholder) ---------- */
+
+  .modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 15, 5, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 200;
+  }
+
+  .modal-overlay.open{ display: flex; }
+
+  .modal-box{
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-hover);
+    padding: 30px 24px 26px;
+    text-align: left;
+  }
+
+  .modal-close-btn{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--text-light);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .modal-close-btn:hover{
+    background: var(--accent-light);
+    color: var(--accent-dark);
+  }
+
+  .modal-title{
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 10px;
+    padding-right: 24px;
+  }
+
+  .modal-text{
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin: 0;
+  }
+
   .result-download{
     margin: 22px 0 0;
     text-align: center;
@@ -569,15 +668,6 @@
     margin-top: 26px;
     padding-top: 18px;
     border-top: 1px solid var(--border);
-  }
-
-  @media (min-width: 480px){
-    .result-cta-buttons{
-      flex-direction: row;
-    }
-    .result-cta-buttons .btn{
-      flex: 1;
-    }
   }
 
   /* ---------- RESPONSIVE ---------- */
@@ -664,7 +754,7 @@
     <div class="result-card">
 
       <div class="result-icon">🎉</div>
-      <h2 class="result-title">Твоят резултат</h2>
+      <h2 class="result-title">Вашият резултат</h2>
 
       <div class="result-score-block">
         <p class="result-score-fraction" id="result-score-fraction">0 / 20</p>
@@ -683,7 +773,7 @@
       </div>
 
       <div class="result-section">
-        <h3 class="result-section-title">Области, върху които е добре да се работи</h3>
+        <h3 class="result-section-title">Области за развитие</h3>
         <div class="tag-list" id="growth-list">
           <!-- До 3 категории с най-нисък резултат -->
         </div>
@@ -710,8 +800,21 @@
         </p>
         <span class="seats-badge">Остават 8 места в групата</span>
         <div class="result-cta-buttons">
-          <a href="nvo7.html" class="btn btn-primary btn-link">Виж подготовката за НВО – 7. клас</a>
-          <a href="index.html" class="btn btn-secondary btn-link">Разгледай The Light Academy</a>
+          <a href="nvo7.html#section-tseni" class="btn btn-primary btn-cta-main btn-link">Запази място в курса за НВО</a>
+          <button type="button" class="btn btn-cta-secondary" id="send-analysis-btn">Изпрати резултата за анализ</button>
+          <a href="nvo7.html" class="btn-cta-tertiary">Разгледай подготовката за НВО</a>
+        </div>
+      </div>
+
+      <!-- Placeholder модал за "Изпрати резултата за анализ" – без изпращане на данни, ще се доизгради в следваща стъпка -->
+      <div class="modal-overlay" id="analysis-modal">
+        <div class="modal-box">
+          <button type="button" class="modal-close-btn" id="analysis-modal-close" aria-label="Затвори">✕</button>
+          <h3 class="modal-title">Изпрати резултата за анализ</h3>
+          <p class="modal-text">
+            Скоро ще можете да изпратите резултата си директно за персонален анализ.
+            Тази функционалност е в процес на разработка.
+          </p>
         </div>
       </div>
 
@@ -1320,6 +1423,31 @@ function generateResultPDF(){
     downloadPdfBtn.disabled = false;
     downloadPdfBtn.textContent = originalLabel;
     alert('Възникна грешка при генерирането на PDF. Моля, опитайте отново.');
+  });
+}
+
+/* =========================================================
+   "ИЗПРАТИ РЕЗУЛТАТА ЗА АНАЛИЗ" – placeholder модал
+   (само отваря/затваря; не изпраща никакви данни)
+========================================================= */
+
+const sendAnalysisBtn     = document.getElementById('send-analysis-btn');
+const analysisModal       = document.getElementById('analysis-modal');
+const analysisModalClose  = document.getElementById('analysis-modal-close');
+
+if(sendAnalysisBtn && analysisModal){
+  sendAnalysisBtn.addEventListener('click', () => {
+    analysisModal.classList.add('open');
+  });
+
+  analysisModalClose.addEventListener('click', () => {
+    analysisModal.classList.remove('open');
+  });
+
+  analysisModal.addEventListener('click', (e) => {
+    if(e.target === analysisModal){
+      analysisModal.classList.remove('open');
+    }
   });
 }
 
