@@ -423,10 +423,16 @@
     .courses-showcase {
       position: relative;
       overflow: visible;
+      background:
+        radial-gradient(ellipse 70% 55% at 15% 0%, rgba(247, 173, 25, 0.16) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 100% 100%, rgba(226, 160, 125, 0.14) 0%, transparent 70%),
+        rgba(254, 247, 235, 0.78);
     }
     .courses-header .divider {
       position: relative;
       margin-bottom: 2.5rem;
+      background: linear-gradient(90deg, var(--sun), var(--peach));
+      box-shadow: 0 2px 10px rgba(247, 173, 25, 0.4);
     }
     .courses-header .divider::after {
       content: '';
@@ -438,6 +444,31 @@
       height: 2px;
       background: linear-gradient(90deg, var(--peach), transparent);
       border-radius: 2px;
+    }
+
+    /* Decorative scroll-fill line, echoing the timeline on nvo7.html,
+       styled in the site's yellow/gold gradient. Purely visual — sits
+       behind the cards and fills in as this section scrolls into view. */
+    .courses-timeline-track {
+      position: absolute;
+      left: -14px;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      background: var(--sun-light);
+      border-radius: 4px;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .courses-timeline-fill {
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, var(--sun) 0%, #FFD166 55%, var(--peach) 100%);
+      border-radius: 4px;
+      transition: height 0.1s linear;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .courses-timeline-fill { transition: none; }
     }
 
     .courses-grid {
@@ -488,7 +519,7 @@
       position: absolute;
       inset: 0;
 
-      background: rgba(0, 0, 0, 0.42);
+      background: linear-gradient(165deg, rgba(247, 173, 25, 0.32) 0%, rgba(58, 46, 31, 0.52) 55%, rgba(20, 14, 8, 0.74) 100%);
 
       z-index: 0;
       pointer-events: none;
@@ -567,20 +598,14 @@
       font-size: 0.78rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      background: rgba(255,255,255,0.28);
-      border: 1px solid rgba(255,255,255,0.35);
+      color: #3A2E1F;
+      background: linear-gradient(135deg, rgba(255, 219, 128, 0.95), rgba(247, 173, 25, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.45);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
+      box-shadow: 0 4px 14px rgba(161, 117, 34, 0.35), inset 0 1px 0 rgba(255,255,255,0.5);
       position: relative;
       z-index: 1;
-    }
-
-    .course-card--languages .course-card__label,
-    .course-card--science .course-card__label {
-      background: rgba(255, 255, 255, 0.35);
-      border-color: rgba(58, 46, 31, 0.12);
-      color: #3A2E1F;
     }
 
     .course-card__icon {
@@ -591,9 +616,25 @@
       align-items: center;
       justify-content: center;
       font-size: 1.4rem;
-      background: rgba(255,255,255,0.22);
-      border: 1px solid rgba(255,255,255,0.28);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+      background: linear-gradient(135deg, var(--sun), var(--peach));
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 6px 16px rgba(161, 117, 34, 0.4), inset 0 1px 0 rgba(255,255,255,0.35);
+      animation: courseIconFloat 3.2s ease-in-out infinite;
+      transition: transform 0.25s ease;
+    }
+
+    .course-card.reveal.visible:hover .course-card__icon {
+      animation-play-state: paused;
+      transform: scale(1.1) rotate(-4deg);
+    }
+
+    @keyframes courseIconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .course-card__icon { animation: none; }
     }
 
     .course-card h3 {
@@ -676,8 +717,10 @@
 
     .course-chip:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 14px 28px rgba(58, 46, 31, 0.16);
-      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 14px 28px rgba(161, 117, 34, 0.32);
+      background: linear-gradient(135deg, var(--sun), var(--peach));
+      color: #3A2E1F;
+      border-color: transparent;
     }
 
       /* ── ABOUT ── */
@@ -1196,6 +1239,7 @@
         grid-column: span 1;
       }
       .courses-header .divider::after { display: none; }
+      .courses-timeline-track { left: -6px; }
 
 
       .about-grid,
@@ -1372,6 +1416,7 @@
 
   <!-- COURSES -->
   <section class="section courses-showcase" id="courses">
+    <div class="courses-timeline-track" aria-hidden="true"><div class="courses-timeline-fill" id="coursesTimelineFill"></div></div>
     <div class="courses-header">
       <p class="section-title" data-i18n="courses.title">Нашите курсове</p>
       <p class="section-sub" data-i18n="courses.subtitle">Традиционното училище вече не е достатъчно. Поколението Z учи по различен начин – те имат нужда от динамика, която да задържи вниманието им и да събуди любопитството им.</p>
@@ -2231,7 +2276,29 @@ The Light Academy прави впечатление с малките групи
       initReviewsCarousel();
       initScrollLineParallax();
       initCourseReveal();
+      initCoursesTimelineParallax();
     });
+
+    // Scroll-fill accent line for the courses section (same technique as
+    // the .timeline-fill on nvo7.html), styled in the site's gold gradient.
+    function initCoursesTimelineParallax() {
+      const section = document.querySelector('.courses-showcase');
+      const fill = document.getElementById('coursesTimelineFill');
+      if (!section || !fill) return;
+
+      function update() {
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+        const progress = Math.min(Math.max(
+          (window.scrollY + window.innerHeight * 0.6 - sectionTop) / section.offsetHeight,
+          0
+        ), 1);
+        fill.style.height = (progress * 100) + '%';
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
+    }
 
     function initMobileNavToggle() {
       const toggle = document.querySelector('.nav-toggle');
