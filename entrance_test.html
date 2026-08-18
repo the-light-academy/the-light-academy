@@ -613,6 +613,35 @@
     margin: 0;
   }
 
+  .modal-form-group{
+    margin: 18px 0;
+  }
+
+  .modal-form-group label{
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .modal-form-group input{
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .modal-form-group input:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
   .result-download{
     margin: 22px 0 0;
     text-align: center;
@@ -806,15 +835,20 @@
         </div>
       </div>
 
-      <!-- Placeholder модал за "Изпрати резултата за анализ" – без изпращане на данни, ще се доизгради в следваща стъпка -->
+      <!-- "Изпрати резултата за анализ" – без бекенд/форма: отваря mailto: чернова до the.light.academy56@gmail.com с всички данни от резултата -->
       <div class="modal-overlay" id="analysis-modal">
         <div class="modal-box">
           <button type="button" class="modal-close-btn" id="analysis-modal-close" aria-label="Затвори">✕</button>
           <h3 class="modal-title">Изпрати резултата за анализ</h3>
           <p class="modal-text">
-            Скоро ще можете да изпратите резултата си директно за персонален анализ.
-            Тази функционалност е в процес на разработка.
+            Въведете името на ученика и ще отворим готов имейл с пълния резултат
+            до the.light.academy56@gmail.com – просто натиснете „Изпрати“ във вашия имейл клиент.
           </p>
+          <div class="modal-form-group">
+            <label for="analysis-student-name">Име на ученика</label>
+            <input type="text" id="analysis-student-name" placeholder="напр. Иван Иванов" autocomplete="name" required />
+          </div>
+          <button type="button" class="btn btn-primary" id="analysis-send-btn" style="width:100%;">Изпрати имейла</button>
         </div>
       </div>
 
@@ -1427,27 +1461,93 @@ function generateResultPDF(){
 }
 
 /* =========================================================
-   "ИЗПРАТИ РЕЗУЛТАТА ЗА АНАЛИЗ" – placeholder модал
-   (само отваря/затваря; не изпраща никакви данни)
+   "ИЗПРАТИ РЕЗУЛТАТА ЗА АНАЛИЗ"
+   Без бекенд и без форма към трета услуга – при клик отваряме
+   готова mailto: чернова до the.light.academy56@gmail.com с
+   всички данни от резултата. Изпращането се случва в имейл
+   клиента на посетителя, когато той сам натисне "Изпрати".
 ========================================================= */
 
-const sendAnalysisBtn     = document.getElementById('send-analysis-btn');
-const analysisModal       = document.getElementById('analysis-modal');
-const analysisModalClose  = document.getElementById('analysis-modal-close');
+const ANALYSIS_EMAIL = 'the.light.academy56@gmail.com';
+
+const sendAnalysisBtn       = document.getElementById('send-analysis-btn');
+const analysisModal         = document.getElementById('analysis-modal');
+const analysisModalClose    = document.getElementById('analysis-modal-close');
+const analysisStudentNameEl = document.getElementById('analysis-student-name');
+const analysisSendBtn       = document.getElementById('analysis-send-btn');
+
+function closeAnalysisModal(){
+  analysisModal.classList.remove('open');
+}
+
+function buildAnalysisMailtoUrl(studentName, results){
+  // Същата подредба като на екрана с резултата: топ 3 силни страни,
+  // топ 3 области за развитие, после пълната разбивка по категории.
+  const sortedDesc = [...results.categoryResults].sort((a, b) => b.percentage - a.percentage);
+  const sortedAsc = [...results.categoryResults].sort((a, b) => a.percentage - b.percentage);
+  const strengths = sortedDesc.slice(0, 3);
+  const growthAreas = sortedAsc.slice(0, 3);
+
+  const lines = [];
+  lines.push('Име на ученика: ' + studentName);
+  lines.push('');
+  lines.push('Резултат: ' + results.correctCount + ' / ' + results.totalQuestions + ' (' + results.overallPercentage + '%)');
+  lines.push('');
+  lines.push('Диагностично съобщение:');
+  lines.push(getDiagnosticMessage(results.overallPercentage));
+  lines.push('');
+  lines.push('Силни страни:');
+  strengths.forEach(cat => lines.push('- ' + cat.category + ': ' + cat.percentage + '%'));
+  lines.push('');
+  lines.push('Области за развитие:');
+  growthAreas.forEach(cat => lines.push('- ' + cat.category + ': ' + cat.percentage + '%'));
+  lines.push('');
+  lines.push('Резултат по категории:');
+  results.categoryResults.forEach(cat => {
+    lines.push('- ' + cat.category + ': ' + cat.correct + '/' + cat.total + ' (' + cat.percentage + '%)');
+  });
+  lines.push('');
+  lines.push('--');
+  lines.push('Изпратено от входящия тест по математика на The Light Academy.');
+
+  const subject = 'Резултат от входящ тест по математика – ' + studentName;
+  const body = lines.join('\n');
+
+  return 'mailto:' + ANALYSIS_EMAIL
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+}
 
 if(sendAnalysisBtn && analysisModal){
   sendAnalysisBtn.addEventListener('click', () => {
     analysisModal.classList.add('open');
+    analysisStudentNameEl.focus();
   });
 
-  analysisModalClose.addEventListener('click', () => {
-    analysisModal.classList.remove('open');
-  });
+  analysisModalClose.addEventListener('click', closeAnalysisModal);
 
   analysisModal.addEventListener('click', (e) => {
     if(e.target === analysisModal){
-      analysisModal.classList.remove('open');
+      closeAnalysisModal();
     }
+  });
+
+  analysisStudentNameEl.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      analysisSendBtn.click();
+    }
+  });
+
+  analysisSendBtn.addEventListener('click', () => {
+    const studentName = analysisStudentNameEl.value.trim();
+    if(!studentName){
+      analysisStudentNameEl.focus();
+      return;
+    }
+    if(!lastResults) return;
+
+    window.location.href = buildAnalysisMailtoUrl(studentName, lastResults);
+    closeAnalysisModal();
   });
 }
 
