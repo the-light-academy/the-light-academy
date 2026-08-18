@@ -3,169 +3,466 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>News | The Light Academy</title>
+  <title>Новини – The Light Academy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --sun: #D9A961;
-      --sun-light: #FFF4D9;
-      --sun-dark: #A17522;
-      --cream: #FEF7EB;
-      --white: #ffffff;
-      --dark: #3A2E1F;
-      --mid: #7D6245;
-      --radius: 16px;
-      --radius-sm: 8px;
+      --sun: #f5a623; --sun-light: #fff3d6; --sun-dark: #b9701a;
+      --orange: #e8580a; --orange-light: #fff0e8;
+      --purple: #6b46c1; --purple-light: #f2ebfd;
+      --teal: #0f766e; --teal-light: #e4f5f3;
+      --cream: #fffaf3; --dark: #2d1f0e; --mid: #785d43; --brown: #6f4323;
+      --white: #ffffff; --line: rgba(43, 30, 20, 0.08);
+      --shadow: 0 18px 42px rgba(61, 39, 18, 0.12);
+      --radius: 20px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.7; }
-    a { color: inherit; text-decoration: none; }
-    .page-header { background: var(--sun-light); padding: 2.5rem 2rem; text-align: center; }
-    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--sun-dark); margin-bottom: 0.5rem; }
-    .page-header p { color: var(--mid); font-size: 1rem; max-width: 700px; margin: 0 auto; }
-    nav { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.08); }
-    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 2rem; flex-wrap: wrap; }
-    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--sun-dark); }
-    .nav-links { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
-    .nav-links a { padding: 10px 16px; border-radius: 999px; background: var(--sun-light); color: var(--mid); font-weight: 700; }
-    .nav-links a:hover { background: var(--sun); color: var(--white); }
-    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-    .article-card { background: var(--white); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.5rem; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 14px 30px rgba(0,0,0,0.04); }
-    .article-card:hover { transform: translateY(-2px); box-shadow: 0 18px 34px rgba(0,0,0,0.06); }
-    .article-top { display: flex; align-items: flex-start; gap: 0.85rem; margin-bottom: 1rem; }
-    .article-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--sun); color: var(--white); display: grid; place-items: center; font-size: 1.1rem; }
-    .article-meta { display: grid; gap: 0.3rem; }
-    .article-meta time { font-size: 0.92rem; color: var(--mid); }
-    .article-title { font-size: 1.2rem; color: var(--dark); margin: 0; }
-    .article-snippet { color: var(--mid); margin: 1rem 0 0; }
-    .article-body { margin-top: 1.5rem; color: var(--dark); line-height: 1.9; }
-    .article-body h2 { font-size: 1.1rem; color: var(--sun-dark); margin-top: 1.5rem; }
-    .article-body p { margin-top: 1rem; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: var(--sun-dark); font-weight: 700; }
+    a { text-decoration: none; }
+
+    /* ── TOP BAR / NAV (matches site) ── */
+    .top-bar { background: var(--sun); color: var(--dark); font-size: 14px; font-weight: 700; padding: 8px 2rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+    .top-bar a { color: var(--dark); }
+    nav { background: var(--white); border-bottom: 2px solid var(--sun-light); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; height: 64px; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--sun-dark); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: transparent; }
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+    .nav-links a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 8px 14px; border-radius: 10px; }
+    .nav-links a:hover, .nav-links a.active { background: var(--sun-light); color: var(--sun-dark); }
+    .nav-links a.cta-nvo { background: var(--orange); color: var(--white); margin-left: 6px; }
+    .nav-links a.cta-nvo:hover { background: #c24508; }
+    .nav-links a.cta-birthdays { background: var(--sun); color: var(--dark); margin-left: 6px; }
+    .nav-links a.cta-birthdays:hover { background: var(--sun-dark); color: var(--white); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: transparent; border: none; cursor: pointer; padding: 6px; }
+    .hamburger span { display: block; width: 24px; height: 3px; background: var(--mid); border-radius: 3px; }
+    .mobile-menu { display: none; flex-direction: column; background: rgba(255,255,255,0.96); border-bottom: 2px solid var(--sun-light); padding: 1rem 1.2rem; gap: 0.6rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
+    .mobile-menu a.cta-nvo { background: var(--orange); color: var(--white); text-align: center; }
+    .mobile-menu a.cta-birthdays { background: var(--sun); color: var(--dark); text-align: center; }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    /* ── HERO ── */
+    .news-hero { background: linear-gradient(135deg, #f9bf51 0%, #f6c96a 30%, #d17f20 100%); border-radius: 28px; padding: 2.8rem 2rem; box-shadow: var(--shadow); position: relative; overflow: hidden; text-align: center; }
+    .news-hero::before, .news-hero::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,0.12); }
+    .news-hero::before { width: 260px; height: 260px; top: -80px; right: -30px; }
+    .news-hero::after { width: 200px; height: 200px; bottom: -100px; left: -40px; }
+    .eyebrow { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2); color: #fff9ef; padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .news-hero h1 { position: relative; z-index: 1; font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4.4vw, 3rem); line-height: 1.2; color: var(--dark); margin-top: 1rem; margin-bottom: 0.6rem; }
+    .news-hero p { position: relative; z-index: 1; font-size: 1.02rem; color: rgba(45,31,14,0.8); max-width: 620px; margin: 0 auto; }
+
+    /* ── TOOLBAR: filters + search ── */
+    .news-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.75rem 0 1.5rem; }
+    .filter-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .filter-pill { border: 1.5px solid var(--line); background: var(--white); color: var(--mid); font-family: inherit; font-weight: 700; font-size: 0.88rem; padding: 8px 16px; border-radius: 999px; cursor: pointer; transition: all 0.2s ease; }
+    .filter-pill:hover { border-color: var(--sun); color: var(--sun-dark); }
+    .filter-pill.active { background: var(--orange); border-color: var(--orange); color: var(--white); box-shadow: 0 8px 18px rgba(232,88,10,0.25); }
+    .search-box { position: relative; flex: 0 1 260px; }
+    .search-box input { width: 100%; padding: 10px 16px 10px 38px; border: 1.5px solid var(--line); border-radius: 999px; font-family: inherit; font-size: 0.92rem; color: var(--dark); background: var(--white); }
+    .search-box input:focus { outline: none; border-color: var(--sun); }
+    .search-box::before { content: "🔍"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; pointer-events: none; }
+
+    .empty-state { display: none; text-align: center; padding: 3rem 1rem; color: var(--mid); font-weight: 700; background: var(--white); border-radius: var(--radius); border: 1px dashed var(--line); }
+    .empty-state.show { display: block; }
+
+    /* ── NEWS GRID ── */
+    .news-grid { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 0.25rem; }
+
+    .article-card {
+      background: var(--white); border-radius: var(--radius); padding: 1.75rem;
+      border: 1px solid var(--line); box-shadow: 0 10px 24px rgba(30, 18, 12, 0.05);
+      opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .article-card.in-view { opacity: 1; transform: translateY(0); }
+    .article-card:hover { box-shadow: 0 16px 32px rgba(30, 18, 12, 0.09); border-color: rgba(245,166,35,0.35); }
+    .article-card.is-hidden { display: none; }
+
+    .article-card.featured {
+      background: linear-gradient(165deg, #fffaf1 0%, #fff3df 100%);
+      border: 1px solid rgba(245,166,35,0.3);
+      padding: 2.2rem;
+    }
+
+    .article-top { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.9rem; }
+    .article-icon { flex-shrink: 0; width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--sun), var(--orange)); color: var(--white); display: grid; place-items: center; font-size: 1.3rem; box-shadow: 0 6px 16px rgba(161,117,34,0.35); }
+    .article-meta { flex: 1; min-width: 0; }
+    .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
+    .meta-row time { font-size: 0.85rem; color: var(--mid); font-weight: 700; }
+    .category-tag { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; }
+    .category-tag.courses { background: var(--orange-light); color: var(--orange); }
+    .category-tag.workshops { background: var(--purple-light); color: var(--purple); }
+    .category-tag.summer { background: var(--teal-light); color: var(--teal); }
+    .new-badge { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; background: var(--sun); color: var(--white); }
+    .reading-time { font-size: 0.82rem; color: var(--mid); }
+    .reading-time::before { content: "· "; }
+
+    .article-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--dark); margin: 0; line-height: 1.35; }
+    .article-card.featured .article-title { font-size: clamp(1.4rem, 2.4vw, 1.75rem); }
+    .article-snippet { color: var(--mid); margin: 0.85rem 0 0; }
+
+    .article-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .article-body-inner { color: var(--dark); line-height: 1.9; padding-top: 1.4rem; }
+    .article-body-inner h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--sun-dark); margin-top: 1.4rem; }
+    .article-body-inner h3:first-child { margin-top: 0; }
+    .article-body-inner p { margin-top: 0.85rem; }
+    .article-card.featured .article-body { max-height: 1200px; }
+
+    .expand-btn {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 1.1rem;
+      background: var(--sun-light); color: var(--sun-dark); border: none;
+      font-family: inherit; font-weight: 800; font-size: 0.88rem;
+      padding: 9px 16px; border-radius: 999px; cursor: pointer; transition: background 0.2s ease;
+    }
+    .expand-btn:hover { background: var(--sun); color: var(--white); }
+    .expand-btn .chevron { display: inline-block; transition: transform 0.25s ease; }
+    .expand-btn[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .article-card.featured .expand-btn { display: none; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; color: var(--sun-dark); font-weight: 800; }
     .back-link:hover { text-decoration: underline; }
-    @media (max-width: 768px) { .nav-inner { padding: 1rem; } .article-top { flex-direction: column; } }
+
+    @keyframes highlightPulse {
+      0%, 100% { box-shadow: 0 10px 24px rgba(30, 18, 12, 0.05); }
+      30% { box-shadow: 0 0 0 4px rgba(245,166,35,0.45), 0 10px 24px rgba(30, 18, 12, 0.05); }
+    }
+    .article-card.pulse { animation: highlightPulse 1.4s ease; }
+
+    @media (max-width: 768px) {
+      .top-bar { display: none; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .page { padding: 1rem 1rem 3rem; }
+      .news-hero { padding: 2.2rem 1.2rem; }
+      .news-toolbar { flex-direction: column; align-items: stretch; }
+      .search-box { flex: 1 1 auto; }
+      .article-top { gap: 0.75rem; }
+      .article-card { padding: 1.35rem; }
+      .article-card.featured { padding: 1.6rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
+  <div class="top-bar"><span>📍 Горски пътник 56</span><span><a href="tel:+359885501283">+359 885 501 283</a></span><span><a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></span></div>
   <nav>
-    <div class="nav-inner">
-      <div class="nav-logo">The Light Academy</div>
-      <div class="nav-links">
-        <a href="index.html">Начало</a>
-        <a href="index.html#about">За нас</a>
-        <a href="index.html#courses">Курсове</a>
-        <a href="index.html#gallery">Галерия</a>
-        <a href="index.html#contact">Контакти</a>
-      </div>
+    <a href="index.html" class="logo"><span class="logo-icon"><img src="theLightAcademyLogo.png" alt="Logo"></span>The Light Academy</a>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+      <a href="index.html">Начало</a>
+      <a href="index.html#about">За нас</a>
+      <a href="index.html#courses">Курсове</a>
+      <a href="index.html#gallery">Галерия</a>
+      <a href="news.html" class="active">Новини</a>
+      <a href="index.html#contact">Контакти</a>
+      <a href="birthdays.html" class="cta-birthdays">🎂 Детски рождени дни</a>
+      <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
     </div>
   </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Начало</a>
+    <a href="index.html#about">За нас</a>
+    <a href="index.html#courses">Курсове</a>
+    <a href="index.html#gallery">Галерия</a>
+    <a href="news.html" class="active">Новини</a>
+    <a href="index.html#contact">Контакти</a>
+    <a href="birthdays.html" class="cta-birthdays">🎂 Детски рождени дни</a>
+    <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+  </div>
 
-  <header class="page-header">
-    <h1>Новини и статии</h1>
-    <p>Прегледайте последните новини и семейни статии от The Light Academy. Натиснете заглавие, за да прочетете цялата статия.</p>
-  </header>
+  <main class="page">
+    <section class="news-hero">
+      <span class="eyebrow">The Light Academy</span>
+      <h1>Новини и статии</h1>
+      <p>Прегледайте последните новини и семейни статии от The Light Academy. Натиснете заглавие, за да прочетете цялата статия.</p>
+    </section>
 
-  <main class="container">
-    <article class="article-card" id="article-nvo">
-      <div class="article-top">
-        <div class="article-icon">📐</div>
-        <div class="article-meta">
-          <time datetime="2026-08-01">Август 2026</time>
-          <h2 class="article-title">НВО 7 клас - подготовка по математика</h2>
+    <div class="news-toolbar">
+      <div class="filter-pills" id="filterPills">
+        <button type="button" class="filter-pill active" data-filter="all">Всички</button>
+        <button type="button" class="filter-pill" data-filter="courses">Курсове</button>
+        <button type="button" class="filter-pill" data-filter="workshops">Работилници</button>
+        <button type="button" class="filter-pill" data-filter="summer">Лятна програма</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Търсене в новините..." />
+      </div>
+    </div>
+
+    <div class="empty-state" id="emptyState">Няма новини, отговарящи на търсенето.</div>
+
+    <div class="news-grid" id="newsGrid">
+
+      <article class="article-card featured" id="article-nvo" data-category="courses">
+        <div class="article-top">
+          <div class="article-icon">📐</div>
+          <div class="article-meta">
+            <div class="meta-row">
+              <time datetime="2026-08-01">Август 2026</time>
+              <span class="category-tag courses">Курсове</span>
+              <span class="reading-time"></span>
+            </div>
+            <h2 class="article-title">НВО 7 клас - подготовка по математика</h2>
+          </div>
         </div>
-      </div>
-      <p class="article-snippet">Записването за НВО подготовка по математика е отворено. Разгледайте подробностите за малките групи, входящия тест и пробните изпити.</p>
-      <div class="article-body">
-        <p>Нашата програма за НВО подготовка по математика е създадена за ученици от 7. клас, които търсят сигурност и увереност преди изпита.</p>
-        <h2>Какво включва програмата</h2>
-        <p>• Входящ тест, който помага да определим индивидуалните нужди на детето.</p>
-        <p>• Математика в малки групи, за да гарантираме бърз прогрес.</p>
-        <p>• Пробни изпити в реални условия и детайлна обратна връзка.</p>
-        <h2>Защо да изберете тази програма</h2>
-        <p>Работим с ясна структура и разбираеми обяснения, за да помогнем на учениците да превърнат стреса в спокойствие. Местата са ограничени, затова е добре да резервирате предварително.</p>
-      </div>
-    </article>
-
-    <article class="article-card" id="article-bulgarian">
-      <div class="article-top">
-        <div class="article-icon">📚</div>
-        <div class="article-meta">
-          <time datetime="2026-06-01">Юни 2026</time>
-          <h2 class="article-title">Нов курс по български език</h2>
+        <p class="article-snippet">Записването за НВО подготовка по математика е отворено. Разгледайте подробностите за малките групи, входящия тест и пробните изпити.</p>
+        <div class="article-body">
+          <div class="article-body-inner">
+            <p>Нашата програма за НВО подготовка по математика е създадена за ученици от 7. клас, които търсят сигурност и увереност преди изпита.</p>
+            <h3>Какво включва програмата</h3>
+            <p>• Входящ тест, който помага да определим индивидуалните нужди на детето.</p>
+            <p>• Математика в малки групи, за да гарантираме бърз прогрес.</p>
+            <p>• Пробни изпити в реални условия и детайлна обратна връзка.</p>
+            <h3>Защо да изберете тази програма</h3>
+            <p>Работим с ясна структура и разбираеми обяснения, за да помогнем на учениците да превърнат стреса в спокойствие. Местата са ограничени, затова е добре да резервирате предварително.</p>
+          </div>
         </div>
-      </div>
-      <p class="article-snippet">Нов курс по български език в The Light Academy — фокус върху четене, писане и увереност в езика.</p>
-      <div class="article-body">
-        <p>Курсът по български език e подходящ за деца, които искат да развият грамотността си и да обикнат езика.</p>
-        <h2>Как преминава обучението</h2>
-        <p>• Упражнения по четене с разбиране.</p>
-        <p>• Работа върху писмени изложения и творческо писане.</p>
-        <p>• Граматически обяснения, които се превръщат в работещи умения.</p>
-        <h2>Кой може да се включи</h2>
-        <p>Подходящо е както за ученици, които искат да наваксат, така и за тези, които желаят да развият увереността си в училище.</p>
-      </div>
-    </article>
+        <button type="button" class="expand-btn" aria-expanded="true" hidden>Прочети повече <span class="chevron">⌄</span></button>
+      </article>
 
-    <article class="article-card" id="article-art">
-      <div class="article-top">
-        <div class="article-icon">🎭</div>
-        <div class="article-meta">
-          <time datetime="2026-06-01">Юни 2026</time>
-          <h2 class="article-title">Арт & театър работилница</h2>
+      <article class="article-card" id="article-bulgarian" data-category="courses">
+        <div class="article-top">
+          <div class="article-icon">📚</div>
+          <div class="article-meta">
+            <div class="meta-row">
+              <time datetime="2026-06-01">Юни 2026</time>
+              <span class="category-tag courses">Курсове</span>
+              <span class="reading-time"></span>
+            </div>
+            <h2 class="article-title">Нов курс по български език</h2>
+          </div>
         </div>
-      </div>
-      <p class="article-snippet">Творчески уъркшоп за деца с рисуване и театрални упражнения — за повече смелост и въображение.</p>
-      <div class="article-body">
-        <p>Нашата арт и театър работилница комбинира визуалните изкуства и сценичните практики в един вдъхновяващ час.</p>
-        <h2>Какво ще правим</h2>
-        <p>• 1 час рисуване с цветове, форми и експерименти.</p>
-        <p>• 1 час театрални игри за изразяване, увереност и екипна работа.</p>
-        <h2>Кой ще се хареса</h2>
-        <p>Деца, които обичат да творят, да се изразяват и да играят в безопасна и подкрепяща атмосфера.</p>
-      </div>
-    </article>
+        <p class="article-snippet">Нов курс по български език в The Light Academy — фокус върху четене, писане и увереност в езика.</p>
+        <div class="article-body">
+          <div class="article-body-inner">
+            <p>Курсът по български език e подходящ за деца, които искат да развият грамотността си и да обикнат езика.</p>
+            <h3>Как преминава обучението</h3>
+            <p>• Упражнения по четене с разбиране.</p>
+            <p>• Работа върху писмени изложения и творческо писане.</p>
+            <p>• Граматически обяснения, които се превръщат в работещи умения.</p>
+            <h3>Кой може да се включи</h3>
+            <p>Подходящо е както за ученици, които искат да наваксат, така и за тези, които желаят да развият увереността си в училище.</p>
+          </div>
+        </div>
+        <button type="button" class="expand-btn" aria-expanded="false">Прочети повече <span class="chevron">⌄</span></button>
+      </article>
 
-    <article class="article-card" id="article-summer">
-      <div class="article-top">
-        <div class="article-icon">☀️</div>
-        <div class="article-meta">
-          <time datetime="2025-06-01">Юни 2025</time>
-          <h2 class="article-title">Лятна програма е отворена</h2>
+      <article class="article-card" id="article-art" data-category="workshops">
+        <div class="article-top">
+          <div class="article-icon">🎭</div>
+          <div class="article-meta">
+            <div class="meta-row">
+              <time datetime="2026-06-01">Юни 2026</time>
+              <span class="category-tag workshops">Работилници</span>
+              <span class="reading-time"></span>
+            </div>
+            <h2 class="article-title">Арт & театър работилница</h2>
+          </div>
         </div>
-      </div>
-      <p class="article-snippet">Лятната програма включва математика, английски и рисуване — с ограничени места за децата от Лозенец.</p>
-      <div class="article-body">
-        <p>Програмата е подходяща за деца, които искат занимания през ваканцията, без да се претоварват.</p>
-        <h2>Какво предлага</h2>
-        <p>• Разнообразни теми по математика и английски.</p>
-        <p>• Арт и творчески задачи, които развиват мисленето.</p>
-        <h2>За кого е</h2>
-        <p>За деца, които искат полезна, спокойна и творческа лятна програма.</p>
-      </div>
-    </article>
+        <p class="article-snippet">Творчески уъркшоп за деца с рисуване и театрални упражнения — за повече смелост и въображение.</p>
+        <div class="article-body">
+          <div class="article-body-inner">
+            <p>Нашата арт и театър работилница комбинира визуалните изкуства и сценичните практики в един вдъхновяващ час.</p>
+            <h3>Какво ще правим</h3>
+            <p>• 1 час рисуване с цветове, форми и експерименти.</p>
+            <p>• 1 час театрални игри за изразяване, увереност и екипна работа.</p>
+            <h3>Кой ще се хареса</h3>
+            <p>Деца, които обичат да творят, да се изразяват и да играят в безопасна и подкрепяща атмосфера.</p>
+          </div>
+        </div>
+        <button type="button" class="expand-btn" aria-expanded="false">Прочети повече <span class="chevron">⌄</span></button>
+      </article>
 
-    <article class="article-card" id="article-painting">
-      <div class="article-top">
-        <div class="article-icon">🎨</div>
-        <div class="article-meta">
-          <time datetime="2025-04-01">Април 2025</time>
-          <h2 class="article-title">Нова работилница по рисуване</h2>
+      <article class="article-card" id="article-summer" data-category="summer">
+        <div class="article-top">
+          <div class="article-icon">☀️</div>
+          <div class="article-meta">
+            <div class="meta-row">
+              <time datetime="2025-06-01">Юни 2025</time>
+              <span class="category-tag summer">Лятна програма</span>
+              <span class="reading-time"></span>
+            </div>
+            <h2 class="article-title">Лятна програма е отворена</h2>
+          </div>
         </div>
-      </div>
-      <p class="article-snippet">Съботна работилница за деца 6–12 години — първа група вече започна с голям успех.</p>
-      <div class="article-body">
-        <p>Работилницата по рисуване е специално създадена за децата, които искат да опитат нови техники и да се забавляват.</p>
-        <h2>Какво правим</h2>
-        <p>• Разнообразни материали: бои, маркери и акварел.</p>
-        <p>• Малки групи, в които всеки получава внимание.</p>
-        <h2>Първите впечатления</h2>
-        <p>Децата се включиха ентусиазирано и вече са нетърпеливи за следващите занятия.</p>
-      </div>
-    </article>
+        <p class="article-snippet">Лятната програма включва математика, английски и рисуване — с ограничени места за децата от Лозенец.</p>
+        <div class="article-body">
+          <div class="article-body-inner">
+            <p>Програмата е подходяща за деца, които искат занимания през ваканцията, без да се претоварват.</p>
+            <h3>Какво предлага</h3>
+            <p>• Разнообразни теми по математика и английски.</p>
+            <p>• Арт и творчески задачи, които развиват мисленето.</p>
+            <h3>За кого е</h3>
+            <p>За деца, които искат полезна, спокойна и творческа лятна програма.</p>
+          </div>
+        </div>
+        <button type="button" class="expand-btn" aria-expanded="false">Прочети повече <span class="chevron">⌄</span></button>
+      </article>
+
+      <article class="article-card" id="article-painting" data-category="workshops">
+        <div class="article-top">
+          <div class="article-icon">🎨</div>
+          <div class="article-meta">
+            <div class="meta-row">
+              <time datetime="2025-04-01">Април 2025</time>
+              <span class="category-tag workshops">Работилници</span>
+              <span class="reading-time"></span>
+            </div>
+            <h2 class="article-title">Нова работилница по рисуване</h2>
+          </div>
+        </div>
+        <p class="article-snippet">Съботна работилница за деца 6–12 години — първа група вече започна с голям успех.</p>
+        <div class="article-body">
+          <div class="article-body-inner">
+            <p>Работилницата по рисуване е специално създадена за децата, които искат да опитат нови техники и да се забавляват.</p>
+            <h3>Какво правим</h3>
+            <p>• Разнообразни материали: бои, маркери и акварел.</p>
+            <p>• Малки групи, в които всеки получава внимание.</p>
+            <h3>Първите впечатления</h3>
+            <p>Децата се включиха ентусиазирано и вече са нетърпеливи за следващите занятия.</p>
+          </div>
+        </div>
+        <button type="button" class="expand-btn" aria-expanded="false">Прочети повече <span class="chevron">⌄</span></button>
+      </article>
+
+    </div>
 
     <a href="index.html" class="back-link">← Върни се на началната страница</a>
   </main>
+
+  <script>
+    const toggle = document.querySelector('.hamburger');
+    const menu = document.getElementById('mobileMenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => menu.classList.toggle('open'));
+      menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => menu.classList.remove('open')));
+    }
+
+    const cards = Array.from(document.querySelectorAll('.article-card'));
+
+    /* ── "Ново" badge: computed from today's date vs. published date,
+       so it stays accurate on its own without manual upkeep. ── */
+    (function tagRecentArticles() {
+      const now = new Date();
+      const NEW_WINDOW_DAYS = 45;
+      cards.forEach(card => {
+        const timeEl = card.querySelector('time');
+        if (!timeEl) return;
+        const published = new Date(timeEl.getAttribute('datetime'));
+        const daysAgo = (now - published) / (1000 * 60 * 60 * 24);
+        if (daysAgo >= 0 && daysAgo <= NEW_WINDOW_DAYS) {
+          const badge = document.createElement('span');
+          badge.className = 'new-badge';
+          badge.textContent = 'Ново';
+          timeEl.insertAdjacentElement('afterend', badge);
+        }
+      });
+    })();
+
+    /* ── Reading time: real word count from each article's body. ── */
+    (function computeReadingTime() {
+      const WORDS_PER_MINUTE = 180;
+      cards.forEach(card => {
+        const body = card.querySelector('.article-body-inner');
+        const label = card.querySelector('.reading-time');
+        if (!body || !label) return;
+        const wordCount = body.textContent.trim().split(/\s+/).filter(Boolean).length;
+        const minutes = Math.max(1, Math.round(wordCount / WORDS_PER_MINUTE));
+        label.textContent = minutes + ' мин четене';
+      });
+    })();
+
+    /* ── Expand / collapse (accordion) ── */
+    function setExpanded(card, expanded) {
+      const body = card.querySelector('.article-body');
+      const btn = card.querySelector('.expand-btn');
+      if (!body || !btn) return;
+      btn.setAttribute('aria-expanded', String(expanded));
+      btn.childNodes[0].textContent = expanded ? 'По-малко ' : 'Прочети повече ';
+      body.style.maxHeight = expanded ? body.scrollHeight + 'px' : '0px';
+    }
+
+    cards.forEach(card => {
+      const btn = card.querySelector('.expand-btn');
+      if (btn && !btn.hidden) {
+        btn.addEventListener('click', () => {
+          setExpanded(card, btn.getAttribute('aria-expanded') !== 'true');
+        });
+      }
+    });
+
+    /* ── Filter pills + live search (combined, AND logic) ── */
+    const filterPills = document.getElementById('filterPills');
+    const searchInput = document.getElementById('searchInput');
+    const emptyState = document.getElementById('emptyState');
+    let activeFilter = 'all';
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const matchesCategory = activeFilter === 'all' || card.dataset.category === activeFilter;
+        const haystack = (card.querySelector('.article-title').textContent + ' ' + card.querySelector('.article-snippet').textContent).toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        const visible = matchesCategory && matchesQuery;
+
+        card.classList.toggle('is-hidden', !visible);
+        if (visible) visibleCount++;
+      });
+
+      emptyState.classList.toggle('show', visibleCount === 0);
+    }
+
+    if (filterPills) {
+      filterPills.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-pill');
+        if (!btn) return;
+        filterPills.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p === btn));
+        activeFilter = btn.dataset.filter;
+        applyFilters();
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', applyFilters);
+    }
+
+    /* ── Scroll-reveal fade-in ── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('in-view');
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    cards.forEach((card, i) => {
+      card.style.transitionDelay = Math.min(i * 0.07, 0.35) + 's';
+      revealObserver.observe(card);
+    });
+
+    /* ── Deep-link support: news.html#article-xyz expands and scrolls
+       to that article, so the links from the homepage still work. ── */
+    (function handleHashDeepLink() {
+      const id = window.location.hash.replace('#', '');
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!target) return;
+
+      target.classList.add('in-view');
+      setExpanded(target, true);
+
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.classList.add('pulse');
+        target.addEventListener('animationend', () => target.classList.remove('pulse'), { once: true });
+      }, 80);
+    })();
+  </script>
 </body>
 </html>
