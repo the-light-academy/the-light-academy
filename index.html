@@ -308,36 +308,20 @@
     .btn-nvo { background: #E8580A; color: #fff; border: 2px solid #E8580A; }
     .btn-nvo:hover { background: #C24508; border-color: #C24508; color: #fff; }
 
-    /* ── PAGE SCROLL LINE (parallax background) ── */
+    /* ── PAGE SCROLL LINE (orange line winding behind every section, desktop only) ── */
     .scroll-line-bg {
-      position: fixed;
-      inset: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       pointer-events: none;
       z-index: 0;
-      overflow: hidden;
-    }
-    .scroll-parallax-wash {
-      position: absolute;
-      top: -20%;
-      left: -10%;
-      width: 120%;
-      height: 140%;
-      will-change: transform;
-      background:
-        radial-gradient(ellipse 55% 45% at 15% 25%, rgba(92, 74, 50, 0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 85% 55%, rgba(58, 46, 31, 0.10) 0%, transparent 65%),
-        radial-gradient(ellipse 60% 50% at 50% 85%, rgba(125, 98, 69, 0.09) 0%, transparent 70%),
-        linear-gradient(180deg, rgba(58, 46, 31, 0.04) 0%, rgba(92, 74, 50, 0.08) 50%, rgba(58, 46, 31, 0.05) 100%);
     }
     .scroll-line-svg {
       position: absolute;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: min(120vw, 1440px);
-      height: 400vh;
-      opacity: 0.28;
-      will-change: transform;
     }
     .scroll-line-path {
       fill: none;
@@ -345,20 +329,20 @@
       stroke-linejoin: round;
     }
     .scroll-line-path--primary {
-      stroke: var(--mid);
-      stroke-width: 3.5;
+      stroke: url(#scrollLineGradient);
+      stroke-width: 7;
+      opacity: 0.95;
     }
     .scroll-line-path--secondary {
-      stroke: #5C4A32;
-      stroke-width: 2;
-      opacity: 0.85;
+      stroke: #E8580A;
+      stroke-width: 3;
+      opacity: 0.35;
     }
-    @media (max-width: 480px) {
-      .scroll-line-svg { opacity: 0.18; }
+    @media (max-width: 768px) {
+      .scroll-line-bg { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .scroll-line-svg,
-      .scroll-parallax-wash { transform: none !important; }
+      .scroll-line-path { stroke-dashoffset: 0 !important; }
     }
 
     /* Content layers above scroll line */
@@ -444,31 +428,6 @@
       height: 2px;
       background: linear-gradient(90deg, var(--peach), transparent);
       border-radius: 2px;
-    }
-
-    /* Decorative scroll-fill line, echoing the timeline on nvo7.html,
-       styled in the site's yellow/gold gradient. Purely visual — sits
-       behind the cards and fills in as this section scrolls into view. */
-    .courses-timeline-track {
-      position: absolute;
-      left: -14px;
-      top: 4px;
-      bottom: 4px;
-      width: 4px;
-      background: var(--sun-light);
-      border-radius: 4px;
-      overflow: hidden;
-      z-index: 0;
-    }
-    .courses-timeline-fill {
-      width: 100%;
-      height: 0%;
-      background: linear-gradient(180deg, var(--sun) 0%, #FFD166 55%, var(--peach) 100%);
-      border-radius: 4px;
-      transition: height 0.1s linear;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .courses-timeline-fill { transition: none; }
     }
 
     .courses-grid {
@@ -1239,7 +1198,6 @@
         grid-column: span 1;
       }
       .courses-header .divider::after { display: none; }
-      .courses-timeline-track { left: -6px; }
 
 
       .about-grid,
@@ -1331,12 +1289,18 @@
 </head>
 <body>
 
-  <!-- Page-wide parallax scroll line -->
+  <!-- Page-wide orange line, winding behind every section (desktop only) -->
   <div class="scroll-line-bg" aria-hidden="true">
-    <div class="scroll-parallax-wash" aria-hidden="true"></div>
-    <svg class="scroll-line-svg" viewBox="0 0 1440 4000" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg">
-      <path class="scroll-line-path scroll-line-path--primary" d="M720 0 C 520 400, 920 800, 720 1200 S 520 2000, 720 2400 S 920 3200, 720 3600 L 720 4000" />
-      <path class="scroll-line-path scroll-line-path--secondary" d="M780 120 C 980 520, 580 920, 780 1320 S 980 2120, 780 2520 S 580 3320, 780 3720 L 780 4000" />
+    <svg class="scroll-line-svg" id="pageScrollLineSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="scrollLineGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F7AD19" />
+          <stop offset="50%" stop-color="#F28C0F" />
+          <stop offset="100%" stop-color="#E8580A" />
+        </linearGradient>
+      </defs>
+      <path class="scroll-line-path scroll-line-path--secondary" />
+      <path class="scroll-line-path scroll-line-path--primary" />
     </svg>
   </div>
 
@@ -1416,7 +1380,6 @@
 
   <!-- COURSES -->
   <section class="section courses-showcase" id="courses">
-    <div class="courses-timeline-track" aria-hidden="true"><div class="courses-timeline-fill" id="coursesTimelineFill"></div></div>
     <div class="courses-header">
       <p class="section-title" data-i18n="courses.title">Нашите курсове</p>
       <p class="section-sub" data-i18n="courses.subtitle">Традиционното училище вече не е достатъчно. Поколението Z учи по различен начин – те имат нужда от динамика, която да задържи вниманието им и да събуди любопитството им.</p>
@@ -2112,28 +2075,76 @@ The Light Academy прави впечатление с малките групи
       }
     };
 
+    // Orange line that winds behind every section, from the very top of the
+    // page to the very bottom (desktop only — hidden under 768px in CSS).
+    // The line's own d= is generated to match the page's real height, so it
+    // always reaches the footer no matter how long the page is; a scroll-tied
+    // stroke-dashoffset then "draws" it in as you scroll, the same technique
+    // used for the .timeline-fill line on nvo7.html.
     function initScrollLineParallax() {
-      const svg = document.querySelector('.scroll-line-svg');
-      const wash = document.querySelector('.scroll-parallax-wash');
+      const bg = document.querySelector('.scroll-line-bg');
+      const svg = document.getElementById('pageScrollLineSvg');
       const paths = document.querySelectorAll('.scroll-line-path');
-      if (!svg) return;
+      if (!bg || !svg || !paths.length) return;
 
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const pathLengths = Array.from(paths).map(path => {
-        try { return path.getTotalLength(); } catch (e) { return 4000; }
-      });
+      let pathLengths = [];
+
+      function buildWigglyPath(width, height, amplitude, wavelength, phase) {
+        const step = 26;
+        const points = [];
+        for (let y = 0; y <= height; y += step) {
+          const x = width / 2
+            + amplitude * Math.sin((y / wavelength) * Math.PI * 2 + phase)
+            + (amplitude * 0.3) * Math.sin((y / (wavelength * 0.4)) * Math.PI * 2 + phase * 1.7);
+          points.push([Math.round(x * 10) / 10, y]);
+        }
+        if (points.length < 2) return '';
+        let d = `M ${points[0][0]} ${points[0][1]}`;
+        for (let i = 0; i < points.length - 1; i++) {
+          const [x0, y0] = points[i];
+          const [x1, y1] = points[i + 1];
+          const mx = Math.round((x0 + x1) / 2 * 10) / 10;
+          const my = Math.round((y0 + y1) / 2 * 10) / 10;
+          d += ` Q ${x0} ${y0}, ${mx} ${my}`;
+        }
+        const last = points[points.length - 1];
+        d += ` L ${last[0]} ${last[1]}`;
+        return d;
+      }
+
+      function rebuildPath() {
+        if (window.innerWidth <= 768) return;
+
+        const docHeight = document.documentElement.scrollHeight;
+        const width = Math.min(window.innerWidth * 0.9, 1200);
+
+        bg.style.height = docHeight + 'px';
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', docHeight);
+        svg.setAttribute('viewBox', `0 0 ${width} ${docHeight}`);
+
+        const dPrimary = buildWigglyPath(width, docHeight, width * 0.22, 950, 0);
+        const dSecondary = buildWigglyPath(width, docHeight, width * 0.16, 780, 1.1);
+
+        document.querySelector('.scroll-line-path--primary').setAttribute('d', dPrimary);
+        document.querySelector('.scroll-line-path--secondary').setAttribute('d', dSecondary);
+
+        pathLengths = Array.from(paths).map(path => {
+          try { return path.getTotalLength(); } catch (e) { return docHeight; }
+        });
+
+        update();
+      }
 
       function update() {
-        const scrollY = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? Math.min(Math.max(scrollY / docHeight, 0), 1) : 0;
+        if (window.innerWidth <= 768) return;
 
-        if (!prefersReduced) {
-          svg.style.transform = `translateX(-50%) translateY(${-scrollY * 0.22}px)`;
-          if (wash) {
-            wash.style.transform = `translateY(${-scrollY * 0.12}px)`;
-          }
-        }
+        const scrollY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const lookahead = window.innerHeight * 0.5; // small head start so the line isn't invisible on first paint
+        const progress = maxScroll > 0
+          ? Math.min(Math.max((scrollY + lookahead) / (maxScroll + lookahead), 0), 1)
+          : 1;
 
         paths.forEach((path, i) => {
           const len = pathLengths[i] || 4000;
@@ -2142,9 +2153,16 @@ The Light Academy прави впечатление с малките групи
         });
       }
 
+      let resizeTimer = null;
+      function onResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(rebuildPath, 150);
+      }
+
       window.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update, { passive: true });
-      update();
+      window.addEventListener('resize', onResize, { passive: true });
+      window.addEventListener('load', rebuildPath);
+      rebuildPath();
     }
 
     function initCourseReveal() {
@@ -2276,29 +2294,7 @@ The Light Academy прави впечатление с малките групи
       initReviewsCarousel();
       initScrollLineParallax();
       initCourseReveal();
-      initCoursesTimelineParallax();
     });
-
-    // Scroll-fill accent line for the courses section (same technique as
-    // the .timeline-fill on nvo7.html), styled in the site's gold gradient.
-    function initCoursesTimelineParallax() {
-      const section = document.querySelector('.courses-showcase');
-      const fill = document.getElementById('coursesTimelineFill');
-      if (!section || !fill) return;
-
-      function update() {
-        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-        const progress = Math.min(Math.max(
-          (window.scrollY + window.innerHeight * 0.6 - sectionTop) / section.offsetHeight,
-          0
-        ), 1);
-        fill.style.height = (progress * 100) + '%';
-      }
-
-      window.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update, { passive: true });
-      update();
-    }
 
     function initMobileNavToggle() {
       const toggle = document.querySelector('.nav-toggle');
