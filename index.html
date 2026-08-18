@@ -220,6 +220,23 @@
     }
     .nav-links a.cta:hover { background: var(--sun-dark); color: var(--white); }
 
+    /* ── COURSES NAV DROPDOWN ── */
+    .nav-item-dropdown { position: relative; display: flex; align-items: center; }
+    .dropdown-toggle { background: none; border: none; cursor: pointer; padding: 6px; margin-left: -6px; color: var(--mid); display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
+    .dropdown-toggle:hover { color: var(--sun-dark); background: var(--sun-light); }
+    .dropdown-toggle[aria-expanded="true"] { transform: rotate(180deg); color: var(--sun-dark); }
+    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: var(--white); border: 1px solid rgba(58,46,31,0.1); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
+    .courses-dropdown.open { display: flex; }
+    .dropdown-category-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-category-row:hover { background: var(--sun-light); }
+    .dropdown-category-row .chevron { color: var(--mid); flex-shrink: 0; transition: transform 0.2s ease; }
+    .dropdown-category.open > .dropdown-category-row { color: var(--sun-dark); background: var(--sun-light); }
+    .dropdown-category.open > .dropdown-category-row .chevron { transform: rotate(90deg); }
+    .dropdown-submenu { display: none; flex-direction: column; padding: 2px 6px 6px 20px; gap: 2px; }
+    .dropdown-category.open > .dropdown-submenu { display: flex; }
+    .dropdown-submenu a { padding: 8px 10px; border-radius: 8px; font-size: 13.5px; color: var(--mid); font-weight: 700; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-submenu a:hover { background: var(--sun-light); color: var(--sun-dark); }
+
     /* ── LANGUAGE TOGGLE ── */
     .lang-toggle {
       background: var(--sun-light);
@@ -1099,6 +1116,10 @@
         font-size: 14px;
         padding: 10px 14px;
       }
+
+      .nav-item-dropdown { flex-wrap: wrap; width: 100%; }
+      .nav-item-dropdown > a { flex: 1; }
+      .courses-dropdown { position: static; width: 100%; flex-basis: 100%; box-shadow: none; border: none; background: rgba(58,46,31,0.03); padding: 4px 6px 4px 14px; margin-top: 2px; }
     }
 
     /* ── MOBILE RESPONSIVE ── */
@@ -1151,6 +1172,10 @@
         font-size: 13px;
         padding: 10px 14px;
       }
+
+      .nav-item-dropdown { flex-wrap: wrap; width: 100%; }
+      .nav-item-dropdown > a { flex: 1; }
+      .courses-dropdown { position: static; width: 100%; flex-basis: 100%; box-shadow: none; border: none; background: rgba(58,46,31,0.03); padding: 4px 6px 4px 14px; margin-top: 2px; }
 
       .logo {
         font-size: 1.05rem;
@@ -1320,7 +1345,41 @@
     <div class="nav-links">
       <a href="index.html" class="active" data-i18n="nav.home">Home</a>
       <a href="#about" data-i18n="nav.about">About</a>
-      <a href="#courses" data-i18n="nav.courses">Courses</a>
+      <div class="nav-item-dropdown">
+        <a href="#courses" data-i18n="nav.courses">Courses</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Courses menu">
+          <svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="courses-dropdown">
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span data-i18n="navdrop.nvo">NVO Preparation</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="nvo7.html" data-i18n="navdrop.nvo7">7th grade</a>
+              <a href="course_nvo_4_class.html" data-i18n="navdrop.nvo4">4th grade</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span data-i18n="navdrop.school">School Preparation</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_math_5_class.html" data-i18n="navdrop.school5">5th grade</a>
+              <a href="course_math_6_class.html" data-i18n="navdrop.school6">6th grade</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span data-i18n="navdrop.lang">Foreign Languages</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_english.html" data-i18n="navdrop.langEn">English</a>
+              <a href="course_spanish.html" data-i18n="navdrop.langEs">Spanish</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span data-i18n="navdrop.science">Natural Sciences</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_chemistry.html" data-i18n="navdrop.scienceChem">Chemistry</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
       <a href="news.html" data-i18n="nav.news">News</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
@@ -1869,6 +1928,17 @@ The Light Academy прави впечатление с малките групи
         "nav.courses": "Courses",
         "nav.birthdays": "🎂 Birthday Parties",
         "nav.nvo": "📐 NVO 7th Grade",
+        "navdrop.nvo": "NVO Preparation",
+        "navdrop.nvo7": "7th grade",
+        "navdrop.nvo4": "4th grade",
+        "navdrop.school": "School Preparation",
+        "navdrop.school5": "5th grade",
+        "navdrop.school6": "6th grade",
+        "navdrop.lang": "Foreign Languages",
+        "navdrop.langEn": "English",
+        "navdrop.langEs": "Spanish",
+        "navdrop.science": "Natural Sciences",
+        "navdrop.scienceChem": "Chemistry",
         "hero.title": "Where Knowledge<br>Meets Creativity",
         "hero.subtitle": "Courses in mathematics, Bulgarian, English, Spanish and NVO preparation — in the heart of Lozenets.",
         "hero.btn1": "Discover the Academy",
@@ -1974,6 +2044,17 @@ The Light Academy прави впечатление с малките групи
         "nav.courses": "Курсове",
         "nav.birthdays": "🎂 Детски рождени дни",
         "nav.nvo": "📐 НВО 7 клас",
+        "navdrop.nvo": "Подготовка за НВО",
+        "navdrop.nvo7": "7 клас",
+        "navdrop.nvo4": "4 клас",
+        "navdrop.school": "Училищна подготовка",
+        "navdrop.school5": "5 клас",
+        "navdrop.school6": "6 клас",
+        "navdrop.lang": "Чужди езици",
+        "navdrop.langEn": "Английски език",
+        "navdrop.langEs": "Испански език",
+        "navdrop.science": "Природни науки",
+        "navdrop.scienceChem": "Химия",
         "hero.title": "Където знанието<br>среща креативността",
         "hero.subtitle": "Курсове по математика, български, английски, испански и подготовка за НВО – в сърцето на Лозенец.",
         "hero.btn1": "Открийте академията",
@@ -2288,7 +2369,40 @@ The Light Academy прави впечатление с малките групи
       initReviewsCarousel();
       initScrollLineParallax();
       initCourseReveal();
+      initCoursesNavDropdown();
     });
+
+    // "Courses" nav dropdown: arrow opens a panel with the 4 course
+    // categories, each with its own arrow that opens the class-level links.
+    function initCoursesNavDropdown() {
+      const root = document.querySelector('.nav-item-dropdown');
+      const toggleBtn = root && root.querySelector('.dropdown-toggle');
+      const menu = root && root.querySelector('.courses-dropdown');
+      if (!root || !toggleBtn || !menu) return;
+
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = menu.classList.toggle('open');
+        toggleBtn.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      menu.querySelectorAll('.dropdown-category-row').forEach(row => {
+        row.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const cat = row.parentElement;
+          const wasOpen = cat.classList.contains('open');
+          menu.querySelectorAll('.dropdown-category').forEach(c => c.classList.remove('open'));
+          cat.classList.toggle('open', !wasOpen);
+        });
+      });
+
+      document.addEventListener('click', () => {
+        menu.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        menu.querySelectorAll('.dropdown-category.open').forEach(c => c.classList.remove('open'));
+      });
+    }
 
     function initMobileNavToggle() {
       const toggle = document.querySelector('.nav-toggle');

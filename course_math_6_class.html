@@ -40,6 +40,25 @@
     .mobile-menu a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
     .mobile-menu a.cta-nvo { background: var(--orange); color: var(--white); text-align: center; }
     .mobile-menu a.cta-birthdays { background: var(--sun); color: var(--dark); text-align: center; }
+    .nav-item-dropdown { position: relative; display: flex; align-items: center; }
+    .dropdown-toggle { background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; color: var(--mid); display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
+    .dropdown-toggle:hover { color: var(--sun-dark); background: var(--sun-light); }
+    .dropdown-toggle[aria-expanded="true"] { transform: rotate(180deg); color: var(--sun-dark); }
+    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
+    .courses-dropdown.open { display: flex; }
+    .dropdown-category-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-category-row:hover { background: var(--sun-light); }
+    .dropdown-category-row .chevron { color: var(--mid); flex-shrink: 0; transition: transform 0.2s ease; }
+    .dropdown-category.open > .dropdown-category-row { color: var(--sun-dark); background: var(--sun-light); }
+    .dropdown-category.open > .dropdown-category-row .chevron { transform: rotate(90deg); }
+    .dropdown-submenu { display: none; flex-direction: column; padding: 2px 6px 6px 20px; gap: 2px; }
+    .dropdown-category.open > .dropdown-submenu { display: flex; }
+    .dropdown-submenu a { padding: 8px 10px; border-radius: 8px; font-size: 13.5px; color: var(--mid); font-weight: 700; transition: background 0.15s ease, color 0.15s ease; }
+    .dropdown-submenu a:hover { background: var(--orange-light); color: var(--orange); }
+    .mobile-dropdown-row { display: flex; align-items: center; justify-content: space-between; }
+    .mobile-dropdown-row a { flex: 1; }
+    .mobile-courses-dropdown { display: none; flex-direction: column; padding: 2px 0 4px 10px; gap: 2px; }
+    .mobile-courses-dropdown.open { display: flex; }
 
     .course-page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
 
@@ -141,7 +160,39 @@
     <div class="nav-links">
       <a href="index.html" class="active">Начало</a>
       <a href="index.html#about">За нас</a>
-      <a href="index.html#courses">Курсове</a>
+      <div class="nav-item-dropdown">
+        <a href="index.html#courses">Курсове</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Покажи всички курсове"><svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="courses-dropdown">
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Подготовка за НВО</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="nvo7.html">7 клас</a>
+              <a href="course_nvo_4_class.html">4 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Училищна подготовка</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_math_5_class.html">5 клас</a>
+              <a href="course_math_6_class.html">6 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_english.html">Английски език</a>
+              <a href="course_spanish.html">Испански език</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Природни науки</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_chemistry.html">Химия</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <a href="index.html#gallery">Галерия</a>
       <a href="news.html">Новини</a>
       <a href="index.html#contact">Контакти</a>
@@ -152,7 +203,41 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="index.html">Начало</a>
     <a href="index.html#about">За нас</a>
-    <a href="index.html#courses">Курсове</a>
+    <div class="mobile-dropdown">
+      <div class="mobile-dropdown-row">
+        <a href="index.html#courses">Курсове</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Покажи всички курсове"><svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div class="mobile-courses-dropdown">
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Подготовка за НВО</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="nvo7.html">7 клас</a>
+            <a href="course_nvo_4_class.html">4 клас</a>
+          </div>
+        </div>
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Училищна подготовка</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="course_math_5_class.html">5 клас</a>
+            <a href="course_math_6_class.html">6 клас</a>
+          </div>
+        </div>
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="course_english.html">Английски език</a>
+            <a href="course_spanish.html">Испански език</a>
+          </div>
+        </div>
+        <div class="dropdown-category">
+          <div class="dropdown-category-row"><span>Природни науки</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dropdown-submenu">
+            <a href="course_chemistry.html">Химия</a>
+          </div>
+        </div>
+      </div>
+    </div>
     <a href="index.html#gallery">Галерия</a>
     <a href="news.html">Новини</a>
     <a href="index.html#contact">Контакти</a>
@@ -313,6 +398,41 @@
           step.querySelector('.pay-body').appendChild(badge);
           nextMarked = true;
         }
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      function setupDropdown(root) {
+        const toggleBtn = root.querySelector('.dropdown-toggle');
+        const menu = root.querySelector('.courses-dropdown, .mobile-courses-dropdown');
+        if (!toggleBtn || !menu) return;
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const isOpen = menu.classList.toggle('open');
+          toggleBtn.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        menu.querySelectorAll('.dropdown-category-row').forEach(row => {
+          row.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cat = row.parentElement;
+            const wasOpen = cat.classList.contains('open');
+            menu.querySelectorAll('.dropdown-category').forEach(c => c.classList.remove('open'));
+            cat.classList.toggle('open', !wasOpen);
+          });
+        });
+      }
+
+      document.querySelectorAll('.nav-item-dropdown, .mobile-dropdown').forEach(setupDropdown);
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.courses-dropdown.open, .mobile-courses-dropdown.open').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+        document.querySelectorAll('.dropdown-category.open').forEach(c => c.classList.remove('open'));
       });
     })();
   </script>
