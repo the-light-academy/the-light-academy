@@ -1623,7 +1623,7 @@
 
       // Amount + labels
       if (selectedPayment === 'installments') {
-        priceLabel.textContent = 'Месечна вноска';
+        priceLabel.textContent = 'Такса';
         priceAmount.textContent = formatEUR(plan.installment);
         priceCaption.textContent = `при ${plan.label} · 3 вноски · общо ${formatEUR(installmentTotal)}`;
       } else {
