@@ -303,6 +303,18 @@
       0%, 100% { transform: translate(0, 0) scale(1); }
       50% { transform: translate(14px, -14px) scale(1.06); }
     }
+    @keyframes heroCircleFloat3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(10px, 12px) scale(1.1); }
+    }
+    .hero-dot {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-dot--1 { top: 18%; left: 8%; width: 34px; height: 34px; background: var(--sun); opacity: 0.14; }
+    .hero-dot--2 { bottom: 22%; right: 10%; width: 22px; height: 22px; background: var(--peach); opacity: 0.16; }
     .hero h1 {
       font-family: 'Bad Script', cursive;
       font-weight: 400;
@@ -380,8 +392,53 @@
     }
     @media (max-width: 768px) {
       .scroll-line-bg { display: none; }
-      .hero::before { animation: heroCircleFloat1 9s ease-in-out infinite; }
-      .hero::after { animation: heroCircleFloat2 11s ease-in-out infinite; }
+      .hero::before { animation: heroCircleFloat1 9s ease-in-out infinite; translate: 0 calc(var(--pxy, 0px) * 0.6); }
+      .hero::after { animation: heroCircleFloat2 11s ease-in-out infinite; translate: 0 calc(var(--pxy, 0px) * -0.6); }
+      .hero-dot--1 { animation: heroCircleFloat3 8s ease-in-out infinite; translate: 0 calc(var(--pxy, 0px) * 0.4); }
+      .hero-dot--2 { animation: heroCircleFloat1 10s ease-in-out infinite; translate: 0 calc(var(--pxy, 0px) * -0.4); }
+
+      /* Background circles that drift while scrolling, echoing the hero's
+         floating dots through the rest of the page (desktop keeps the
+         wiggly scroll line instead — see .scroll-line-bg above). */
+      #about, #courses, #updates, #reviews, #contact { overflow: hidden; }
+
+      #about::before, #courses::after, #updates::before, #reviews::after, #contact::before {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+      }
+      #about::before {
+        top: -40px; right: -30px; width: 130px; height: 130px;
+        background: var(--sun); opacity: 0.12;
+        animation: heroCircleFloat2 10s ease-in-out infinite;
+        translate: 0 calc(var(--pxy, 0px) * 1);
+      }
+      #courses::after {
+        bottom: -50px; left: -30px; width: 160px; height: 160px;
+        background: var(--peach); opacity: 0.10;
+        animation: heroCircleFloat1 12s ease-in-out infinite;
+        translate: 0 calc(var(--pxy, 0px) * -1.4);
+      }
+      #updates::before {
+        top: -30px; left: -40px; width: 120px; height: 120px;
+        background: var(--sun); opacity: 0.10;
+        animation: heroCircleFloat1 8s ease-in-out infinite;
+        translate: 0 calc(var(--pxy, 0px) * 0.8);
+      }
+      #reviews::after {
+        bottom: -40px; right: -30px; width: 150px; height: 150px;
+        background: var(--peach); opacity: 0.10;
+        animation: heroCircleFloat3 9.5s ease-in-out infinite;
+        translate: 0 calc(var(--pxy, 0px) * -1.2);
+      }
+      #contact::before {
+        top: -35px; right: -25px; width: 140px; height: 140px;
+        background: var(--sun); opacity: 0.1;
+        animation: heroCircleFloat2 11s ease-in-out infinite;
+        translate: 0 calc(var(--pxy, 0px) * 1.3);
+      }
     }
 
     /* Content layers above scroll line */
@@ -1439,6 +1496,8 @@
 
   <!-- HERO -->
   <section class="hero">
+    <span class="hero-dot hero-dot--1" aria-hidden="true"></span>
+    <span class="hero-dot hero-dot--2" aria-hidden="true"></span>
     <h1 data-i18n="hero.title">Където знанието<br>среща креативността</h1>
     <p data-i18n="hero.subtitle">Курсове по математика, български, английски, испански и подготовка за НВО – в сърцето на Лозенец.</p>
     <div class="hero-cta">
@@ -2432,6 +2491,38 @@ The Light Academy прави впечатление с малките групи
       setLanguage(newLang, { animateHero: false });
     }
 
+    // Drifts the hero dots and the section background circles a little as
+    // the page scrolls (mobile only — desktop has the wiggly .scroll-line-bg
+    // instead). A single --pxy custom property on <html> is read by each
+    // circle's `translate` (see the mobile media query above), each with
+    // its own multiplier, so one scroll listener moves every circle at a
+    // slightly different depth.
+    function initBgCircleParallax() {
+      const root = document.documentElement;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+
+      let ticking = false;
+      function update() {
+        ticking = false;
+        if (window.innerWidth > 768) {
+          root.style.removeProperty('--pxy');
+          return;
+        }
+        const px = Math.max(-140, Math.min(140, window.scrollY * 0.08));
+        root.style.setProperty('--pxy', px + 'px');
+      }
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    }
+
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
       initLanguage();
@@ -2440,6 +2531,7 @@ The Light Academy прави впечатление с малките групи
       initMobileNavToggle();
       initReviewsCarousel();
       initScrollLineParallax();
+      initBgCircleParallax();
       initCourseReveal();
       initCoursesNavDropdown();
     });
