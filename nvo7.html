@@ -119,12 +119,6 @@
       transition: background 0.2s;
     }
     .nav-links a:hover, .nav-links a.active { background: #FFF4D9; color: #A17522; }
-    .nav-links a.cta-birthdays {
-      background: #F7AD19;
-      color: var(--dark);
-      margin-left: 4px;
-    }
-    .nav-links a.cta-birthdays:hover { background: #A17522; color: var(--white); }
     .nav-links a.cta-nvo {
       background: var(--orange);
       color: var(--white);
@@ -169,11 +163,6 @@
     .mobile-menu a.cta-nvo {
       background: var(--orange);
       color: var(--white);
-      text-align: center;
-    }
-    .mobile-menu a.cta-birthdays {
-      background: #F7AD19;
-      color: var(--dark);
       text-align: center;
     }
 
@@ -676,6 +665,23 @@
       color: var(--light-text);
       line-height: 1.5;
     }
+
+    .early-bird-banner {
+      margin-top: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background: var(--teal-light);
+      color: var(--teal);
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.85rem 1.3rem;
+      border-radius: 999px;
+      text-align: center;
+    }
+    .early-bird-banner strong { font-weight: 900; }
 
     /* -- Course info cards below calculator -- */
     .course-info-block {
@@ -1202,7 +1208,7 @@
       <a href="index.html#gallery">Галерия</a>
       <a href="news.html">Новини</a>
       <a href="index.html#contact">Контакти</a>
-      <a href="birthdays.html" class="cta-birthdays">Рождени дни</a>
+      <a href="birthdays.html">Рождени дни</a>
       <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
     </div>
     <button class="hamburger" onclick="toggleMenu()" aria-label="Меню">
@@ -1255,7 +1261,7 @@
     <a href="index.html#gallery">Галерия</a>
     <a href="news.html">Новини</a>
     <a href="index.html#contact">Контакти</a>
-    <a href="birthdays.html" class="cta-birthdays">Рождени дни</a>
+    <a href="birthdays.html">Рождени дни</a>
     <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
   </div>
 
@@ -1486,6 +1492,11 @@
           Всички суми са крайни, без допълнителни такси.
         </p>
       </div>
+    </div>
+
+    <div class="early-bird-banner">
+      <i class="fa-solid fa-bolt"></i>
+      <span><strong>5% отстъпка</strong> за ранно записване до 31 август</span>
     </div>
   </section>
 
