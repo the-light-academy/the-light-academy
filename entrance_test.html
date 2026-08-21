@@ -613,9 +613,10 @@
     inset: 0;
     background: rgba(20, 15, 5, 0.5);
     display: none;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 20px;
+    overflow-y: auto;
+    padding: 60px 20px 40px;
     z-index: 200;
   }
 
@@ -632,10 +633,14 @@
     text-align: left;
   }
 
+  /* Fixed to the viewport (not the box) so it stays reachable even when
+     the modal's content is taller than the screen and the overlay
+     scrolls — otherwise on small phones the "×" scrolls off along with
+     the top of the box and the modal becomes impossible to close. */
   .modal-close-btn{
-    position: absolute;
-    top: 12px;
-    right: 12px;
+    position: fixed;
+    top: 16px;
+    right: 16px;
     width: 32px;
     height: 32px;
     border: none;
@@ -645,6 +650,8 @@
     font-size: 16px;
     line-height: 1;
     cursor: pointer;
+    z-index: 210;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
   }
 
   .modal-close-btn:hover{
