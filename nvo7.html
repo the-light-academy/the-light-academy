@@ -1481,9 +1481,9 @@
 
       <div class="pricing-display">
         <div class="pricing-display-top">
-          <span class="price-tag-label" id="priceLabel">Такса</span>
-          <div class="pricing-display-amount" id="priceAmount">360 €</div>
-          <div class="pricing-display-caption" id="priceCaption">3 вноски · общо 1 080 €</div>
+          <span class="price-tag-label" id="priceLabel">Средно на месец</span>
+          <div class="pricing-display-amount" id="priceAmount">135 € / мес.</div>
+          <div class="pricing-display-caption" id="priceCaption">3 вноски по 360 € · общо 1 080 €</div>
 
           <ul class="schedule-list" id="scheduleList"></ul>
         </div>
@@ -1649,19 +1649,23 @@
       return n.toLocaleString('bg-BG') + ' €';
     }
 
+    const COURSE_MONTHS = 8; // септември – май, закръглено за изчисление на месечна цена
+
     function renderPricing() {
       const installmentTotal = PLAN.installment * 3;
       const savings = installmentTotal - PLAN.full;
 
-      // Amount + labels
+      // Amount + labels — водещото число вече е средно на месец,
+      // а общата сума за курса стои по-малка, под него.
+      priceLabel.textContent = 'Средно на месец';
       if (selectedPayment === 'installments') {
-        priceLabel.textContent = 'Такса';
-        priceAmount.textContent = formatEUR(PLAN.installment);
-        priceCaption.textContent = `3 вноски · общо ${formatEUR(installmentTotal)}`;
+        const perMonth = Math.round(installmentTotal / COURSE_MONTHS);
+        priceAmount.textContent = `${formatEUR(perMonth)} / мес.`;
+        priceCaption.textContent = `3 вноски по ${formatEUR(PLAN.installment)} · общо ${formatEUR(installmentTotal)}`;
       } else {
-        priceLabel.textContent = 'Общо за курса';
-        priceAmount.textContent = formatEUR(PLAN.full);
-        priceCaption.textContent = 'еднократно плащане';
+        const perMonth = Math.round(PLAN.full / COURSE_MONTHS);
+        priceAmount.textContent = `${formatEUR(perMonth)} / мес.`;
+        priceCaption.textContent = `${formatEUR(PLAN.full)} за целогодишния курс · еднократно плащане`;
       }
 
       // Bump animation on change
