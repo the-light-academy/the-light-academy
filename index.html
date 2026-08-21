@@ -1081,7 +1081,12 @@
     .update-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; color: var(--dark); }
     .update-card p { font-size: 14px; color: var(--mid); }
     .update-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
-    .update-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .update-card { transition: transform 0.35s ease, box-shadow 0.25s ease, opacity 0.5s ease; }
+
+    /* Desktop-only staggered reveal, same pattern as .course-card.reveal */
+    .update-card.reveal { opacity: 0; transform: translateY(24px); }
+    .update-card.reveal.visible { opacity: 1; transform: translateY(0); }
+    .update-card.reveal.visible:hover { transform: translateY(-4px); }
 
     /* ── GALLERY ── */
     .gallery-grid {
@@ -1660,6 +1665,26 @@
           </div>
           <p>Енролмънтът за НВО подготовка по математика е открит. Малки групи, пробни изпити и ограничени места.</p>
         </a>
+        <a class="update-card" href="news.html#article-nvo4">
+          <div class="update-card-top">
+            <div class="update-icon pink"><i class="fa-solid fa-pen-fancy"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date.nvo4" style="color:#B27335;">Август 2026</div>
+              <h3 data-i18n="updates.card.nvo4.title">📝 НВО 4 клас вече е при нас</h3>
+            </div>
+          </div>
+          <p>Курс по БЕЛ и математика за подготовка за НВО след 4. клас — с учител с над 15-годишен опит и доказани резултати.</p>
+        </a>
+        <a class="update-card" href="news.html#article-app">
+          <div class="update-card-top">
+            <div class="update-icon blue"><i class="fa-solid fa-gamepad"></i></div>
+            <div>
+              <div class="update-date" data-i18n="updates.date.app" style="color:#B27335;">Август 2026</div>
+              <h3 data-i18n="updates.card.app.title">🎮 Ново геймифицирано приложение за английски език</h3>
+            </div>
+          </div>
+          <p>Екипът ни разработва интерактивно приложение за учене на английски език чрез игра — с мисии, нива и състезателен елемент. Очаквайте новини!</p>
+        </a>
         <a class="update-card" href="news.html#article-bulgarian">
           <div class="update-card-top">
             <div class="update-icon green"><i class="fa-solid fa-book-open"></i></div>
@@ -2152,6 +2177,10 @@ The Light Academy прави впечатление с малките групи
         "updates.date.nvo": "August 2026",
         "updates.card.nvo.title": "📐 НВО 7th Grade Maths Preparation",
         "updates.card.nvo.text": "Enrolment is now open for our structured НВО maths preparation programme — entry test, small groups, full 7th grade curriculum and mock exams in real format. Limited spots. <a href='nvo7.html' style='color:#E8580A; font-weight:700;'>See the programme →</a>",
+        "updates.date.nvo4": "August 2026",
+        "updates.card.nvo4.title": "📝 НВО Grade 4 Course Now Available",
+        "updates.date.app": "August 2026",
+        "updates.card.app.title": "🎮 New Gamified English Learning App — Coming Soon",
         "updates.date.bulgarian": "June 2026",
         "updates.card.bulgarian.title": "New Bulgarian Language Course at The Light Academy",
         "updates.card.bulgarian.text": "Following many enquiries, we are happy to announce we are adding Bulgarian language to our courses — working both individually and in small groups to help children consolidate knowledge, catch up over the summer, and build confidence. For us it's not just about rules — it's about reading with understanding, expressing thoughts clearly, and loving the language. 📍 Lozenets · Small groups · Write to us for more info and available spots.",
@@ -2270,6 +2299,10 @@ The Light Academy прави впечатление с малките групи
         "updates.title": "Най-актуалното при нас",
         "updates.date.nvo": "Август 2026",
         "updates.card.nvo.text": "Записването за нашата програма за подготовка за НВО по математика е открито! Входящ тест, малки групи, целият материал за 7. клас и пробни изпити в реален формат. Местата са ограничени. <a href='nvo7.html' style='color:#E8580A; font-weight:700;'>Разгледай програмата →</a>",
+        "updates.date.nvo4": "Август 2026",
+        "updates.card.nvo4.title": "📝 НВО 4 клас вече е при нас",
+        "updates.date.app": "Август 2026",
+        "updates.card.app.title": "🎮 Ново геймифицирано приложение за английски език",
         "updates.date.bulgarian": "Юни 2026",
         "updates.card.bulgarian.title": "Нов курс по български език в The Light Academy",
         "updates.card.bulgarian.text": "Тъй като имахме запитвания, решихме с радост да обявим, че към нашите курсове добавяме и български език. Работим както индивидуално, така и в малки групи, като помагаме на децата да затвърдят знанията си, да използват лятото, за да наваксат пропуски, и да изградят увереност.",
@@ -2394,6 +2427,28 @@ The Light Academy прави впечатление с малките групи
       window.addEventListener('resize', onResize, { passive: true });
       window.addEventListener('load', rebuildPath);
       rebuildPath();
+    }
+
+    // Desktop-only: news cards fade/slide in one after another as the
+    // section scrolls into view (mobile shows them via the single-card
+    // carousel instead, so it's skipped there entirely).
+    function initUpdatesReveal() {
+      if (window.innerWidth <= 768) return;
+      const cards = document.querySelectorAll('.update-card');
+      if (!cards.length) return;
+
+      cards.forEach(card => card.classList.add('reveal'));
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      cards.forEach((card, i) => {
+        card.style.transitionDelay = `${i * 0.1}s`;
+        observer.observe(card);
+      });
     }
 
     function initCourseReveal() {
@@ -2553,6 +2608,7 @@ The Light Academy прави впечатление с малките групи
       initLanguage();
       initMobileGalleries();
       initMobileUpdatesCarousel();
+      initUpdatesReveal();
       initAboutVideo();
       initMobileNavToggle();
       initReviewsCarousel();
