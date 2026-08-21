@@ -1358,7 +1358,8 @@
         display: block;
         object-fit: cover;
       }
-      .mobile-carousel .carousel-arrow {
+      .mobile-carousel .carousel-arrow,
+      .mobile-updates-carousel .carousel-arrow {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -1368,11 +1369,32 @@
         width: 44px; height: 44px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center; cursor: pointer;
       }
-      .mobile-carousel .carousel-arrow.left { left: 8px; }
-      .mobile-carousel .carousel-arrow.right { right: 8px; }
+      .mobile-carousel .carousel-arrow.left,
+      .mobile-updates-carousel .carousel-arrow.left { left: 8px; }
+      .mobile-carousel .carousel-arrow.right,
+      .mobile-updates-carousel .carousel-arrow.right { right: 8px; }
       .mobile-carousel .carousel-counter {
         position: absolute; left: 50%; transform: translateX(-50%); bottom: 10px; z-index: 4;
         background: rgba(0,0,0,0.45); color: #fff; padding: 6px 10px; border-radius: 20px; font-weight:700; font-size:12px;
+      }
+
+      /* Updates section: same left/right-arrow pattern as the mobile
+         gallery carousel above, adapted for text cards — the arrows
+         sit just outside the card instead of overlapping it, and the
+         counter sits below it, so neither ever covers the card's text. */
+      .mobile-updates-carousel {
+        position: relative;
+        width: 100%;
+        padding: 0 52px 2.2rem;
+      }
+      .mobile-updates-carousel .update-card {
+        margin: 0;
+      }
+      .mobile-updates-carousel .carousel-arrow.left { left: 0; }
+      .mobile-updates-carousel .carousel-arrow.right { right: 0; }
+      .mobile-updates-carousel .carousel-counter {
+        position: absolute; left: 50%; transform: translateX(-50%); bottom: 0; z-index: 4;
+        background: var(--sun-light); color: var(--sun-dark); padding: 6px 12px; border-radius: 20px; font-weight: 800; font-size: 12px;
       }
     }
     /* Typing caret for hero title animation */
@@ -2530,6 +2552,7 @@ The Light Academy прави впечатление с малките групи
     document.addEventListener('DOMContentLoaded', function() {
       initLanguage();
       initMobileGalleries();
+      initMobileUpdatesCarousel();
       initAboutVideo();
       initMobileNavToggle();
       initReviewsCarousel();
@@ -2711,14 +2734,73 @@ The Light Academy прави впечатление с малките групи
       });
     }
 
+    // Mobile "Най-актуалното при нас": same single-item + arrows + counter
+    // pattern as the mobile photo gallery above, but carousels through the
+    // real .update-card elements (moving them in/out of view) instead of
+    // rebuilding <img> tags, so titles/dates/i18n stay intact.
+    function createUpdatesCarousel(grid) {
+      const cards = Array.from(grid.querySelectorAll('.update-card'));
+      if (!cards.length) return;
+
+      const carousel = document.createElement('div');
+      carousel.className = 'mobile-updates-carousel';
+
+      let idx = 0;
+      let currentCard = null;
+
+      const counter = document.createElement('div');
+      counter.className = 'carousel-counter';
+
+      function showCard(i) {
+        if (currentCard) grid.appendChild(currentCard); // park the previous card back in the hidden grid
+        currentCard = cards[i];
+        carousel.insertBefore(currentCard, counter);
+        counter.textContent = `${i + 1} / ${cards.length}`;
+      }
+
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'carousel-arrow left';
+      prevBtn.setAttribute('aria-label', 'Предишна новина');
+      prevBtn.innerHTML = '&#8592;';
+      prevBtn.addEventListener('click', () => {
+        idx = (idx - 1 + cards.length) % cards.length;
+        showCard(idx);
+      });
+      carousel.appendChild(prevBtn);
+
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'carousel-arrow right';
+      nextBtn.setAttribute('aria-label', 'Следваща новина');
+      nextBtn.innerHTML = '&#8594;';
+      nextBtn.addEventListener('click', () => {
+        idx = (idx + 1) % cards.length;
+        showCard(idx);
+      });
+      carousel.appendChild(nextBtn);
+
+      carousel.appendChild(counter);
+      showCard(0);
+
+      grid.style.display = 'none';
+      grid.parentNode.insertBefore(carousel, grid.nextSibling);
+    }
+
+    function initMobileUpdatesCarousel() {
+      if (window.innerWidth > 768) return;
+      const grid = document.querySelector('.updates-grid');
+      if (!grid || grid.dataset.mobileCarousel === 'done') return;
+      createUpdatesCarousel(grid);
+      grid.dataset.mobileCarousel = 'done';
+    }
+
     // Re-run on resize (debounced)
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        if (window.innerWidth <= 768) initMobileGalleries();
+        if (window.innerWidth <= 768) { initMobileGalleries(); initMobileUpdatesCarousel(); }
         else {
-          if (document.querySelector('.mobile-carousel')) location.reload();
+          if (document.querySelector('.mobile-carousel, .mobile-updates-carousel')) location.reload();
         }
       }, 200);
     });
