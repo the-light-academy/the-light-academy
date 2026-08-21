@@ -607,7 +607,7 @@
     .toggle-pill.active span.sub { color: var(--sun-dark); }
 
     .savings-badge {
-      display: inline-flex;
+      display: none;
       align-items: center;
       gap: 0.4rem;
       background: var(--teal-light);
@@ -620,7 +620,7 @@
       transform: translateY(4px);
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
-    .savings-badge.show { opacity: 1; transform: translateY(0); }
+    .savings-badge.show { display: inline-flex; opacity: 1; transform: translateY(0); }
 
     /* -- Right: live price display -- */
     .pricing-display {
@@ -630,13 +630,6 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-    }
-    .pricing-display-top .price-tag-label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--sun-dark);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
     }
     .pricing-display-amount {
       font-family: 'Bad Script', cursive;
@@ -650,6 +643,7 @@
     .pricing-display-caption {
       font-size: 0.9rem;
       color: var(--mid);
+      margin-top: 0.5rem;
       margin-bottom: 1.1rem;
     }
 
@@ -657,16 +651,14 @@
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.55rem;
+      gap: 0.5rem;
       margin-bottom: 1.1rem;
     }
     .schedule-list li {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255,255,255,0.65);
-      border-radius: var(--radius-sm);
-      padding: 0.6rem 0.85rem;
+      padding: 0.2rem 0;
       font-size: 0.86rem;
     }
     .schedule-list li .dot {
@@ -1088,6 +1080,9 @@
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
 
       .modal-box { padding: 2rem 1.5rem 2.5rem; }
+
+      .pricing-card { gap: 0.9rem; }
+      .toggle-group { margin-bottom: 0.9rem; }
     }
   </style>
   <script type="application/ld+json">
@@ -1481,7 +1476,6 @@
 
       <div class="pricing-display">
         <div class="pricing-display-top">
-          <span class="price-tag-label" id="priceLabel">Средно на месец</span>
           <div class="pricing-display-amount" id="priceAmount">135 € / мес.</div>
           <div class="pricing-display-caption" id="priceCaption">3 вноски по 360 € · общо 1 080 €</div>
 
@@ -1489,7 +1483,7 @@
         </div>
 
         <p class="pricing-note">
-          Първа вноска се дължи при записване. Всички суми са крайни, без скрити такси.
+          Всички суми са крайни, без допълнителни такси.
         </p>
       </div>
     </div>
@@ -1639,7 +1633,6 @@
 
     const paymentToggle = document.getElementById('paymentToggle');
     const priceAmount = document.getElementById('priceAmount');
-    const priceLabel = document.getElementById('priceLabel');
     const priceCaption = document.getElementById('priceCaption');
     const scheduleList = document.getElementById('scheduleList');
     const savingsBadge = document.getElementById('savingsBadge');
@@ -1657,7 +1650,6 @@
 
       // Amount + labels — водещото число вече е средно на месец,
       // а общата сума за курса стои по-малка, под него.
-      priceLabel.textContent = 'Средно на месец';
       if (selectedPayment === 'installments') {
         const perMonth = Math.round(installmentTotal / COURSE_MONTHS);
         priceAmount.textContent = `${formatEUR(perMonth)} / мес.`;
