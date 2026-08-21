@@ -785,13 +785,13 @@
       padding: 4rem 2rem;
       text-align: center;
     }
-    .cta-section h2 {
+    .cta-section > h2 {
       font-family: 'Bad Script', cursive;
       font-size: clamp(1.8rem, 4vw, 2.8rem);
       color: var(--white);
       margin-bottom: 0.75rem;
     }
-    .cta-section p {
+    .cta-section > p {
       color: rgba(255,255,255,0.6);
       margin-bottom: 2.5rem;
       font-size: 1.05rem;
@@ -869,19 +869,18 @@
       border-color: rgba(255,255,255,0.6);
     }
 
-    /* ── MODAL ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(10,20,30,0.65);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      align-items: center;
+    /* ── REGISTRATION FORM (inline, always open at the bottom of the page) ── */
+    .reg-form-wrap {
+      display: flex;
       justify-content: center;
-      padding: 1rem;
+      margin-top: 2.75rem;
+      scroll-margin-top: 90px;
     }
-    .modal-overlay.open { display: flex; }
+    .reg-form-wrap.reg-highlight .modal-box { animation: regPulse 1.6s ease; }
+    @keyframes regPulse {
+      0%, 100% { box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
+      30% { box-shadow: 0 0 0 6px rgba(245,166,35,0.55), 0 24px 60px rgba(0,0,0,0.25); }
+    }
     .modal-box {
       background: var(--white);
       border-radius: 20px;
@@ -890,26 +889,7 @@
       width: 100%;
       position: relative;
       box-shadow: 0 24px 60px rgba(0,0,0,0.25);
-      animation: modalIn 0.3s ease;
     }
-    @keyframes modalIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .modal-close {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      background: var(--sun-light);
-      border: none;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--mid);
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
-    }
-    .modal-close:hover { background: var(--sun); color: var(--dark); }
     .modal-icon {
       width: 56px; height: 56px;
       background: var(--orange-light);
@@ -943,7 +923,7 @@
       color: var(--mid);
       margin-bottom: 6px;
     }
-    .form-group input {
+    .form-group input, .form-group textarea {
       width: 100%;
       padding: 12px 16px;
       border: 2px solid var(--sun-light);
@@ -955,7 +935,8 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .form-group input:focus {
+    .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .form-group input:focus, .form-group textarea:focus {
       border-color: var(--orange);
       box-shadow: 0 0 0 3px rgba(232,88,10,0.12);
     }
@@ -1048,12 +1029,6 @@
         z-index: 1;
       }
 
-      /* modal must stay fixed and on top of everything */
-      .modal-overlay {
-        position: fixed !important;
-        z-index: 9999 !important;
-      }
-
       .nav-links { display: none; }
       .hamburger { display: flex; }
 
@@ -1087,22 +1062,7 @@
       .cta-buttons { flex-direction: column; align-items: center; }
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
 
-      /* bottom-sheet modal on mobile */
-      .modal-overlay {
-        align-items: flex-end !important;
-        padding: 0 !important;
-      }
-      .modal-box {
-        border-radius: 20px 20px 0 0 !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        padding: 2rem 1.5rem 2.5rem !important;
-        animation: sheetUp 0.35s ease !important;
-      }
-      @keyframes sheetUp {
-        from { transform: translateY(100%); }
-        to   { transform: translateY(0); }
-      }
+      .modal-box { padding: 2rem 1.5rem 2.5rem; }
     }
   </style>
   <script type="application/ld+json">
@@ -1219,7 +1179,7 @@
     </div>
 
     <div style="margin-top: 1.5rem; position: relative; z-index: 1;">
-      <button onclick="openModal()" class="btn-cta-yellow">
+      <button onclick="scrollToRegForm()" class="btn-cta-yellow">
         <i class="fa-solid fa-pen-to-square"></i>
         Запазете своето място
       </button>
@@ -1495,7 +1455,7 @@
         <i class="fa-solid fa-clipboard-question"></i>
         Направи безплатния тест
       </a>
-      <button onclick="openModal()" class="btn-cta-primary">
+      <button onclick="scrollToRegForm()" class="btn-cta-primary">
         <i class="fa-solid fa-pen-to-square"></i>
         Запазете своето място
       </button>
@@ -1504,61 +1464,58 @@
         Обадете се за повече детайли
       </a>
     </div>
-  </section>
 
-  <!-- MODAL FORM -->
-  <div id="formModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()" aria-label="Затвори">✕</button>
-      <div class="modal-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-      <h3 class="modal-title">Запазете своето място</h3>
-      <p class="modal-sub">Ще запазим вашето място за следващите 7 дни! През това време наш служител ще се свърже с вас за потвърждение. Към момента не се изисква плащане.</p>
+    <!-- REGISTRATION FORM — inline, always open at the bottom of the page -->
+    <div class="reg-form-wrap" id="regFormBox">
+      <div class="modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3 class="modal-title">Запазете своето място</h3>
+        <p class="modal-sub">Ще запазим вашето място за следващите 7 дни! През това време наш служител ще се свърже с вас за потвърждение. Към момента не се изисква плащане.</p>
 
-      <form id="regForm" onsubmit="submitForm(event)">
-        <div class="form-group">
-          <label for="studentName">Име на ученика</label>
-          <input type="text" id="studentName" name="studentName" placeholder="Иван Иванов" autocomplete="name" required />
-        </div>
-        <div class="form-group">
-          <label for="parentPhone">Телефон на родителя</label>
-          <input
-            type="tel"
-            id="parentPhone"
-            name="parentPhone"
-            placeholder="0888 123 456"
-            inputmode="tel"
-            autocomplete="tel"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="parentEmail">Имейл на родителя</label>
-          <input
-            type="email"
-            id="parentEmail"
-            name="parentEmail"
-            placeholder="ivan.ivanov@example.com"
-            inputmode="email"
-            autocomplete="email"
-            required
-          />
-        </div>
-        <button type="submit" class="btn-submit" id="submitBtn">
-          <i class="fa-solid fa-paper-plane"></i>
-          Запази място
-        </button>
-      </form>
+        <form id="regForm" onsubmit="submitForm(event)">
+          <div class="form-group">
+            <label for="studentName">Име на ученика</label>
+            <input type="text" id="studentName" name="studentName" placeholder="Иван Иванов" autocomplete="name" required />
+          </div>
+          <div class="form-group">
+            <label for="parentPhone">Телефон на родителя</label>
+            <input
+              type="tel"
+              id="parentPhone"
+              name="parentPhone"
+              placeholder="0888 123 456"
+              inputmode="tel"
+              autocomplete="tel"
+              pattern="0[0-9\s\-]{7,12}"
+              title="Телефонен номер, започващ с 0 (напр. 0888 123 456)"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="regCourse">Курс</label>
+            <input type="text" id="regCourse" name="regCourse" value="Математика – НВО, 7. клас" required />
+          </div>
+          <div class="form-group">
+            <label for="regMessage">Съобщение</label>
+            <textarea id="regMessage" name="regMessage" rows="3">Здравейте, искам да запиша детето си за курса &quot;Математика – НВО, 7. клас&quot;.</textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <i class="fa-solid fa-paper-plane"></i>
+            Запази място
+          </button>
+        </form>
 
-      <div id="formSuccess" class="form-success" style="display:none;">
-        <div class="success-icon">✓</div>
-        <h4>Благодарим Ви!</h4>
-        <p>Запазихте своето място в курса на The Light Academy — подготовка за НВО по математика за 7. клас.</p>
-      </div>
-      <div id="formError" class="form-error" style="display:none;">
-        <p>Нещо се обърка. Моля обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>
+        <div id="formSuccess" class="form-success" style="display:none;">
+          <div class="success-icon">✓</div>
+          <h4>Благодарим Ви!</h4>
+          <p>Запазихте своето място в курса на The Light Academy — подготовка за НВО по математика за 7. клас.</p>
+        </div>
+        <div id="formError" class="form-error" style="display:none;">
+          <p>Нещо се обърка. Моля обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- FOOTER -->
   <footer>
@@ -1719,16 +1676,14 @@
 
     renderSchedule('1');
 
-    // Modal
-    function openModal() {
-      document.getElementById('formModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
+    // Scroll to the always-open registration form and give it a brief pulse
+    function scrollToRegForm() {
+      const box = document.getElementById('regFormBox');
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      box.classList.remove('reg-highlight');
+      void box.offsetWidth;
+      box.classList.add('reg-highlight');
     }
-    function closeModal() {
-      document.getElementById('formModal').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     // Form submission via Formspree
     async function submitForm(e) {
@@ -1740,15 +1695,16 @@
       errBox.style.display = 'none';
 
       const studentName = document.getElementById('studentName').value.trim();
-      const parentPhone  = document.getElementById('parentPhone').value.trim();
-      const parentEmail  = document.getElementById('parentEmail').value.trim();
+      const parentPhone = document.getElementById('parentPhone').value.trim();
+      const course = document.getElementById('regCourse').value.trim();
+      const message = document.getElementById('regMessage').value.trim();
 
       // FormData is what Formspree handles natively — no Content-Type header needed
       const body = new FormData();
-      body.append('Име на ученика', studentName);
-      body.append('Телефон на родителя', parentPhone);
-      body.append('Имейл на родителя', parentEmail);
-      body.append('_replyto', parentEmail);
+      body.append('Име', studentName);
+      body.append('Телефон', parentPhone);
+      body.append('Курс', course);
+      body.append('Съобщение', message);
       body.append('_subject', `Нова заявка за запазено място — ${studentName}`);
 
       try {
