@@ -741,6 +741,17 @@
     background: #fff;
   }
 
+  .analysis-success{ text-align: center; padding: 8px 0 2px; }
+  .analysis-success-icon{
+    width: 48px; height: 48px; margin: 0 auto 10px; border-radius: 50%;
+    background: #e5f5ec; color: #1c7a4a; font-size: 1.3rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .analysis-success h4{ font-size: 16px; margin-bottom: 4px; color: var(--text); }
+  .analysis-success p{ font-size: 13.5px; color: var(--text-light); }
+  .analysis-error{ margin-top: 14px; background: #fff0e8; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #c24508; text-align: center; }
+  .analysis-error a{ color: #c24508; font-weight: 700; }
+
   .result-download{
     margin: 22px 0 0;
     text-align: center;
@@ -962,6 +973,13 @@
             <input type="text" id="analysis-student-name" placeholder="напр. Иван Иванов" autocomplete="name" required />
           </div>
           <button type="button" class="btn btn-primary" id="analysis-send-btn" style="width:100%;">Изпрати резултата за анализ</button>
+
+          <div id="analysis-success" class="analysis-success" style="display:none;">
+            <div class="analysis-success-icon">✓</div>
+            <h4>Изпратено!</h4>
+            <p>Получихме резултата — учител ще го прегледа и ще се свърже с вас.</p>
+          </div>
+          <div id="analysis-error" class="analysis-error" style="display:none;"></div>
         </div>
       </div>
 
@@ -1676,25 +1694,30 @@ function generateResultPDF(){
 
 /* =========================================================
    "ИЗПРАТИ РЕЗУЛТАТА ЗА АНАЛИЗ"
-   Без бекенд и без форма към трета услуга – при клик отваряме
-   готова mailto: чернова до the.light.academy56@gmail.com с
-   всички данни от резултата. Изпращането се случва в имейл
-   клиента на посетителя, когато той сам натисне "Изпрати".
+   Изпраща се директно през Formspree (същият механизъм като
+   записванията за курсове другаде в сайта) — работи независимо
+   дали посетителят има настроен имейл клиент на устройството си.
+   Темата на писмото изрично казва "Анализ на тест", за да не се
+   бърка със заявките за записване в курс, които ползват същия
+   Formspree formуляр.
 ========================================================= */
 
-const ANALYSIS_EMAIL = 'the.light.academy56@gmail.com';
+const ANALYSIS_FORM_ENDPOINT = 'https://formspree.io/f/mnpawlbd';
 
 const sendAnalysisBtn       = document.getElementById('send-analysis-btn');
 const analysisModal         = document.getElementById('analysis-modal');
 const analysisModalClose    = document.getElementById('analysis-modal-close');
 const analysisStudentNameEl = document.getElementById('analysis-student-name');
 const analysisSendBtn       = document.getElementById('analysis-send-btn');
+const analysisSuccessEl     = document.getElementById('analysis-success');
+const analysisErrorEl       = document.getElementById('analysis-error');
+const analysisFormGroupEl   = document.querySelector('#analysis-modal .modal-form-group');
 
 function closeAnalysisModal(){
   analysisModal.classList.remove('open');
 }
 
-function buildAnalysisMailtoUrl(studentName, results){
+function buildAnalysisSummary(studentName, results){
   // Същата подредба като на екрана с резултата: топ 3 силни страни,
   // топ 3 области за развитие, после пълната разбивка по категории.
   const sortedDesc = [...results.categoryResults].sort((a, b) => b.percentage - a.percentage);
@@ -1737,16 +1760,17 @@ function buildAnalysisMailtoUrl(studentName, results){
   lines.push('--');
   lines.push('Изпратено от входящия тест по математика на The Light Academy.');
 
-  const subject = 'Резултат от входящ тест по математика – ' + studentName;
-  const body = lines.join('\n');
-
-  return 'mailto:' + ANALYSIS_EMAIL
-    + '?subject=' + encodeURIComponent(subject)
-    + '&body=' + encodeURIComponent(body);
+  return lines.join('\n');
 }
 
 if(sendAnalysisBtn && analysisModal){
   sendAnalysisBtn.addEventListener('click', () => {
+    analysisFormGroupEl.style.display = '';
+    analysisSendBtn.style.display = '';
+    analysisSendBtn.disabled = false;
+    analysisSendBtn.textContent = 'Изпрати резултата за анализ';
+    analysisSuccessEl.style.display = 'none';
+    analysisErrorEl.style.display = 'none';
     analysisModal.classList.add('open');
     analysisStudentNameEl.focus();
   });
@@ -1765,7 +1789,7 @@ if(sendAnalysisBtn && analysisModal){
     }
   });
 
-  analysisSendBtn.addEventListener('click', () => {
+  analysisSendBtn.addEventListener('click', async () => {
     const studentName = analysisStudentNameEl.value.trim();
     if(!studentName){
       analysisStudentNameEl.focus();
@@ -1773,8 +1797,40 @@ if(sendAnalysisBtn && analysisModal){
     }
     if(!lastResults) return;
 
-    window.location.href = buildAnalysisMailtoUrl(studentName, lastResults);
-    closeAnalysisModal();
+    analysisErrorEl.style.display = 'none';
+    analysisSendBtn.disabled = true;
+    analysisSendBtn.textContent = 'Изпращане...';
+
+    const body = new FormData();
+    body.append('Име на ученика', studentName);
+    body.append('Резултат от теста', buildAnalysisSummary(studentName, lastResults));
+    body.append('_subject', '📝 Анализ на тест — ' + studentName);
+
+    try{
+      const res = await fetch(ANALYSIS_FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body
+      });
+
+      if(res.ok){
+        analysisFormGroupEl.style.display = 'none';
+        analysisSendBtn.style.display = 'none';
+        analysisSuccessEl.style.display = 'block';
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const hint = data?.error || data?.errors?.[0]?.message || ('Код ' + res.status);
+        analysisErrorEl.innerHTML = '<p>⚠️ ' + hint + ' — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>';
+        analysisErrorEl.style.display = 'block';
+        analysisSendBtn.disabled = false;
+        analysisSendBtn.textContent = 'Изпрати резултата за анализ';
+      }
+    } catch {
+      analysisErrorEl.innerHTML = '<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>';
+      analysisErrorEl.style.display = 'block';
+      analysisSendBtn.disabled = false;
+      analysisSendBtn.textContent = 'Изпрати резултата за анализ';
+    }
   });
 }
 
