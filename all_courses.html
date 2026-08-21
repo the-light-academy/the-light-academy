@@ -145,7 +145,7 @@
     .card-cta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.3rem; }
     .btn-info { flex: 1; text-align: center; background: transparent; border: 1.5px solid rgba(255,255,255,0.38); color: #fff; font-weight: 800; font-size: 0.85rem; padding: 10px 14px; border-radius: 999px; transition: border-color 0.2s ease, background 0.2s ease; }
     .btn-info:hover { border-color: #fff; background: rgba(255,255,255,0.14); }
-    .btn-enroll-sm { flex: 1; text-align: center; background: var(--navy); color: #fff; font-weight: 800; font-size: 0.85rem; padding: 10px 14px; border-radius: 999px; box-shadow: 0 8px 18px rgba(13,23,48,0.4); transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
+    .btn-enroll-sm { flex: 1; text-align: center; background: var(--navy); color: #fff; font-weight: 800; font-size: 0.85rem; padding: 10px 14px; border-radius: 999px; border: none; cursor: pointer; box-shadow: 0 8px 18px rgba(13,23,48,0.4); transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
     .btn-enroll-sm:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(13,23,48,0.5); background: var(--navy-light); }
     .btn-enroll-sm--wide { flex: 1 1 100%; }
 
@@ -154,6 +154,38 @@
     .no-results-text { color: rgba(255,255,255,0.75); margin-bottom: 1.2rem; }
     .no-results .btn-clear { border-color: rgba(255,255,255,0.4); color: #fff; }
     .no-results .btn-clear:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.14); }
+
+    /* ── ENROLL FORM ── */
+    .enroll-section { margin-top: 2.8rem; background: rgba(18,32,88,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.22); border-radius: 28px; padding: 2.6rem 1.8rem; box-shadow: 0 20px 44px rgba(20,12,4,0.22); color: #fff; scroll-margin-top: 90px; }
+    .enroll-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2rem); text-align: center; margin-bottom: 0.5rem; }
+    .enroll-section > p { color: rgba(255,255,255,0.75); text-align: center; margin-bottom: 1.8rem; }
+    .enroll-form { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; }
+    .enroll-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.7rem; }
+    .enroll-field label { display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.35rem; color: rgba(255,255,255,0.85); }
+    .enroll-field select, .enroll-field input, .enroll-field textarea {
+      width: 100%; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 10px 12px;
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; color: #fff; background: rgba(255,255,255,0.08);
+    }
+    .enroll-field select { cursor: pointer; }
+    .enroll-field select option { color: #1a1a1a; }
+    .enroll-field input::placeholder, .enroll-field textarea::placeholder { color: rgba(255,255,255,0.45); }
+    .enroll-field select:focus, .enroll-field input:focus, .enroll-field textarea:focus { outline: none; border-color: #fff; background: rgba(255,255,255,0.14); }
+    .enroll-field select:disabled { opacity: 0.5; cursor: not-allowed; }
+    .enroll-field textarea { resize: vertical; min-height: 88px; font-family: inherit; line-height: 1.5; }
+    .enroll-submit { align-self: center; margin-top: 0.3rem; background: #fff; color: var(--navy); font-weight: 900; border: none; padding: 13px 34px; border-radius: 999px; cursor: pointer; font-size: 1rem; box-shadow: 0 10px 22px rgba(0,0,0,0.25); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .enroll-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(0,0,0,0.3); }
+    .enroll-submit:disabled { opacity: 0.7; cursor: default; transform: none; }
+    .enroll-success, .enroll-error { max-width: 640px; margin: 0 auto; text-align: center; }
+    .enroll-success .success-icon { width: 52px; height: 52px; margin: 0 auto 0.8rem; border-radius: 50%; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    .enroll-success h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.4rem; }
+    .enroll-success p { color: rgba(255,255,255,0.75); }
+    .enroll-error { color: #ffd7d7; margin-top: 0.2rem; }
+    .enroll-error a { color: #fff; text-decoration: underline; }
+    .enroll-highlight { animation: enrollPulse 1.6s ease; }
+    @keyframes enrollPulse {
+      0%, 100% { box-shadow: 0 20px 44px rgba(20,12,4,0.22); }
+      30% { box-shadow: 0 0 0 6px rgba(247,173,25,0.55), 0 20px 44px rgba(20,12,4,0.22); }
+    }
 
     /* ── CTA ── */
     .schedule-cta { margin-top: 2.8rem; text-align: center; background: rgba(18,32,88,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.22); border-radius: 28px; padding: 2.8rem 1.5rem; box-shadow: 0 20px 44px rgba(20,12,4,0.22); }
@@ -180,6 +212,8 @@
       .btn-clear { width: 100%; text-align: center; }
       .schedule-grid { grid-template-columns: 1fr; }
       .card-cta { flex-direction: column; }
+      .enroll-section { padding: 1.8rem 1.2rem; }
+      .enroll-row { grid-template-columns: 1fr; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -350,6 +384,58 @@
       </div>
     </section>
 
+    <section class="enroll-section" id="enrollSection">
+      <h2>Запиши се за курс</h2>
+      <p>Изберете предмет, клас и група — ще предпопълним останалото вместо вас.</p>
+
+      <form class="enroll-form" id="enrollForm" onsubmit="submitEnrollForm(event)">
+        <div class="enroll-row">
+          <div class="enroll-field">
+            <label for="enrollSubject">Предмет</label>
+            <select id="enrollSubject" required></select>
+          </div>
+          <div class="enroll-field">
+            <label for="enrollGrade">Клас</label>
+            <select id="enrollGrade" required disabled></select>
+          </div>
+          <div class="enroll-field">
+            <label for="enrollGroup">Група</label>
+            <select id="enrollGroup" required disabled></select>
+          </div>
+        </div>
+
+        <div class="enroll-field">
+          <label for="enrollCourse">Курс</label>
+          <input type="text" id="enrollCourse" placeholder="Ще се попълни автоматично след избор по-горе" required />
+        </div>
+
+        <div class="enroll-row" style="grid-template-columns: 1fr 1fr;">
+          <div class="enroll-field">
+            <label for="enrollName">Име</label>
+            <input type="text" id="enrollName" placeholder="Иван Иванов" autocomplete="name" required />
+          </div>
+          <div class="enroll-field">
+            <label for="enrollPhone">Телефон</label>
+            <input type="tel" id="enrollPhone" placeholder="0888 123 456" inputmode="tel" autocomplete="tel" pattern="0[0-9\s\-]{7,12}" title="Телефонен номер, започващ с 0 (напр. 0888 123 456)" required />
+          </div>
+        </div>
+
+        <div class="enroll-field">
+          <label for="enrollMessage">Съобщение</label>
+          <textarea id="enrollMessage"></textarea>
+        </div>
+
+        <button type="submit" class="enroll-submit" id="enrollSubmitBtn">Запиши се</button>
+      </form>
+
+      <div class="enroll-success" id="enrollSuccess" style="display:none;">
+        <div class="success-icon">✓</div>
+        <h3>Благодарим Ви!</h3>
+        <p>Получихме заявката ви — ще се свържем с вас възможно най-скоро.</p>
+      </div>
+      <div class="enroll-error" id="enrollError" style="display:none;"></div>
+    </section>
+
     <section class="schedule-cta">
       <h2>Не сте сигурни кое е подходящо за вашето дете?</h2>
       <p>Свържете се с нас и ще ви помогнем да изберете най-подходящия вариант.</p>
@@ -406,9 +492,6 @@
 
   <script>
     (function () {
-      const PHONE = 'tel:+359885501283';
-      const EMAIL = 'the.light.academy56@gmail.com';
-
       function range(a, b) {
         const r = [];
         for (let i = a; i <= b; i++) r.push(i);
@@ -656,20 +739,12 @@
             <div class="card-price">${priceHtml}</div>
             <div class="card-cta">
               <a href="${c.infoLink}" class="btn-info">Повече информация</a>
-              <a href="${PHONE}" class="btn-enroll-sm">Запиши се</a>
+              <button type="button" class="btn-enroll-sm" onclick="prefillEnrollForm('${c.id}')">Запиши се</button>
             </div>
           </article>`;
       }
 
       function renderIndividualCard(c) {
-        const subject = c.subjects[0];
-        const subjectLabels = { 'Математика': 'математика', 'Английски': 'английски език', 'Испански': 'испански език', 'Химия': 'химия', 'БЕЛ': 'БЕЛ' };
-        const subjectPlain = subjectLabels[subject] || subject;
-        const mailSubject = encodeURIComponent(`Запитване за индивидуален урок по ${subject}`);
-        const mailBody = encodeURIComponent(
-          `Здравейте,\n\nБих искал/а повече информация за индивидуални уроци по ${subjectPlain}.\n\nКлас на детето: \nЖелано начало: \n\nБлагодаря!`
-        );
-        const mailto = `mailto:${EMAIL}?subject=${mailSubject}&body=${mailBody}`;
         return `
           <article class="schedule-card schedule-card--individual" data-id="${c.id}">
             ${badgesHtml(c)}
@@ -677,7 +752,7 @@
             <p class="card-meta">${c.subjects.join(', ')} · ${c.gradeLabel}</p>
             <p class="card-individual-line">Индивидуално обучение с преподавател</p>
             <div class="card-cta">
-              <a href="${mailto}" class="btn-enroll-sm btn-enroll-sm--wide">Запитване за индивидуален урок</a>
+              <button type="button" class="btn-enroll-sm btn-enroll-sm--wide" onclick="prefillEnrollForm('${c.id}')">Запитване за индивидуален урок</button>
             </div>
           </article>`;
       }
@@ -744,6 +819,162 @@
       showAllBtn.addEventListener('click', resetFilters);
 
       render();
+
+      /* ── ENROLL FORM ──
+         One shared form at the bottom of the page. Every "Запиши се" /
+         "Запитване за индивидуален урок" button on a card calls
+         prefillEnrollForm(id), which drives the same Предмет → Клас →
+         Група cascade a visitor would use by hand, then fills in Курс +
+         Съобщение and scrolls the form into view. */
+      const enrollSubjectSel = document.getElementById('enrollSubject');
+      const enrollGradeSel = document.getElementById('enrollGrade');
+      const enrollGroupSel = document.getElementById('enrollGroup');
+      const enrollCourseInput = document.getElementById('enrollCourse');
+      const enrollMessageInput = document.getElementById('enrollMessage');
+      const enrollSection = document.getElementById('enrollSection');
+
+      const ENROLL_SUBJECTS = [...new Set(ALL_COURSES.flatMap(c => c.subjects))];
+
+      function coursesForSubject(subject) {
+        return ALL_COURSES.filter(c => c.subjects.includes(subject));
+      }
+
+      function courseSummary(c) {
+        return c.type === 'group'
+          ? `${c.title}, ${c.gradeLabel}, ${c.day} ${c.time}`
+          : `${c.title}, ${c.gradeLabel}`;
+      }
+
+      function defaultEnrollMessage(summary) {
+        return summary
+          ? `Здравейте, искам да запиша детето си за курса "${summary}".`
+          : 'Здравейте, искам да запиша детето си за курс.';
+      }
+
+      function populateEnrollSubjects() {
+        enrollSubjectSel.innerHTML = '<option value="">Изберете предмет</option>' +
+          ENROLL_SUBJECTS.map(s => `<option value="${s}">${s}</option>`).join('');
+      }
+
+      function populateEnrollGrades(subject) {
+        const labels = [...new Set(coursesForSubject(subject).map(c => c.gradeLabel))];
+        enrollGradeSel.innerHTML = '<option value="">Изберете клас</option>' +
+          labels.map(l => `<option value="${l}">${l}</option>`).join('');
+        enrollGradeSel.disabled = labels.length === 0;
+      }
+
+      function populateEnrollGroups(subject, gradeLabel) {
+        const matches = coursesForSubject(subject).filter(c => c.gradeLabel === gradeLabel);
+        enrollGroupSel.innerHTML = '<option value="">Изберете група</option>' +
+          matches.map(c => {
+            const label = c.type === 'group' ? `${c.day}, ${c.time}` : 'Индивидуален урок';
+            return `<option value="${c.id}">${label}</option>`;
+          }).join('');
+        enrollGroupSel.disabled = matches.length === 0;
+      }
+
+      function resetEnrollSelect(select, placeholder) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        select.disabled = true;
+      }
+
+      function fillEnrollCourseFields(c) {
+        const summary = courseSummary(c);
+        enrollCourseInput.value = summary;
+        enrollMessageInput.value = defaultEnrollMessage(summary);
+      }
+
+      enrollSubjectSel.addEventListener('change', () => {
+        if (enrollSubjectSel.value) {
+          populateEnrollGrades(enrollSubjectSel.value);
+        } else {
+          resetEnrollSelect(enrollGradeSel, 'Изберете предмет първо');
+        }
+        resetEnrollSelect(enrollGroupSel, 'Изберете клас първо');
+      });
+      enrollGradeSel.addEventListener('change', () => {
+        if (enrollGradeSel.value) {
+          populateEnrollGroups(enrollSubjectSel.value, enrollGradeSel.value);
+        } else {
+          resetEnrollSelect(enrollGroupSel, 'Изберете клас първо');
+        }
+      });
+      enrollGroupSel.addEventListener('change', () => {
+        const c = ALL_COURSES.find(x => x.id === enrollGroupSel.value);
+        if (c) fillEnrollCourseFields(c);
+      });
+
+      function prefillEnrollForm(id) {
+        const c = ALL_COURSES.find(x => x.id === id);
+        if (!c) return;
+        const subject = c.subjects[0];
+
+        enrollSubjectSel.value = subject;
+        populateEnrollGrades(subject);
+        enrollGradeSel.value = c.gradeLabel;
+        populateEnrollGroups(subject, c.gradeLabel);
+        enrollGroupSel.value = c.id;
+        fillEnrollCourseFields(c);
+
+        enrollSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        enrollSection.classList.remove('enroll-highlight');
+        void enrollSection.offsetWidth;
+        enrollSection.classList.add('enroll-highlight');
+      }
+
+      async function submitEnrollForm(e) {
+        e.preventDefault();
+        const btn = document.getElementById('enrollSubmitBtn');
+        const errBox = document.getElementById('enrollError');
+        errBox.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Изпращане...';
+
+        const name = document.getElementById('enrollName').value.trim();
+        const phone = document.getElementById('enrollPhone').value.trim();
+        const course = enrollCourseInput.value.trim();
+        const message = enrollMessageInput.value.trim();
+
+        const body = new FormData();
+        body.append('Име', name);
+        body.append('Телефон', phone);
+        body.append('Курс', course);
+        body.append('Съобщение', message);
+        body.append('_subject', `Нова заявка за курс — ${name}`);
+
+        try {
+          const res = await fetch('https://formspree.io/f/mnpawlbd', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body
+          });
+
+          if (res.ok) {
+            document.getElementById('enrollForm').style.display = 'none';
+            document.getElementById('enrollSuccess').style.display = 'block';
+          } else {
+            const data = await res.json().catch(() => ({}));
+            const hint = data?.error || data?.errors?.[0]?.message || `Код ${res.status}`;
+            errBox.innerHTML = `<p>⚠️ ${hint} — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>`;
+            errBox.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Запиши се';
+          }
+        } catch {
+          errBox.innerHTML = `<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>`;
+          errBox.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Запиши се';
+        }
+      }
+
+      populateEnrollSubjects();
+      resetEnrollSelect(enrollGradeSel, 'Изберете предмет първо');
+      resetEnrollSelect(enrollGroupSel, 'Изберете клас първо');
+      enrollMessageInput.value = defaultEnrollMessage('');
+
+      window.prefillEnrollForm = prefillEnrollForm;
+      window.submitEnrollForm = submitEnrollForm;
     })();
   </script>
 </body>
