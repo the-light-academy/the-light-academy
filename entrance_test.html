@@ -968,9 +968,15 @@
             и ще ви даде кратка професионална обратна връзка.
           </p>
 
-          <div class="modal-form-group">
-            <label for="analysis-student-name">Име на ученика</label>
-            <input type="text" id="analysis-student-name" placeholder="напр. Иван Иванов" autocomplete="name" required />
+          <div id="analysis-fields">
+            <div class="modal-form-group">
+              <label for="analysis-student-name">Име на ученика</label>
+              <input type="text" id="analysis-student-name" placeholder="напр. Иван Иванов" autocomplete="name" required />
+            </div>
+            <div class="modal-form-group">
+              <label for="analysis-parent-email">Имейл на родителя</label>
+              <input type="email" id="analysis-parent-email" placeholder="ivan.ivanov@example.com" inputmode="email" autocomplete="email" required />
+            </div>
           </div>
           <button type="button" class="btn btn-primary" id="analysis-send-btn" style="width:100%;">Изпрати резултата за анализ</button>
 
@@ -1708,10 +1714,11 @@ const sendAnalysisBtn       = document.getElementById('send-analysis-btn');
 const analysisModal         = document.getElementById('analysis-modal');
 const analysisModalClose    = document.getElementById('analysis-modal-close');
 const analysisStudentNameEl = document.getElementById('analysis-student-name');
+const analysisParentEmailEl = document.getElementById('analysis-parent-email');
 const analysisSendBtn       = document.getElementById('analysis-send-btn');
 const analysisSuccessEl     = document.getElementById('analysis-success');
 const analysisErrorEl       = document.getElementById('analysis-error');
-const analysisFormGroupEl   = document.querySelector('#analysis-modal .modal-form-group');
+const analysisFormGroupEl   = document.getElementById('analysis-fields');
 
 function closeAnalysisModal(){
   analysisModal.classList.remove('open');
@@ -1783,16 +1790,23 @@ if(sendAnalysisBtn && analysisModal){
     }
   });
 
-  analysisStudentNameEl.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-      analysisSendBtn.click();
-    }
+  [analysisStudentNameEl, analysisParentEmailEl].forEach(el => {
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        analysisSendBtn.click();
+      }
+    });
   });
 
   analysisSendBtn.addEventListener('click', async () => {
     const studentName = analysisStudentNameEl.value.trim();
+    const parentEmail = analysisParentEmailEl.value.trim();
     if(!studentName){
       analysisStudentNameEl.focus();
+      return;
+    }
+    if(!parentEmail){
+      analysisParentEmailEl.focus();
       return;
     }
     if(!lastResults) return;
@@ -1803,7 +1817,9 @@ if(sendAnalysisBtn && analysisModal){
 
     const body = new FormData();
     body.append('Име на ученика', studentName);
+    body.append('Имейл на родителя', parentEmail);
     body.append('Резултат от теста', buildAnalysisSummary(studentName, lastResults));
+    body.append('_replyto', parentEmail);
     body.append('_subject', '📝 Анализ на тест — ' + studentName);
 
     try{
@@ -1820,12 +1836,14 @@ if(sendAnalysisBtn && analysisModal){
       } else {
         const data = await res.json().catch(() => ({}));
         const hint = data?.error || data?.errors?.[0]?.message || ('Код ' + res.status);
+        console.error('Formspree отказа заявката за анализ:', res.status, data);
         analysisErrorEl.innerHTML = '<p>⚠️ ' + hint + ' — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>';
         analysisErrorEl.style.display = 'block';
         analysisSendBtn.disabled = false;
         analysisSendBtn.textContent = 'Изпрати резултата за анализ';
       }
-    } catch {
+    } catch (err) {
+      console.error('Заявката за анализ не стигна до Formspree:', err);
       analysisErrorEl.innerHTML = '<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>';
       analysisErrorEl.style.display = 'block';
       analysisSendBtn.disabled = false;
