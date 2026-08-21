@@ -1091,24 +1091,28 @@
     /* ── GALLERY ── */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: clamp(120px, 12vw, 190px);
+      grid-auto-flow: dense;
       gap: 1rem;
     }
     .gallery-item {
       background: var(--sun-light);
       border-radius: var(--radius-sm);
-      aspect-ratio: 1;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column;
-      gap: 8px;
       color: var(--light-text);
       font-size: 13px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
     }
-    .gallery-item:hover { transform: scale(1.03); }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-item:hover { transform: scale(1.05); box-shadow: 0 16px 34px rgba(20,12,4,0.18); z-index: 2; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Collage sizing — a handful of cells get more room so the grid
+       reads like a curated arrangement rather than a uniform tile wall. */
+    .gallery-item--wide { grid-column: span 2; }
+    .gallery-item--tall { grid-row: span 2; }
+    .gallery-item--large { grid-column: span 2; grid-row: span 2; }
 
     /* ── CONTACT ── */
     .contact-bg { background: var(--dark); padding: 4rem 2rem; }
@@ -1202,6 +1206,8 @@
 
       .nav-item-dropdown { flex-wrap: wrap; justify-content: center; }
       .courses-dropdown { position: static; max-width: min(300px, 85vw); flex-basis: 100%; box-shadow: none; border: none; background: rgba(58,46,31,0.03); padding: 4px 6px 4px 14px; margin: 2px auto 0; }
+
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     /* ── MOBILE RESPONSIVE ── */
@@ -1306,6 +1312,8 @@
       .gallery-grid {
         grid-template-columns: 1fr;
       }
+      .gallery-item--wide, .gallery-item--large { grid-column: span 1; }
+      .gallery-item--tall, .gallery-item--large { grid-row: span 1; }
 
       .about-photos {
         width: 100%;
@@ -1877,7 +1885,7 @@ The Light Academy прави впечатление с малките групи
         <img src="photos/gallery_2.jpeg" alt="Gallery Photo 2" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
       
-      <div class="gallery-item">
+      <div class="gallery-item gallery-item--wide">
         <img src="photos/gallery_3.jpeg" alt="Gallery Photo 3" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
       
@@ -1900,14 +1908,14 @@ The Light Academy прави впечатление с малките групи
       <div class="gallery-item">
         <img src="photos/gallery_8.jpeg" alt="Gallery Photo 8" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
-            <div class="gallery-item">
+            <div class="gallery-item gallery-item--tall">
         <img src="photos/gallery_9.jpeg" alt="Gallery Photo 8" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
             <div class="gallery-item">
         <img src="photos/gallery_10.jpeg" alt="Gallery Photo 8" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
 
-      <div class="gallery-item">
+      <div class="gallery-item gallery-item--large">
         <img src="photos/academy_storefront.jpg" alt="Входът на The Light Academy в Лозенец" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
 
@@ -1915,7 +1923,7 @@ The Light Academy прави впечатление с малките групи
         <img src="photos/classroom_worksheet.jpg" alt="Работен лист по математика на масата в академията" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
 
-      <div class="gallery-item">
+      <div class="gallery-item gallery-item--wide">
         <img src="photos/classroom_bright_room.jpg" alt="Светла учебна зала в The Light Academy" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
 
