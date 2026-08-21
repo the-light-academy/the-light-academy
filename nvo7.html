@@ -1452,26 +1452,12 @@
     <div class="pricing-heading">
       <span class="eyebrow">Инвестиция в подготовката</span>
       <h2>Такса за курса</h2>
-      <p>Изберете размер на групата и начин на плащане, за да видите точната сума — изчислява се веднага.</p>
+      <p>Изберете начин на плащане, за да видите точната сума — изчислява се веднага.</p>
     </div>
 
     <div class="pricing-card">
       <div class="pricing-calculator">
         <h3>Изчисли своята такса</h3>
-
-        <div class="toggle-group">
-          <span class="toggle-group-label">Размер на групата</span>
-          <div class="toggle-pills" id="groupToggle">
-            <button type="button" class="toggle-pill active" data-group="big">
-              Група от 5–8 деца
-              <span class="sub">по-достъпна цена</span>
-            </button>
-            <button type="button" class="toggle-pill" data-group="small">
-              Група до 4 деца
-              <span class="sub">по-индивидуално внимание</span>
-            </button>
-          </div>
-        </div>
 
         <div class="toggle-group">
           <span class="toggle-group-label">Начин на плащане</span>
@@ -1495,9 +1481,9 @@
 
       <div class="pricing-display">
         <div class="pricing-display-top">
-          <span class="price-tag-label" id="priceLabel">Общо за курса</span>
-          <div class="pricing-display-amount" id="priceAmount">1000 €</div>
-          <div class="pricing-display-caption" id="priceCaption">при група 5–8 деца · еднократно плащане</div>
+          <span class="price-tag-label" id="priceLabel">Такса</span>
+          <div class="pricing-display-amount" id="priceAmount">360 €</div>
+          <div class="pricing-display-caption" id="priceCaption">3 вноски · общо 1 080 €</div>
 
           <ul class="schedule-list" id="scheduleList"></ul>
         </div>
@@ -1647,15 +1633,10 @@
     window.addEventListener('scroll', applyParallax, { passive: true });
 
     // ── Pricing calculator ──
-    const PRICING = {
-      big:   { installment: 360, full: 1000, label: "група 5–8 деца" },
-      small: { installment: 400, full: 1100, label: "група до 4 деца" }
-    };
+    const PLAN = { installment: 360, full: 999 };
 
-    let selectedGroup = 'big';
     let selectedPayment = 'installments';
 
-    const groupToggle = document.getElementById('groupToggle');
     const paymentToggle = document.getElementById('paymentToggle');
     const priceAmount = document.getElementById('priceAmount');
     const priceLabel = document.getElementById('priceLabel');
@@ -1669,19 +1650,18 @@
     }
 
     function renderPricing() {
-      const plan = PRICING[selectedGroup];
-      const installmentTotal = plan.installment * 3;
-      const savings = installmentTotal - plan.full;
+      const installmentTotal = PLAN.installment * 3;
+      const savings = installmentTotal - PLAN.full;
 
       // Amount + labels
       if (selectedPayment === 'installments') {
         priceLabel.textContent = 'Такса';
-        priceAmount.textContent = formatEUR(plan.installment);
-        priceCaption.textContent = `при ${plan.label} · 3 вноски · общо ${formatEUR(installmentTotal)}`;
+        priceAmount.textContent = formatEUR(PLAN.installment);
+        priceCaption.textContent = `3 вноски · общо ${formatEUR(installmentTotal)}`;
       } else {
         priceLabel.textContent = 'Общо за курса';
-        priceAmount.textContent = formatEUR(plan.full);
-        priceCaption.textContent = `при ${plan.label} · еднократно плащане`;
+        priceAmount.textContent = formatEUR(PLAN.full);
+        priceCaption.textContent = 'еднократно плащане';
       }
 
       // Bump animation on change
@@ -1694,9 +1674,9 @@
       scheduleList.innerHTML = '';
       if (selectedPayment === 'installments') {
         const rows = [
-          ['Първа вноска — при записване', plan.installment],
-          ['Втора вноска — до 15 декември 2026 г.', plan.installment],
-          ['Трета вноска — до 1 март 2027 г.', plan.installment]
+          ['Първа вноска — при записване', PLAN.installment],
+          ['Втора вноска — до 15 декември 2026 г.', PLAN.installment],
+          ['Трета вноска — до 1 март 2027 г.', PLAN.installment]
         ];
         rows.forEach(([label, amount]) => {
           const li = document.createElement('li');
@@ -1705,7 +1685,7 @@
         });
       } else {
         const li = document.createElement('li');
-        li.innerHTML = `<span><span class="dot"></span>Дължи се при записване</span><span class="amount">${formatEUR(plan.full)}</span>`;
+        li.innerHTML = `<span><span class="dot"></span>Дължи се при записване</span><span class="amount">${formatEUR(PLAN.full)}</span>`;
         scheduleList.appendChild(li);
       }
 
@@ -1717,14 +1697,6 @@
         savingsBadge.classList.remove('show');
       }
     }
-
-    groupToggle.addEventListener('click', (e) => {
-      const btn = e.target.closest('.toggle-pill');
-      if (!btn) return;
-      selectedGroup = btn.dataset.group;
-      [...groupToggle.children].forEach(p => p.classList.toggle('active', p === btn));
-      renderPricing();
-    });
 
     paymentToggle.addEventListener('click', (e) => {
       const btn = e.target.closest('.toggle-pill');
