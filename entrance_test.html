@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-551MW59126"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-551MW59126');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Входящ тест по Математика – The Light Academy Лозенец, София</title>
@@ -1314,6 +1323,23 @@ function handleTimeUp(){
   console.log('Времето изтече. Резултати от теста:', results);
   renderResultsPlaceholder(results);
   showScreen(resultScreen);
+  trackEvent('test_completed', {
+    event_category: 'entrance_test',
+    completion_type: 'time_up',
+    correct_answers: results.correctCount,
+    scorable_questions: results.totalQuestions,
+    score_percentage: results.overallPercentage
+  });
+}
+
+/* =========================================================
+   GOOGLE ANALYTICS – СЪБИТИЯ
+========================================================= */
+
+function trackEvent(name, params){
+  if(typeof window.gtag === 'function'){
+    window.gtag('event', name, params || {});
+  }
 }
 
 /* =========================================================
@@ -1468,6 +1494,13 @@ finishBtn.addEventListener('click', () => {
   console.log('Резултати от теста:', results);
   renderResultsPlaceholder(results);
   showScreen(resultScreen);
+  trackEvent('test_completed', {
+    event_category: 'entrance_test',
+    completion_type: 'finished',
+    correct_answers: results.correctCount,
+    scorable_questions: results.totalQuestions,
+    score_percentage: results.overallPercentage
+  });
 });
 
 /* =========================================================
@@ -1840,6 +1873,11 @@ if(sendAnalysisBtn && analysisModal){
         analysisFormGroupEl.style.display = 'none';
         analysisSendBtn.style.display = 'none';
         analysisSuccessEl.style.display = 'block';
+        trackEvent('generate_lead', {
+          event_category: 'entrance_test',
+          method: 'analysis_form',
+          score_percentage: lastResults ? lastResults.overallPercentage : undefined
+        });
       } else {
         const data = await res.json().catch(() => ({}));
         const hint = data?.error || data?.errors?.[0]?.message || ('Код ' + res.status);
