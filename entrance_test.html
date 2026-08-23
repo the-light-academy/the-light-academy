@@ -588,16 +588,6 @@
     box-shadow: 0 14px 32px rgba(247,173,25,0.5);
   }
 
-  .btn-cta-secondary{
-    background: var(--accent-light);
-    color: var(--accent-dark);
-    border: 2px solid var(--accent);
-  }
-
-  .btn-cta-secondary:hover{
-    background: #ffe9bd;
-  }
-
   .btn-cta-tertiary{
     display: block;
     text-align: center;
@@ -615,132 +605,82 @@
     color: var(--accent-dark);
   }
 
-  /* ---------- "Изпрати резултата за анализ" – модален прозорец (placeholder) ---------- */
+  /* ---------- Заключена секция с резултата по категории – отключва се с имейл ---------- */
 
-  .modal-overlay{
-    position: fixed;
-    inset: 0;
-    background: rgba(20, 15, 5, 0.5);
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-    overflow-y: auto;
-    padding: 60px 20px 40px;
-    z-index: 200;
+  .locked-results{
+    position: relative;
+    min-height: 360px;
   }
 
-  .modal-overlay.open{ display: flex; }
+  .lockable-content{
+    filter: blur(7px);
+    pointer-events: none;
+    user-select: none;
+    transition: filter 0.4s ease;
+  }
 
-  .modal-box{
-    position: relative;
+  .locked-results.unlocked .lockable-content{
+    filter: none;
+    pointer-events: auto;
+    user-select: auto;
+  }
+
+  .locked-overlay{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    z-index: 5;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .locked-results.unlocked .locked-overlay{
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .locked-overlay-card{
     width: 100%;
-    max-width: 420px;
+    max-width: 380px;
     background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-hover);
-    padding: 30px 24px 26px;
+    padding: 26px 22px;
+    text-align: center;
+  }
+
+  .locked-overlay-icon{
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .locked-overlay-title{
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  .locked-overlay-text{
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-light);
+    margin: 0 0 16px;
+  }
+
+  .unlock-form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
     text-align: left;
   }
 
-  /* Fixed to the viewport (not the box) so it stays reachable even when
-     the modal's content is taller than the screen and the overlay
-     scrolls — otherwise on small phones the "×" scrolls off along with
-     the top of the box and the modal becomes impossible to close. */
-  .modal-close-btn{
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 50%;
-    background: var(--bg);
-    color: var(--text-light);
-    font-size: 16px;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 210;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-  }
-
-  .modal-close-btn:hover{
-    background: var(--accent-light);
-    color: var(--accent-dark);
-  }
-
-  .modal-title{
-    font-size: 18px;
-    font-weight: 800;
-    margin: 0 0 10px;
-    padding-right: 24px;
-  }
-
-  .modal-lead{
-    font-size: 15.5px;
-    font-weight: 700;
-    line-height: 1.5;
-    color: var(--text);
-    margin: 0 0 10px;
-  }
-
-  .modal-text{
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: var(--text-light);
-    margin: 0 0 16px;
-  }
-
-  .modal-text:last-of-type{
-    margin-bottom: 0;
-  }
-
-  .modal-checklist{
-    list-style: none;
-    margin: 0 0 16px;
-    padding: 14px 16px;
-    background: var(--bg);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .modal-checklist li{
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    font-size: 14px;
-    line-height: 1.45;
-    color: var(--text);
-  }
-
-  .modal-checklist .check{
-    flex: 0 0 auto;
-    color: var(--accent-dark);
-    font-weight: 800;
-  }
-
-  .cta-helper-text{
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--text-light);
-    text-align: center;
-    margin: -2px 0 2px;
-  }
-
-  .modal-form-group{
-    margin: 18px 0;
-  }
-
-  .modal-form-group label{
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .modal-form-group input{
+  .unlock-form-group input{
     width: 100%;
     padding: 12px 14px;
     border: 2px solid var(--border);
@@ -751,20 +691,19 @@
     background: var(--bg);
   }
 
-  .modal-form-group input:focus{
+  .unlock-form-group input:focus{
     outline: none;
     border-color: var(--accent);
     background: #fff;
   }
 
-  .analysis-success{ text-align: center; padding: 8px 0 2px; }
-  .analysis-success-icon{
-    width: 48px; height: 48px; margin: 0 auto 10px; border-radius: 50%;
-    background: #e5f5ec; color: #1c7a4a; font-size: 1.3rem; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
+  .unlock-privacy-note{
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: var(--text-light);
+    margin: 10px 0 0;
   }
-  .analysis-success h4{ font-size: 16px; margin-bottom: 4px; color: var(--text); }
-  .analysis-success p{ font-size: 13.5px; color: var(--text-light); }
+
   .analysis-error{ margin-top: 14px; background: #fff0e8; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #c24508; text-align: center; }
   .analysis-error a{ color: #c24508; font-weight: 700; }
 
@@ -920,31 +859,56 @@
         <!-- Диагностично съобщение – попълва се динамично -->
       </div>
 
-      <div class="result-section">
-        <h3 class="result-section-title">Силни страни</h3>
-        <div class="tag-list" id="strengths-list">
-          <!-- До 3 категории с най-висок резултат -->
-        </div>
-      </div>
+      <div class="locked-results" id="locked-results">
+        <div class="lockable-content">
+          <div class="result-section">
+            <h3 class="result-section-title">Силни страни</h3>
+            <div class="tag-list" id="strengths-list">
+              <!-- До 3 категории с най-висок резултат -->
+            </div>
+          </div>
 
-      <div class="result-section">
-        <h3 class="result-section-title">Области за развитие</h3>
-        <div class="tag-list" id="growth-list">
-          <!-- До 3 категории с най-нисък резултат -->
-        </div>
-      </div>
+          <div class="result-section">
+            <h3 class="result-section-title">Области за развитие</h3>
+            <div class="tag-list" id="growth-list">
+              <!-- До 3 категории с най-нисък резултат -->
+            </div>
+          </div>
 
-      <div class="result-section">
-        <h3 class="result-section-title">Резултат по категории</h3>
-        <div class="category-list" id="category-list">
-          <!-- Всички категории с progress bars – попълва се динамично -->
-        </div>
-      </div>
+          <div class="result-section">
+            <h3 class="result-section-title">Резултат по категории</h3>
+            <div class="category-list" id="category-list">
+              <!-- Всички категории с progress bars – попълва се динамично -->
+            </div>
+          </div>
 
-      <div class="result-download">
-        <button type="button" class="btn btn-download" id="download-pdf-btn">
-          ⬇ Изтегли своя резултат (PDF)
-        </button>
+          <div class="result-download">
+            <button type="button" class="btn btn-download" id="download-pdf-btn">
+              ⬇ Изтегли своя резултат (PDF)
+            </button>
+          </div>
+        </div>
+
+        <!-- Заключващ слой – показва се докато не бъде въведен имейл; отваря пълния резултат по категории -->
+        <div class="locked-overlay" id="locked-overlay">
+          <div class="locked-overlay-card">
+            <div class="locked-overlay-icon">🔒</div>
+            <h3 class="locked-overlay-title">Вижте пълния резултат</h3>
+            <p class="locked-overlay-text">
+              Силните страни на детето, областите за развитие и разбивката по категории са готови.
+              Въведете имейл на родителя, за да ги отключите — учител по математика ще ги прегледа
+              и ще ви даде кратка обратна връзка.
+            </p>
+
+            <div class="unlock-form-group">
+              <input type="text" id="analysis-student-name" placeholder="Име на ученика" autocomplete="name" required />
+              <input type="email" id="analysis-parent-email" placeholder="Имейл на родителя" inputmode="email" autocomplete="email" required />
+            </div>
+            <button type="button" class="btn btn-primary" id="analysis-send-btn" style="width:100%;">🔓 Отключи пълния резултат</button>
+            <div id="analysis-error" class="analysis-error" style="display:none;"></div>
+            <p class="unlock-privacy-note">Без спам — само резултата и, ако желаете, кратка обратна връзка от учител.</p>
+          </div>
+        </div>
       </div>
 
       <div class="result-cta">
@@ -956,52 +920,7 @@
         <span class="seats-badge">Остават 8 места в групата</span>
         <div class="result-cta-buttons">
           <a href="nvo7.html#section-cta" class="btn btn-primary btn-cta-main btn-link">Запази място в курса за НВО</a>
-          <p class="cta-helper-text">Не сте сигурни дали целогодишната подготовка е необходима? Изпратете резултата си за анализ и ще ви помогнем да прецените.</p>
-          <button type="button" class="btn btn-cta-secondary" id="send-analysis-btn">Изпрати резултата за анализ</button>
           <a href="nvo7.html" class="btn-cta-tertiary">Разгледай подготовката за НВО</a>
-        </div>
-      </div>
-
-      <!-- "Изпрати резултата за анализ" – без бекенд/форма: отваря mailto: чернова до the.light.academy56@gmail.com с всички данни от резултата -->
-      <div class="modal-overlay" id="analysis-modal">
-        <div class="modal-box">
-          <button type="button" class="modal-close-btn" id="analysis-modal-close" aria-label="Затвори">✕</button>
-          <h3 class="modal-title">Изпрати резултата за анализ</h3>
-
-          <p class="modal-lead">Искате да разберете не само резултата, а какво стои зад него?</p>
-          <p class="modal-text">
-            Резултатът показва общата картина, но резултатът по категории ни дава много повече информация.
-          </p>
-
-          <ul class="modal-checklist">
-            <li><span class="check">✓</span> Кои математически умения са добре усвоени</li>
-            <li><span class="check">✓</span> Къде има пропуски от 5. и 6. клас</li>
-            <li><span class="check">✓</span> Върху кои области е добре да се работи преди НВО</li>
-          </ul>
-
-          <p class="modal-text">
-            Изпратете резултата си и преподавател по математика в The Light Academy ще го разгледа
-            и ще ви даде кратка професионална обратна връзка.
-          </p>
-
-          <div id="analysis-fields">
-            <div class="modal-form-group">
-              <label for="analysis-student-name">Име на ученика</label>
-              <input type="text" id="analysis-student-name" placeholder="напр. Иван Иванов" autocomplete="name" required />
-            </div>
-            <div class="modal-form-group">
-              <label for="analysis-parent-email">Имейл на родителя</label>
-              <input type="email" id="analysis-parent-email" placeholder="ivan.ivanov@example.com" inputmode="email" autocomplete="email" required />
-            </div>
-          </div>
-          <button type="button" class="btn btn-primary" id="analysis-send-btn" style="width:100%;">Изпрати резултата за анализ</button>
-
-          <div id="analysis-success" class="analysis-success" style="display:none;">
-            <div class="analysis-success-icon">✓</div>
-            <h4>Изпратено!</h4>
-            <p>Получихме резултата — учител ще го прегледа и ще се свърже с вас.</p>
-          </div>
-          <div id="analysis-error" class="analysis-error" style="display:none;"></div>
         </div>
       </div>
 
@@ -1614,6 +1533,7 @@ function getDiagnosticMessage(percentage){
 
 function renderResultsPlaceholder(results){
   lastResults = results; // запазваме за бутона "Изтегли своя резултат"
+  lockResults(); // всеки нов резултат стартира отново заключен, докато не се въведе имейл
 
   // 1. Общ резултат
   document.getElementById('result-score-fraction').textContent =
@@ -1750,18 +1670,25 @@ function generateResultPDF(){
 
 const ANALYSIS_FORM_ENDPOINT = 'https://formspree.io/f/mnpawlbd';
 
-const sendAnalysisBtn       = document.getElementById('send-analysis-btn');
-const analysisModal         = document.getElementById('analysis-modal');
-const analysisModalClose    = document.getElementById('analysis-modal-close');
+const lockedResultsEl       = document.getElementById('locked-results');
 const analysisStudentNameEl = document.getElementById('analysis-student-name');
 const analysisParentEmailEl = document.getElementById('analysis-parent-email');
 const analysisSendBtn       = document.getElementById('analysis-send-btn');
-const analysisSuccessEl     = document.getElementById('analysis-success');
 const analysisErrorEl       = document.getElementById('analysis-error');
-const analysisFormGroupEl   = document.getElementById('analysis-fields');
 
-function closeAnalysisModal(){
-  analysisModal.classList.remove('open');
+function lockResults(){
+  if(!lockedResultsEl) return;
+  lockedResultsEl.classList.remove('unlocked');
+  analysisStudentNameEl.value = '';
+  analysisParentEmailEl.value = '';
+  analysisErrorEl.style.display = 'none';
+  analysisSendBtn.disabled = false;
+  analysisSendBtn.textContent = '🔓 Отключи пълния резултат';
+}
+
+function unlockResults(){
+  if(!lockedResultsEl) return;
+  lockedResultsEl.classList.add('unlocked');
 }
 
 function buildAnalysisSummary(studentName, results){
@@ -1810,26 +1737,7 @@ function buildAnalysisSummary(studentName, results){
   return lines.join('\n');
 }
 
-if(sendAnalysisBtn && analysisModal){
-  sendAnalysisBtn.addEventListener('click', () => {
-    analysisFormGroupEl.style.display = '';
-    analysisSendBtn.style.display = '';
-    analysisSendBtn.disabled = false;
-    analysisSendBtn.textContent = 'Изпрати резултата за анализ';
-    analysisSuccessEl.style.display = 'none';
-    analysisErrorEl.style.display = 'none';
-    analysisModal.classList.add('open');
-    analysisStudentNameEl.focus();
-  });
-
-  analysisModalClose.addEventListener('click', closeAnalysisModal);
-
-  analysisModal.addEventListener('click', (e) => {
-    if(e.target === analysisModal){
-      closeAnalysisModal();
-    }
-  });
-
+if(analysisSendBtn){
   [analysisStudentNameEl, analysisParentEmailEl].forEach(el => {
     el.addEventListener('keydown', (e) => {
       if(e.key === 'Enter'){
@@ -1853,7 +1761,7 @@ if(sendAnalysisBtn && analysisModal){
 
     analysisErrorEl.style.display = 'none';
     analysisSendBtn.disabled = true;
-    analysisSendBtn.textContent = 'Изпращане...';
+    analysisSendBtn.textContent = 'Отключване...';
 
     const body = new FormData();
     body.append('Име на ученика', studentName);
@@ -1870,9 +1778,7 @@ if(sendAnalysisBtn && analysisModal){
       });
 
       if(res.ok){
-        analysisFormGroupEl.style.display = 'none';
-        analysisSendBtn.style.display = 'none';
-        analysisSuccessEl.style.display = 'block';
+        unlockResults();
         trackEvent('generate_lead', {
           event_category: 'entrance_test',
           method: 'analysis_form',
@@ -1885,14 +1791,14 @@ if(sendAnalysisBtn && analysisModal){
         analysisErrorEl.innerHTML = '<p>⚠️ ' + hint + ' — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>';
         analysisErrorEl.style.display = 'block';
         analysisSendBtn.disabled = false;
-        analysisSendBtn.textContent = 'Изпрати резултата за анализ';
+        analysisSendBtn.textContent = '🔓 Отключи пълния резултат';
       }
     } catch (err) {
       console.error('Заявката за анализ не стигна до Formspree:', err);
       analysisErrorEl.innerHTML = '<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>';
       analysisErrorEl.style.display = 'block';
       analysisSendBtn.disabled = false;
-      analysisSendBtn.textContent = 'Изпрати резултата за анализ';
+      analysisSendBtn.textContent = '🔓 Отключи пълния резултат';
     }
   });
 }
