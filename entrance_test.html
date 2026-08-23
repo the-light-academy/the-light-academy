@@ -1285,6 +1285,7 @@ startBtn.addEventListener('click', () => {
   showScreen(testScreen);
   renderQuestion();
   startTimer(); // стартира се само тук - веднъж за целия тест
+  trackEvent('test_started', { event_category: 'entrance_test' });
 });
 
 /* =========================================================
