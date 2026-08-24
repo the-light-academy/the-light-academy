@@ -781,9 +781,10 @@
 
     .about-photos {
       position: relative;
-      width: 320px;
-      height: 480px;
+      width: 100%;
+      max-width: 420px;
       margin: 0 auto;
+      padding: 20px 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -806,14 +807,13 @@
       transition: transform 0.35s ease, box-shadow 0.35s ease;
       z-index: 2;
     }
-    /* About video replacement (rounded rectangle) */
+    /* About video replacement (rounded rectangle) — sized in JS to exactly
+       match each photo's own aspect ratio, so nothing is ever cropped and
+       there's no empty letterbox space either. */
     .about-video {
       position: relative;
-      width: min(100%, 540px);
-      height: min(100%, 420px);
-      aspect-ratio: 6 / 5;
-      max-width: 560px;
-      max-height: 460px;
+      width: 320px;
+      height: 240px;
       border-radius: calc(var(--radius) * 1.25);
       overflow: hidden;
       background: var(--cream);
@@ -821,25 +821,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    .about-video video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      transition: width 0.6s ease, height 0.6s ease;
     }
     .media-layer {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
+      object-fit: contain;
       display: block;
       opacity: 0;
       transition: opacity 1.6s ease;
       z-index: 1;
     }
-    video.media-layer { object-fit: cover; }
-    img.media-layer { object-fit: contain; }
     .media-layer.active { opacity: 1; z-index: 2; }
     .video-play {
       position: absolute;
@@ -1576,10 +1570,10 @@
         <div class="about-blob blob-2"></div>
 
         <div class="about-video" id="aboutMedia">
-          <video id="aboutVideo" class="media-layer active" src="photos/about_us_video.mp4" preload="metadata" playsinline muted autoplay loop></video>
-          <img class="media-layer" src="photos/about_carousel_1.jpg" alt="Ученици на The Light Academy, увлечени в творчески дейности">
-          <img class="media-layer" src="photos/about_carousel_2.jpg" alt="Дете и родител заедно над учебник в The Light Academy">
-          <img class="media-layer" src="photos/about_carousel_3.jpg" alt="Дете, съсредоточено по време на занятие в The Light Academy">
+          <video id="aboutVideo" class="media-layer active" data-ratio="1.778" src="photos/about_us_video.mp4" preload="metadata" playsinline muted autoplay loop></video>
+          <img class="media-layer" data-ratio="1.368" src="photos/about_carousel_1.jpg" alt="Ученици на The Light Academy, увлечени в творчески дейности">
+          <img class="media-layer" data-ratio="0.513" src="photos/about_carousel_2.jpg" alt="Дете и родител заедно над учебник в The Light Academy">
+          <img class="media-layer" data-ratio="0.426" src="photos/about_carousel_3.jpg" alt="Дете, съсредоточено по време на занятие в The Light Academy">
           <button id="aboutPlayBtn" class="video-play" aria-label="Play video"><i class="fa-solid fa-play"></i></button>
         </div>
       </div>
@@ -2773,6 +2767,26 @@ The Light Academy прави впечатление с малките групи
       const layers = Array.from(media.querySelectorAll('.media-layer'));
       if (layers.length < 2) return;
 
+      function ratioOf(layer) {
+        if (layer === video && video.videoWidth && video.videoHeight) {
+          return video.videoWidth / video.videoHeight;
+        }
+        return parseFloat(layer.dataset.ratio) || 1;
+      }
+
+      // Resize the box to exactly match the active photo's own shape —
+      // the whole image always fits, with no cropping and no empty bars.
+      function applySize(layer) {
+        const wrap = media.parentElement;
+        const maxW = Math.min(wrap ? wrap.clientWidth : 420, 420);
+        const maxH = 460;
+        const ratio = ratioOf(layer);
+        let w = maxW, h = w / ratio;
+        if (h > maxH) { h = maxH; w = h * ratio; }
+        media.style.width = Math.round(w) + 'px';
+        media.style.height = Math.round(h) + 'px';
+      }
+
       function syncPlayBtn(activeLayer) {
         if (!btn) return;
         if (activeLayer === video) {
@@ -2785,7 +2799,15 @@ The Light Academy прави впечатление с малките групи
 
       let current = layers.findIndex(l => l.classList.contains('active'));
       if (current === -1) current = 0;
+      applySize(layers[current]);
       syncPlayBtn(layers[current]);
+
+      if (video) {
+        video.addEventListener('loadedmetadata', () => {
+          if (layers[current] === video) applySize(video);
+        });
+      }
+      window.addEventListener('resize', () => applySize(layers[current]));
 
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -2794,6 +2816,7 @@ The Light Academy прави впечатление с малките групи
         layers[current].classList.remove('active');
         layers[next].classList.add('active');
         current = next;
+        applySize(layers[current]);
         syncPlayBtn(layers[current]);
       }, 7000);
     }
