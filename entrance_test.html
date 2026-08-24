@@ -795,11 +795,11 @@
 
       <div class="intro-stats">
         <div class="stat-pill">
-          <span class="stat-number" id="intro-question-count">20</span>
+          <span class="stat-number" id="intro-question-count">12</span>
           <span class="stat-label">въпроса</span>
         </div>
         <div class="stat-pill">
-          <span class="stat-number">25</span>
+          <span class="stat-number">7</span>
           <span class="stat-label">минути</span>
         </div>
       </div>
@@ -850,17 +850,17 @@
       <div class="result-icon">🎉</div>
       <h2 class="result-title">Вашият резултат</h2>
 
-      <div class="result-score-block">
-        <p class="result-score-fraction" id="result-score-fraction">0 / 20</p>
-        <span class="result-score-percentage" id="result-score-percentage">0%</span>
-      </div>
-
-      <div class="result-message" id="result-message">
-        <!-- Диагностично съобщение – попълва се динамично -->
-      </div>
-
       <div class="locked-results" id="locked-results">
         <div class="lockable-content">
+          <div class="result-score-block">
+            <p class="result-score-fraction" id="result-score-fraction">0 / 12</p>
+            <span class="result-score-percentage" id="result-score-percentage">0%</span>
+          </div>
+
+          <div class="result-message" id="result-message">
+            <!-- Диагностично съобщение – попълва се динамично -->
+          </div>
+
           <div class="result-section">
             <h3 class="result-section-title">Силни страни</h3>
             <div class="tag-list" id="strengths-list">
@@ -893,11 +893,11 @@
         <div class="locked-overlay" id="locked-overlay">
           <div class="locked-overlay-card">
             <div class="locked-overlay-icon">🔒</div>
-            <h3 class="locked-overlay-title">Вижте пълния резултат</h3>
+            <h3 class="locked-overlay-title">Резултатът е готов!</h3>
             <p class="locked-overlay-text">
-              Силните страни на детето, областите за развитие и разбивката по категории са готови.
-              Въведете имейл на родителя, за да ги отключите — учител по математика ще ги прегледа
-              и ще ви даде кратка обратна връзка.
+              Точките, силните страни на детето, областите за развитие и разбивката по категории
+              са готови. Въведете имейл на родителя, за да ги видите — учител по математика ще ги
+              прегледа и ще ви даде кратка обратна връзка.
             </p>
 
             <div class="unlock-form-group">
@@ -938,7 +938,7 @@
 <script>
 /* =========================================================
    ДАННИ ЗА ВЪПРОСИТЕ
-   Диагностичен входящ тест – 20 въпроса. Два вида:
+   Диагностичен входящ тест – 12 въпроса, всички с избираем отговор:
 
    multiple_choice:
    {
@@ -983,15 +983,6 @@ let questions = [
     diagnosticGoal: "Проверява събиране на дроби с различни знаменатели. А е типична грешка при събиране на числителите и знаменателите поотделно."
   },
   {
-    type: "free_text",
-    question: "Изчисли:\n\n5/6 − 1/3 = ?",
-    instruction: "Напиши отговора си като дроб.",
-    correctAnswer: "1/2",
-    category: "Дроби",
-    difficulty: "medium",
-    diagnosticGoal: "Проверява дали детето разбира привеждането към общ знаменател."
-  },
-  {
     type: "multiple_choice",
     question: "Една тениска струва 40 €. Цената е намалена с 25%.\n\nКолко струва тениската след намалението?",
     options: ["15 €", "25 €", "30 €", "35 €"],
@@ -1008,15 +999,6 @@ let questions = [
     category: "Делимост",
     difficulty: "medium",
     diagnosticGoal: "Проверява едновременно използване на признаци за делимост. 126 се дели на 2 и 3, но не на 5; 135 и 165 се делят на 3 и 5, но не на 2 — само 150 изпълнява и трите условия."
-  },
-  {
-    type: "free_text",
-    question: "Реши уравнението:\n\n3x + 7 = 22",
-    instruction: "Напиши стойността на x.",
-    correctAnswer: "5",
-    category: "Уравнения",
-    difficulty: "medium",
-    diagnosticGoal: "Проверява базово решаване на линейно уравнение. Важно е да се запази точният въведен отговор на детето за последващ анализ."
   },
   {
     type: "multiple_choice",
@@ -1037,15 +1019,6 @@ let questions = [
     diagnosticGoal: "Проверява разбиране на отрицателните числа."
   },
   {
-    type: "free_text",
-    question: "Един автобус изминава 180 km за 3 часа при постоянна скорост.\n\nКолко километра ще измине за 5 часа при същата скорост?",
-    instruction: "Напиши само числото на отговора.",
-    correctAnswer: "300",
-    category: "Текстови задачи",
-    difficulty: "medium",
-    diagnosticGoal: "Проверява намиране на скорост, пропорционално мислене и разбиране на текстово условие. Съхранява се оригиналният отговор за учителски анализ."
-  },
-  {
     type: "multiple_choice",
     question: "Ако 4 тетрадки струват 6 €, колко ще струват 10 тетрадки при същата цена за една тетрадка?",
     options: ["12 €", "15 €", "16 €", "18 €"],
@@ -1053,24 +1026,6 @@ let questions = [
     category: "Пропорции",
     difficulty: "medium",
     diagnosticGoal: "Проверява пропорционално мислене. А и Г са правдоподобни distractors."
-  },
-  {
-    type: "multiple_choice",
-    question: "Правоъгълник има страни 8 cm и 5 cm.\n\nКакъв е периметърът му?",
-    options: ["13 cm", "26 cm", "40 cm", "18 cm"],
-    correctAnswer: 1,
-    category: "Геометрия",
-    difficulty: "easy",
-    diagnosticGoal: "Проверява формулата за периметър. А е distractor при събиране само на двете различни страни. В е distractor при използване на формулата за лице."
-  },
-  {
-    type: "free_text",
-    question: "Триъгълник има основа 10 cm и височина 6 cm.\n\nНамери лицето му.",
-    instruction: "Напиши отговора си в cm².",
-    correctAnswer: "30",
-    category: "Геометрия",
-    difficulty: "medium",
-    diagnosticGoal: "Проверява формула за лице на триъгълник, разбиране на деление на 2 и правилно използване на дадените величини."
   },
   {
     type: "multiple_choice",
@@ -1091,15 +1046,6 @@ let questions = [
     diagnosticGoal: "Проверява разпознаване на знаците на координатите."
   },
   {
-    type: "free_text",
-    question: "Реши:\n\n2x − 7 = 15",
-    instruction: "Напиши стойността на x.",
-    correctAnswer: "11",
-    category: "Уравнения",
-    difficulty: "medium",
-    diagnosticGoal: "Проверява прехвърляне на число, деление и разбиране на линейно уравнение."
-  },
-  {
     type: "multiple_choice",
     question: "Ако x = 3, колко е:\n\n2x² + 1",
     options: ["7", "10", "19", "25"],
@@ -1118,15 +1064,6 @@ let questions = [
     diagnosticGoal: "Проверява използването на Питагоровата теорема. Г е distractor при умножаване на катетите."
   },
   {
-    type: "free_text",
-    question: "Едно число е умножено по 3 и след това към получения резултат е прибавено 5.\n\nПолучава се 26.\n\nКое е числото?",
-    instruction: "Напиши числото.",
-    correctAnswer: "7",
-    category: "Логическо мислене",
-    difficulty: "hard",
-    diagnosticGoal: "Проверява дали детето може да преведе текстово условие в математически модел."
-  },
-  {
     type: "multiple_choice",
     question: "В клас има 30 ученици.\n\n3/5 от тях участват в математическо състезание.\n\nКолко ученици участват?",
     options: ["12", "15", "18", "20"],
@@ -1134,15 +1071,6 @@ let questions = [
     category: "Текстови задачи",
     difficulty: "hard",
     diagnosticGoal: "Проверява прилагане на дроб към количество."
-  },
-  {
-    type: "free_text",
-    question: "Един правоъгълник има периметър 30 cm.\n\nЕдната му страна е 5 cm.\n\nКолко квадратни сантиметра е лицето му?",
-    instruction: "Напиши само числото.",
-    correctAnswer: "50",
-    category: "Комбинирана задача",
-    difficulty: "hard",
-    diagnosticGoal: "Много важна задача за учителски анализ — проверява дали детето може последователно да: 1) използва формулата за периметър, 2) намери неизвестната страна, 3) използва формулата за лице."
   }
 ];
 
@@ -1184,8 +1112,8 @@ const OPTION_LETTERS = ['A', 'B', 'C', 'D'];
    ТАЙМЕР
 ========================================================= */
 
-const TEST_DURATION_SECONDS = 25 * 60; // 25 минути
-const WARNING_THRESHOLD_SECONDS = 5 * 60; // предупреждение при 5 минути
+const TEST_DURATION_SECONDS = 7 * 60; // 7 минути
+const WARNING_THRESHOLD_SECONDS = 2 * 60; // предупреждение при 2 минути
 
 let testStartTime = null;   // timestamp (ms) кога е стартиран тестът
 let timerIntervalId = null;
