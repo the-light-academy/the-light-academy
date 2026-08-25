@@ -143,6 +143,9 @@
     .article-body-inner h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--sun-dark); margin-top: 1.4rem; }
     .article-body-inner h3:first-child { margin-top: 0; }
     .article-body-inner p { margin-top: 0.85rem; }
+    .article-illustration { display: flex; justify-content: center; margin: 1.1rem 0; padding: 1.4rem; background: linear-gradient(160deg, var(--sun-light) 0%, #ffe3c2 100%); border-radius: 20px; }
+    .article-illustration svg { width: 180px; height: 180px; }
+    .article-equation { text-align: center; font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--sun-dark); background: var(--sun-light); border-radius: 14px; padding: 0.7rem 1rem; margin-top: 0.9rem !important; }
     .article-card.featured .article-body { max-height: 1200px; }
 
     .expand-btn {
@@ -334,6 +337,57 @@
           </div>
         </div>
         <button type="button" class="expand-btn" aria-expanded="true" hidden>Прочети повече <span class="chevron">⌄</span></button>
+      </article>
+
+      <article class="article-card" id="article-darts" data-category="courses">
+        <div class="article-top">
+          <div class="article-icon">🎯</div>
+          <div class="article-meta">
+            <div class="meta-row">
+              <time datetime="2026-08-25">Август 2026</time>
+              <span class="category-tag courses">Курсове</span>
+              <span class="reading-time"></span>
+            </div>
+            <h2 class="article-title">Математика и дартс: как учим най-малките да пресмятат играейки</h2>
+          </div>
+        </div>
+        <p class="article-snippet">При най-малките ни ученици математиката винаги е под формата на игра — а любимата ни игра накрая на урока е дартс.</p>
+        <div class="article-body">
+          <div class="article-body-inner">
+            <div class="article-illustration">
+              <svg viewBox="0 0 200 200" role="img" aria-label="Дартборд с три забити стрелички">
+                <circle cx="100" cy="100" r="96" fill="#fffaf3" stroke="#e8d9c3" stroke-width="2"/>
+                <circle cx="100" cy="100" r="80" fill="#f5a623"/>
+                <circle cx="100" cy="100" r="62" fill="#fffaf3"/>
+                <circle cx="100" cy="100" r="44" fill="#f5a623"/>
+                <circle cx="100" cy="100" r="26" fill="#6f4323"/>
+                <circle cx="100" cy="100" r="10" fill="#2d1f0e"/>
+                <g transform="translate(96,90) rotate(35)">
+                  <line x1="0" y1="0" x2="28" y2="-28" stroke="#132d4a" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="28,-28 37,-19 19,-37" fill="#b9701a"/>
+                </g>
+                <g transform="translate(114,106) rotate(-20)">
+                  <line x1="0" y1="0" x2="26" y2="-26" stroke="#132d4a" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="26,-26 35,-17 17,-35" fill="#b9701a"/>
+                </g>
+                <g transform="translate(82,112) rotate(65)">
+                  <line x1="0" y1="0" x2="24" y2="-24" stroke="#132d4a" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="24,-24 33,-15 15,-33" fill="#b9701a"/>
+                </g>
+              </svg>
+            </div>
+            <h3>Учене чрез игра</h3>
+            <p>При най-малките ни ученици математиката винаги е под формата на игра. Именно по този начин децата запаметяват информацията по неповторим начин — не се съпротивляват, не развиват страх и неприязън към математиката от малки, а напротив: научават се да играят по нейните правила.</p>
+            <h3>Дартс в края на всеки урок</h3>
+            <p>Затова в края на нашите уроци по математика с най-малките играем дартс. По този начин се раздвижваме заедно с децата, забавляваме се — и същевременно смятаме наум.</p>
+            <p>Три хвърляния могат да ни дадат например израз като:</p>
+            <p class="article-equation">3 × 20 + 19 + 2 × 7 = 93</p>
+            <p>Никак не е зле като упражнение за пресмятане наум на резултата от три стрелички — а това се случва постоянно, при всяко ново хвърляне.</p>
+            <h3>Целта ни</h3>
+            <p>Искаме децата да заобичат математиката, а не да се страхуват от нея.</p>
+          </div>
+        </div>
+        <button type="button" class="expand-btn" aria-expanded="false">Прочети повече <span class="chevron">⌄</span></button>
       </article>
 
       <article class="article-card" id="article-nvo4" data-category="courses">
