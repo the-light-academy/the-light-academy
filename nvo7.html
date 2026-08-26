@@ -849,7 +849,7 @@
     .post-pricing-group .cta-section { order: 1; }
     .post-pricing-group .course-info-block { order: 2; }
 
-    /* Desktop: urgency card + registration form side by side */
+    /* Desktop: urgency card + buttons + hint stacked on the left, form on the right */
     .cta-cards-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -858,8 +858,15 @@
       max-width: 1100px;
       margin: 2.5rem auto 0;
     }
-    .cta-cards-row .urgency-block { margin: 0; max-width: none; }
     .cta-cards-row .reg-form-wrap { margin: 0; }
+    .cta-left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+    .cta-left-col .urgency-block { margin: 0; max-width: none; order: 1; }
+    .cta-left-col .cta-buttons { margin: 0; order: 2; }
+    .cta-left-col .cta-buttons-hint { order: 3; margin-top: 0; }
 
     /* -- Course info cards below calculator -- */
     .course-info-block {
@@ -1002,6 +1009,12 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+    .cta-buttons-hint {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.82rem;
+      text-align: center;
+      margin-top: 0.7rem;
+    }
     .btn-cta-primary {
       display: inline-flex;
       align-items: center;
@@ -1085,12 +1098,6 @@
       padding: 1.75rem 1.75rem 1.5rem;
       text-align: center;
     }
-    .urgency-title {
-      font-family: 'Bad Script', cursive;
-      font-size: clamp(1.4rem, 3vw, 1.8rem);
-      color: var(--white);
-      margin-bottom: 0.5rem;
-    }
     .urgency-text {
       color: rgba(255,255,255,0.82);
       font-size: 0.95rem;
@@ -1129,33 +1136,37 @@
       30% { box-shadow: 0 0 0 6px rgba(245,166,35,0.55), 0 24px 60px rgba(0,0,0,0.25); }
     }
     .modal-box {
-      background: var(--white);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-radius: 20px;
       padding: 2.5rem 2.5rem 2rem;
       max-width: 560px;
       width: 100%;
       position: relative;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
     }
     .modal-icon {
       width: 56px; height: 56px;
-      background: var(--orange-light);
+      background: rgba(245,166,35,0.18);
+      border: 1px solid rgba(245,166,35,0.4);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.5rem;
-      color: var(--orange);
+      color: var(--sun);
       margin: 0 auto 1rem;
     }
     .modal-title {
       font-family: 'Bad Script', cursive;
       font-size: 1.7rem;
-      color: var(--dark);
+      color: #fff;
       text-align: center;
       margin-bottom: 0.4rem;
     }
     .modal-sub {
       font-size: 0.9rem;
-      color: var(--light-text);
+      color: rgba(255,255,255,0.65);
       text-align: center;
       margin-bottom: 1.75rem;
       line-height: 1.5;
@@ -1167,25 +1178,28 @@
       display: block;
       font-size: 13px;
       font-weight: 700;
-      color: var(--mid);
+      color: rgba(255,255,255,0.7);
       margin-bottom: 6px;
     }
     .form-group input, .form-group textarea {
       width: 100%;
       padding: 12px 16px;
-      border: 2px solid var(--sun-light);
+      border: 2px solid rgba(255,255,255,0.2);
       border-radius: var(--radius-sm);
       font-family: 'Nunito', sans-serif;
       font-size: 16px;
-      color: var(--dark);
-      background: var(--cream);
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
     .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
     .form-group input:focus, .form-group textarea:focus {
-      border-color: var(--orange);
-      box-shadow: 0 0 0 3px rgba(232,88,10,0.12);
+      border-color: var(--sun);
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.18);
     }
     .btn-submit {
       width: 100%;
@@ -1210,8 +1224,9 @@
     }
     .success-icon {
       width: 56px; height: 56px;
-      background: #E0F4F3;
-      color: var(--teal);
+      background: rgba(26,140,133,0.2);
+      border: 1px solid rgba(26,140,133,0.45);
+      color: #4FD8CE;
       border-radius: 50%;
       font-size: 1.6rem;
       font-weight: 800;
@@ -1220,10 +1235,10 @@
     }
     .form-success h4 {
       font-size: 1.2rem;
-      color: var(--dark);
+      color: #fff;
       margin-bottom: 0.4rem;
     }
-    .form-success p { color: var(--mid); font-size: 0.92rem; }
+    .form-success p { color: rgba(255,255,255,0.7); font-size: 0.92rem; }
     .form-error {
       background: #FFF0EB;
       border-radius: var(--radius-sm);
@@ -1311,10 +1326,12 @@
       .cta-buttons { flex-direction: column; align-items: center; }
 
       /* Keep mobile layout exactly as before: "При нас" above CTA,
-         urgency card stacked above the form (undo the desktop-only grid/order). */
+         buttons above urgency card, above the form (undo the desktop-only grid/order). */
       .post-pricing-group { display: block; }
       .cta-cards-row { display: block; }
-      .cta-cards-row .urgency-block { margin: 2.5rem auto 0; max-width: 640px; }
+      .cta-left-col .cta-buttons { order: 1; }
+      .cta-left-col .cta-buttons-hint { order: 2; margin-top: 0.7rem; }
+      .cta-left-col .urgency-block { order: 3; margin: 2.5rem auto 0; max-width: 640px; }
       .cta-cards-row .reg-form-wrap { margin-top: 2.75rem; }
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
 
@@ -2005,21 +2022,11 @@
   <section class="cta-section" id="section-cta">
     <h2>Готови ли сте за резултати?</h2>
     <p>Модерен подход, индивидуално внимание и ясна стратегия за успех на НВО.</p>
-    <div class="cta-buttons">
-      <a href="entrance_test.html" class="btn-cta-outline">
-        <i class="fa-solid fa-clipboard-question"></i>
-        Направи безплатния тест
-      </a>
-      <a href="tel:+359885501283" class="btn-cta-outline">
-        <i class="fa-solid fa-phone"></i>
-        Обадете се за повече детайли
-      </a>
-    </div>
 
-    <!-- Урджънси + форма — 2 колони на десктоп (ляво/дясно), стек на мобилен (непроменено) -->
+    <!-- Урджънси + бутони + форма — 2 колони на десктоп (ляво: урджънси/бутони, дясно: форма), стек на мобилен (непроменено) -->
     <div class="cta-cards-row">
+    <div class="cta-left-col">
     <div class="urgency-block">
-      <h3 class="urgency-title">Последна крачка</h3>
       <p class="urgency-text"><strong>5% отстъпка</strong> за ранно записване — само до 31 август. 2 групи × 8 деца, местата намаляват. Не чакайте есента, за да разберете, че мястото е заето.</p>
       <div class="urgency-timer" id="urgencyTimer">
         <div class="urgency-timer-box">
@@ -2032,6 +2039,19 @@
         </div>
       </div>
     </div>
+
+    <div class="cta-buttons">
+      <a href="entrance_test.html" class="btn-cta-outline">
+        <i class="fa-solid fa-clipboard-question"></i>
+        Входящ тест за 7 клас
+      </a>
+      <a href="tel:+359885501283" class="btn-cta-outline">
+        <i class="fa-solid fa-phone"></i>
+        Обадете се за повече детайли
+      </a>
+    </div>
+    <p class="cta-buttons-hint">Ако не сте сигурни, направете нашия входящ тест за определяне на знанията</p>
+    </div><!-- end .cta-left-col -->
 
     <!-- REGISTRATION FORM — inline, always open at the bottom of the page -->
     <div class="reg-form-wrap" id="regFormBox">
