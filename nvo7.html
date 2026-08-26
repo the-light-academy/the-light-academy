@@ -679,15 +679,38 @@
     }
 
     .pricing-card {
-      background: var(--white);
-      border: 1px solid var(--peach-light);
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 24px;
-      box-shadow: 0 20px 45px -20px rgba(45, 31, 14, 0.18);
+      box-shadow: 0 24px 55px -20px rgba(9, 18, 38, 0.5);
       padding: 2.25rem;
       display: grid;
       grid-template-columns: 1fr;
       gap: 2rem;
     }
+    .pricing-card::before,
+    .pricing-card::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pricing-card::before {
+      width: 280px; height: 280px;
+      background: var(--sun);
+      opacity: 0.12;
+      top: -90px; right: -70px;
+    }
+    .pricing-card::after {
+      width: 220px; height: 220px;
+      background: var(--teal);
+      opacity: 0.14;
+      bottom: -80px; left: -60px;
+    }
+    .pricing-calculator, .pricing-display { position: relative; z-index: 1; }
     @media (min-width: 860px) {
       .pricing-card {
         grid-template-columns: 1.05fr 0.95fr;
@@ -699,7 +722,7 @@
     .pricing-calculator h3 {
       font-family: 'Bad Script', cursive;
       font-size: 1.4rem;
-      color: var(--dark);
+      color: #fff;
       margin-bottom: 1.1rem;
     }
 
@@ -710,7 +733,7 @@
       display: block;
       font-size: 0.85rem;
       font-weight: 700;
-      color: var(--mid);
+      color: rgba(255,255,255,0.65);
       margin-bottom: 0.6rem;
     }
     .toggle-pills {
@@ -721,9 +744,11 @@
     .toggle-pill {
       flex: 1 1 auto;
       min-width: 140px;
-      border: 2px solid var(--peach-light);
-      background: var(--cream);
-      color: var(--dark);
+      border: 2px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
       font-family: 'Nunito', sans-serif;
       font-weight: 700;
       font-size: 0.92rem;
@@ -737,23 +762,26 @@
       display: block;
       font-weight: 500;
       font-size: 0.78rem;
-      color: var(--light-text);
+      color: rgba(255,255,255,0.55);
       margin-top: 0.15rem;
     }
     .toggle-pill:hover { border-color: var(--sun); transform: translateY(-1px); }
     .toggle-pill.active {
-      background: var(--sun-light);
+      background: rgba(245,166,35,0.2);
       border-color: var(--sun);
-      color: var(--sun-dark);
+      color: #fff;
     }
-    .toggle-pill.active span.sub { color: var(--sun-dark); }
+    .toggle-pill.active span.sub { color: rgba(255,255,255,0.85); }
 
     .savings-badge {
       display: none;
       align-items: center;
       gap: 0.4rem;
-      background: var(--teal-light);
-      color: var(--teal);
+      background: rgba(26,140,133,0.25);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
       font-weight: 800;
       font-size: 0.85rem;
       padding: 0.5rem 0.85rem;
@@ -766,7 +794,10 @@
 
     /* -- Right: live price display -- */
     .pricing-display {
-      background: linear-gradient(160deg, var(--sun-light) 0%, var(--peach-light) 100%);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
       padding: 1.9rem;
       display: flex;
@@ -776,7 +807,7 @@
     .pricing-display-amount {
       font-family: 'Bad Script', cursive;
       font-size: clamp(2.6rem, 6vw, 3.4rem);
-      color: var(--dark);
+      color: var(--sun);
       line-height: 1.1;
       margin: 0.3rem 0 0.15rem;
       transition: transform 0.15s ease;
@@ -784,38 +815,14 @@
     .pricing-display-amount.bump { transform: scale(1.06); }
     .pricing-display-caption {
       font-size: 0.9rem;
-      color: var(--mid);
+      color: rgba(255,255,255,0.78);
       margin-top: 0.5rem;
       margin-bottom: 1.1rem;
     }
 
-    .schedule-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 1.1rem;
-    }
-    .schedule-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.2rem 0;
-      font-size: 0.86rem;
-    }
-    .schedule-list li .dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--sun);
-      margin-right: 0.55rem;
-    }
-    .schedule-list li .amount { font-weight: 800; color: var(--dark); }
-
     .pricing-note {
       font-size: 0.78rem;
-      color: var(--light-text);
+      color: rgba(255,255,255,0.5);
       line-height: 1.5;
     }
 
@@ -1946,8 +1953,6 @@
         <div class="pricing-display-top">
           <div class="pricing-display-amount" id="priceAmount">135 € / мес.</div>
           <div class="pricing-display-caption" id="priceCaption">3 вноски по 360 € · общо 1 080 €</div>
-
-          <ul class="schedule-list" id="scheduleList"></ul>
         </div>
 
         <p class="pricing-note">
@@ -2127,7 +2132,6 @@
     const paymentToggle = document.getElementById('paymentToggle');
     const priceAmount = document.getElementById('priceAmount');
     const priceCaption = document.getElementById('priceCaption');
-    const scheduleList = document.getElementById('scheduleList');
     const savingsBadge = document.getElementById('savingsBadge');
     const savingsText = document.getElementById('savingsText');
 
@@ -2158,25 +2162,6 @@
       void priceAmount.offsetWidth; // force reflow to restart animation
       priceAmount.classList.add('bump');
       setTimeout(() => priceAmount.classList.remove('bump'), 150);
-
-      // Schedule
-      scheduleList.innerHTML = '';
-      if (selectedPayment === 'installments') {
-        const rows = [
-          ['Първа вноска — при записване', PLAN.installment],
-          ['Втора вноска — до 15 декември 2026 г.', PLAN.installment],
-          ['Трета вноска — до 1 март 2027 г.', PLAN.installment]
-        ];
-        rows.forEach(([label, amount]) => {
-          const li = document.createElement('li');
-          li.innerHTML = `<span><span class="dot"></span>${label}</span><span class="amount">${formatEUR(amount)}</span>`;
-          scheduleList.appendChild(li);
-        });
-      } else {
-        const li = document.createElement('li');
-        li.innerHTML = `<span><span class="dot"></span>Дължи се при записване</span><span class="amount">${formatEUR(PLAN.full)}</span>`;
-        scheduleList.appendChild(li);
-      }
 
       // Savings badge — only relevant for one-time payment
       if (selectedPayment === 'full' && savings > 0) {
