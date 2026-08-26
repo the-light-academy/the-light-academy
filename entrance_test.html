@@ -1687,7 +1687,13 @@ if(analysisSendBtn){
       analysisStudentNameEl.focus();
       return;
     }
-    if(!parentEmail || !analysisParentEmailEl.checkValidity()){
+    if(!parentEmail){
+      analysisErrorEl.innerHTML = '<p>Все още не ни познавате? <a href="nvo7.html" style="color:#c24508; font-weight:700;">Разгледайте нашите курсове тук</a> — или въведете имейл на родителя, за да отключите пълния резултат.</p>';
+      analysisErrorEl.style.display = 'block';
+      analysisParentEmailEl.focus();
+      return;
+    }
+    if(!analysisParentEmailEl.checkValidity()){
       analysisErrorEl.innerHTML = '<p>Моля, въведете валиден имейл на родителя.</p>';
       analysisErrorEl.style.display = 'block';
       analysisParentEmailEl.focus();
