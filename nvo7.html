@@ -1469,6 +1469,50 @@
         border-left-color: #fff;
         color: #fff;
       }
+
+      /* Step 4 (Геймификация) — same full-bleed video + glass treatment, mobile only */
+      #section-obratna {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        min-height: 560px;
+      }
+      #section-obratna .step-image {
+        position: absolute !important;
+        inset: 0;
+        z-index: 0;
+        border-radius: 0;
+      }
+      #section-obratna .step-image video {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
+      #section-obratna .step-image::before { display: none; }
+      #section-obratna .step-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
+        opacity: 1;
+      }
+      #section-obratna .step-image-label { display: none; }
+      #section-obratna .step-text {
+        position: relative;
+        z-index: 2;
+        padding: 1.75rem 1.25rem 2rem;
+      }
+      #section-obratna .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-obratna .step-title { color: #fff; }
+      #section-obratna .step-divider { background: #fff; }
+      #section-obratna .step-body { color: rgba(255,255,255,0.9); }
+      #section-obratna .ga-closing {
+        background: rgba(255,255,255,0.18);
+        border-left-color: #fff;
+        color: #fff;
+      }
     }
   </style>
   <script type="application/ld+json">
