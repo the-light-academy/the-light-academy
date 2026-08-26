@@ -547,6 +547,60 @@
     }
     .step.visible .ga-closing { opacity: 1; transform: translateY(0); }
 
+    /* Practice cards (Стъпка 3) */
+    .practice-cards { display: flex; flex-direction: column; gap: 14px; }
+    .practice-card {
+      background: var(--white);
+      border: 1px solid var(--orange-light);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.1rem 1.1rem;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .step.visible .practice-card { opacity: 1; transform: translateX(0); }
+    .step.visible .practice-card:nth-child(1) { transition-delay: 0.05s; }
+    .step.visible .practice-card:nth-child(2) { transition-delay: 0.2s; }
+    .practice-card-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--light-text);
+      margin-bottom: 0.6rem;
+    }
+    .practice-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
+    .practice-card-title { font-size: 1.02rem; font-weight: 800; color: var(--dark); margin: 0; }
+    .practice-card-text { color: var(--mid); font-size: 0.9rem; line-height: 1.6; margin: 0; }
+
+    .exam-timer {
+      margin-top: 1rem;
+      background: #1A1410;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid rgba(232,88,10,0.35);
+    }
+    .exam-timer-label {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .exam-timer-display {
+      font-family: 'Courier New', monospace;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FF6B4A;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 12px rgba(255,107,74,0.55);
+    }
+
     /* Flip for odd steps (image on right) */
     .step.flip .step-image { order: 3; }
     .step.flip .step-dot { order: 2; }
@@ -1258,6 +1312,58 @@
         border-left-color: #fff;
         color: #fff;
       }
+
+      /* Step 3 (Ето как изглежда на практика) — same full-bleed photo + glass treatment, mobile only */
+      #section-malki-grupi {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        min-height: 560px;
+      }
+      #section-malki-grupi .step-image {
+        position: absolute !important;
+        inset: 0;
+        z-index: 0;
+        border-radius: 0;
+      }
+      #section-malki-grupi .step-image img {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
+      #section-malki-grupi .step-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
+      }
+      #section-malki-grupi .step-image-label { display: none; }
+      #section-malki-grupi .step-text {
+        position: relative;
+        z-index: 2;
+        padding: 1.75rem 1.25rem 2rem;
+      }
+      #section-malki-grupi .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-malki-grupi .step-title { color: #fff; }
+      #section-malki-grupi .step-divider { background: #fff; }
+      #section-malki-grupi .practice-card {
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(255,255,255,0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      #section-malki-grupi .practice-card-tag { color: rgba(255,255,255,0.75); }
+      #section-malki-grupi .practice-card-title { color: #fff; }
+      #section-malki-grupi .practice-card-text { color: rgba(255,255,255,0.88); }
+      #section-malki-grupi .ga-icon { background: rgba(255,255,255,0.25); }
+      #section-malki-grupi .exam-timer { background: rgba(0,0,0,0.45); }
+      #section-malki-grupi .ga-closing {
+        background: rgba(255,255,255,0.18);
+        border-left-color: #fff;
+        color: #fff;
+      }
     }
   </style>
   <script type="application/ld+json">
@@ -1441,7 +1547,7 @@
     <p>Структурирана, персонализирана и ефективна подготовка — от входящ тест до пробен изпит в реален формат.</p>
     <div class="hero-pills">
       <a href="#section-vhodyasht" class="hero-pill">Входящ тест →</a>
-      <a href="#section-malki-grupi" class="hero-pill">Малки групи →</a>
+      <a href="#section-malki-grupi" class="hero-pill">Пробни матури →</a>
       <a href="#section-obratna" class="hero-pill">Обратна връзка →</a>
       <a href="#section-probni" class="hero-pill">Пробни изпити →</a>
       <a href="#section-tseni" class="hero-pill">Цени →</a>
@@ -1607,20 +1713,37 @@
     <!-- 3: Малки групи — image LEFT -->
     <div id="section-malki-grupi" class="step" data-step="3">
       <div class="step-image">
-        <img src="photos/nvo_3.jpg" alt="Малки групи">
-        <div class="step-image-label">Малки групи — лично внимание</div>
+        <img src="photos/teen-laptop.jpg" alt="Ученик практикува онлайн пробен изпит нощем на лаптоп">
+        <div class="step-image-label">Практика по всяко време</div>
       </div>
       <div class="step-dot">03</div>
       <div class="step-text">
         <span class="step-eyebrow">Нашият подход</span>
-        <h2 class="step-title">Малки групи</h2>
+        <h2 class="step-title">Ето как изглежда на практика</h2>
         <div class="step-divider"></div>
-        <p class="step-body">Всяко дете получава индивидуален подход, бърза обратна връзка и подкрепа точно когато му е нужна. Никой не остава назад.</p>
-        <ul class="step-bullets">
-          <li>Малка група</li>
-          <li>Индивидуално темпо на усвояване</li>
-          <li>Директна обратна връзка от учителя</li>
-        </ul>
+        <div class="practice-cards">
+          <div class="practice-card">
+            <span class="practice-card-tag">Карта 1 — На живо</span>
+            <div class="practice-card-head">
+              <span class="ga-icon">📝</span>
+              <h3 class="practice-card-title">5 пробни матури на живо</h3>
+            </div>
+            <p class="practice-card-text">Истински формат, истинско време, истинска зала. Детето изживява НВО преди НВО — без изненади в деня на истинския изпит.</p>
+          </div>
+          <div class="practice-card">
+            <span class="practice-card-tag">Карта 2 — Дигитално</span>
+            <div class="practice-card-head">
+              <span class="ga-icon">💻</span>
+              <h3 class="practice-card-title">Неограничен онлайн достъп</h3>
+            </div>
+            <p class="practice-card-text">Пробни матури с активен таймер — точно както на истинския изпит. Практика по всяко време, с реалния натиск на времето, не просто задачи без край.</p>
+            <div class="exam-timer" id="examTimer">
+              <span class="exam-timer-label">⏱ Пробен изпит</span>
+              <span class="exam-timer-display" id="examTimerDisplay">02:59:47</span>
+            </div>
+          </div>
+        </div>
+        <p class="ga-closing">Пет пъти на живо. Неограничено онлайн. Детето Ви идва на НВО с усещането „вече съм бил тук“.</p>
       </div>
     </div>
 
@@ -2087,6 +2210,41 @@
         head.setAttribute('aria-expanded', String(isOpen));
       });
     });
+
+    // Exam timer widget — purely visual teaser, starts counting down on scroll into view
+    (function () {
+      const displayEl = document.getElementById('examTimerDisplay');
+      const timerEl = document.getElementById('examTimer');
+      if (!displayEl || !timerEl) return;
+
+      let totalSeconds = 2 * 3600 + 59 * 60 + 47; // 02:59:47
+      let started = false;
+
+      function formatTime(s) {
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        return [h, m, sec].map(n => String(n).padStart(2, '0')).join(':');
+      }
+
+      function tick() {
+        if (totalSeconds <= 0) return;
+        totalSeconds--;
+        displayEl.textContent = formatTime(totalSeconds);
+      }
+
+      const timerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !started) {
+            started = true;
+            setInterval(tick, 1000);
+            timerObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      timerObserver.observe(timerEl);
+    })();
 
     // Timeline fill grows with scroll
     function updateTimeline() {
