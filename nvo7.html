@@ -529,6 +529,23 @@
     .ga-card.open .ga-answer-wrap { grid-template-rows: 1fr; }
     .ga-answer-inner { overflow: hidden; }
     .ga-answer-text { padding: 0 1rem 0.9rem 3rem; margin: 0; color: var(--mid); font-size: 0.88rem; line-height: 1.55; }
+    .ga-closing {
+      margin: 14px 0 0;
+      padding: 1rem 1.2rem;
+      background: var(--teal-light);
+      border-left: 4px solid var(--teal);
+      border-radius: var(--radius-sm);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 0.98rem;
+      line-height: 1.6;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition-delay: 0.45s;
+    }
+    .step.visible .ga-closing { opacity: 1; transform: translateY(0); }
 
     /* Flip for odd steps (image on right) */
     .step.flip .step-image { order: 3; }
@@ -1419,18 +1436,63 @@
       </div>
     </div>
 
-    <!-- 2: Основи — image RIGHT -->
+    <!-- 2: Ние знаем това — image RIGHT -->
     <div class="step flip" data-step="2">
       <div class="step-text">
         <span class="step-eyebrow">Стъпка 2</span>
-        <h2 class="step-title">Основи</h2>
+        <h2 class="step-title">Ние знаем това!</h2>
         <div class="step-divider"></div>
-        <p class="step-body">Успехът на НВО се гради върху здрава основа. Работим методично върху пропуснатото от 5. и 6. клас — числа, дроби, алгебрични изрази, равенства — за да може детето да се движи напред с увереност.</p>
-        <ul class="step-bullets">
-          <li>Числа и дроби</li>
-          <li>Алгебрични изрази</li>
-          <li>Равенства и неравенства</li>
-        </ul>
+        <div class="ga-profile ga-profile--solutions">
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">🎯</span>
+              <span class="ga-problem">Нужда от адаптация в реално време</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Винаги персонализираме задачите и уроците според конкретното дете — малки групи означава, че учителят вижда веднага кога нещо не работи и го променя на момента.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">⏱️</span>
+              <span class="ga-problem">Свръхкратък фокус</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Честа смяна на типа преподаване през часа — обяснение, практика, дискусия, игра — за да остане вниманието будно, не монотонен формат от началото до края.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">📱</span>
+              <span class="ga-problem">Дигитална интуитивност</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Дигитализираме учебните материали и работим с млади преподаватели, които говорят естествено на езика на дигиталното поколение — създаваме динамична, интересна среда за учене, не статичен учебник.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">😶</span>
+              <span class="ga-problem">Риск от „тихо напускане“</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Активно въвличаме всяко дете да участва — да решава, да отговаря, да е част от урока, не просто да седи и слуша.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ga-closing">Затова подготовката за НВО при нас изглежда различно — методът е изграден точно за начина, по който детето Ви реално учи.</p>
       </div>
       <div class="step-dot">02</div>
       <div class="step-image">
