@@ -1678,17 +1678,27 @@ if(analysisSendBtn){
   analysisSendBtn.addEventListener('click', async () => {
     const studentName = analysisStudentNameEl.value.trim();
     const parentEmail = analysisParentEmailEl.value.trim();
+
+    analysisErrorEl.style.display = 'none';
+
     if(!studentName){
+      analysisErrorEl.innerHTML = '<p>Моля, въведете име на ученика.</p>';
+      analysisErrorEl.style.display = 'block';
       analysisStudentNameEl.focus();
       return;
     }
-    if(!parentEmail){
+    if(!parentEmail || !analysisParentEmailEl.checkValidity()){
+      analysisErrorEl.innerHTML = '<p>Моля, въведете валиден имейл на родителя.</p>';
+      analysisErrorEl.style.display = 'block';
       analysisParentEmailEl.focus();
       return;
     }
-    if(!lastResults) return;
-
-    analysisErrorEl.style.display = 'none';
+    if(!lastResults){
+      console.error('Липсват резултати от теста — бутонът "Отключи" е кликнат без изчислен резултат.');
+      analysisErrorEl.innerHTML = '<p>⚠️ Възникна грешка — презаредете страницата и опитайте отново.</p>';
+      analysisErrorEl.style.display = 'block';
+      return;
+    }
     analysisSendBtn.disabled = true;
     analysisSendBtn.textContent = 'Отключване...';
 
