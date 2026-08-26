@@ -983,6 +983,124 @@
       margin-top: 0.15rem;
     }
 
+    /* ── "При нас" + групи: по-тясно, тъмно стъкло, с отзиви (desktop only) ── */
+    @media (min-width: 769px) {
+      .course-info-block {
+        max-width: 760px;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border-radius: 24px;
+        padding: 2.75rem;
+        box-shadow: 0 24px 55px -20px rgba(9, 18, 38, 0.5);
+      }
+      .course-info-block h2 { color: #fff; }
+      .course-info-block > p { color: rgba(255,255,255,0.75); }
+
+      .schedule-widget {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.16);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: none;
+      }
+      .schedule-group-btn {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.18);
+        color: #fff;
+      }
+      .schedule-group-btn span.sub { color: rgba(255,255,255,0.55); }
+      .schedule-group-btn:hover { border-color: var(--sun); }
+      .schedule-group-btn.active {
+        background: rgba(245,166,35,0.2);
+        border-color: var(--sun);
+        color: #fff;
+      }
+      .schedule-group-btn.active span.sub { color: rgba(255,255,255,0.85); }
+      .schedule-detail-card {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+      }
+      .schedule-detail-icon { background: rgba(255,255,255,0.12); color: var(--sun); }
+      .schedule-detail-label { color: var(--sun); }
+      .schedule-detail-value { color: #fff; }
+      .schedule-detail-value small { color: rgba(255,255,255,0.6); }
+
+      /* Reviews, ported from index.html's reviews-section */
+      .course-reviews {
+        margin-top: 2.5rem;
+        padding-top: 2.25rem;
+        border-top: 1px solid rgba(255,255,255,0.12);
+      }
+      .course-reviews-rating {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+      .course-reviews-score {
+        font-family: 'Bad Script', cursive;
+        font-size: 2.6rem;
+        color: var(--sun);
+        line-height: 1;
+      }
+      .course-reviews-outof {
+        font-size: 1.4rem;
+        color: rgba(255,255,255,0.5);
+      }
+      .course-reviews-stars {
+        color: #F4B400;
+        letter-spacing: 0.1em;
+        font-size: 1.1rem;
+        margin: 0.4rem 0 0.3rem;
+      }
+      .course-reviews-source {
+        color: rgba(255,255,255,0.55);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .course-reviews-carousel {
+        overflow: hidden;
+        position: relative;
+        margin: 0 -2.75rem;
+        padding: 0 2.75rem;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+      }
+      .course-reviews-track {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        width: max-content;
+        animation: courseReviewsScroll 42s linear infinite;
+      }
+      .course-reviews-carousel:hover .course-reviews-track { animation-play-state: paused; }
+      .course-review-card {
+        min-width: 300px;
+        max-width: 300px;
+        flex: 0 0 auto;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 16px;
+        padding: 1.25rem;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .course-review-stars { color: #F4B400; margin-bottom: 0.5rem; font-size: 0.95rem; letter-spacing: 0.06em; }
+      .course-review-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 0.6rem;
+      }
+      .course-review-meta strong { color: #fff; }
+      .course-review-text { font-size: 0.85rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
+      @keyframes courseReviewsScroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .course-reviews-track { animation: none; }
+      }
+    }
 
     /* ── CTA SECTION ── */
     .cta-section {
@@ -1362,7 +1480,7 @@
       }
       .pricing-cta-flow .cta-buttons-hint { order: 6; margin-top: 0; color: var(--light-text); }
       .urgency-block, .cta-section > h2, .cta-section > p,
-      .course-info-block > h2, .course-info-block > p {
+      .course-info-block > h2, .course-info-block > p, .course-reviews {
         display: none;
       }
       .schedule-widget { order: 7; }
@@ -2050,6 +2168,79 @@
           <div class="schedule-detail-icon"><i class="fa-solid fa-hourglass-half"></i></div>
           <div class="schedule-detail-label">Продължителност</div>
           <div class="schedule-detail-value">3 учебни часа<small>по 45 мин. с 15 мин. почивка</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-reviews">
+      <div class="course-reviews-rating">
+        <span class="course-reviews-score">4.9<span class="course-reviews-outof">/5</span></span>
+        <div class="course-reviews-stars">★★★★★</div>
+        <div class="course-reviews-source">Отзиви от нашите клиенти · Google</div>
+      </div>
+      <div class="course-reviews-carousel">
+        <div class="course-reviews-track">
+          <article class="course-review-card">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Ellie Tsekova</strong><span>юни 2026</span></div>
+            <p class="course-review-text">Впечатляващо е отношението - лично, с грижа, целящо доверие, с желание за по-добро, за развитие и израстване на поверените им деца! Работят мотивирани и с големи сърца хора, които носят и даряват светлина ☀️</p>
+          </article>
+          <article class="course-review-card">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Даниела Иванова</strong><span>юли 2026</span></div>
+            <p class="course-review-text">Уникално спокойствие и фокус върху детето. Учителите са мили и много търпеливи, а програмата е съобразена с индивидуалните нужди. Горещо препоръчвам The Light Academy за всеки родител, търсещ качествена образователна среда.</p>
+          </article>
+          <article class="course-review-card">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Мая Петрова</strong><span>май 2026</span></div>
+            <p class="course-review-text">Много сме доволни от заниманията по математика в The Light Academy. Детето ми ходи с желание и постепенно започна да се чувства много по-уверено в решаването на задачи. Малките групи и индивидуалното внимание също са голям плюс.</p>
+          </article>
+          <article class="course-review-card">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Александър Стоянов</strong><span>май 2026</span></div>
+            <p class="course-review-text">The Light Academy е много приятно и вдъхновяващо място за децата в Лозенец. Спокойна атмосфера, малки групи и лично отношение към всяко дете.</p>
+          </article>
+          <article class="course-review-card">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Георги Славов</strong><span>август 2026</span></div>
+            <p class="course-review-text">Много приятно и вдъхновяващо място за деца в Лозенец 🌱 Прави впечатление с малките групи, спокойната атмосфера и индивидуалното отношение към всяко дете. Препоръчвам ги!</p>
+          </article>
+          <article class="course-review-card">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Ростислав Русев</strong><span>юли 2026</span></div>
+            <p class="course-review-text">The Light Academy създава много уютна и мотивираща среда. Прави впечатление спокойната обстановка и вниманието, което се отделя на всеки благодарение на работата в малки групи.</p>
+          </article>
+          <!-- duplicate set for seamless marquee loop -->
+          <article class="course-review-card" aria-hidden="true">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Ellie Tsekova</strong><span>юни 2026</span></div>
+            <p class="course-review-text">Впечатляващо е отношението - лично, с грижа, целящо доверие, с желание за по-добро, за развитие и израстване на поверените им деца! Работят мотивирани и с големи сърца хора, които носят и даряват светлина ☀️</p>
+          </article>
+          <article class="course-review-card" aria-hidden="true">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Даниела Иванова</strong><span>юли 2026</span></div>
+            <p class="course-review-text">Уникално спокойствие и фокус върху детето. Учителите са мили и много търпеливи, а програмата е съобразена с индивидуалните нужди. Горещо препоръчвам The Light Academy за всеки родител, търсещ качествена образователна среда.</p>
+          </article>
+          <article class="course-review-card" aria-hidden="true">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Мая Петрова</strong><span>май 2026</span></div>
+            <p class="course-review-text">Много сме доволни от заниманията по математика в The Light Academy. Детето ми ходи с желание и постепенно започна да се чувства много по-уверено в решаването на задачи. Малките групи и индивидуалното внимание също са голям плюс.</p>
+          </article>
+          <article class="course-review-card" aria-hidden="true">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Александър Стоянов</strong><span>май 2026</span></div>
+            <p class="course-review-text">The Light Academy е много приятно и вдъхновяващо място за децата в Лозенец. Спокойна атмосфера, малки групи и лично отношение към всяко дете.</p>
+          </article>
+          <article class="course-review-card" aria-hidden="true">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Георги Славов</strong><span>август 2026</span></div>
+            <p class="course-review-text">Много приятно и вдъхновяващо място за деца в Лозенец 🌱 Прави впечатление с малките групи, спокойната атмосфера и индивидуалното отношение към всяко дете. Препоръчвам ги!</p>
+          </article>
+          <article class="course-review-card" aria-hidden="true">
+            <div class="course-review-stars">★★★★★</div>
+            <div class="course-review-meta"><strong>Ростислав Русев</strong><span>юли 2026</span></div>
+            <p class="course-review-text">The Light Academy създава много уютна и мотивираща среда. Прави впечатление спокойната обстановка и вниманието, което се отделя на всеки благодарение на работата в малки групи.</p>
+          </article>
         </div>
       </div>
     </div>
