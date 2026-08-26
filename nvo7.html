@@ -1014,6 +1014,53 @@
       margin-top: 2.75rem;
       scroll-margin-top: 90px;
     }
+    .urgency-block {
+      max-width: 640px;
+      margin: 2.5rem auto 0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(232,88,10,0.4);
+      border-radius: 20px;
+      padding: 1.75rem 1.75rem 1.5rem;
+      text-align: center;
+    }
+    .urgency-title {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .urgency-text {
+      color: rgba(255,255,255,0.82);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+    .urgency-text strong { color: var(--sun); font-weight: 900; }
+    .urgency-timer { display: flex; justify-content: center; gap: 14px; }
+    .urgency-timer-box {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 0.75rem 1.4rem;
+      min-width: 84px;
+    }
+    .urgency-timer-num {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .urgency-timer-label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
     .reg-form-wrap.reg-highlight .modal-box { animation: regPulse 1.6s ease; }
     @keyframes regPulse {
       0%, 100% { box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
@@ -1543,7 +1590,7 @@
     <div class="hero-pills">
       <a href="#section-vhodyasht" class="hero-pill">Входящ тест →</a>
       <a href="#section-malki-grupi" class="hero-pill">Пробни матури →</a>
-      <a href="#section-obratna" class="hero-pill">Обратна връзка →</a>
+      <a href="#section-obratna" class="hero-pill">Геймификация →</a>
       <a href="#section-probni" class="hero-pill">Пробни изпити →</a>
       <a href="#section-tseni" class="hero-pill">Цени →</a>
     </div>
@@ -1740,23 +1787,44 @@
       </div>
     </div>
 
-    <!-- 4: Обратна връзка — image RIGHT -->
+    <!-- 4: Геймификация — image RIGHT -->
     <div id="section-obratna" class="step flip" data-step="4">
       <div class="step-text">
-        <span class="step-eyebrow">За родителите</span>
-        <h2 class="step-title">Обратна връзка</h2>
+        <span class="step-eyebrow">Нашият подход</span>
+        <h2 class="step-title">Геймификация на упражненията</h2>
         <div class="step-divider"></div>
-        <p class="step-body">Родителите са в течение след всеки урок. Споделяме върху какво е работено, как се справя детето и какво предстои. Без изненади — само ясна картина за прогреса.</p>
-        <ul class="step-bullets">
-          <li>Прогреса на детето</li>
-          <li>Върху какво се работи</li>
-          <li>Учебен план за следващата седмица</li>
-        </ul>
+        <p class="step-body">Упражненията са изградени с елементи на игра и състезание — точки, нива на трудност, малки предизвикателства между съучениците. Детето учи, без да усеща учене.</p>
       </div>
       <div class="step-dot">04</div>
       <div class="step-image">
-        <img src="photos/nvo_4.jpg" alt="Обратна връзка">
-        <div class="step-image-label">Родителите са в течение</div>
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Илюстрация на геймификация — медал, точки и ниво на напредък">
+          <defs>
+            <linearGradient id="gameBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#E0F4F3"/>
+              <stop offset="100%" stop-color="#FFF3D6"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="500" fill="url(#gameBg)"/>
+          <circle cx="350" cy="80" r="80" fill="#FFF3D6" opacity="0.7"/>
+          <circle cx="30" cy="440" r="100" fill="#FEE8DC" opacity="0.6"/>
+          <g fill="#F5A623">
+            <path d="M60 100 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6 z"/>
+            <path d="M330 300 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z"/>
+          </g>
+          <g transform="translate(255,135)">
+            <rect x="0" y="0" width="86" height="40" rx="20" fill="#1A8C85"/>
+            <text x="43" y="26" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="17" fill="#ffffff">+10 XP</text>
+          </g>
+          <path d="M175 250 l-30 90 30 -10 20 25 25 -95 z" fill="#E8580A"/>
+          <path d="M225 250 l30 90 -30 -10 -20 25 -25 -95 z" fill="#C24508"/>
+          <circle cx="200" cy="220" r="70" fill="#F5A623" stroke="#C07A0A" stroke-width="6"/>
+          <circle cx="200" cy="220" r="52" fill="#FFF3D6"/>
+          <path d="M200 185 l12 26 28 4 -20 20 5 28 -25 -14 -25 14 5 -28 -20 -20 28 -4 z" fill="#E8580A"/>
+          <rect x="90" y="392" width="220" height="18" rx="9" fill="#ffffff"/>
+          <rect x="90" y="392" width="150" height="18" rx="9" fill="#1A8C85"/>
+          <text x="200" y="436" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="16" fill="#2D1F0E">Ниво 3</text>
+        </svg>
+        <div class="step-image-label">Учене през игра</div>
       </div>
     </div>
 
@@ -1924,6 +1992,22 @@
         <i class="fa-solid fa-phone"></i>
         Обадете се за повече детайли
       </a>
+    </div>
+
+    <!-- URGENCY — immediately before the registration form -->
+    <div class="urgency-block">
+      <h3 class="urgency-title">Последна крачка</h3>
+      <p class="urgency-text"><strong>5% отстъпка</strong> за ранно записване — само до 31 август. 2 групи × 8 деца, местата намаляват. Не чакайте есента, за да разберете, че мястото е заето.</p>
+      <div class="urgency-timer" id="urgencyTimer">
+        <div class="urgency-timer-box">
+          <span class="urgency-timer-num" id="urgencyDays">–</span>
+          <span class="urgency-timer-label">дни</span>
+        </div>
+        <div class="urgency-timer-box">
+          <span class="urgency-timer-num" id="urgencyHours">–</span>
+          <span class="urgency-timer-label">часа</span>
+        </div>
+      </div>
     </div>
 
     <!-- REGISTRATION FORM — inline, always open at the bottom of the page -->
@@ -2237,6 +2321,26 @@
       }, { threshold: 0.3 });
 
       timerObserver.observe(timerEl);
+    })();
+
+    // Urgency countdown — real days/hours remaining until 31 август (early-bird deadline)
+    (function () {
+      const daysEl = document.getElementById('urgencyDays');
+      const hoursEl = document.getElementById('urgencyHours');
+      if (!daysEl || !hoursEl) return;
+
+      function update() {
+        const now = new Date();
+        const target = new Date(now.getFullYear(), 7, 31, 23, 59, 59); // 31 август
+        let diff = target - now;
+        if (diff < 0) diff = 0;
+        const totalHours = Math.floor(diff / (1000 * 60 * 60));
+        daysEl.textContent = Math.floor(totalHours / 24);
+        hoursEl.textContent = totalHours % 24;
+      }
+
+      update();
+      setInterval(update, 60000);
     })();
 
     // Timeline fill grows with scroll
