@@ -400,14 +400,16 @@
       aspect-ratio: 4/5;
       cursor: pointer;
     }
-    .step-image img {
+    .step-image img,
+    .step-image svg {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
       transition: transform 0.55s ease;
     }
-    .step-image:hover img { transform: scale(1.06); }
+    .step-image:hover img,
+    .step-image:hover svg { transform: scale(1.06); }
     .step-image::after {
       content: '';
       position: absolute;
@@ -1305,22 +1307,59 @@
       <div class="timeline-fill" id="timelineFill"></div>
     </div>
 
-    <!-- 1: Входящ тест — image LEFT -->
+    <!-- 1: Gen Alpha — image LEFT -->
     <div id="section-vhodyasht" class="step" data-step="1">
       <div class="step-image">
-        <img src="photos/nvo_1.jpg" alt="Входящ тест">
-        <div class="step-image-label">Входящ тест</div>
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Тийнейджър, потопен в дигиталния свят">
+          <defs>
+            <linearGradient id="genAlphaBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#E0F4F3"/>
+              <stop offset="100%" stop-color="#FFF3D6"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="500" fill="url(#genAlphaBg)"/>
+          <circle cx="360" cy="70" r="80" fill="#FFF3D6" opacity="0.7"/>
+          <circle cx="25" cy="465" r="100" fill="#FEE8DC" opacity="0.6"/>
+          <g fill="#F5A623">
+            <path d="M66 88 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6 z"/>
+            <path d="M336 328 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z"/>
+          </g>
+          <g transform="translate(292,120)">
+            <rect x="0" y="0" width="64" height="44" rx="14" fill="#ffffff"/>
+            <path d="M16 44 l0 16 16 -16 z" fill="#ffffff"/>
+            <circle cx="18" cy="22" r="4" fill="#1A8C85"/>
+            <circle cx="32" cy="22" r="4" fill="#1A8C85"/>
+            <circle cx="46" cy="22" r="4" fill="#1A8C85"/>
+          </g>
+          <path d="M140 210 a60 60 0 0 1 120 0" fill="none" stroke="#2D1F0E" stroke-width="10" stroke-linecap="round"/>
+          <rect x="128" y="200" width="22" height="34" rx="10" fill="#E8580A"/>
+          <rect x="250" y="200" width="22" height="34" rx="10" fill="#E8580A"/>
+          <circle cx="200" cy="215" r="72" fill="#EAB98A"/>
+          <path d="M128 202 a72 72 0 0 1 144 0 q-8 -42 -72 -42 q-64 0 -72 42 z" fill="#3B2A1A"/>
+          <circle cx="175" cy="222" r="5" fill="#2D1F0E"/>
+          <circle cx="225" cy="222" r="5" fill="#2D1F0E"/>
+          <path d="M180 250 q20 14 40 0" stroke="#2D1F0E" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M108 500 q-4 -112 92 -122 q102 10 96 122 z" fill="#1A8C85"/>
+          <path d="M168 382 q32 20 62 0 l6 30 q-37 20 -74 0 z" fill="#12655F"/>
+          <g transform="translate(216,298) rotate(-8)">
+            <rect x="0" y="0" width="60" height="100" rx="14" fill="#ffffff" stroke="#2D1F0E" stroke-width="4"/>
+            <rect x="8" y="10" width="44" height="70" rx="6" fill="#FFF3D6"/>
+            <path d="M30 30 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z" fill="#E8580A"/>
+          </g>
+        </svg>
+        <div class="step-image-label">Gen Alpha в дигиталния свят</div>
       </div>
       <div class="step-dot">01</div>
       <div class="step-text">
         <span class="step-eyebrow">Стъпка 1</span>
-        <h2 class="step-title">Входящ тест</h2>
+        <h2 class="step-title">Gen Alpha учи различно</h2>
         <div class="step-divider"></div>
-        <p class="step-body">Започваме с ясен поглед. Входящият тест ни показва точно къде се намира детето — кои теми са усвоени добре и кои се нуждаят от внимание. Без предположения, само факти.</p>
+        <p class="step-body">Родените след 2010 г. възприемат света по нов начин — и точно затова изграждаме подхода си около техния истински профил на учене.</p>
         <ul class="step-bullets">
-          <li>Диагностика на силните страни</li>
-          <li>Идентифициране на пропуски</li>
-          <li>Индивидуален план от ден 1</li>
+          <li>AI-адаптация в реално време</li>
+          <li>Внимание на „хапки“ — на 5–10 мин</li>
+          <li>Дигиталното е естествена среда за тях</li>
+          <li>Чиста лекция = изключено внимание</li>
         </ul>
       </div>
     </div>
