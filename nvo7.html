@@ -799,6 +799,24 @@
     }
     .early-bird-banner strong { font-weight: 900; }
 
+    /* Desktop: CTA (urgency+form) before "При нас"; DOM order unchanged so
+       mobile (no override) keeps its original "При нас" -> CTA order. */
+    .post-pricing-group { display: flex; flex-direction: column; }
+    .post-pricing-group .cta-section { order: 1; }
+    .post-pricing-group .course-info-block { order: 2; }
+
+    /* Desktop: urgency card + registration form side by side */
+    .cta-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+      max-width: 1100px;
+      margin: 2.5rem auto 0;
+    }
+    .cta-cards-row .urgency-block { margin: 0; max-width: none; }
+    .cta-cards-row .reg-form-wrap { margin: 0; }
+
     /* -- Course info cards below calculator -- */
     .course-info-block {
       max-width: 1100px;
@@ -1246,6 +1264,13 @@
       .timeline-track { display: none; }
 
       .cta-buttons { flex-direction: column; align-items: center; }
+
+      /* Keep mobile layout exactly as before: "При нас" above CTA,
+         urgency card stacked above the form (undo the desktop-only grid/order). */
+      .post-pricing-group { display: block; }
+      .cta-cards-row { display: block; }
+      .cta-cards-row .urgency-block { margin: 2.5rem auto 0; max-width: 640px; }
+      .cta-cards-row .reg-form-wrap { margin-top: 2.75rem; }
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
 
       .modal-box { padding: 2rem 1.5rem 2.5rem; }
@@ -1591,7 +1616,6 @@
       <a href="#section-vhodyasht" class="hero-pill">Входящ тест →</a>
       <a href="#section-malki-grupi" class="hero-pill">Пробни матури →</a>
       <a href="#section-obratna" class="hero-pill">Геймификация →</a>
-      <a href="#section-probni" class="hero-pill">Пробни изпити →</a>
       <a href="#section-tseni" class="hero-pill">Цени →</a>
     </div>
 
@@ -1828,68 +1852,6 @@
       </div>
     </div>
 
-    <!-- 5: Материалът — image LEFT -->
-    <div class="step" data-step="5">
-      <div class="step-image">
-        <img src="photos/nvo_5.jpg" alt="Материалът за 7. клас">
-        <div class="step-image-label">Системно и разбираемо</div>
-      </div>
-      <div class="step-dot">05</div>
-      <div class="step-text">
-        <span class="step-eyebrow">Учебна програма</span>
-        <h2 class="step-title">Материалът за 7. клас</h2>
-        <div class="step-divider"></div>
-        <p class="step-body">Целият материал за 7. клас — системно и разбираемо. Покриваме всичко стъпка по стъпка: рационални числа, геометрия, уравнения, статистика и вероятности.</p>
-        <ul class="step-bullets">
-          <li>Рационални числа</li>
-          <li>Геометрия</li>
-          <li>Статистика и вероятности</li>
-          <li>Подготовка за НВО формат</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- 6: Задачи НВО — image RIGHT -->
-    <div class="step flip" data-step="6">
-      <div class="step-text">
-        <span class="step-eyebrow">Формат на изпита</span>
-        <h2 class="step-title">Задачи в НВО формат</h2>
-        <div class="step-divider"></div>
-        <p class="step-body">Свикваме с формата на изпита постепенно. Ясна структура, типови задачи, нарастваща сложност. Детето идва на НВО с познат формат — без изненади.</p>
-        <ul class="step-bullets">
-          <li>Задачи като на реален изпит</li>
-          <li>Ясна структура и подредба</li>
-          <li>Постепенно нарастваща сложност</li>
-          <li>Повече увереност на изпита</li>
-        </ul>
-      </div>
-      <div class="step-dot">06</div>
-      <div class="step-image">
-        <img src="photos/nvo_6.jpg" alt="Задачи в НВО формат">
-        <div class="step-image-label">Задачи точно в НВО формат</div>
-      </div>
-    </div>
-
-    <!-- 7: Пробни изпити — image LEFT -->
-    <div id="section-probni" class="step" data-step="7">
-      <div class="step-image">
-        <img src="photos/nvo_7.jpg" alt="Пробни изпити">
-        <div class="step-image-label">Подготви се уверено за успех</div>
-      </div>
-      <div class="step-dot">07</div>
-      <div class="step-text">
-        <span class="step-eyebrow">Финал</span>
-        <h2 class="step-title">Пробни изпити</h2>
-        <div class="step-divider"></div>
-        <p class="step-body">Симулираме НВО условия — тайминг, структура, психологическа подготовка. Резултатите се обсъждат задълбочено, така детето знае точно върху какво да работи преди реалния изпит.</p>
-        <ul class="step-bullets">
-          <li>Реален НВО формат и тайминг</li>
-          <li>Задълбочен разбор на резултатите</li>
-          <li>Психологическа подготовка</li>
-        </ul>
-      </div>
-    </div>
-
   </div><!-- end .journey -->
 
   <section id="section-tseni" class="pricing-section">
@@ -1943,6 +1905,7 @@
     </div>
   </section>
 
+  <div class="post-pricing-group">
   <div class="course-info-block">
     <h2>При нас...</h2>
     <p>учениците наистина разбират, защото преподаваме на техния език. Използваме нов подход в образованието – знаем как учат поколенията Z и Alpha и знаем как да постигнем резултати с тях.</p>
@@ -1994,7 +1957,8 @@
       </a>
     </div>
 
-    <!-- URGENCY — immediately before the registration form -->
+    <!-- Урджънси + форма — 2 колони на десктоп (ляво/дясно), стек на мобилен (непроменено) -->
+    <div class="cta-cards-row">
     <div class="urgency-block">
       <h3 class="urgency-title">Последна крачка</h3>
       <p class="urgency-text"><strong>5% отстъпка</strong> за ранно записване — само до 31 август. 2 групи × 8 деца, местата намаляват. Не чакайте есента, за да разберете, че мястото е заето.</p>
@@ -2060,7 +2024,9 @@
         </div>
       </div>
     </div>
+    </div><!-- end .cta-cards-row -->
   </section>
+  </div><!-- end .post-pricing-group -->
 
   <!-- FOOTER -->
   <footer>
