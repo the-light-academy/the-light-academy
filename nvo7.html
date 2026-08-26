@@ -556,19 +556,15 @@
       padding: 1rem 1.1rem 1.1rem;
       opacity: 0;
       transform: translateX(-10px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
     .step.visible .practice-card { opacity: 1; transform: translateX(0); }
     .step.visible .practice-card:nth-child(1) { transition-delay: 0.05s; }
     .step.visible .practice-card:nth-child(2) { transition-delay: 0.2s; }
-    .practice-card-tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--light-text);
-      margin-bottom: 0.6rem;
+    .practice-card:hover {
+      border-color: var(--orange);
+      box-shadow: 0 10px 26px rgba(232,88,10,0.14);
+      transform: translateY(-4px);
     }
     .practice-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
     .practice-card-title { font-size: 1.02rem; font-weight: 800; color: var(--dark); margin: 0; }
@@ -1354,7 +1350,6 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       }
-      #section-malki-grupi .practice-card-tag { color: rgba(255,255,255,0.75); }
       #section-malki-grupi .practice-card-title { color: #fff; }
       #section-malki-grupi .practice-card-text { color: rgba(255,255,255,0.88); }
       #section-malki-grupi .ga-icon { background: rgba(255,255,255,0.25); }
@@ -1723,7 +1718,6 @@
         <div class="step-divider"></div>
         <div class="practice-cards">
           <div class="practice-card">
-            <span class="practice-card-tag">Карта 1 — На живо</span>
             <div class="practice-card-head">
               <span class="ga-icon">📝</span>
               <h3 class="practice-card-title">5 пробни матури на живо</h3>
@@ -1731,7 +1725,6 @@
             <p class="practice-card-text">Истински формат, истинско време, истинска зала. Детето изживява НВО преди НВО — без изненади в деня на истинския изпит.</p>
           </div>
           <div class="practice-card">
-            <span class="practice-card-tag">Карта 2 — Дигитално</span>
             <div class="practice-card-head">
               <span class="ga-icon">💻</span>
               <h3 class="practice-card-title">Неограничен онлайн достъп</h3>
