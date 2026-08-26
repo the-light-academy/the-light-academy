@@ -483,6 +483,53 @@
       margin-top: 2px;
     }
 
+    /* Gen Alpha interactive profile cards */
+    .ga-profile { display: flex; flex-direction: column; gap: 10px; }
+    .ga-card {
+      background: var(--white);
+      border: 1px solid var(--orange-light);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .step.visible .ga-card { opacity: 1; transform: translateX(0); }
+    .step.visible .ga-card:nth-child(1) { transition-delay: 0.05s; }
+    .step.visible .ga-card:nth-child(2) { transition-delay: 0.15s; }
+    .step.visible .ga-card:nth-child(3) { transition-delay: 0.25s; }
+    .step.visible .ga-card:nth-child(4) { transition-delay: 0.35s; }
+    .ga-card:hover { box-shadow: 0 6px 18px rgba(232,88,10,0.10); }
+    .ga-card.open { border-color: var(--orange); }
+    .ga-card-head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.85rem 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      text-align: left;
+    }
+    .ga-icon {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--orange-light);
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+    }
+    .ga-problem { flex: 1; font-weight: 800; color: var(--dark); font-size: 0.95rem; }
+    .ga-chevron { color: var(--light-text); font-weight: 800; transition: transform 0.3s ease; flex-shrink: 0; }
+    .ga-card.open .ga-chevron { transform: rotate(180deg); color: var(--orange); }
+    .ga-answer-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
+    .ga-card.open .ga-answer-wrap { grid-template-rows: 1fr; }
+    .ga-answer-inner { overflow: hidden; }
+    .ga-answer-text { padding: 0 1rem 0.9rem 3rem; margin: 0; color: var(--mid); font-size: 0.88rem; line-height: 1.55; }
+
     /* Flip for odd steps (image on right) */
     .step.flip .step-image { order: 3; }
     .step.flip .step-dot { order: 2; }
@@ -1318,13 +1365,57 @@
         <span class="step-eyebrow">Стъпка 1</span>
         <h2 class="step-title">Gen Alpha учи различно</h2>
         <div class="step-divider"></div>
-        <p class="step-body">Родените след 2010 г. възприемат света по нов начин — и точно затова изграждаме подхода си около техния истински профил на учене.</p>
-        <ul class="step-bullets">
-          <li>AI-адаптация в реално време</li>
-          <li>Внимание на „хапки“ — на 5–10 мин</li>
-          <li>Дигиталното е естествена среда за тях</li>
-          <li>Чиста лекция = изключено внимание</li>
-        </ul>
+        <p class="step-body">Родените след 2010 г. възприемат света по нов начин. Докоснете всяка карта, за да видите защо:</p>
+        <div class="ga-profile" id="gaProfile">
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">🎯</span>
+              <span class="ga-problem">Очакват адаптация в реално време</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Учебните системи трябва да реагират мигновено на техните нужди и темпо.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">⏱️</span>
+              <span class="ga-problem">Свръхкратък фокус</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Нужда от честа смяна на дейността, за да остане вниманието будно.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">📱</span>
+              <span class="ga-problem">Дигитална интуитивност</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Дигиталната среда им е естествена, не изключение.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">😶</span>
+              <span class="ga-problem">Риск от „тихо напускане“</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Физическо присъствие без ментално участие при чисто лекционен метод.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1822,6 +1913,15 @@
     }, { threshold: 0.15 });
 
     steps.forEach(step => observer.observe(step));
+
+    // Gen Alpha profile — click-to-expand cards
+    document.querySelectorAll('.ga-card-head').forEach(head => {
+      head.addEventListener('click', () => {
+        const card = head.closest('.ga-card');
+        const isOpen = card.classList.toggle('open');
+        head.setAttribute('aria-expanded', String(isOpen));
+      });
+    });
 
     // Timeline fill grows with scroll
     function updateTimeline() {
