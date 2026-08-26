@@ -273,38 +273,37 @@
       z-index: 1;
     }
 
-    /* ── HERO: акцент върху входящия тест ── */
-    .hero-test-block {
-      position: relative;
-      z-index: 1;
-      max-width: 640px;
-      margin: 2.25rem auto 0;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.12);
+    /* ── HERO: floating math symbols background ── */
+    .hero-formula-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
     }
-    .hero-test-block .hero-test-line1 {
-      font-family: 'Bad Script', cursive;
-      font-size: clamp(1.3rem, 3vw, 1.7rem);
-      color: var(--white);
-      margin-bottom: 0.5rem;
+    .hero-formula-bg svg {
+      width: 100%;
+      height: 100%;
+      font-family: Georgia, serif;
     }
-    .hero-test-block .hero-test-line2 {
-      color: rgba(255,255,255,0.7);
-      font-size: 1rem;
-      max-width: 480px;
-      margin: 0 auto 1.5rem;
+    .hero-formula-bg text { fill: rgba(255,255,255,0.16); }
+    .hero-formula-bg .f1 { animation: heroFormulaFloat1 15s ease-in-out infinite; }
+    .hero-formula-bg .f2 { animation: heroFormulaFloat2 19s ease-in-out infinite; }
+    .hero-formula-bg .f3 { animation: heroFormulaFloat3 12s ease-in-out infinite; }
+    @keyframes heroFormulaFloat1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(16px, -20px); }
     }
-    .hero-test-block .hero-test-meta {
-      margin-top: 0.9rem;
-      color: rgba(255,255,255,0.5);
-      font-size: 0.85rem;
-      letter-spacing: 0.01em;
+    @keyframes heroFormulaFloat2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-18px, 16px); }
     }
-    .hero-test-block .hero-test-seats {
-      margin-top: 0.5rem;
-      color: rgba(255,160,106,0.85);
-      font-size: 0.8rem;
-      font-weight: 700;
+    @keyframes heroFormulaFloat3 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(12px, 12px) rotate(4deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-formula-bg .f1, .hero-formula-bg .f2, .hero-formula-bg .f3 { animation: none; }
     }
     .hero-pill {
       background: rgba(255,255,255,0.1);
@@ -1715,6 +1714,23 @@
 
   <!-- PAGE HERO -->
   <section class="page-hero">
+    <div class="hero-formula-bg" aria-hidden="true">
+      <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <text x="40"  y="60"  font-size="26" class="f1">a² + b² = c²</text>
+        <text x="630" y="45"  font-size="34" class="f2">π</text>
+        <text x="700" y="115" font-size="20" class="f3">∫ f(x) dx</text>
+        <text x="55"  y="150" font-size="18" class="f2">√(x² + y²)</text>
+        <text x="25"  y="235" font-size="24" class="f3">42</text>
+        <text x="355" y="35"  font-size="20" class="f1">Δ = b² − 4ac</text>
+        <text x="725" y="215" font-size="30" class="f1">Σ</text>
+        <text x="635" y="300" font-size="18" class="f3">x₁ + x₂ = −b/a</text>
+        <text x="45"  y="320" font-size="22" class="f1">α β γ</text>
+        <text x="370" y="370" font-size="16" class="f2">f(x) = ax² + bx + c</text>
+        <text x="145" y="380" font-size="28" class="f3">∞</text>
+        <text x="470" y="145" font-size="16" class="f2">P(A) = m / n</text>
+        <text x="600" y="370" font-size="20" class="f2">7</text>
+      </svg>
+    </div>
     <div class="hero-badge">📐 НВО · 7. клас · Математика</div>
     <h1>Подготовка за <span>НВО</span><br>7 клас по математика</h1>
     <p>Динамична, персонализирана и дигитална подготовка — от входящ тест до пробен изпит. 24/7 достъп до онлайн упражнения!</p>
@@ -1731,17 +1747,6 @@
         <i class="fa-solid fa-pen-to-square"></i>
         Запазете своето място
       </button>
-    </div>
-
-    <div class="hero-test-block">
-      <p class="hero-test-line1">Не започвайте подготовката за НВО на сляпо.</p>
-      <p class="hero-test-line2">Проверете знанията на детето от 5. и 6. клас с нашия безплатен входящ тест.</p>
-      <a href="entrance_test.html" class="btn-cta-primary btn-cta-small">
-        <i class="fa-solid fa-pen-to-square"></i>
-        Направи безплатния тест
-      </a>
-      <div class="hero-test-meta">20 задачи • 25 минути • резултат по категории</div>
-      <div class="hero-test-seats">Само 2 групи × 8 деца</div>
     </div>
   </section>
 
