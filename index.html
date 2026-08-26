@@ -1527,9 +1527,11 @@
 
         <div class="about-video" id="aboutMedia">
           <video id="aboutVideo" class="media-layer active" data-ratio="1.778" src="photos/about_us_video.mp4" preload="metadata" playsinline muted autoplay loop></video>
+          <!-- Photo rotation paused for now — uncomment to bring back the rotating photos
           <img class="media-layer" data-ratio="1.368" src="photos/about_carousel_1.jpg" alt="Ученици на The Light Academy, увлечени в творчески дейности">
           <img class="media-layer" data-ratio="0.513" src="photos/about_carousel_2.jpg" alt="Дете и родител заедно над учебник в The Light Academy">
           <img class="media-layer" data-ratio="0.426" src="photos/about_carousel_3.jpg" alt="Дете, съсредоточено по време на занятие в The Light Academy">
+          -->
           <button id="aboutPlayBtn" class="video-play" aria-label="Play video"><i class="fa-solid fa-play"></i></button>
         </div>
       </div>
@@ -2723,7 +2725,7 @@ The Light Academy прави впечатление с малките групи
       const btn = document.getElementById('aboutPlayBtn');
       if (!media) return;
       const layers = Array.from(media.querySelectorAll('.media-layer'));
-      if (layers.length < 2) return;
+      if (layers.length < 1) return;
 
       function ratioOf(layer) {
         if (layer === video && video.videoWidth && video.videoHeight) {
@@ -2767,6 +2769,7 @@ The Light Academy прави впечатление с малките групи
       }
       window.addEventListener('resize', () => applySize(layers[current]));
 
+      if (layers.length < 2) return;
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       setInterval(() => {
