@@ -1155,6 +1155,55 @@
 
       .pricing-card { gap: 0.9rem; }
       .toggle-group { margin-bottom: 0.9rem; }
+
+      /* Step 1 (Gen Alpha) — full-bleed photo background w/ glass cards, mobile only */
+      #section-vhodyasht {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        min-height: 560px;
+      }
+      #section-vhodyasht .step-image {
+        position: absolute !important;
+        inset: 0;
+        z-index: 0;
+        border-radius: 0;
+      }
+      #section-vhodyasht .step-image img {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
+      #section-vhodyasht .step-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
+      }
+      #section-vhodyasht .step-image-label { display: none; }
+      #section-vhodyasht .step-text {
+        position: relative;
+        z-index: 2;
+        padding: 1.75rem 1.25rem 2rem;
+      }
+      #section-vhodyasht .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-vhodyasht .step-title { color: #fff; }
+      #section-vhodyasht .step-divider { background: #fff; }
+      #section-vhodyasht .step-body { color: rgba(255,255,255,0.9); }
+      #section-vhodyasht .ga-card {
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(255,255,255,0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      #section-vhodyasht .ga-card.open { border-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+      #section-vhodyasht .ga-icon { background: rgba(255,255,255,0.25); }
+      #section-vhodyasht .ga-problem { color: #fff; }
+      #section-vhodyasht .ga-chevron { color: rgba(255,255,255,0.8); }
+      #section-vhodyasht .ga-card.open .ga-chevron { color: #fff; }
+      #section-vhodyasht .ga-answer-text { color: rgba(255,255,255,0.88); }
     }
   </style>
   <script type="application/ld+json">
