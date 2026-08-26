@@ -1204,6 +1204,60 @@
       #section-vhodyasht .ga-chevron { color: rgba(255,255,255,0.8); }
       #section-vhodyasht .ga-card.open .ga-chevron { color: #fff; }
       #section-vhodyasht .ga-answer-text { color: rgba(255,255,255,0.88); }
+
+      /* Step 2 (Ние знаем това) — same full-bleed photo + glass treatment, mobile only */
+      #section-osnovi {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        min-height: 560px;
+      }
+      #section-osnovi .step-image {
+        position: absolute !important;
+        inset: 0;
+        z-index: 0;
+        border-radius: 0;
+      }
+      #section-osnovi .step-image img {
+        position: absolute;
+        inset: 0;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
+      #section-osnovi .step-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
+      }
+      #section-osnovi .step-image-label { display: none; }
+      #section-osnovi .step-text {
+        position: relative;
+        z-index: 2;
+        padding: 1.75rem 1.25rem 2rem;
+      }
+      #section-osnovi .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-osnovi .step-title { color: #fff; }
+      #section-osnovi .step-divider { background: #fff; }
+      #section-osnovi .step-body { color: rgba(255,255,255,0.9); }
+      #section-osnovi .ga-card {
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(255,255,255,0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      #section-osnovi .ga-card.open { border-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+      #section-osnovi .ga-icon { background: rgba(255,255,255,0.25); }
+      #section-osnovi .ga-problem { color: #fff; }
+      #section-osnovi .ga-chevron { color: rgba(255,255,255,0.8); }
+      #section-osnovi .ga-card.open .ga-chevron { color: #fff; }
+      #section-osnovi .ga-answer-text { color: rgba(255,255,255,0.88); }
+      #section-osnovi .ga-closing {
+        background: rgba(255,255,255,0.18);
+        border-left-color: #fff;
+        color: #fff;
+      }
     }
   </style>
   <script type="application/ld+json">
@@ -1486,7 +1540,7 @@
     </div>
 
     <!-- 2: Ние знаем това — image RIGHT -->
-    <div class="step flip" data-step="2">
+    <div id="section-osnovi" class="step flip" data-step="2">
       <div class="step-text">
         <span class="step-eyebrow">Стъпка 2</span>
         <h2 class="step-title">Ние знаем това!</h2>
@@ -1545,8 +1599,8 @@
       </div>
       <div class="step-dot">02</div>
       <div class="step-image">
-        <img src="photos/nvo_2.jpg" alt="Основи">
-        <div class="step-image-label">Пропуски от 5. и 6. клас</div>
+        <img src="photos/gen_alpha_teacher.jpg" alt="Учител дигитализира урок по математика с ученик">
+        <div class="step-image-label">Дигитализираме преподаването</div>
       </div>
     </div>
 
