@@ -401,7 +401,8 @@
       cursor: pointer;
     }
     .step-image img,
-    .step-image svg {
+    .step-image svg,
+    .step-image video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -409,7 +410,8 @@
       transition: transform 0.55s ease;
     }
     .step-image:hover img,
-    .step-image:hover svg { transform: scale(1.06); }
+    .step-image:hover svg,
+    .step-image:hover video { transform: scale(1.06); }
     .step-image::after {
       content: '';
       position: absolute;
@@ -1250,7 +1252,8 @@
         order: 1 !important;
         border-radius: 12px;
       }
-      .step-image img {
+      .step-image img,
+      .step-image video {
         width: 100%;
         height: auto !important;
         object-fit: fill !important;
@@ -1821,33 +1824,7 @@
       </div>
       <div class="step-dot">04</div>
       <div class="step-image">
-        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Илюстрация на геймификация — медал, точки и ниво на напредък">
-          <defs>
-            <linearGradient id="gameBg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#E0F4F3"/>
-              <stop offset="100%" stop-color="#FFF3D6"/>
-            </linearGradient>
-          </defs>
-          <rect width="400" height="500" fill="url(#gameBg)"/>
-          <circle cx="350" cy="80" r="80" fill="#FFF3D6" opacity="0.7"/>
-          <circle cx="30" cy="440" r="100" fill="#FEE8DC" opacity="0.6"/>
-          <g fill="#F5A623">
-            <path d="M60 100 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6 z"/>
-            <path d="M330 300 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 z"/>
-          </g>
-          <g transform="translate(255,135)">
-            <rect x="0" y="0" width="86" height="40" rx="20" fill="#1A8C85"/>
-            <text x="43" y="26" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="17" fill="#ffffff">+10 XP</text>
-          </g>
-          <path d="M175 250 l-30 90 30 -10 20 25 25 -95 z" fill="#E8580A"/>
-          <path d="M225 250 l30 90 -30 -10 -20 25 -25 -95 z" fill="#C24508"/>
-          <circle cx="200" cy="220" r="70" fill="#F5A623" stroke="#C07A0A" stroke-width="6"/>
-          <circle cx="200" cy="220" r="52" fill="#FFF3D6"/>
-          <path d="M200 185 l12 26 28 4 -20 20 5 28 -25 -14 -25 14 5 -28 -20 -20 28 -4 z" fill="#E8580A"/>
-          <rect x="90" y="392" width="220" height="18" rx="9" fill="#ffffff"/>
-          <rect x="90" y="392" width="150" height="18" rx="9" fill="#1A8C85"/>
-          <text x="200" y="436" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="16" fill="#2D1F0E">Ниво 3</text>
-        </svg>
+        <video src="photos/gamification.mp4" width="720" height="1276" muted autoplay loop playsinline preload="metadata" aria-label="Видео с илюстрация на геймификация на упражненията"></video>
         <div class="step-image-label">Учене през игра</div>
       </div>
     </div>
