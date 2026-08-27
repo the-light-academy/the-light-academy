@@ -540,233 +540,114 @@
     border-radius: 999px;
   }
 
-  .result-message{
+  .part2-note{
     text-align: left;
-    font-size: 15px;
+    font-size: 14.5px;
     line-height: 1.6;
     color: var(--text);
     background: var(--bg);
     border-radius: 14px;
-    padding: 18px 20px;
-    margin-top: 22px;
+    padding: 16px 18px;
+    margin: 22px 0;
   }
 
-  .result-section{
-    text-align: left;
-    margin-top: 26px;
-  }
-
-  .result-section-title{
-    font-size: 16px;
-    font-weight: 800;
-    margin: 0 0 12px;
-  }
-
-  .pending-list{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .pending-item{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--card-bg);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-weight: 700;
-    font-size: 14px;
-  }
-
-  .pending-item-points{
-    font-weight: 800;
-    color: var(--text-light);
-    font-size: 13px;
-  }
-
-  .result-cta{
-    text-align: left;
-    margin-top: 34px;
-    padding-top: 26px;
-    border-top: 1px solid var(--border);
-  }
-
-  .result-cta-title{
-    font-size: 18px;
-    font-weight: 800;
-    margin: 0 0 10px;
-  }
-
-  .result-cta-text{
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--text-light);
-    margin: 0 0 20px;
-  }
-
-  .result-cta-buttons{
+  .final-actions{
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-top: 8px;
   }
 
-  .btn-link{
-    display: block;
-    text-align: center;
-    text-decoration: none;
-  }
-
-  .btn-cta-main{
-    font-size: 17px;
-    padding: 18px 28px;
-    box-shadow: 0 10px 26px rgba(247,173,25,0.45);
-  }
-
-  .btn-cta-main:hover{
-    box-shadow: 0 14px 32px rgba(247,173,25,0.5);
-  }
-
-  .btn-cta-tertiary{
-    display: block;
-    text-align: center;
-    background: transparent;
-    color: var(--text-light);
-    border: none;
-    text-decoration: underline;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 10px 12px;
-    cursor: pointer;
-  }
-
-  .btn-cta-tertiary:hover{
-    color: var(--accent-dark);
-  }
-
-  /* ---------- Заключена секция с резултата – отключва се с имейл ---------- */
-  .locked-results{
-    position: relative;
-    min-height: 300px;
-  }
-
-  .lockable-content{
-    filter: blur(7px);
-    pointer-events: none;
-    user-select: none;
-    transition: filter 0.4s ease;
-  }
-
-  .locked-results.unlocked .lockable-content{
-    filter: none;
-    pointer-events: auto;
-    user-select: auto;
-  }
-
-  .locked-overlay{
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    z-index: 5;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-
-  .locked-results.unlocked .locked-overlay{
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .locked-overlay-card{
-    width: 100%;
-    max-width: 380px;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-hover);
-    padding: 26px 22px;
-    text-align: center;
-  }
-
-  .locked-overlay-icon{
-    font-size: 26px;
-    margin-bottom: 8px;
-  }
-
-  .locked-overlay-title{
-    font-size: 18px;
+  /* ---------- ПРЕГЛЕД НА ОТГОВОРИТЕ ---------- */
+  .review-part-title{
+    font-size: 19px;
     font-weight: 800;
-    margin: 0 0 8px;
-    color: var(--text);
+    margin: 30px 0 14px;
   }
+  .review-part-title:first-child{ margin-top: 0; }
 
-  .locked-overlay-text{
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: var(--text-light);
-    margin: 0 0 16px;
-  }
-
-  .unlock-form-group{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 12px;
+  .review-item{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 22px;
+    margin-bottom: 16px;
     text-align: left;
   }
 
-  .unlock-form-group input{
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 15px;
-    color: var(--text);
-    background: var(--bg);
+  .review-item-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
   }
 
-  .unlock-form-group input:focus{
-    outline: none;
-    border-color: var(--accent);
-    background: #fff;
-  }
-
-  .unlock-privacy-note{
-    font-size: 11.5px;
-    line-height: 1.4;
-    color: var(--text-light);
-    margin: 10px 0 0;
-  }
-
-  .analysis-error{ margin-top: 14px; background: #fff0e8; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #c24508; text-align: center; }
-  .analysis-error a{ color: #c24508; font-weight: 700; }
-
-  .seats-badge{
+  .review-badge{
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: var(--accent-light);
-    color: var(--accent-dark);
-    font-weight: 700;
-    font-size: 13px;
-    padding: 7px 14px;
-    border-radius: 999px;
-    margin: 0 0 14px;
-  }
-
-  .seats-badge::before{
-    content: "";
-    width: 8px;
-    height: 8px;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--accent-dark);
+    font-weight: 800;
+    font-size: 14px;
     flex: 0 0 auto;
   }
+  .review-badge.correct{ background: #eaf7ec; color: var(--correct); }
+  .review-badge.incorrect{ background: #fdecea; color: #c0392b; }
+
+  .review-question-text{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0 0 16px;
+  }
+
+  .review-option{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  .review-option.correct{ border-color: var(--correct); background: #eaf7ec; }
+  .review-option.incorrect{ border-color: #c0392b; background: #fdecea; }
+
+  .review-label{
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: var(--text-light);
+    margin: 12px 0 4px;
+  }
+  .review-label:first-of-type{ margin-top: 0; }
+
+  .review-answer-box{
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+  .review-answer-box.correct{ border-color: var(--correct); background: #eaf7ec; }
+  .review-answer-box.incorrect{ border-color: #c0392b; background: #fdecea; }
+
+  .review-explanation{
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+  .review-explanation strong{ color: var(--accent-dark); }
 
   .result-disclaimer{
     text-align: left;
@@ -861,13 +742,13 @@
     <div class="intro-card">
       <div class="interim-icon">✅</div>
       <h2 class="intro-title" style="font-size:24px;">Част 1 е предадена</h2>
-      <p class="result-score-label">Автоматична оценка (задачи 1–14)</p>
-      <p class="interim-score-fraction" id="p1i-score-fraction">0 / 35</p>
+      <p class="result-score-label">Автоматична оценка (задачи 1–21)</p>
+      <p class="interim-score-fraction" id="p1i-score-fraction">0 / 65</p>
       <span class="interim-score-percentage" id="p1i-score-percentage">0%</span>
 
       <div class="interim-note">
-        Задачи 15–21 (до 30 точки) са изпратени за преглед от учител и не се оценяват
-        автоматично тук. Максималният брой точки за цяла Част 1 е 65.
+        Всички отговори от Част 1, включително кратките свободни отговори, са проверени
+        автоматично спрямо ключа.
         <br><br>
         Когато сте готови, продължете към Част 2 — тя стартира собствен таймер от 90:00
         и не наследява оставащото време от Част 1.
@@ -884,8 +765,9 @@
       <h2 class="intro-title" style="font-size:26px;">Задачи 22–24</h2>
       <p class="intro-subtitle">90 минути · Задачи с пълно решение</p>
       <p class="intro-text">
-        И трите задачи изискват пълно решение по подточки. Всичко се преглежда лично
-        от учител — точките се добавят след проверка. Таймерът е независим от този
+        И трите задачи изискват пълно решение по подточки. Те не се оценяват
+        автоматично — в резултата накрая ще намериш примерно решение на всяка
+        подточка, с което да сравниш своя отговор. Таймерът е независим от този
         на Част 1 и стартира от 90:00 в момента, в който натиснете бутона по-долу.
       </p>
       <button class="btn btn-primary" id="start-part2-btn">Започни Част 2</button>
@@ -909,9 +791,8 @@
     <div class="question-card">
       <div>
         <span class="question-category review-pill" id="p2-category">Задача 22</span>
-        <span class="points-pill" id="p2-points">12 точки (учителски преглед)</span>
+        <span class="points-pill" id="p2-points">12 точки</span>
       </div>
-      <div class="diagram-card" id="p2-diagram" style="display:none;"></div>
       <div id="p2-subparts"></div>
     </div>
 
@@ -929,61 +810,21 @@
       <div class="result-icon">🎓</div>
       <h2 class="result-title">Резултат от пробната матура</h2>
 
-      <div class="locked-results" id="locked-results">
-        <div class="lockable-content">
-          <div class="result-score-block">
-            <p class="result-score-label">Автоматична оценка от Част 1 (задачи 1–14)</p>
-            <p class="result-score-fraction" id="final-score-fraction">0 / 35</p>
-            <span class="result-score-percentage" id="final-score-percentage">0%</span>
-          </div>
-
-          <div class="result-message">
-            Задачи 15–21 от Част 1 (до 30 точки) и цялата Част 2 (35 точки) очакват
-            преглед от учител — ще получите пълния резултат по имейл след проверка.
-            Максималната обща оценка е 100 точки по официалната скала.
-          </div>
-
-          <div class="result-section">
-            <h3 class="result-section-title">Изпратено за учителски преглед</h3>
-            <div class="pending-list">
-              <div class="pending-item"><span>Част 1 · задачи 15–21</span><span class="pending-item-points">до 30 т.</span></div>
-              <div class="pending-item"><span>Част 2 · задачи 22–24</span><span class="pending-item-points">до 35 т.</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="locked-overlay" id="locked-overlay">
-          <div class="locked-overlay-card">
-            <div class="locked-overlay-icon">🔒</div>
-            <h3 class="locked-overlay-title">Резултатите от Част 1 са готови!</h3>
-            <p class="locked-overlay-text">
-              Въведете име на ученика и имейл на родителя, за да изпратите Част 2 и
-              свободните отговори от Част 1 за учителски преглед и да видите точките
-              от Част 1.
-            </p>
-
-            <div class="unlock-form-group">
-              <input type="text" id="final-student-name" placeholder="Име на ученика" autocomplete="name" required />
-              <input type="email" id="final-parent-email" placeholder="Имейл на родителя" inputmode="email" autocomplete="email" required />
-            </div>
-            <button type="button" class="btn btn-primary" id="final-send-btn" style="width:100%;">🔓 Изпрати за преглед и виж резултата</button>
-            <div id="final-error" class="analysis-error" style="display:none;"></div>
-            <p class="unlock-privacy-note">Без спам — само резултата и, ако желаете, кратка обратна връзка от учител.</p>
-          </div>
-        </div>
+      <div class="result-score-block">
+        <p class="result-score-label">Част 1 (задачи 1–21) — автоматична оценка по ключ</p>
+        <p class="result-score-fraction" id="final-score-fraction">0 / 65</p>
+        <span class="result-score-percentage" id="final-score-percentage">0%</span>
       </div>
 
-      <div class="result-cta">
-        <p class="result-cta-title">Готови ли сте да превърнем резултата в план за действие?</p>
-        <p class="result-cta-text">
-          В The Light Academy подготвяме ученици за НВО по математика в 7. клас
-          с малки групи, системна работа и внимание към индивидуалните нужди на всяко дете.
-        </p>
-        <span class="seats-badge">Остават 7 места в групата</span>
-        <div class="result-cta-buttons">
-          <a href="nvo7.html#section-cta" class="btn btn-primary btn-cta-main btn-link">Запази място в курса за НВО</a>
-          <a href="nvo7.html" class="btn-cta-tertiary">Разгледай подготовката за НВО</a>
-        </div>
+      <div class="part2-note">
+        Част 2 (задачи 22–24, 35 точки) съдържа задачи с пълно решение, които не се
+        оценяват автоматично. В прегледа по-долу ще намериш примерно решение на всяка
+        подточка, с което да сравниш своя отговор.
+      </div>
+
+      <div class="final-actions">
+        <button class="btn btn-primary" id="open-review-btn">Прегледай отговорите</button>
+        <button class="btn btn-secondary" id="restart-btn">Направи теста отново</button>
       </div>
 
       <p class="result-disclaimer">
@@ -992,6 +833,14 @@
         инструмент. Тя не представлява официална оценка от НВО.
       </p>
 
+    </div>
+  </section>
+
+  <!-- 7. ПРЕГЛЕД НА ОТГОВОРИТЕ -->
+  <section id="review-screen" class="screen">
+    <div style="max-width:680px; margin:0 auto; width:100%;">
+      <button class="btn btn-secondary" id="back-to-result-btn" style="margin-bottom:18px;">← Обратно към резултата</button>
+      <div id="review-list"></div>
     </div>
   </section>
 
@@ -1213,32 +1062,37 @@ const DIAGRAMS = {
     s += svgLabel(C, 'C', -4, -10, {anchor:'middle'});
     s += svgLabel(O, 'O', 10, -6, {color:'#d99206'});
     return wrapSvg(300, 220, s);
-  },
-  rect24: function(){
-    const A=[40,220], B=[260,220], C=[260,60], D=[40,60];
-    const O=[150,140], P=[190,60], Q=[110,220], R=[260,380];
-    let s = '';
-    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(C,D); s += svgLine(D,A);
-    s += svgLine(A,C); s += svgLine(B,D);
-    s += svgDashLine(A,R); s += svgDashLine(C,R);
-    s += svgRightAngle(A, D, B);
-    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(D);
-    s += svgDot(O,3.5,'#F7AD19'); s += svgDot(P,3.5,'#F7AD19'); s += svgDot(Q,3.5,'#F7AD19'); s += svgDot(R,3.5,'#F7AD19');
-    s += svgLabel(A, 'A', -16, 10);
-    s += svgLabel(B, 'B', 8, 10);
-    s += svgLabel(C, 'C', 8, -8);
-    s += svgLabel(D, 'D', -16, -8);
-    s += svgLabel(O, 'O', 8, 14, {color:'#d99206'});
-    s += svgLabel(P, 'P', 0, -10, {anchor:'middle', color:'#d99206'});
-    s += svgLabel(Q, 'Q', 0, 20, {anchor:'middle', color:'#d99206'});
-    s += svgLabel(R, 'R', 10, 4, {color:'#d99206'});
-    return wrapSvg(320, 400, s);
   }
 };
 
 function diagramCardHTML(name){
   const fn = DIAGRAMS[name];
   return fn ? fn() : '';
+}
+
+/* =========================================================
+   ПРОВЕРКА НА СВОБОДНИ ОТГОВОРИ СПРЯМО КЛЮЧА
+========================================================= */
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function extractNumbers(str){
+  return (String(str).match(/\d+/g) || []).map(Number);
+}
+
+function hasNumber(str, n){
+  return extractNumbers(str).includes(n);
+}
+
+function hasWord(str, word){
+  return String(str).toLowerCase().includes(word.toLowerCase());
+}
+
+function hasFiveX(str){
+  const n = String(str).toLowerCase().replace(/,/g, '.');
+  return /(?<![0-9])5\s*[*·]?\s*x\b/.test(n);
 }
 
 /* =========================================================
@@ -1252,106 +1106,144 @@ const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'];
 const part1Steps = [
   { id:1, kind:'mc', points:2,
     text:'Стойността на израза 1/5 − 1/5·10 е:',
-    options:['0', '−1,8', '−2,2', '−4,8'], correct:1 },
+    options:['0', '−1,8', '−2,2', '−4,8'], correct:1,
+    explanation:'По реда на действията първо се пресмята 1/5·10 = 2, след което 1/5 − 2 = −1,8.' },
   { id:2, kind:'mc', points:2,
     text:'Коренът на уравнението 24x + 3 = 4 е:',
-    options:['−1/24', '1/24', '7/24', '24'], correct:1 },
+    options:['−1/24', '1/24', '7/24', '24'], correct:1,
+    explanation:'24x = 4 − 3 = 1, откъдето x = 1/24.' },
   { id:3, kind:'mc', points:2,
     text:'Корените на уравнението |x − 5| − 8 = −1 са:',
-    options:['12 и −2', '−12 и 2', '14 и −4', 'уравнението няма решение'], correct:0 },
+    options:['12 и −2', '−12 и 2', '14 и −4', 'уравнението няма решение'], correct:0,
+    explanation:'|x − 5| = 7 ⇒ x − 5 = 7 или x − 5 = −7, откъдето x = 12 или x = −2.' },
   { id:4, kind:'mc', points:3,
     text:'Решението на неравенството 8 − 2x ≤ 6 − x е интервалът:',
-    options:['[2; +∞)', '(−∞; 2)', '[−2; +∞)', '(−∞; 2]'], correct:0 },
+    options:['[2; +∞)', '(−∞; 2)', '[−2; +∞)', '(−∞; 2]'], correct:0,
+    explanation:'8 − 2x ≤ 6 − x ⇒ 8 − 6 ≤ 2x − x ⇒ 2 ≤ x, т.е. x ∈ [2; +∞).' },
   { id:5, kind:'mc', points:2,
     text:'Стойността на израза (2⁶ − 2⁵) / (2⁶ + 2⁵) е равна на:',
-    options:['0', '1/4', '1/3', '1'], correct:2 },
+    options:['0', '1/4', '1/3', '1'], correct:2,
+    explanation:'Изнасяме общ множител 2⁵: (2⁶−2⁵)=2⁵(2−1)=2⁵; (2⁶+2⁵)=2⁵(2+1)=3·2⁵. Отношението е 2⁵/(3·2⁵) = 1/3.' },
   { id:6, kind:'mc', points:3,
     text:'Вероятността произволно избрано едноцифрено неотрицателно число да се дели на 3, е:',
-    options:['3/10', '1/3', '2/5', '4/9'], correct:2 },
+    options:['3/10', '1/3', '2/5', '4/9'], correct:2,
+    explanation:'Едноцифрените неотрицателни числа са 0,1,…,9 – общо 10. На 3 се делят 0, 3, 6 и 9 – 4 числа. Вероятността е 4/10 = 2/5.' },
   { id:7, kind:'mc', points:2,
     text:'В инвестиционен фонд вложили 15 000 евро и след една година сумата нараснала на 15 600 евро. Колко е бил годишният лихвен процент?',
-    options:['0,4%', '1,04%', '1,4%', '4%'], correct:3 },
+    options:['0,4%', '1,04%', '1,4%', '4%'], correct:3,
+    explanation:'Нарастването е 15600 − 15000 = 600 €. Процентът е 600/15000 = 0,04 = 4%.' },
   { id:8, kind:'mc', points:3,
     text:'Петко може сам да подреди детската стая за 30 минути, а брат му Матей може да подреди същата стая за 45 минути. За колко минути двамата братя заедно ще подредят стаята?',
-    options:['36', '18', '12', '6'], correct:1 },
+    options:['36', '18', '12', '6'], correct:1,
+    explanation:'За минута Петко работи 1/30, а Матей 1/45 от стаята. Заедно: 1/30+1/45 = 3/90+2/90 = 5/90 = 1/18 от стаята за минута, т.е. цялата работа отнема 18 минути.' },
   { id:9, kind:'mc', points:3,
     text:'Изразът (a − 6)² − 2a(a − 6) е тъждествено равен на:',
-    options:['(6 − a)(a + 6)', '(a − 6)(1 − 2a)', '3(a − 6)(a − 2)', '(6 − a)(−1 + 2a)'], correct:0 },
+    options:['(6 − a)(a + 6)', '(a − 6)(1 − 2a)', '3(a − 6)(a − 2)', '(6 − a)(−1 + 2a)'], correct:0,
+    explanation:'Изнасяме общ множител (a−6): (a−6)² − 2a(a−6) = (a−6)[(a−6)−2a] = (a−6)(−a−6) = (6−a)(a+6).' },
   { id:10, kind:'mc', points:2, diagram:'coord10',
     text:'В координатна система са дадени точките A(1;2), B(4;2) и C(3;5). Коя от точките P, Q, R и S определя с дадените точки върхове на успоредник?',
-    options:['P(1;5)', 'Q(3;−1)', 'R(−1;5)', 'S(6;5)'], correct:3 },
+    options:['P(1;5)', 'Q(3;−1)', 'R(−1;5)', 'S(6;5)'], correct:3,
+    explanation:'Четвъртият връх се намира по формулата D = B + C − A (диагоналите на успоредника се разполовяват): D = (4+3−1; 2+5−2) = (6;5), което е точка S.' },
   { id:11, kind:'mc', points:2, diagram:'tri11',
     text:'На чертежа BH е височина, а BL е ъглополовяща на ∠ABC в △ABC. Ако ∠LBH = 8° и ∠HCB = 78°, то мярката на ∠BAC е:',
-    options:['28°', '52°', '62°', '82°'], correct:2 },
+    options:['28°', '52°', '62°', '82°'], correct:2,
+    explanation:'Ъгълът между височината и ъглополовящата от един връх е равен на половината от разликата между другите два ъгъла: ∠LBH = |∠A − ∠C| / 2. Заместваме: 8° = |∠BAC − 78°| / 2, откъдето ∠BAC = 78° − 16° = 62°.' },
   { id:12, kind:'mc', points:3, diagram:'par12',
     text:'На чертежа правите a и b са успоредни. По данните на чертежа мярката на ∠ACB е:',
-    options:['25°', '50°', '75°', '85°'], correct:2 },
+    options:['25°', '50°', '75°', '85°'], correct:2,
+    explanation:'Прекарваме през C права, успоредна на a и b. Тя разделя ∠ACB на два ъгъла, равни (като нахкръстни ъгли) съответно на 180°−155°=25° и 180°−130°=50°. Затова ∠ACB = 25°+50° = 75°.' },
   { id:13, kind:'mc', points:3, diagram:'tri13',
     text:'Симетралата на хипотенузата AB на правоъгълния △ABC пресича катета му AC в точка M. Ако AC = 24 cm и ∠BAC = 30°, то дължината на CM е:',
-    options:['6 cm', '8 cm', '12 cm', '16 cm'], correct:1 },
+    options:['6 cm', '8 cm', '12 cm', '16 cm'], correct:1,
+    explanation:'M е на симетралата на AB, затова MA=MB и △AMB е равнобедрен: ∠MBA=∠MAB=30°. От правоъгълния △ABC следва ∠ABC=60°, откъдето ∠MBC=60°−30°=30°. В правоъгълния △MBC: BC=AC·tan30°=8√3 cm, а CM=BC·tan30°=8 cm.' },
   { id:14, kind:'mc', points:3, diagram:'par14',
     text:'Точка M е от страната AB на успоредника ABCD. Ако AD = AM и ∠MDC = 52°, то мярката на ∠BCD е:',
-    options:['26°', '38°', '52°', '76°'], correct:3 },
+    options:['26°', '38°', '52°', '76°'], correct:3,
+    explanation:'Тъй като AD=AM, △ADM е равнобедрен и ∠ADM = 90° − α/2, където α=∠DAB. От успоредника ∠ADC=180°−α, а ∠MDC=∠ADC−∠ADM=90°−α/2=52°, откъдето α=76°. Тъй като ∠BCD=∠DAB (срещуположни ъгли на успоредник), ∠BCD=76°.' },
 
   { id:15, kind:'free', points:4,
     prompt:'Намерете корените на уравнението x² = 25x.',
-    correctAnswer:'0 и 25 (4 т.; 2 т. при един верен корен)' },
+    correctAnswer:'0 и 25',
+    explanation:'x² − 25x = 0 ⇒ x(x − 25) = 0 ⇒ x = 0 или x = 25.',
+    check: ans => hasNumber(ans, 0) && hasNumber(ans, 25) },
   { id:16, kind:'free', points:4,
     prompt:'Намерете числената стойност на израза (x + 1)² − x(x + 1) за x = 2025.',
-    correctAnswer:'2026 (4 т.; 2 т., ако е записано само x + 1)' },
+    correctAnswer:'2026',
+    explanation:'(x+1)² − x(x+1) = (x+1)[(x+1) − x] = (x+1)·1 = x+1. За x=2025 стойността е 2026.',
+    check: ans => hasNumber(ans, 2026) },
   { id:17, kind:'free-multi', diagram:'chart17',
     intro:'Строителна фирма продава апартаменти. На диаграмата са показани продадените апартаменти по месеци (април–август).',
     subparts:[
-      { label:'А', points:2, prompt:'През кой месец продажбите нарастват двойно спрямо предния месец?', correctAnswer:'май' },
-      { label:'Б', points:3, prompt:'Каква е средната месечна продажба за периода април–август?', correctAnswer:'15' }
+      { label:'А', points:2, prompt:'През кой месец продажбите нарастват двойно спрямо предния месец?', correctAnswer:'май',
+        explanation:'От 10 (април) на 20 (май) продажбите се удвояват.',
+        check: ans => hasWord(ans, 'май') },
+      { label:'Б', points:3, prompt:'Каква е средната месечна продажба за периода април–август?', correctAnswer:'15',
+        explanation:'Средно аритметично: (10+20+25+15+5)/5 = 75/5 = 15.',
+        check: ans => hasNumber(ans, 15) }
     ] },
   { id:18, kind:'free', points:4,
     prompt:'На прожекция в киносалон зрителите заели 80% от местата, а 18 места останали свободни. Колко са всичките места в киносалона?',
-    correctAnswer:'90' },
+    correctAnswer:'90',
+    explanation:'Свободните места са 100%−80%=20% от всички. 20% отговарят на 18 места, значи общият брой е 18 : 0,2 = 90.',
+    check: ans => hasNumber(ans, 90) },
   { id:19, kind:'free-multi', diagram:'tri19',
     intro:'В правоъгълния △ABC хипотенузата AB има дължина 24 cm, ∠CAB = 20° и точка M е средата на AB.',
     subparts:[
-      { label:'А', points:2, prompt:'Намерете дължината на CM.', correctAnswer:'12 cm' },
-      { label:'Б', points:3, prompt:'Намерете мярката на ∠CMB.', correctAnswer:'40°' }
+      { label:'А', points:2, prompt:'Намерете дължината на CM.', correctAnswer:'12 cm',
+        explanation:'Медианата към хипотенузата в правоъгълен триъгълник е равна на половината от нея: CM = AB/2 = 24/2 = 12 cm.',
+        check: ans => hasNumber(ans, 12) },
+      { label:'Б', points:3, prompt:'Намерете мярката на ∠CMB.', correctAnswer:'40°',
+        explanation:'CM=AM (медиана към хипотенузата), затова △AMC е равнобедрен и ∠MCA=∠MAC=20°, откъдето ∠AMC=180°−40°=140°. Понеже A, M, B лежат на права, ∠CMB=180°−140°=40°.',
+        check: ans => hasNumber(ans, 40) }
     ] },
   { id:20, kind:'free', points:4, diagram:'tri20',
     prompt:'Ъглополовящите на ∠BAC и ∠ABC се пресичат в точка O, като ∠AOB = 105°. Намерете мярката на ∠ACB.',
-    correctAnswer:'30°' },
+    correctAnswer:'30°',
+    explanation:'За пресечната точка на ъглополовящите от A и B е в сила ∠AOB = 90° + ∠C/2. Заместваме: 105° = 90° + ∠ACB/2, откъдето ∠ACB = 30°.',
+    check: ans => hasNumber(ans, 30) },
   { id:21, kind:'free', points:4,
     prompt:'Две от страните на равнобедрен триъгълник се отнасят както 1 : 2. Ако по-малката му страна е x cm, изразете и запишете чрез x периметъра на триъгълника.',
-    correctAnswer:'5x (пълни точки само за точен отговор „5x"; частични точки при частичен напредък — напр. 4x)' }
+    correctAnswer:'5x',
+    explanation:'Ако равните страни бяха x и x, а третата 2x, неравенството на триъгълника x+x>2x не е изпълнено. Затова равните страни са по 2x, а третата (основата) е x. Периметърът е 2x+2x+x=5x.',
+    check: ans => hasFiveX(ans) }
 ];
 
-const PART1_AUTO_MAX = part1Steps.filter(s => s.kind === 'mc').reduce((a,s) => a + s.points, 0); // 35
-const PART1_TOTAL_MAX = 65;
-const PART2_TOTAL_MAX = 35;
-
 /* =========================================================
-   ДАННИ — ЧАСТ 2 (задачи 22-24), само за учителски преглед
+   ДАННИ — ЧАСТ 2 (задачи 22-24) — задачи с пълно решение, не се оценяват автоматично
 ========================================================= */
 
 const part2Steps = [
   { id:22, points:12,
     intro:'Даден е изразът M = (x + 3)³ − x(x + 1)² − 3(x² + 9).',
     subparts:[
-      { label:'А', prompt:'Представете M в нормален вид.' },
-      { label:'Б', prompt:'Решете неравенството 4x² + 26x − 5 ≤ 4x(x + 5).' },
-      { label:'В', prompt:'Кои от корените на уравнението |4x² + 26x − 4(x² + 5x) − 3| = 12 са решения на неравенството от подточка Б)? Обосновете отговора си.' }
+      { label:'А', prompt:'Представете M в нормален вид.',
+        solution:'M = (x+3)³ − x(x+1)² − 3(x²+9) = (x³+9x²+27x+27) − (x³+2x²+x) − (3x²+27) = 4x² + 26x.' },
+      { label:'Б', prompt:'Решете неравенството 4x² + 26x − 5 ≤ 4x(x + 5).',
+        solution:'4x²+26x−5 ≤ 4x²+20x ⇒ 26x−5 ≤ 20x ⇒ 6x ≤ 5 ⇒ x ≤ 5/6.' },
+      { label:'В', prompt:'Кои от корените на уравнението |4x² + 26x − 4(x² + 5x) − 3| = 12 са решения на неравенството от подточка Б)? Обосновете отговора си.',
+        solution:'Изразът под модул: 4x²+26x−4(x²+5x)−3 = 6x−3. От |6x−3|=12 получаваме x=2,5 или x=−1,5. От тях само x=−1,5 удовлетворява x≤5/6 от подточка Б), затова е единственото решение.' }
     ] },
   { id:23, points:11,
     intro:'Мярката за чистота на златото се нарича карат (чисто злато е 24 карата). За изработване на бижута се използва най-често злато 9 карата, 14 карата или 18 карата.',
     subparts:[
-      { label:'А', prompt:'Намерете колко грама чисто злато има в 120 g злато 14 карата.' },
-      { label:'Б', prompt:'Златар смесил 40 g злато 9 карата и 50 g злато 18 карата. Колко карата е получената сплав?' },
-      { label:'В', prompt:'Ани наследила от баба си златна плочка от злато 18 карата, маса 10,5 g. Поръчала да ѝ направят гривна, добавяйки сребро, така че златото да стане 14 карата. Колко грама ще тежи гривната?' }
+      { label:'А', prompt:'Намерете колко грама чисто злато има в 120 g злато 14 карата.',
+        solution:'Чисто злато в 120 g злато 14 карата: 120·14/24 = 70 g.' },
+      { label:'Б', prompt:'Златар смесил 40 g злато 9 карата и 50 g злато 18 карата. Колко карата е получената сплав?',
+        solution:'Чисто злато общо: 40·9/24 + 50·18/24 = 15 + 37,5 = 52,5 g. Обща маса: 90 g. Карат на сплавта: 52,5/90·24 = 14 карата.' },
+      { label:'В', prompt:'Ани наследила от баба си златна плочка от злато 18 карата, маса 10,5 g. Поръчала да ѝ направят гривна, добавяйки сребро, така че златото да стане 14 карата. Колко грама ще тежи гривната?',
+        solution:'Чисто злато в плочката: 10,5·18/24 = 7,875 g. Тъй като се добавя само сребро (без промяна на златото), масата на гривната M удовлетворява 7,875 = M·14/24, откъдето M = 13,5 g.' }
     ] },
-  { id:24, points:12, diagram:'rect24',
+  { id:24, points:12,
     intro:'В правоъгълника ABCD диагоналите се пресичат в точка O. Ъглополовящите на ∠DBC и ∠ADB пресичат CD и AB съответно в точките P и Q. През точка A е построена права, успоредна на BD, която пресича правата CB в точка R.',
     subparts:[
-      { label:'А', prompt:'Докажете, че △DQO ≅ △BPO.' },
-      { label:'Б', prompt:'Докажете, че AC = AR.' },
-      { label:'В', prompt:'Докажете, че сборът от лицата на △ADQ и △QBP е равен на половината от лицето на ABCD.' },
-      { label:'Г', prompt:'Ако ∠DBC = 2∠ABD, докажете, че AQ : AB = 1 : 3 и намерете мярката на ∠RAC.' }
+      { label:'А', prompt:'Докажете, че △DQO ≅ △BPO.',
+        solution:'AD∥BC ⇒ ∠ADB=∠DBC (кръстни ъгли). DQ и BP ги разполовяват, затова ∠ADQ=∠CBP. Заедно с ∠DAQ=∠BCP=90° и AD=CB следва △ADQ≅△CBP (ЪСЪ), откъдето DQ=BP и AQ=CP. От OD=OB (диагонали на правоъгълник) и ∠QDO=∠PBO (по половината от равните ъгли) с DQ=BP следва △DQO≅△BPO (СЪС).' },
+      { label:'Б', prompt:'Докажете, че AC = AR.',
+        solution:'AD∥BC ⇒ AD∥BR (R е на правата CB). AR∥BD по построение. Следователно ADBR е успоредник, откъдето AR=DB. В правоъгълник диагоналите са равни: DB=AC. Значи AR=AC.' },
+      { label:'В', prompt:'Докажете, че сборът от лицата на △ADQ и △QBP е равен на половината от лицето на ABCD.',
+        solution:'△ADQ и △QBP имат обща височина AD спрямо правата AB (D е на разстояние AD от AB, а P — също, защото CD∥AB). Лице(ADQ)=½·AQ·AD, Лице(QBP)=½·QB·AD. Сборът е ½·AD·(AQ+QB)=½·AD·AB=½·Лице(ABCD).' },
+      { label:'Г', prompt:'Ако ∠DBC = 2∠ABD, докажете, че AQ : AB = 1 : 3 и намерете мярката на ∠RAC.',
+        solution:'От ∠ABC=90°=∠ABD+∠DBC=3∠ABD следва ∠ABD=30°, ∠DBC=60°=∠ADB. В правоъгълния △ABD ъглополовящата DQ дава ∠ADQ=30°, откъдето AQ=AD·tan30°=AD/√3, а AD=AB·tan30°=AB/√3, значи AQ=AB/3, т.е. AQ:AB=1:3. Тъй като AR=AC (от Б) и AB⊥CR през средата B на CR, AB е ъглополовяща на ∠RAC, а ∠CAB=30° (от правоъгълния △ABC), значи ∠RAC=2·30°=60°.' }
     ] }
 ];
 
@@ -1363,8 +1255,7 @@ let p1Index = 0;
 let p1Answers = new Array(part1Steps.length).fill(null);
 let p2Index = 0;
 let p2Answers = new Array(part2Steps.length).fill(null);
-let lastPart1Results = null;
-let lastPart2Items = null;
+let lastPart1Records = null;
 
 /* =========================================================
    DOM ЕЛЕМЕНТИ
@@ -1376,7 +1267,8 @@ const part1InterimScreen = document.getElementById('part1-interim-screen');
 const part2IntroScreen = document.getElementById('part2-intro-screen');
 const part2Screen = document.getElementById('part2-screen');
 const finalScreen = document.getElementById('final-screen');
-const allScreens = [startScreen, part1Screen, part1InterimScreen, part2IntroScreen, part2Screen, finalScreen];
+const reviewScreen = document.getElementById('review-screen');
+const allScreens = [startScreen, part1Screen, part1InterimScreen, part2IntroScreen, part2Screen, finalScreen, reviewScreen];
 
 const startBtn = document.getElementById('start-btn');
 
@@ -1401,7 +1293,6 @@ const p2TimerEl = document.getElementById('p2-timer');
 const p2ProgressFillEl = document.getElementById('p2-progress-fill');
 const p2CategoryEl = document.getElementById('p2-category');
 const p2PointsEl = document.getElementById('p2-points');
-const p2DiagramEl = document.getElementById('p2-diagram');
 const p2SubpartsEl = document.getElementById('p2-subparts');
 const p2PrevBtn = document.getElementById('p2-prev-btn');
 const p2NextBtn = document.getElementById('p2-next-btn');
@@ -1559,7 +1450,7 @@ function renderPart1Step(){
 
     const noteEl = document.createElement('p');
     noteEl.className = 'free-text-note';
-    noteEl.textContent = 'Ще бъде прегледан лично от учител.';
+    noteEl.textContent = 'Отговорът се проверява автоматично спрямо ключа.';
     wrap.appendChild(noteEl);
 
     p1OptionsListEl.appendChild(wrap);
@@ -1598,7 +1489,7 @@ function renderPart1Step(){
     const noteEl = document.createElement('p');
     noteEl.className = 'free-text-note';
     noteEl.style.marginTop = '14px';
-    noteEl.textContent = 'Ще бъде прегледан лично от учител.';
+    noteEl.textContent = 'Отговорите се проверяват автоматично спрямо ключа.';
     p1OptionsListEl.appendChild(noteEl);
   }
 
@@ -1646,27 +1537,48 @@ function finishPart1(completionType){
   });
 }
 
-function calculatePart1(){
-  let autoScore = 0;
-  const reviewItems = [];
+function buildPart1Records(){
+  const records = [];
 
   part1Steps.forEach((step, idx) => {
     if(step.kind === 'mc'){
-      if(p1Answers[idx] === step.correct){ autoScore += step.points; }
+      const chosen = p1Answers[idx];
+      const isCorrect = chosen === step.correct;
+      records.push({
+        id: String(step.id), kind: 'mc', points: step.points, earned: isCorrect ? step.points : 0,
+        correct: isCorrect, text: step.text, options: step.options,
+        correctIndex: step.correct, chosenIndex: (typeof chosen === 'number') ? chosen : null,
+        explanation: step.explanation
+      });
     } else if(step.kind === 'free'){
-      const ans = (typeof p1Answers[idx] === 'string' && p1Answers[idx].trim() !== '')
-        ? p1Answers[idx].trim() : '(няма отговор)';
-      reviewItems.push({ id: String(step.id), prompt: step.prompt, answer: ans, reference: step.correctAnswer, points: step.points });
+      const raw = typeof p1Answers[idx] === 'string' ? p1Answers[idx].trim() : '';
+      const isCorrect = raw !== '' && step.check(raw);
+      records.push({
+        id: String(step.id), kind: 'free', points: step.points, earned: isCorrect ? step.points : 0,
+        correct: isCorrect, prompt: step.prompt, studentAnswer: raw || '(няма отговор)',
+        referenceAnswer: step.correctAnswer, explanation: step.explanation
+      });
     } else if(step.kind === 'free-multi'){
       step.subparts.forEach(sp => {
-        const raw = p1Answers[idx] && typeof p1Answers[idx][sp.label] === 'string' ? p1Answers[idx][sp.label].trim() : '';
-        const ans = raw !== '' ? raw : '(няма отговор)';
-        reviewItems.push({ id: step.id + sp.label, prompt: sp.prompt, answer: ans, reference: sp.correctAnswer, points: sp.points });
+        const raw = (p1Answers[idx] && typeof p1Answers[idx][sp.label] === 'string') ? p1Answers[idx][sp.label].trim() : '';
+        const isCorrect = raw !== '' && sp.check(raw);
+        records.push({
+          id: step.id + sp.label, kind: 'free', points: sp.points, earned: isCorrect ? sp.points : 0,
+          correct: isCorrect, prompt: sp.prompt, studentAnswer: raw || '(няма отговор)',
+          referenceAnswer: sp.correctAnswer, explanation: sp.explanation
+        });
       });
     }
   });
 
-  return { autoScore: autoScore, autoMax: PART1_AUTO_MAX, reviewItems: reviewItems };
+  return records;
+}
+
+function calculatePart1(){
+  const records = buildPart1Records();
+  const autoScore = records.reduce((a, r) => a + r.earned, 0);
+  const autoMax = records.reduce((a, r) => a + r.points, 0);
+  return { autoScore: autoScore, autoMax: autoMax, records: records };
 }
 
 function renderPart1Interim(results){
@@ -1692,15 +1604,7 @@ function renderPart2Step(){
   p2ProgressFillEl.style.width = ((p2Index + 1) / part2Steps.length * 100) + '%';
 
   p2CategoryEl.textContent = 'Задача ' + step.id;
-  p2PointsEl.textContent = step.points + ' точки (учителски преглед)';
-
-  if(step.diagram){
-    p2DiagramEl.innerHTML = diagramCardHTML(step.diagram);
-    p2DiagramEl.style.display = 'block';
-  } else {
-    p2DiagramEl.innerHTML = '';
-    p2DiagramEl.style.display = 'none';
-  }
+  p2PointsEl.textContent = step.points + ' точки';
 
   p2SubpartsEl.innerHTML = '';
 
@@ -1731,7 +1635,7 @@ function renderPart2Step(){
 
     const noteEl = document.createElement('p');
     noteEl.className = 'free-text-note';
-    noteEl.textContent = 'Ще бъде прегледано лично от учител — точките се добавят след преглед.';
+    noteEl.textContent = 'Запиши пълното си решение — в резултата ще видиш примерно решение за сравнение.';
     block.appendChild(noteEl);
 
     p2SubpartsEl.appendChild(block);
@@ -1774,166 +1678,112 @@ function finishPart2(completionType){
   trackEvent('matura2026_part2_completed', { event_category: 'matura2026', completion_type: completionType });
 }
 
-function collectPart2Items(){
-  const items = [];
+function buildPart2Records(){
+  const records = [];
   part2Steps.forEach((step, idx) => {
     step.subparts.forEach(sp => {
       const raw = p2Answers[idx] && typeof p2Answers[idx][sp.label] === 'string' ? p2Answers[idx][sp.label].trim() : '';
-      const ans = raw !== '' ? raw : '(няма отговор)';
-      items.push({ id: step.id + sp.label, prompt: sp.prompt, answer: ans });
+      records.push({ id: step.id + sp.label, prompt: sp.prompt, studentAnswer: raw || '(няма отговор)', solution: sp.solution });
     });
   });
-  return items;
+  return records;
 }
 
 /* =========================================================
    ФИНАЛЕН ЕКРАН
 ========================================================= */
 
-const lockedResultsEl = document.getElementById('locked-results');
-const finalStudentNameEl = document.getElementById('final-student-name');
-const finalParentEmailEl = document.getElementById('final-parent-email');
-const finalSendBtn = document.getElementById('final-send-btn');
-const finalErrorEl = document.getElementById('final-error');
-
 function showFinalScreen(){
-  const p1Results = lastPart1Results || calculatePart1();
-  lastPart1Results = p1Results;
-  lastPart2Items = collectPart2Items();
+  const results = calculatePart1();
+  lastPart1Records = results.records;
 
-  lockFinal();
-
-  document.getElementById('final-score-fraction').textContent = p1Results.autoScore + ' / ' + p1Results.autoMax;
+  document.getElementById('final-score-fraction').textContent = results.autoScore + ' / ' + results.autoMax;
   document.getElementById('final-score-percentage').textContent =
-    Math.round((p1Results.autoScore / p1Results.autoMax) * 100) + '%';
+    Math.round((results.autoScore / results.autoMax) * 100) + '%';
 
   showScreen(finalScreen);
 }
 
-function lockFinal(){
-  if(!lockedResultsEl) return;
-  lockedResultsEl.classList.remove('unlocked');
-  finalStudentNameEl.value = '';
-  finalParentEmailEl.value = '';
-  finalErrorEl.style.display = 'none';
-  finalSendBtn.disabled = false;
-  finalSendBtn.textContent = '🔓 Изпрати за преглед и виж резултата';
+document.getElementById('open-review-btn').addEventListener('click', () => {
+  renderReviewScreen();
+  showScreen(reviewScreen);
+  trackEvent('matura2026_review_opened', { event_category: 'matura2026' });
+});
+
+document.getElementById('back-to-result-btn').addEventListener('click', () => {
+  showScreen(finalScreen);
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  window.location.reload();
+});
+
+/* =========================================================
+   ПРЕГЛЕД НА ОТГОВОРИТЕ — верният отговор в зелено, грешният в
+   червено, с обяснение от ключа под всеки въпрос
+========================================================= */
+
+function renderMcReview(r){
+  const optionsHtml = r.options.map((opt, i) => {
+    let cls = 'review-option';
+    let marker = '';
+    if(i === r.correctIndex){ cls += ' correct'; marker = ' ✓'; }
+    else if(i === r.chosenIndex){ cls += ' incorrect'; marker = ' ✗'; }
+    return `<div class="${cls}"><span class="option-letter">${OPTION_LETTERS[i]}</span><span class="option-text">${escapeHtml(opt)}${marker}</span></div>`;
+  }).join('');
+
+  return `
+    <div class="review-item">
+      <div class="review-item-header">
+        <span class="question-category">Задача ${r.id}</span>
+        <span class="review-badge ${r.correct ? 'correct' : 'incorrect'}">${r.correct ? '✓' : '✗'}</span>
+      </div>
+      <p class="review-question-text">${escapeHtml(r.text)}</p>
+      ${optionsHtml}
+      <div class="review-explanation"><strong>Обяснение:</strong> ${escapeHtml(r.explanation)}</div>
+    </div>`;
 }
 
-function unlockFinal(){
-  if(!lockedResultsEl) return;
-  lockedResultsEl.classList.add('unlocked');
+function renderFreeReview(r){
+  return `
+    <div class="review-item">
+      <div class="review-item-header">
+        <span class="question-category review-pill">Задача ${r.id}</span>
+        <span class="review-badge ${r.correct ? 'correct' : 'incorrect'}">${r.correct ? '✓' : '✗'}</span>
+      </div>
+      <p class="review-question-text">${escapeHtml(r.prompt)}</p>
+      <p class="review-label">Твоят отговор</p>
+      <div class="review-answer-box ${r.correct ? 'correct' : 'incorrect'}">${escapeHtml(r.studentAnswer)}</div>
+      <p class="review-label">Верен отговор</p>
+      <div class="review-answer-box correct">${escapeHtml(r.referenceAnswer)}</div>
+      <div class="review-explanation"><strong>Обяснение:</strong> ${escapeHtml(r.explanation)}</div>
+    </div>`;
 }
 
-function buildSummaryText(studentName, p1Results, p2Items){
-  const lines = [];
-  lines.push('Име на ученика: ' + studentName);
-  lines.push('');
-  lines.push('ЧАСТ 1 — автоматична оценка (задачи 1–14): ' + p1Results.autoScore + ' / ' + p1Results.autoMax + ' точки');
-  lines.push('(Максимум за цялата Част 1, вкл. задачи 15–21: ' + PART1_TOTAL_MAX + ' точки)');
-  lines.push('');
-  lines.push('ЧАСТ 1 — задачи 15–21 (за учителски преглед):');
-  p1Results.reviewItems.forEach(item => {
-    lines.push('');
-    lines.push('Задача ' + item.id + ' (' + item.points + ' т.): ' + item.prompt);
-    lines.push('Отговор на ученика: ' + item.answer);
-    lines.push('Референтен верен отговор: ' + item.reference);
-  });
-  lines.push('');
-  lines.push('ЧАСТ 2 — задачи 22–24 (' + PART2_TOTAL_MAX + ' точки, изцяло за учителски преглед):');
-  p2Items.forEach(item => {
-    lines.push('');
-    lines.push('Задача ' + item.id + ': ' + item.prompt);
-    lines.push('Решение на ученика:');
-    lines.push(item.answer);
-  });
-  lines.push('');
-  lines.push('--');
-  lines.push('Изпратено от пробната матура НВО 7. клас (Вариант 1) на The Light Academy.');
-  return lines.join('\n');
+function renderPart2Review(r){
+  return `
+    <div class="review-item">
+      <div class="review-item-header">
+        <span class="question-category review-pill">Задача ${r.id}</span>
+      </div>
+      <p class="review-question-text">${escapeHtml(r.prompt)}</p>
+      <p class="review-label">Твоят отговор</p>
+      <div class="review-answer-box">${escapeHtml(r.studentAnswer)}</div>
+      <p class="review-label">Примерно решение</p>
+      <div class="review-explanation">${escapeHtml(r.solution)}</div>
+    </div>`;
 }
 
-const FINAL_FORM_ENDPOINT = 'https://formspree.io/f/mnpawlbd';
+function renderReviewScreen(){
+  const p1Records = lastPart1Records || calculatePart1().records;
+  const p2Records = buildPart2Records();
 
-if(finalSendBtn){
-  [finalStudentNameEl, finalParentEmailEl].forEach(el => {
-    el.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter'){ finalSendBtn.click(); }
-    });
-  });
+  let html = '<h2 class="review-part-title">Част 1 — задачи 1–21</h2>';
+  html += p1Records.map(r => r.kind === 'mc' ? renderMcReview(r) : renderFreeReview(r)).join('');
+  html += '<h2 class="review-part-title">Част 2 — задачи 22–24</h2>';
+  html += p2Records.map(renderPart2Review).join('');
 
-  finalSendBtn.addEventListener('click', async () => {
-    const studentName = finalStudentNameEl.value.trim();
-    const parentEmail = finalParentEmailEl.value.trim();
-
-    finalErrorEl.style.display = 'none';
-
-    if(!studentName){
-      finalErrorEl.innerHTML = '<p>Моля, въведете име на ученика.</p>';
-      finalErrorEl.style.display = 'block';
-      finalStudentNameEl.focus();
-      return;
-    }
-    if(!parentEmail){
-      finalErrorEl.innerHTML = '<p>Все още не ни познавате? <a href="nvo7.html" style="color:#c24508; font-weight:700;">Разгледайте нашите курсове тук</a> — или въведете имейл на родителя, за да изпратите резултата за преглед.</p>';
-      finalErrorEl.style.display = 'block';
-      finalParentEmailEl.focus();
-      return;
-    }
-    if(!finalParentEmailEl.checkValidity()){
-      finalErrorEl.innerHTML = '<p>Моля, въведете валиден имейл на родителя.</p>';
-      finalErrorEl.style.display = 'block';
-      finalParentEmailEl.focus();
-      return;
-    }
-    if(!lastPart1Results || !lastPart2Items){
-      console.error('Липсват резултати от матурата — бутонът е кликнат без изчислен резултат.');
-      finalErrorEl.innerHTML = '<p>⚠️ Възникна грешка — презаредете страницата и опитайте отново.</p>';
-      finalErrorEl.style.display = 'block';
-      return;
-    }
-
-    finalSendBtn.disabled = true;
-    finalSendBtn.textContent = 'Изпращане...';
-
-    const body = new FormData();
-    body.append('Име на ученика', studentName);
-    body.append('Имейл на родителя', parentEmail);
-    body.append('Резултат от пробна матура', buildSummaryText(studentName, lastPart1Results, lastPart2Items));
-    body.append('_replyto', parentEmail);
-    body.append('_subject', '🎓 Пробна матура НВО 7. клас — ' + studentName);
-
-    try{
-      const res = await fetch(FINAL_FORM_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body
-      });
-
-      if(res.ok){
-        unlockFinal();
-        trackEvent('generate_lead', {
-          event_category: 'matura2026',
-          method: 'final_form',
-          auto_score: lastPart1Results.autoScore
-        });
-      } else {
-        const data = await res.json().catch(() => ({}));
-        const hint = data?.error || data?.errors?.[0]?.message || ('Код ' + res.status);
-        console.error('Formspree отказа заявката:', res.status, data);
-        finalErrorEl.innerHTML = '<p>⚠️ ' + hint + ' — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>';
-        finalErrorEl.style.display = 'block';
-        finalSendBtn.disabled = false;
-        finalSendBtn.textContent = '🔓 Изпрати за преглед и виж резултата';
-      }
-    } catch (err){
-      console.error('Заявката не стигна до Formspree:', err);
-      finalErrorEl.innerHTML = '<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>';
-      finalErrorEl.style.display = 'block';
-      finalSendBtn.disabled = false;
-      finalSendBtn.textContent = '🔓 Изпрати за преглед и виж резултата';
-    }
-  });
+  document.getElementById('review-list').innerHTML = html;
 }
 
 /* =========================================================
