@@ -1093,13 +1093,14 @@
       }
       .course-review-meta strong { color: #fff; }
       .course-review-text { font-size: 0.85rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
-      @keyframes courseReviewsScroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .course-reviews-track { animation: none; }
-      }
+    }
+
+    @keyframes courseReviewsScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .course-reviews-track { animation: none; }
     }
 
     /* ── CTA SECTION ── */
@@ -1480,10 +1481,81 @@
       }
       .pricing-cta-flow .cta-buttons-hint { order: 6; margin-top: 0; color: var(--light-text); }
       .urgency-block, .cta-section > h2, .cta-section > p,
-      .course-info-block > h2, .course-info-block > p, .course-reviews {
+      .course-info-block > h2, .course-info-block > p {
         display: none;
       }
       .schedule-widget { order: 7; }
+
+      /* Reviews carousel — same content/behavior as desktop, restyled as its
+         own self-contained dark glass card since it no longer sits inside
+         the (display:contents) course-info-block on mobile. */
+      .course-reviews {
+        display: block;
+        order: 8;
+        margin: 0;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border-radius: 20px;
+        padding: 1.75rem 0;
+        box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
+      }
+      .course-reviews-rating {
+        text-align: center;
+        margin-bottom: 1.25rem;
+        padding: 0 1.25rem;
+      }
+      .course-reviews-score {
+        font-family: 'Bad Script', cursive;
+        font-size: 2.2rem;
+        color: var(--sun);
+        line-height: 1;
+      }
+      .course-reviews-outof { font-size: 1.2rem; color: rgba(255,255,255,0.5); }
+      .course-reviews-stars {
+        color: #F4B400;
+        letter-spacing: 0.1em;
+        font-size: 1rem;
+        margin: 0.35rem 0 0.3rem;
+      }
+      .course-reviews-source { color: rgba(255,255,255,0.55); font-size: 0.78rem; font-weight: 700; }
+      .course-reviews-carousel {
+        overflow: hidden;
+        position: relative;
+        padding: 0 1.25rem;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+      }
+      .course-reviews-track {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        width: max-content;
+        animation: courseReviewsScroll 32s linear infinite;
+      }
+      .course-review-card {
+        min-width: 250px;
+        max-width: 250px;
+        flex: 0 0 auto;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 16px;
+        padding: 1.1rem;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .course-review-stars { color: #F4B400; margin-bottom: 0.45rem; font-size: 0.9rem; letter-spacing: 0.06em; }
+      .course-review-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        font-size: 0.76rem;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 0.5rem;
+      }
+      .course-review-meta strong { color: #fff; }
+      .course-review-text { font-size: 0.82rem; line-height: 1.55; color: rgba(255,255,255,0.8); }
+      @media (prefers-reduced-motion: reduce) {
+        .course-reviews-track { animation: none; }
+      }
 
       .pricing-card { gap: 0.9rem; }
       .toggle-group { margin-bottom: 0.9rem; }
