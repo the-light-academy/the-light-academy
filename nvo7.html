@@ -893,6 +893,7 @@
     }
 
     /* -- Interactive group schedule widget (compact) -- */
+    .schedule-link-btn { display: none; }
     .schedule-widget {
       background: var(--white);
       border: 1px solid var(--peach-light);
@@ -1490,11 +1491,25 @@
         display: none;
       }
       .schedule-widget {
+        display: none;
+      }
+      .schedule-link-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
         order: 7;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
-        border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
+        border: 2px solid rgba(255,255,255,0.25);
+        border-radius: 50px;
+        padding: 14px 20px;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease;
       }
+      .schedule-link-btn:hover { transform: translateY(-2px); }
       .schedule-group-btn {
         background: rgba(255,255,255,0.06);
         border-color: rgba(255,255,255,0.18);
@@ -2259,6 +2274,11 @@
       </div>
     </div>
 
+    <a href="schedule.html" class="schedule-link-btn">
+      <i class="fa-solid fa-calendar-days"></i>
+      График на курсовете
+    </a>
+
     <div class="course-reviews">
       <div class="course-reviews-rating">
         <span class="course-reviews-score">4.9<span class="course-reviews-outof">/5</span></span>
@@ -2400,7 +2420,7 @@
           </div>
           <div class="form-group">
             <label for="regMessage">Съобщение</label>
-            <textarea id="regMessage" name="regMessage" rows="3">Здравейте, искам да запиша детето си за курса &quot;Математика – НВО, 7. клас&quot;.</textarea>
+            <textarea id="regMessage" name="regMessage" rows="3">Здравейте, искам да изпратя заявка за запазване на място за детето си за курса &quot;Математика – НВО, 7. клас&quot;.</textarea>
           </div>
           <button type="submit" class="btn-submit" id="submitBtn">
             <i class="fa-solid fa-paper-plane"></i>
