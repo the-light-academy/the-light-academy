@@ -533,20 +533,25 @@
     .ga-closing {
       margin: 14px 0 0;
       padding: 1rem 1.2rem;
-      background: var(--teal-light);
-      border-left: 4px solid var(--teal);
+      background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-left: 4px solid var(--sun);
       border-radius: var(--radius-sm);
-      color: var(--dark);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
       font-weight: 700;
       font-size: 0.98rem;
       line-height: 1.6;
       text-align: left;
+      box-shadow: 0 14px 32px -12px rgba(9,18,38,0.55);
       opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(14px) scale(0.97);
+      filter: blur(6px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.22,1,.36,1), filter 0.6s ease;
       transition-delay: 0.45s;
     }
-    .step.visible .ga-closing { opacity: 1; transform: translateY(0); }
+    .step.visible .ga-closing { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 
     /* Practice cards (Стъпка 3) */
     .practice-cards { display: flex; flex-direction: column; gap: 14px; }
@@ -888,6 +893,7 @@
     }
 
     /* -- Interactive group schedule widget (compact) -- */
+    .schedule-link-btn { display: none; }
     .schedule-widget {
       background: var(--white);
       border: 1px solid var(--peach-light);
@@ -1441,7 +1447,6 @@
 
       .timeline-track { display: none; }
 
-      .cta-buttons { flex-direction: column; align-items: center; }
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
 
       .modal-box { padding: 2rem 1.5rem 2.5rem; }
@@ -1474,22 +1479,44 @@
       }
       .reg-form-wrap { order: 4; margin: 0; }
       .modal-box { background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%); }
-      .pricing-cta-flow .cta-buttons { order: 5; margin: 0; }
+      /* Buttons + hint broken out of .cta-buttons so the hint can sit between
+         the entrance-test button and the call button on mobile. */
+      .cta-buttons { display: contents; }
+      .cta-buttons a[href="entrance_test.html"] { order: 5; }
+      .cta-buttons a[href^="tel:"] { order: 7; }
       .btn-cta-outline {
-        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
-        border-color: rgba(255,255,255,0.25);
+        background: transparent;
+        border-color: #1B2E52;
+        color: #1B2E52;
       }
+      .btn-cta-outline:hover { background: rgba(27,46,82,0.06); }
+      .btn-cta-outline::after { content: '\2192'; margin-left: 6px; }
       .pricing-cta-flow .cta-buttons-hint { order: 6; margin-top: 0; color: var(--light-text); }
       .urgency-block, .cta-section > h2, .cta-section > p,
       .course-info-block > h2, .course-info-block > p {
         display: none;
       }
       .schedule-widget {
-        order: 7;
-        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
-        border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
+        display: none;
       }
+      .hero-pills { display: none; }
+      .schedule-link-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        order: 8;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border: 2px solid rgba(255,255,255,0.25);
+        border-radius: 50px;
+        padding: 14px 20px;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .schedule-link-btn:hover { transform: translateY(-2px); }
       .schedule-group-btn {
         background: rgba(255,255,255,0.06);
         border-color: rgba(255,255,255,0.18);
@@ -1516,7 +1543,7 @@
          the (display:contents) course-info-block on mobile. */
       .course-reviews {
         display: block;
-        order: 8;
+        order: 9;
         margin: 0;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border-radius: 20px;
@@ -1682,11 +1709,6 @@
       #section-osnovi .ga-chevron { color: rgba(255,255,255,0.8); }
       #section-osnovi .ga-card.open .ga-chevron { color: #fff; }
       #section-osnovi .ga-answer-text { color: rgba(255,255,255,0.88); }
-      #section-osnovi .ga-closing {
-        background: rgba(255,255,255,0.18);
-        border-left-color: #fff;
-        color: #fff;
-      }
 
       /* Step 3 (Ето как изглежда на практика) — same full-bleed photo + glass treatment, mobile only */
       #section-malki-grupi {
@@ -1733,11 +1755,6 @@
       #section-malki-grupi .practice-card-text { color: rgba(255,255,255,0.88); }
       #section-malki-grupi .ga-icon { background: rgba(255,255,255,0.25); }
       #section-malki-grupi .exam-timer { background: rgba(0,0,0,0.45); }
-      #section-malki-grupi .ga-closing {
-        background: rgba(255,255,255,0.18);
-        border-left-color: #fff;
-        color: #fff;
-      }
 
       /* Step 4 (Геймификация) — same full-bleed video + glass treatment, mobile only */
       #section-obratna {
@@ -1777,11 +1794,6 @@
       #section-obratna .step-title { color: #fff; }
       #section-obratna .step-divider { background: #fff; }
       #section-obratna .step-body { color: rgba(255,255,255,0.9); }
-      #section-obratna .ga-closing {
-        background: rgba(255,255,255,0.18);
-        border-left-color: #fff;
-        color: #fff;
-      }
     }
   </style>
   <script type="application/ld+json">
@@ -2269,6 +2281,11 @@
       </div>
     </div>
 
+    <a href="schedule.html" class="schedule-link-btn">
+      <i class="fa-solid fa-calendar-days"></i>
+      График на курсовете
+    </a>
+
     <div class="course-reviews">
       <div class="course-reviews-rating">
         <span class="course-reviews-score">4.9<span class="course-reviews-outof">/5</span></span>
@@ -2410,7 +2427,7 @@
           </div>
           <div class="form-group">
             <label for="regMessage">Съобщение</label>
-            <textarea id="regMessage" name="regMessage" rows="3">Здравейте, искам да запиша детето си за курса &quot;Математика – НВО, 7. клас&quot;.</textarea>
+            <textarea id="regMessage" name="regMessage" rows="3">Здравейте, искам да изпратя заявка за запазване на място за детето си за курса &quot;Математика – НВО, 7. клас&quot;.</textarea>
           </div>
           <button type="submit" class="btn-submit" id="submitBtn">
             <i class="fa-solid fa-paper-plane"></i>
