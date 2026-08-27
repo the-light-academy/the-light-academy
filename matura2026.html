@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-551MW59126"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-551MW59126');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пробна матура НВО по математика, 7. клас – The Light Academy Лозенец, София</title>
+<meta name="description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 1, официален формат на изпита, два таймирани модула по 90 минути и точки по официалната скала за оценяване." />
+<link rel="canonical" href="https://the-light-academy.github.io/the-light-academy/matura2026.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="The Light Academy" />
+<meta property="og:title" content="Пробна матура НВО по математика, 7. клас – The Light Academy" />
+<meta property="og:description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 1, официален формат на изпита, два таймирани модула по 90 минути и точки по официалната скала за оценяване." />
+<meta property="og:url" content="https://the-light-academy.github.io/the-light-academy/matura2026.html" />
+<meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/theLightAcademyLogo.png" />
+<meta property="og:locale" content="bg_BG" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+
+<style>
+  :root{
+    --accent: #F7AD19;
+    --accent-dark: #d99206;
+    --accent-light: #fff3dc;
+    --bg: #fafafa;
+    --text: #2b2b2b;
+    --text-light: #6b6b6b;
+    --card-bg: #ffffff;
+    --border: #ececec;
+    --correct: #4caf50;
+    --radius: 18px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-hover: 0 10px 28px rgba(0,0,0,0.10);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+  }
+
+  .screen{
+    width: 100%;
+    max-width: 680px;
+    display: none;
+    animation: fadeIn .35s ease;
+  }
+  .screen.active{ display: block; }
+
+  @keyframes fadeIn{
+    from{ opacity: 0; transform: translateY(8px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- INTRO / INTERIM CARDS ---------- */
+  .intro-card{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 36px 24px;
+    text-align: center;
+  }
+
+  .intro-badge{
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  .intro-title{
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+
+  .intro-subtitle{
+    font-size: 16px;
+    color: var(--text-light);
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+
+  .intro-text{
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin: 0 0 28px;
+  }
+
+  .intro-stats{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill{
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 22px;
+    min-width: 110px;
+  }
+
+  .stat-pill .stat-number{
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-dark);
+  }
+
+  .stat-pill .stat-label{
+    display: block;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .btn{
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 14px;
+    padding: 16px 28px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:active{ transform: scale(0.97); }
+
+  .btn-primary{
+    background: var(--accent);
+    color: #ffffff;
+    width: 100%;
+    box-shadow: 0 6px 18px rgba(247,173,25,0.35);
+  }
+  .btn-primary:hover{ background: var(--accent-dark); box-shadow: var(--shadow-hover); }
+
+  .btn-secondary{
+    background: var(--card-bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+  .btn-secondary:hover{ border-color: var(--accent); color: var(--accent-dark); }
+
+  .btn-secondary:disabled{
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  /* ---------- TEST SCREEN ---------- */
+  .test-header{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+
+  .test-header-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .question-counter{
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .question-counter span{
+    color: var(--accent-dark);
+  }
+
+  .timer{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: var(--bg);
+    padding: 6px 12px;
+    border-radius: 999px;
+    transition: color .2s ease, background .2s ease;
+    white-space: nowrap;
+  }
+
+  .timer.timer-warning{
+    color: #b3261e;
+    background: #fdecea;
+    animation: pulseWarning 1.2s infinite;
+  }
+
+  @keyframes pulseWarning{
+    0%, 100%{ opacity: 1; }
+    50%{ opacity: .6; }
+  }
+
+  .progress-track{
+    width: 100%;
+    height: 10px;
+    background: var(--bg);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill{
+    height: 100%;
+    width: 5%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    border-radius: 999px;
+    transition: width .35s ease;
+  }
+
+  .question-card{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px 22px;
+    margin-bottom: 18px;
+  }
+
+  .question-category{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin: 0 8px 14px 0;
+  }
+
+  .question-category.review-pill{
+    color: var(--text-light);
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+
+  .points-pill{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin: 0 0 14px;
+  }
+
+  .question-text{
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin: 0 0 22px;
+    white-space: pre-line;
+  }
+
+  .task-intro{
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 0 0 20px;
+  }
+
+  .diagram-card{
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 0 0 20px;
+  }
+
+  .options-list{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ---------- СВОБОДЕН / ПЪЛЕН ОТГОВОР ---------- */
+  .free-text-block{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .free-text-input{
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .free-text-input:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .free-text-note{
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  .subpart-block{
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    margin-top: 18px;
+  }
+  .subpart-block:first-of-type{
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .subpart-label{
+    display: inline-block;
+    font-weight: 800;
+    color: var(--accent-dark);
+    margin-right: 6px;
+  }
+
+  .subpart-prompt{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 0 10px;
+  }
+
+  .essay-textarea{
+    width: 100%;
+    min-height: 110px;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    margin-bottom: 8px;
+  }
+
+  .essay-textarea:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .option{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 16px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+
+  .option:hover{
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .option:active{ transform: scale(0.99); }
+
+  .option.selected{
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .option-letter{
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text-light);
+    transition: all .15s ease;
+  }
+
+  .option.selected .option-letter{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .option-text{
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .test-nav{
+    display: flex;
+    gap: 12px;
+  }
+
+  .test-nav .btn{ flex: 1; }
+
+  /* ---------- PART 1 INTERIM SCREEN ---------- */
+  .interim-icon{
+    font-size: 44px;
+    margin-bottom: 10px;
+  }
+
+  .interim-score-fraction{
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    margin: 6px 0 2px;
+  }
+
+  .interim-score-percentage{
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .interim-note{
+    text-align: left;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 22px 0 26px;
+  }
+
+  /* ---------- RESULT SCREEN ---------- */
+  .result-card{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .result-icon{
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .result-title{
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 10px;
+  }
+
+  .result-score-block{
+    margin: 6px 0 4px;
+  }
+
+  .result-score-label{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin: 0 0 6px;
+  }
+
+  .result-score-fraction{
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .result-score-percentage{
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .result-message{
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-top: 22px;
+  }
+
+  .result-section{
+    text-align: left;
+    margin-top: 26px;
+  }
+
+  .result-section-title{
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0 0 12px;
+  }
+
+  .pending-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pending-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .pending-item-points{
+    font-weight: 800;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+
+  .result-cta{
+    text-align: left;
+    margin-top: 34px;
+    padding-top: 26px;
+    border-top: 1px solid var(--border);
+  }
+
+  .result-cta-title{
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 10px;
+  }
+
+  .result-cta-text{
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin: 0 0 20px;
+  }
+
+  .result-cta-buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-link{
+    display: block;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .btn-cta-main{
+    font-size: 17px;
+    padding: 18px 28px;
+    box-shadow: 0 10px 26px rgba(247,173,25,0.45);
+  }
+
+  .btn-cta-main:hover{
+    box-shadow: 0 14px 32px rgba(247,173,25,0.5);
+  }
+
+  .btn-cta-tertiary{
+    display: block;
+    text-align: center;
+    background: transparent;
+    color: var(--text-light);
+    border: none;
+    text-decoration: underline;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+
+  .btn-cta-tertiary:hover{
+    color: var(--accent-dark);
+  }
+
+  /* ---------- Заключена секция с резултата – отключва се с имейл ---------- */
+  .locked-results{
+    position: relative;
+    min-height: 300px;
+  }
+
+  .lockable-content{
+    filter: blur(7px);
+    pointer-events: none;
+    user-select: none;
+    transition: filter 0.4s ease;
+  }
+
+  .locked-results.unlocked .lockable-content{
+    filter: none;
+    pointer-events: auto;
+    user-select: auto;
+  }
+
+  .locked-overlay{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    z-index: 5;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .locked-results.unlocked .locked-overlay{
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .locked-overlay-card{
+    width: 100%;
+    max-width: 380px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-hover);
+    padding: 26px 22px;
+    text-align: center;
+  }
+
+  .locked-overlay-icon{
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+
+  .locked-overlay-title{
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  .locked-overlay-text{
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-light);
+    margin: 0 0 16px;
+  }
+
+  .unlock-form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+
+  .unlock-form-group input{
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .unlock-form-group input:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .unlock-privacy-note{
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: var(--text-light);
+    margin: 10px 0 0;
+  }
+
+  .analysis-error{ margin-top: 14px; background: #fff0e8; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #c24508; text-align: center; }
+  .analysis-error a{ color: #c24508; font-weight: 700; }
+
+  .seats-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    margin: 0 0 14px;
+  }
+
+  .seats-badge::before{
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-dark);
+    flex: 0 0 auto;
+  }
+
+  .result-disclaimer{
+    text-align: left;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (min-width: 480px){
+    .intro-title{ font-size: 30px; }
+    .question-text{ font-size: 21px; }
+  }
+
+  @media (min-width: 768px){
+    .app{ padding-top: 48px; }
+    .intro-card{ padding: 48px 40px; }
+    .question-card{ padding: 34px 36px; }
+    .option{ padding: 18px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- 1. НАЧАЛЕН ЕКРАН -->
+  <section id="start-screen" class="screen active">
+    <div class="intro-card">
+      <span class="intro-badge">The Light Academy</span>
+      <h1 class="intro-title">Пробна матура — НВО по математика, 7. клас</h1>
+      <p class="intro-subtitle">Вариант 1 · Официален формат на изпита</p>
+      <p class="intro-text">
+        Два модула, по 90 минути всеки, точно като истинския изпит. Резултатът включва
+        точки по официалната скала за оценяване.
+      </p>
+
+      <div class="intro-stats">
+        <div class="stat-pill">
+          <span class="stat-number">24</span>
+          <span class="stat-label">задачи</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-number">2×90</span>
+          <span class="stat-label">минути</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-number">100</span>
+          <span class="stat-label">точки макс.</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="start-btn">Започни Част 1</button>
+    </div>
+  </section>
+
+  <!-- 2. ЧАСТ 1 (задачи 1-21) -->
+  <section id="part1-screen" class="screen">
+    <div class="test-header">
+      <div class="test-header-top">
+        <div class="question-counter">
+          Въпрос <span id="p1-current-q">1</span> от <span id="p1-total-q">21</span>
+        </div>
+        <div class="timer" id="p1-timer">Оставащо време: 90:00</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="p1-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div>
+        <span class="question-category" id="p1-category">Задача 1</span>
+        <span class="points-pill" id="p1-points">2 точки</span>
+      </div>
+      <div class="diagram-card" id="p1-diagram" style="display:none;"></div>
+      <div id="p1-options-list"></div>
+    </div>
+
+    <div class="test-nav">
+      <button class="btn btn-secondary" id="p1-prev-btn">← Предишен</button>
+      <button class="btn btn-primary" id="p1-next-btn">Следващ →</button>
+      <button class="btn btn-primary" id="p1-finish-btn" style="display:none;">Предай Част 1</button>
+    </div>
+  </section>
+
+  <!-- 3. ЧАСТ 1 — МЕЖДИНЕН ЕКРАН -->
+  <section id="part1-interim-screen" class="screen">
+    <div class="intro-card">
+      <div class="interim-icon">✅</div>
+      <h2 class="intro-title" style="font-size:24px;">Част 1 е предадена</h2>
+      <p class="result-score-label">Автоматична оценка (задачи 1–14)</p>
+      <p class="interim-score-fraction" id="p1i-score-fraction">0 / 35</p>
+      <span class="interim-score-percentage" id="p1i-score-percentage">0%</span>
+
+      <div class="interim-note">
+        Задачи 15–21 (до 30 точки) са изпратени за преглед от учител и не се оценяват
+        автоматично тук. Максималният брой точки за цяла Част 1 е 65.
+        <br><br>
+        Когато сте готови, продължете към Част 2 — тя стартира собствен таймер от 90:00
+        и не наследява оставащото време от Част 1.
+      </div>
+
+      <button class="btn btn-primary" id="continue-to-part2-btn">Продължи към Част 2</button>
+    </div>
+  </section>
+
+  <!-- 4. ЧАСТ 2 — ВЪВЕДЕНИЕ -->
+  <section id="part2-intro-screen" class="screen">
+    <div class="intro-card">
+      <span class="intro-badge">Част 2</span>
+      <h2 class="intro-title" style="font-size:26px;">Задачи 22–24</h2>
+      <p class="intro-subtitle">90 минути · Задачи с пълно решение</p>
+      <p class="intro-text">
+        И трите задачи изискват пълно решение по подточки. Всичко се преглежда лично
+        от учител — точките се добавят след проверка. Таймерът е независим от този
+        на Част 1 и стартира от 90:00 в момента, в който натиснете бутона по-долу.
+      </p>
+      <button class="btn btn-primary" id="start-part2-btn">Започни Част 2</button>
+    </div>
+  </section>
+
+  <!-- 5. ЧАСТ 2 (задачи 22-24) -->
+  <section id="part2-screen" class="screen">
+    <div class="test-header">
+      <div class="test-header-top">
+        <div class="question-counter">
+          Задача <span id="p2-current-q">1</span> от <span id="p2-total-q">3</span>
+        </div>
+        <div class="timer" id="p2-timer">Оставащо време: 90:00</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="p2-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div>
+        <span class="question-category review-pill" id="p2-category">Задача 22</span>
+        <span class="points-pill" id="p2-points">12 точки (учителски преглед)</span>
+      </div>
+      <div class="diagram-card" id="p2-diagram" style="display:none;"></div>
+      <div id="p2-subparts"></div>
+    </div>
+
+    <div class="test-nav">
+      <button class="btn btn-secondary" id="p2-prev-btn">← Предишна</button>
+      <button class="btn btn-primary" id="p2-next-btn">Следваща →</button>
+      <button class="btn btn-primary" id="p2-finish-btn" style="display:none;">Предай Част 2</button>
+    </div>
+  </section>
+
+  <!-- 6. ФИНАЛЕН ЕКРАН -->
+  <section id="final-screen" class="screen">
+    <div class="result-card">
+
+      <div class="result-icon">🎓</div>
+      <h2 class="result-title">Резултат от пробната матура</h2>
+
+      <div class="locked-results" id="locked-results">
+        <div class="lockable-content">
+          <div class="result-score-block">
+            <p class="result-score-label">Автоматична оценка от Част 1 (задачи 1–14)</p>
+            <p class="result-score-fraction" id="final-score-fraction">0 / 35</p>
+            <span class="result-score-percentage" id="final-score-percentage">0%</span>
+          </div>
+
+          <div class="result-message">
+            Задачи 15–21 от Част 1 (до 30 точки) и цялата Част 2 (35 точки) очакват
+            преглед от учител — ще получите пълния резултат по имейл след проверка.
+            Максималната обща оценка е 100 точки по официалната скала.
+          </div>
+
+          <div class="result-section">
+            <h3 class="result-section-title">Изпратено за учителски преглед</h3>
+            <div class="pending-list">
+              <div class="pending-item"><span>Част 1 · задачи 15–21</span><span class="pending-item-points">до 30 т.</span></div>
+              <div class="pending-item"><span>Част 2 · задачи 22–24</span><span class="pending-item-points">до 35 т.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="locked-overlay" id="locked-overlay">
+          <div class="locked-overlay-card">
+            <div class="locked-overlay-icon">🔒</div>
+            <h3 class="locked-overlay-title">Резултатите от Част 1 са готови!</h3>
+            <p class="locked-overlay-text">
+              Въведете име на ученика и имейл на родителя, за да изпратите Част 2 и
+              свободните отговори от Част 1 за учителски преглед и да видите точките
+              от Част 1.
+            </p>
+
+            <div class="unlock-form-group">
+              <input type="text" id="final-student-name" placeholder="Име на ученика" autocomplete="name" required />
+              <input type="email" id="final-parent-email" placeholder="Имейл на родителя" inputmode="email" autocomplete="email" required />
+            </div>
+            <button type="button" class="btn btn-primary" id="final-send-btn" style="width:100%;">🔓 Изпрати за преглед и виж резултата</button>
+            <div id="final-error" class="analysis-error" style="display:none;"></div>
+            <p class="unlock-privacy-note">Без спам — само резултата и, ако желаете, кратка обратна връзка от учител.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-cta">
+        <p class="result-cta-title">Готови ли сте да превърнем резултата в план за действие?</p>
+        <p class="result-cta-text">
+          В The Light Academy подготвяме ученици за НВО по математика в 7. клас
+          с малки групи, системна работа и внимание към индивидуалните нужди на всяко дете.
+        </p>
+        <span class="seats-badge">Остават 7 места в групата</span>
+        <div class="result-cta-buttons">
+          <a href="nvo7.html#section-cta" class="btn btn-primary btn-cta-main btn-link">Запази място в курса за НВО</a>
+          <a href="nvo7.html" class="btn-cta-tertiary">Разгледай подготовката за НВО</a>
+        </div>
+      </div>
+
+      <p class="result-disclaimer">
+        Тази пробна матура е дигитализация на официален изпитен вариант (НВО по
+        математика, VII клас, Вариант 1, 19 юни 2026) и се използва като тренировъчен
+        инструмент. Тя не представлява официална оценка от НВО.
+      </p>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   SVG ПОМОЩНИ ФУНКЦИИ ЗА ДИАГРАМИТЕ
+========================================================= */
+
+function vsub(a,b){ return [a[0]-b[0], a[1]-b[1]]; }
+function vadd(a,b){ return [a[0]+b[0], a[1]+b[1]]; }
+function vscale(a,k){ return [a[0]*k, a[1]*k]; }
+function vlen(a){ return Math.hypot(a[0], a[1]); }
+function vnorm(a){ const l = vlen(a) || 1; return [a[0]/l, a[1]/l]; }
+
+function svgLine(p1, p2, extra){
+  return `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="#2b2b2b" stroke-width="2" ${extra||''}/>`;
+}
+function svgDashLine(p1, p2){
+  return svgLine(p1, p2, 'stroke-dasharray="5,4" stroke="#b0b0b0"');
+}
+function svgDot(p, r, fill){
+  return `<circle cx="${p[0]}" cy="${p[1]}" r="${r||3.5}" fill="${fill||'#2b2b2b'}"/>`;
+}
+function svgLabel(p, text, dx, dy, opts){
+  opts = opts || {};
+  const size = opts.size || 14, weight = opts.weight || 800, color = opts.color || '#2b2b2b', anchor = opts.anchor || 'start';
+  return `<text x="${p[0]+(dx||0)}" y="${p[1]+(dy||0)}" font-size="${size}" font-weight="${weight}" fill="${color}" text-anchor="${anchor}">${text}</text>`;
+}
+function svgRightAngle(vertex, toward1, toward2, size){
+  const s = size || 12;
+  const d1 = vnorm(vsub(toward1, vertex));
+  const d2 = vnorm(vsub(toward2, vertex));
+  const a = vadd(vertex, vscale(d1, s));
+  const b = vadd(vertex, vscale(vadd(d1,d2), s));
+  const c = vadd(vertex, vscale(d2, s));
+  return `<polyline points="${a[0]},${a[1]} ${b[0]},${b[1]} ${c[0]},${c[1]}" fill="none" stroke="#9a9a9a" stroke-width="1.5"/>`;
+}
+function svgAngleArc(vertex, toward1, toward2, r, text, color){
+  color = color || '#d99206';
+  const d1 = vnorm(vsub(toward1, vertex));
+  const d2 = vnorm(vsub(toward2, vertex));
+  const a1 = vadd(vertex, vscale(d1, r));
+  const a2 = vadd(vertex, vscale(d2, r));
+  const cross = d1[0]*d2[1] - d1[1]*d2[0];
+  const sweep = cross > 0 ? 1 : 0;
+  const mid = vnorm(vadd(d1, d2));
+  const lp = vadd(vertex, vscale(mid, r + 16));
+  let s = `<path d="M ${a1[0]} ${a1[1]} A ${r} ${r} 0 0 ${sweep} ${a2[0]} ${a2[1]}" fill="none" stroke="${color}" stroke-width="2"/>`;
+  if(text){
+    s += `<text x="${lp[0]}" y="${lp[1]}" font-size="13" font-weight="700" fill="${color}" text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+  }
+  return s;
+}
+function svgTick(p1, p2){
+  const mid = vscale(vadd(p1, p2), 0.5);
+  const dir = vnorm(vsub(p2, p1));
+  const perp = [-dir[1], dir[0]];
+  const a = vadd(mid, vscale(perp, 5));
+  const b = vadd(mid, vscale(perp, -5));
+  return svgLine(a, b);
+}
+function wrapSvg(w, h, inner){
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:340px;display:block;margin:0 auto;">${inner}</svg>`;
+}
+
+function buildCoordGrid(cfg){
+  const scale = 26, pad = 26;
+  const w = pad*2 + (cfg.xmax - cfg.xmin) * scale;
+  const h = pad*2 + (cfg.ymax - cfg.ymin) * scale;
+  const px = x => pad + (x - cfg.xmin) * scale;
+  const py = y => pad + (cfg.ymax - y) * scale;
+  let s = '';
+  for(let x = cfg.xmin; x <= cfg.xmax; x++){
+    s += `<line x1="${px(x)}" y1="${py(cfg.ymin)}" x2="${px(x)}" y2="${py(cfg.ymax)}" stroke="#e8e8e8" stroke-width="1"/>`;
+  }
+  for(let y = cfg.ymin; y <= cfg.ymax; y++){
+    s += `<line x1="${px(cfg.xmin)}" y1="${py(y)}" x2="${px(cfg.xmax)}" y2="${py(y)}" stroke="#e8e8e8" stroke-width="1"/>`;
+  }
+  s += `<line x1="${px(cfg.xmin)}" y1="${py(0)}" x2="${px(cfg.xmax)}" y2="${py(0)}" stroke="#9a9a9a" stroke-width="2"/>`;
+  s += `<line x1="${px(0)}" y1="${py(cfg.ymin)}" x2="${px(0)}" y2="${py(cfg.ymax)}" stroke="#9a9a9a" stroke-width="2"/>`;
+  s += svgLabel([px(cfg.xmax), py(0)], 'x', -10, -8, {size:12, weight:700, color:'#9a9a9a'});
+  s += svgLabel([px(0), py(cfg.ymax)], 'y', 8, 12, {size:12, weight:700, color:'#9a9a9a'});
+  cfg.points.forEach(p => {
+    s += svgDot([px(p.x), py(p.y)], 4.5, '#F7AD19');
+    s += svgLabel([px(p.x), py(p.y)], p.label + '(' + p.x + ';' + p.y + ')', 8, -8, {size:13});
+  });
+  return wrapSvg(w, h, s);
+}
+
+function buildBarChart(data){
+  const w = 340, h = 220, padL = 34, padR = 16, padB = 30, padT = 20, gap = 16;
+  const maxV = Math.max.apply(null, data.map(d => d.value));
+  const barW = (w - padL - padR - gap * (data.length - 1)) / data.length;
+  const scaleY = (h - padT - padB) / (maxV * 1.15);
+  let s = '';
+  s += `<line x1="${padL}" y1="${h-padB}" x2="${w-padR}" y2="${h-padB}" stroke="#9a9a9a" stroke-width="2"/>`;
+  s += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${h-padB}" stroke="#9a9a9a" stroke-width="2"/>`;
+  data.forEach((d,i) => {
+    const barH = d.value * scaleY;
+    const x = padL + i*(barW+gap);
+    const y = h - padB - barH;
+    s += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="#F7AD19" rx="4"/>`;
+    s += `<text x="${x+barW/2}" y="${y-6}" font-size="12" font-weight="700" fill="#2b2b2b" text-anchor="middle">${d.value}</text>`;
+    s += `<text x="${x+barW/2}" y="${h-padB+16}" font-size="11" fill="#6b6b6b" text-anchor="middle">${d.label}</text>`;
+  });
+  return wrapSvg(w, h, s);
+}
+
+const DIAGRAMS = {
+  coord10: function(){
+    return buildCoordGrid({
+      xmin:-2, xmax:7, ymin:-2, ymax:6,
+      points: [ {x:1,y:2,label:'A'}, {x:4,y:2,label:'B'}, {x:3,y:5,label:'C'} ]
+    });
+  },
+  chart17: function(){
+    return buildBarChart([
+      {label:'април', value:10},
+      {label:'май', value:20},
+      {label:'юни', value:25},
+      {label:'юли', value:15},
+      {label:'август', value:5}
+    ]);
+  },
+  tri11: function(){
+    const A=[30,190], C=[260,190], B=[190,30], H=[190,190], L=[150,190];
+    let s = '';
+    s += svgLine(A,C); s += svgLine(A,B); s += svgLine(B,C);
+    s += svgLine(B,H); s += svgLine(B,L);
+    s += svgRightAngle(H, B, A);
+    s += svgAngleArc(C, A, B, 30, '78°');
+    s += svgAngleArc(B, L, H, 20, '8°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(H,3,'#9a9a9a'); s += svgDot(L,3,'#9a9a9a');
+    s += svgLabel(A, 'A', -16, 6);
+    s += svgLabel(B, 'B', 0, -10, {anchor:'middle'});
+    s += svgLabel(C, 'C', 10, 6);
+    s += svgLabel(H, 'H', -4, 20, {size:12, weight:700, color:'#6b6b6b', anchor:'middle'});
+    s += svgLabel(L, 'L', 0, 20, {size:12, weight:700, color:'#6b6b6b', anchor:'middle'});
+    return wrapSvg(300, 220, s);
+  },
+  par12: function(){
+    const bY=60, aY=200;
+    const bStart=[20,bY], bEnd=[300,bY], aStart=[20,aY], aEnd=[300,aY];
+    const B=[140,bY], A=[100,aY], C=[210,130];
+    let s = '';
+    s += svgLine(bStart,bEnd); s += svgLine(aStart,aEnd);
+    s += svgLine(A,C); s += svgLine(B,C);
+    s += svgAngleArc(B, [B[0]-70,B[1]], C, 26, '130°');
+    s += svgAngleArc(A, [A[0]+70,A[1]], C, 26, '155°');
+    s += svgAngleArc(C, A, B, 22, '75°', '#d99206');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C);
+    s += svgLabel([bStart[0],bStart[1]], 'b', -4, -10);
+    s += svgLabel([aStart[0],aStart[1]], 'a', -4, -10);
+    s += svgLabel(A, 'A', -6, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 0, -14, {anchor:'middle'});
+    s += svgLabel(C, 'C', 10, 4);
+    return wrapSvg(320, 220, s);
+  },
+  tri13: function(){
+    const A=[40,200], C=[220,200], B=[220,60], M=[160,200], N=[130,130];
+    let s = '';
+    s += svgLine(A,C); s += svgLine(A,B); s += svgLine(B,C);
+    s += svgRightAngle(C, A, B);
+    s += svgDashLine(N,M);
+    s += svgTick(A,N); s += svgTick(N,B);
+    s += svgAngleArc(A, C, B, 26, '30°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(M,3.5,'#F7AD19'); s += svgDot(N,3,'#9a9a9a');
+    s += svgLabel(A, 'A', -16, 6);
+    s += svgLabel(B, 'B', 8, -6);
+    s += svgLabel(C, 'C', 10, 6);
+    s += svgLabel(M, 'M', -4, 20, {anchor:'middle', color:'#d99206'});
+    s += svgLabel(N, 'N', 8, -6, {size:12, weight:700, color:'#6b6b6b'});
+    return wrapSvg(280, 220, s);
+  },
+  par14: function(){
+    const A=[40,200], B=[220,200], D=[80,60], C=[260,60], M=[186,200];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(C,D); s += svgLine(D,A);
+    s += svgLine(M,D);
+    s += svgTick(A,D); s += svgTick(A,M);
+    s += svgAngleArc(D, M, C, 26, '52°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(D); s += svgDot(M,3.5,'#F7AD19');
+    s += svgLabel(A, 'A', -16, 6);
+    s += svgLabel(B, 'B', 8, 6);
+    s += svgLabel(C, 'C', 8, -6);
+    s += svgLabel(D, 'D', -16, -6);
+    s += svgLabel(M, 'M', -6, 20, {anchor:'middle', color:'#d99206'});
+    return wrapSvg(300, 220, s);
+  },
+  tri19: function(){
+    const A=[40,200], B=[260,200], C=[100,80], M=[150,200];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(A,C); s += svgLine(C,B);
+    s += svgLine(C,M);
+    s += svgRightAngle(C, A, B);
+    s += svgAngleArc(A, B, C, 26, '20°');
+    s += svgTick(A,M); s += svgTick(M,B);
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(M,3.5,'#F7AD19');
+    s += svgLabel(A, 'A', -16, 6);
+    s += svgLabel(B, 'B', 8, 6);
+    s += svgLabel(C, 'C', -6, -10, {anchor:'middle'});
+    s += svgLabel(M, 'M', -4, 20, {anchor:'middle', color:'#d99206'});
+    return wrapSvg(300, 220, s);
+  },
+  tri20: function(){
+    const A=[40,200], B=[260,200], C=[150,40], O=[150,148];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(A,C); s += svgLine(C,B);
+    s += svgLine(A,O); s += svgLine(B,O);
+    s += svgAngleArc(A, B, O, 18, '', '#c9c9c9');
+    s += svgAngleArc(A, O, C, 18, '', '#c9c9c9');
+    s += svgAngleArc(B, A, O, 18, '', '#c9c9c9');
+    s += svgAngleArc(B, O, C, 18, '', '#c9c9c9');
+    s += svgAngleArc(O, A, B, 24, '105°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(O,3.5,'#F7AD19');
+    s += svgLabel(A, 'A', -16, 6);
+    s += svgLabel(B, 'B', 8, 6);
+    s += svgLabel(C, 'C', -4, -10, {anchor:'middle'});
+    s += svgLabel(O, 'O', 10, -6, {color:'#d99206'});
+    return wrapSvg(300, 220, s);
+  },
+  rect24: function(){
+    const A=[40,220], B=[260,220], C=[260,60], D=[40,60];
+    const O=[150,140], P=[190,60], Q=[110,220], R=[260,380];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(C,D); s += svgLine(D,A);
+    s += svgLine(A,C); s += svgLine(B,D);
+    s += svgDashLine(A,R); s += svgDashLine(C,R);
+    s += svgRightAngle(A, D, B);
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(D);
+    s += svgDot(O,3.5,'#F7AD19'); s += svgDot(P,3.5,'#F7AD19'); s += svgDot(Q,3.5,'#F7AD19'); s += svgDot(R,3.5,'#F7AD19');
+    s += svgLabel(A, 'A', -16, 10);
+    s += svgLabel(B, 'B', 8, 10);
+    s += svgLabel(C, 'C', 8, -8);
+    s += svgLabel(D, 'D', -16, -8);
+    s += svgLabel(O, 'O', 8, 14, {color:'#d99206'});
+    s += svgLabel(P, 'P', 0, -10, {anchor:'middle', color:'#d99206'});
+    s += svgLabel(Q, 'Q', 0, 20, {anchor:'middle', color:'#d99206'});
+    s += svgLabel(R, 'R', 10, 4, {color:'#d99206'});
+    return wrapSvg(320, 400, s);
+  }
+};
+
+function diagramCardHTML(name){
+  const fn = DIAGRAMS[name];
+  return fn ? fn() : '';
+}
+
+/* =========================================================
+   ДАННИ — ЧАСТ 1 (задачи 1-21)
+   kind: "mc" (избираем отговор), "free" (кратък свободен отговор),
+   "free-multi" (свободен отговор с подточки)
+========================================================= */
+
+const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'];
+
+const part1Steps = [
+  { id:1, kind:'mc', points:2,
+    text:'Стойността на израза 1/5 − 1/5·10 е:',
+    options:['0', '−1,8', '−2,2', '−4,8'], correct:1 },
+  { id:2, kind:'mc', points:2,
+    text:'Коренът на уравнението 24x + 3 = 4 е:',
+    options:['−1/24', '1/24', '7/24', '24'], correct:1 },
+  { id:3, kind:'mc', points:2,
+    text:'Корените на уравнението |x − 5| − 8 = −1 са:',
+    options:['12 и −2', '−12 и 2', '14 и −4', 'уравнението няма решение'], correct:0 },
+  { id:4, kind:'mc', points:3,
+    text:'Решението на неравенството 8 − 2x ≤ 6 − x е интервалът:',
+    options:['[2; +∞)', '(−∞; 2)', '[−2; +∞)', '(−∞; 2]'], correct:0 },
+  { id:5, kind:'mc', points:2,
+    text:'Стойността на израза (2⁶ − 2⁵) / (2⁶ + 2⁵) е равна на:',
+    options:['0', '1/4', '1/3', '1'], correct:2 },
+  { id:6, kind:'mc', points:3,
+    text:'Вероятността произволно избрано едноцифрено неотрицателно число да се дели на 3, е:',
+    options:['3/10', '1/3', '2/5', '4/9'], correct:2 },
+  { id:7, kind:'mc', points:2,
+    text:'В инвестиционен фонд вложили 15 000 евро и след една година сумата нараснала на 15 600 евро. Колко е бил годишният лихвен процент?',
+    options:['0,4%', '1,04%', '1,4%', '4%'], correct:3 },
+  { id:8, kind:'mc', points:3,
+    text:'Петко може сам да подреди детската стая за 30 минути, а брат му Матей може да подреди същата стая за 45 минути. За колко минути двамата братя заедно ще подредят стаята?',
+    options:['36', '18', '12', '6'], correct:1 },
+  { id:9, kind:'mc', points:3,
+    text:'Изразът (a − 6)² − 2a(a − 6) е тъждествено равен на:',
+    options:['(6 − a)(a + 6)', '(a − 6)(1 − 2a)', '3(a − 6)(a − 2)', '(6 − a)(−1 + 2a)'], correct:0 },
+  { id:10, kind:'mc', points:2, diagram:'coord10',
+    text:'В координатна система са дадени точките A(1;2), B(4;2) и C(3;5). Коя от точките P, Q, R и S определя с дадените точки върхове на успоредник?',
+    options:['P(1;5)', 'Q(3;−1)', 'R(−1;5)', 'S(6;5)'], correct:3 },
+  { id:11, kind:'mc', points:2, diagram:'tri11',
+    text:'На чертежа BH е височина, а BL е ъглополовяща на ∠ABC в △ABC. Ако ∠LBH = 8° и ∠HCB = 78°, то мярката на ∠BAC е:',
+    options:['28°', '52°', '62°', '82°'], correct:2 },
+  { id:12, kind:'mc', points:3, diagram:'par12',
+    text:'На чертежа правите a и b са успоредни. По данните на чертежа мярката на ∠ACB е:',
+    options:['25°', '50°', '75°', '85°'], correct:2 },
+  { id:13, kind:'mc', points:3, diagram:'tri13',
+    text:'Симетралата на хипотенузата AB на правоъгълния △ABC пресича катета му AC в точка M. Ако AC = 24 cm и ∠BAC = 30°, то дължината на CM е:',
+    options:['6 cm', '8 cm', '12 cm', '16 cm'], correct:1 },
+  { id:14, kind:'mc', points:3, diagram:'par14',
+    text:'Точка M е от страната AB на успоредника ABCD. Ако AD = AM и ∠MDC = 52°, то мярката на ∠BCD е:',
+    options:['26°', '38°', '52°', '76°'], correct:3 },
+
+  { id:15, kind:'free', points:4,
+    prompt:'Намерете корените на уравнението x² = 25x.',
+    correctAnswer:'0 и 25 (4 т.; 2 т. при един верен корен)' },
+  { id:16, kind:'free', points:4,
+    prompt:'Намерете числената стойност на израза (x + 1)² − x(x + 1) за x = 2025.',
+    correctAnswer:'2026 (4 т.; 2 т., ако е записано само x + 1)' },
+  { id:17, kind:'free-multi', diagram:'chart17',
+    intro:'Строителна фирма продава апартаменти. На диаграмата са показани продадените апартаменти по месеци (април–август).',
+    subparts:[
+      { label:'А', points:2, prompt:'През кой месец продажбите нарастват двойно спрямо предния месец?', correctAnswer:'май' },
+      { label:'Б', points:3, prompt:'Каква е средната месечна продажба за периода април–август?', correctAnswer:'15' }
+    ] },
+  { id:18, kind:'free', points:4,
+    prompt:'На прожекция в киносалон зрителите заели 80% от местата, а 18 места останали свободни. Колко са всичките места в киносалона?',
+    correctAnswer:'90' },
+  { id:19, kind:'free-multi', diagram:'tri19',
+    intro:'В правоъгълния △ABC хипотенузата AB има дължина 24 cm, ∠CAB = 20° и точка M е средата на AB.',
+    subparts:[
+      { label:'А', points:2, prompt:'Намерете дължината на CM.', correctAnswer:'12 cm' },
+      { label:'Б', points:3, prompt:'Намерете мярката на ∠CMB.', correctAnswer:'40°' }
+    ] },
+  { id:20, kind:'free', points:4, diagram:'tri20',
+    prompt:'Ъглополовящите на ∠BAC и ∠ABC се пресичат в точка O, като ∠AOB = 105°. Намерете мярката на ∠ACB.',
+    correctAnswer:'30°' },
+  { id:21, kind:'free', points:4,
+    prompt:'Две от страните на равнобедрен триъгълник се отнасят както 1 : 2. Ако по-малката му страна е x cm, изразете и запишете чрез x периметъра на триъгълника.',
+    correctAnswer:'5x (пълни точки само за точен отговор „5x"; частични точки при частичен напредък — напр. 4x)' }
+];
+
+const PART1_AUTO_MAX = part1Steps.filter(s => s.kind === 'mc').reduce((a,s) => a + s.points, 0); // 35
+const PART1_TOTAL_MAX = 65;
+const PART2_TOTAL_MAX = 35;
+
+/* =========================================================
+   ДАННИ — ЧАСТ 2 (задачи 22-24), само за учителски преглед
+========================================================= */
+
+const part2Steps = [
+  { id:22, points:12,
+    intro:'Даден е изразът M = (x + 3)³ − x(x + 1)² − 3(x² + 9).',
+    subparts:[
+      { label:'А', prompt:'Представете M в нормален вид.' },
+      { label:'Б', prompt:'Решете неравенството 4x² + 26x − 5 ≤ 4x(x + 5).' },
+      { label:'В', prompt:'Кои от корените на уравнението |4x² + 26x − 4(x² + 5x) − 3| = 12 са решения на неравенството от подточка Б)? Обосновете отговора си.' }
+    ] },
+  { id:23, points:11,
+    intro:'Мярката за чистота на златото се нарича карат (чисто злато е 24 карата). За изработване на бижута се използва най-често злато 9 карата, 14 карата или 18 карата.',
+    subparts:[
+      { label:'А', prompt:'Намерете колко грама чисто злато има в 120 g злато 14 карата.' },
+      { label:'Б', prompt:'Златар смесил 40 g злато 9 карата и 50 g злато 18 карата. Колко карата е получената сплав?' },
+      { label:'В', prompt:'Ани наследила от баба си златна плочка от злато 18 карата, маса 10,5 g. Поръчала да ѝ направят гривна, добавяйки сребро, така че златото да стане 14 карата. Колко грама ще тежи гривната?' }
+    ] },
+  { id:24, points:12, diagram:'rect24',
+    intro:'В правоъгълника ABCD диагоналите се пресичат в точка O. Ъглополовящите на ∠DBC и ∠ADB пресичат CD и AB съответно в точките P и Q. През точка A е построена права, успоредна на BD, която пресича правата CB в точка R.',
+    subparts:[
+      { label:'А', prompt:'Докажете, че △DQO ≅ △BPO.' },
+      { label:'Б', prompt:'Докажете, че AC = AR.' },
+      { label:'В', prompt:'Докажете, че сборът от лицата на △ADQ и △QBP е равен на половината от лицето на ABCD.' },
+      { label:'Г', prompt:'Ако ∠DBC = 2∠ABD, докажете, че AQ : AB = 1 : 3 и намерете мярката на ∠RAC.' }
+    ] }
+];
+
+/* =========================================================
+   СЪСТОЯНИЕ
+========================================================= */
+
+let p1Index = 0;
+let p1Answers = new Array(part1Steps.length).fill(null);
+let p2Index = 0;
+let p2Answers = new Array(part2Steps.length).fill(null);
+let lastPart1Results = null;
+let lastPart2Items = null;
+
+/* =========================================================
+   DOM ЕЛЕМЕНТИ
+========================================================= */
+
+const startScreen = document.getElementById('start-screen');
+const part1Screen = document.getElementById('part1-screen');
+const part1InterimScreen = document.getElementById('part1-interim-screen');
+const part2IntroScreen = document.getElementById('part2-intro-screen');
+const part2Screen = document.getElementById('part2-screen');
+const finalScreen = document.getElementById('final-screen');
+const allScreens = [startScreen, part1Screen, part1InterimScreen, part2IntroScreen, part2Screen, finalScreen];
+
+const startBtn = document.getElementById('start-btn');
+
+const p1CurrentQEl = document.getElementById('p1-current-q');
+const p1TotalQEl = document.getElementById('p1-total-q');
+const p1TimerEl = document.getElementById('p1-timer');
+const p1ProgressFillEl = document.getElementById('p1-progress-fill');
+const p1CategoryEl = document.getElementById('p1-category');
+const p1PointsEl = document.getElementById('p1-points');
+const p1DiagramEl = document.getElementById('p1-diagram');
+const p1OptionsListEl = document.getElementById('p1-options-list');
+const p1PrevBtn = document.getElementById('p1-prev-btn');
+const p1NextBtn = document.getElementById('p1-next-btn');
+const p1FinishBtn = document.getElementById('p1-finish-btn');
+
+const continueToPart2Btn = document.getElementById('continue-to-part2-btn');
+const startPart2Btn = document.getElementById('start-part2-btn');
+
+const p2CurrentQEl = document.getElementById('p2-current-q');
+const p2TotalQEl = document.getElementById('p2-total-q');
+const p2TimerEl = document.getElementById('p2-timer');
+const p2ProgressFillEl = document.getElementById('p2-progress-fill');
+const p2CategoryEl = document.getElementById('p2-category');
+const p2PointsEl = document.getElementById('p2-points');
+const p2DiagramEl = document.getElementById('p2-diagram');
+const p2SubpartsEl = document.getElementById('p2-subparts');
+const p2PrevBtn = document.getElementById('p2-prev-btn');
+const p2NextBtn = document.getElementById('p2-next-btn');
+const p2FinishBtn = document.getElementById('p2-finish-btn');
+
+/* =========================================================
+   GOOGLE ANALYTICS
+========================================================= */
+
+function trackEvent(name, params){
+  if(typeof window.gtag === 'function'){
+    window.gtag('event', name, params || {});
+  }
+}
+
+/* =========================================================
+   НАВИГАЦИЯ МЕЖДУ ЕКРАНИ
+========================================================= */
+
+function showScreen(screenEl){
+  allScreens.forEach(s => s.classList.remove('active'));
+  screenEl.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   ТАЙМЕР (обща фабрика — Част 1 и Част 2 имат независими инстанции)
+========================================================= */
+
+const PART_DURATION_SECONDS = 90 * 60;
+const WARNING_THRESHOLD_SECONDS = 10 * 60;
+
+function formatTime(totalSeconds){
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const paddedSeconds = seconds < 10 ? '0' + seconds : String(seconds);
+  return minutes + ':' + paddedSeconds;
+}
+
+function createTimer(timerEl, onTimeUp){
+  let startTime = null;
+  let intervalId = null;
+  let ended = false;
+
+  function tick(){
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const remaining = Math.max(PART_DURATION_SECONDS - elapsed, 0);
+    timerEl.textContent = 'Оставащо време: ' + formatTime(remaining);
+    timerEl.classList.toggle('timer-warning', remaining <= WARNING_THRESHOLD_SECONDS);
+    if(remaining <= 0 && !ended){
+      ended = true;
+      stop();
+      onTimeUp();
+    }
+  }
+
+  function start(){
+    if(intervalId !== null) return;
+    startTime = Date.now();
+    ended = false;
+    tick();
+    intervalId = setInterval(tick, 1000);
+  }
+
+  function stop(){
+    if(intervalId !== null){
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
+  return {
+    start: start,
+    stop: stop,
+    isEnded: function(){ return ended; }
+  };
+}
+
+const part1Timer = createTimer(p1TimerEl, handlePart1TimeUp);
+const part2Timer = createTimer(p2TimerEl, handlePart2TimeUp);
+
+/* =========================================================
+   ЧАСТ 1 — РЕНДИРАНЕ И НАВИГАЦИЯ
+========================================================= */
+
+function renderPart1Step(){
+  const step = part1Steps[p1Index];
+
+  p1CurrentQEl.textContent = p1Index + 1;
+  p1TotalQEl.textContent = part1Steps.length;
+  p1ProgressFillEl.style.width = ((p1Index + 1) / part1Steps.length * 100) + '%';
+
+  const isMC = step.kind === 'mc';
+  p1CategoryEl.textContent = 'Задача ' + step.id;
+  p1CategoryEl.className = 'question-category' + (isMC ? '' : ' review-pill');
+
+  const totalPts = step.kind === 'free-multi'
+    ? step.subparts.reduce((a,s) => a + s.points, 0)
+    : step.points;
+  p1PointsEl.textContent = totalPts + (totalPts === 1 ? ' точка' : ' точки');
+
+  if(step.diagram){
+    p1DiagramEl.innerHTML = diagramCardHTML(step.diagram);
+    p1DiagramEl.style.display = 'block';
+  } else {
+    p1DiagramEl.innerHTML = '';
+    p1DiagramEl.style.display = 'none';
+  }
+
+  p1OptionsListEl.innerHTML = '';
+
+  if(isMC){
+    const textEl = document.createElement('p');
+    textEl.className = 'question-text';
+    textEl.textContent = step.text;
+    p1OptionsListEl.appendChild(textEl);
+
+    const list = document.createElement('div');
+    list.className = 'options-list';
+    step.options.forEach((optionText, idx) => {
+      const optionEl = document.createElement('button');
+      optionEl.type = 'button';
+      optionEl.className = 'option' + (p1Answers[p1Index] === idx ? ' selected' : '');
+      optionEl.innerHTML = `<span class="option-letter">${OPTION_LETTERS[idx]}</span><span class="option-text">${optionText}</span>`;
+      optionEl.addEventListener('click', () => {
+        p1Answers[p1Index] = idx;
+        renderPart1Step();
+      });
+      list.appendChild(optionEl);
+    });
+    p1OptionsListEl.appendChild(list);
+
+  } else if(step.kind === 'free'){
+    if(step.intro){
+      const introEl = document.createElement('p');
+      introEl.className = 'task-intro';
+      introEl.textContent = step.intro;
+      p1OptionsListEl.appendChild(introEl);
+    }
+    const textEl = document.createElement('p');
+    textEl.className = 'question-text';
+    textEl.textContent = step.prompt;
+    p1OptionsListEl.appendChild(textEl);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'free-text-block';
+    const inputEl = document.createElement('input');
+    inputEl.type = 'text';
+    inputEl.className = 'free-text-input';
+    inputEl.placeholder = 'Твоят отговор...';
+    inputEl.autocomplete = 'off';
+    inputEl.value = typeof p1Answers[p1Index] === 'string' ? p1Answers[p1Index] : '';
+    inputEl.addEventListener('input', () => { p1Answers[p1Index] = inputEl.value; });
+    wrap.appendChild(inputEl);
+
+    const noteEl = document.createElement('p');
+    noteEl.className = 'free-text-note';
+    noteEl.textContent = 'Ще бъде прегледан лично от учител.';
+    wrap.appendChild(noteEl);
+
+    p1OptionsListEl.appendChild(wrap);
+
+  } else if(step.kind === 'free-multi'){
+    if(step.intro){
+      const introEl = document.createElement('p');
+      introEl.className = 'task-intro';
+      introEl.textContent = step.intro;
+      p1OptionsListEl.appendChild(introEl);
+    }
+    if(!p1Answers[p1Index] || typeof p1Answers[p1Index] !== 'object'){
+      p1Answers[p1Index] = {};
+    }
+    step.subparts.forEach(sp => {
+      const block = document.createElement('div');
+      block.className = 'subpart-block';
+
+      const promptEl = document.createElement('p');
+      promptEl.className = 'subpart-prompt';
+      promptEl.innerHTML = `<span class="subpart-label">${sp.label})</span>${sp.prompt}`;
+      block.appendChild(promptEl);
+
+      const inputEl = document.createElement('input');
+      inputEl.type = 'text';
+      inputEl.className = 'free-text-input';
+      inputEl.placeholder = 'Твоят отговор...';
+      inputEl.autocomplete = 'off';
+      inputEl.value = p1Answers[p1Index][sp.label] || '';
+      inputEl.addEventListener('input', () => { p1Answers[p1Index][sp.label] = inputEl.value; });
+      block.appendChild(inputEl);
+
+      p1OptionsListEl.appendChild(block);
+    });
+
+    const noteEl = document.createElement('p');
+    noteEl.className = 'free-text-note';
+    noteEl.style.marginTop = '14px';
+    noteEl.textContent = 'Ще бъде прегледан лично от учител.';
+    p1OptionsListEl.appendChild(noteEl);
+  }
+
+  p1PrevBtn.disabled = p1Index === 0;
+  const isLast = p1Index === part1Steps.length - 1;
+  p1NextBtn.style.display = isLast ? 'none' : 'block';
+  p1FinishBtn.style.display = isLast ? 'block' : 'none';
+}
+
+startBtn.addEventListener('click', () => {
+  p1Index = 0;
+  showScreen(part1Screen);
+  renderPart1Step();
+  part1Timer.start();
+  trackEvent('matura2026_part1_started', { event_category: 'matura2026' });
+});
+
+p1PrevBtn.addEventListener('click', () => {
+  if(p1Index > 0){ p1Index--; renderPart1Step(); }
+});
+
+p1NextBtn.addEventListener('click', () => {
+  if(p1Index < part1Steps.length - 1){ p1Index++; renderPart1Step(); }
+});
+
+p1FinishBtn.addEventListener('click', () => {
+  if(part1Timer.isEnded()) return;
+  part1Timer.stop();
+  finishPart1('finished');
+});
+
+function handlePart1TimeUp(){
+  finishPart1('time_up');
+}
+
+function finishPart1(completionType){
+  const results = calculatePart1();
+  renderPart1Interim(results);
+  showScreen(part1InterimScreen);
+  trackEvent('matura2026_part1_completed', {
+    event_category: 'matura2026',
+    completion_type: completionType,
+    auto_score: results.autoScore,
+    auto_max: results.autoMax
+  });
+}
+
+function calculatePart1(){
+  let autoScore = 0;
+  const reviewItems = [];
+
+  part1Steps.forEach((step, idx) => {
+    if(step.kind === 'mc'){
+      if(p1Answers[idx] === step.correct){ autoScore += step.points; }
+    } else if(step.kind === 'free'){
+      const ans = (typeof p1Answers[idx] === 'string' && p1Answers[idx].trim() !== '')
+        ? p1Answers[idx].trim() : '(няма отговор)';
+      reviewItems.push({ id: String(step.id), prompt: step.prompt, answer: ans, reference: step.correctAnswer, points: step.points });
+    } else if(step.kind === 'free-multi'){
+      step.subparts.forEach(sp => {
+        const raw = p1Answers[idx] && typeof p1Answers[idx][sp.label] === 'string' ? p1Answers[idx][sp.label].trim() : '';
+        const ans = raw !== '' ? raw : '(няма отговор)';
+        reviewItems.push({ id: step.id + sp.label, prompt: sp.prompt, answer: ans, reference: sp.correctAnswer, points: sp.points });
+      });
+    }
+  });
+
+  return { autoScore: autoScore, autoMax: PART1_AUTO_MAX, reviewItems: reviewItems };
+}
+
+function renderPart1Interim(results){
+  lastPart1Results = results;
+  document.getElementById('p1i-score-fraction').textContent = results.autoScore + ' / ' + results.autoMax;
+  document.getElementById('p1i-score-percentage').textContent =
+    Math.round((results.autoScore / results.autoMax) * 100) + '%';
+}
+
+continueToPart2Btn.addEventListener('click', () => {
+  showScreen(part2IntroScreen);
+});
+
+/* =========================================================
+   ЧАСТ 2 — РЕНДИРАНЕ И НАВИГАЦИЯ
+========================================================= */
+
+function renderPart2Step(){
+  const step = part2Steps[p2Index];
+
+  p2CurrentQEl.textContent = p2Index + 1;
+  p2TotalQEl.textContent = part2Steps.length;
+  p2ProgressFillEl.style.width = ((p2Index + 1) / part2Steps.length * 100) + '%';
+
+  p2CategoryEl.textContent = 'Задача ' + step.id;
+  p2PointsEl.textContent = step.points + ' точки (учителски преглед)';
+
+  if(step.diagram){
+    p2DiagramEl.innerHTML = diagramCardHTML(step.diagram);
+    p2DiagramEl.style.display = 'block';
+  } else {
+    p2DiagramEl.innerHTML = '';
+    p2DiagramEl.style.display = 'none';
+  }
+
+  p2SubpartsEl.innerHTML = '';
+
+  const introEl = document.createElement('p');
+  introEl.className = 'task-intro';
+  introEl.textContent = step.intro;
+  p2SubpartsEl.appendChild(introEl);
+
+  if(!p2Answers[p2Index] || typeof p2Answers[p2Index] !== 'object'){
+    p2Answers[p2Index] = {};
+  }
+
+  step.subparts.forEach(sp => {
+    const block = document.createElement('div');
+    block.className = 'subpart-block';
+
+    const promptEl = document.createElement('p');
+    promptEl.className = 'subpart-prompt';
+    promptEl.innerHTML = `<span class="subpart-label">${sp.label})</span>${sp.prompt}`;
+    block.appendChild(promptEl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'essay-textarea';
+    ta.placeholder = 'Решение...';
+    ta.value = p2Answers[p2Index][sp.label] || '';
+    ta.addEventListener('input', () => { p2Answers[p2Index][sp.label] = ta.value; });
+    block.appendChild(ta);
+
+    const noteEl = document.createElement('p');
+    noteEl.className = 'free-text-note';
+    noteEl.textContent = 'Ще бъде прегледано лично от учител — точките се добавят след преглед.';
+    block.appendChild(noteEl);
+
+    p2SubpartsEl.appendChild(block);
+  });
+
+  p2PrevBtn.disabled = p2Index === 0;
+  const isLast = p2Index === part2Steps.length - 1;
+  p2NextBtn.style.display = isLast ? 'none' : 'block';
+  p2FinishBtn.style.display = isLast ? 'block' : 'none';
+}
+
+startPart2Btn.addEventListener('click', () => {
+  p2Index = 0;
+  showScreen(part2Screen);
+  renderPart2Step();
+  part2Timer.start();
+  trackEvent('matura2026_part2_started', { event_category: 'matura2026' });
+});
+
+p2PrevBtn.addEventListener('click', () => {
+  if(p2Index > 0){ p2Index--; renderPart2Step(); }
+});
+
+p2NextBtn.addEventListener('click', () => {
+  if(p2Index < part2Steps.length - 1){ p2Index++; renderPart2Step(); }
+});
+
+p2FinishBtn.addEventListener('click', () => {
+  if(part2Timer.isEnded()) return;
+  part2Timer.stop();
+  finishPart2('finished');
+});
+
+function handlePart2TimeUp(){
+  finishPart2('time_up');
+}
+
+function finishPart2(completionType){
+  showFinalScreen();
+  trackEvent('matura2026_part2_completed', { event_category: 'matura2026', completion_type: completionType });
+}
+
+function collectPart2Items(){
+  const items = [];
+  part2Steps.forEach((step, idx) => {
+    step.subparts.forEach(sp => {
+      const raw = p2Answers[idx] && typeof p2Answers[idx][sp.label] === 'string' ? p2Answers[idx][sp.label].trim() : '';
+      const ans = raw !== '' ? raw : '(няма отговор)';
+      items.push({ id: step.id + sp.label, prompt: sp.prompt, answer: ans });
+    });
+  });
+  return items;
+}
+
+/* =========================================================
+   ФИНАЛЕН ЕКРАН
+========================================================= */
+
+const lockedResultsEl = document.getElementById('locked-results');
+const finalStudentNameEl = document.getElementById('final-student-name');
+const finalParentEmailEl = document.getElementById('final-parent-email');
+const finalSendBtn = document.getElementById('final-send-btn');
+const finalErrorEl = document.getElementById('final-error');
+
+function showFinalScreen(){
+  const p1Results = lastPart1Results || calculatePart1();
+  lastPart1Results = p1Results;
+  lastPart2Items = collectPart2Items();
+
+  lockFinal();
+
+  document.getElementById('final-score-fraction').textContent = p1Results.autoScore + ' / ' + p1Results.autoMax;
+  document.getElementById('final-score-percentage').textContent =
+    Math.round((p1Results.autoScore / p1Results.autoMax) * 100) + '%';
+
+  showScreen(finalScreen);
+}
+
+function lockFinal(){
+  if(!lockedResultsEl) return;
+  lockedResultsEl.classList.remove('unlocked');
+  finalStudentNameEl.value = '';
+  finalParentEmailEl.value = '';
+  finalErrorEl.style.display = 'none';
+  finalSendBtn.disabled = false;
+  finalSendBtn.textContent = '🔓 Изпрати за преглед и виж резултата';
+}
+
+function unlockFinal(){
+  if(!lockedResultsEl) return;
+  lockedResultsEl.classList.add('unlocked');
+}
+
+function buildSummaryText(studentName, p1Results, p2Items){
+  const lines = [];
+  lines.push('Име на ученика: ' + studentName);
+  lines.push('');
+  lines.push('ЧАСТ 1 — автоматична оценка (задачи 1–14): ' + p1Results.autoScore + ' / ' + p1Results.autoMax + ' точки');
+  lines.push('(Максимум за цялата Част 1, вкл. задачи 15–21: ' + PART1_TOTAL_MAX + ' точки)');
+  lines.push('');
+  lines.push('ЧАСТ 1 — задачи 15–21 (за учителски преглед):');
+  p1Results.reviewItems.forEach(item => {
+    lines.push('');
+    lines.push('Задача ' + item.id + ' (' + item.points + ' т.): ' + item.prompt);
+    lines.push('Отговор на ученика: ' + item.answer);
+    lines.push('Референтен верен отговор: ' + item.reference);
+  });
+  lines.push('');
+  lines.push('ЧАСТ 2 — задачи 22–24 (' + PART2_TOTAL_MAX + ' точки, изцяло за учителски преглед):');
+  p2Items.forEach(item => {
+    lines.push('');
+    lines.push('Задача ' + item.id + ': ' + item.prompt);
+    lines.push('Решение на ученика:');
+    lines.push(item.answer);
+  });
+  lines.push('');
+  lines.push('--');
+  lines.push('Изпратено от пробната матура НВО 7. клас (Вариант 1) на The Light Academy.');
+  return lines.join('\n');
+}
+
+const FINAL_FORM_ENDPOINT = 'https://formspree.io/f/mnpawlbd';
+
+if(finalSendBtn){
+  [finalStudentNameEl, finalParentEmailEl].forEach(el => {
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ finalSendBtn.click(); }
+    });
+  });
+
+  finalSendBtn.addEventListener('click', async () => {
+    const studentName = finalStudentNameEl.value.trim();
+    const parentEmail = finalParentEmailEl.value.trim();
+
+    finalErrorEl.style.display = 'none';
+
+    if(!studentName){
+      finalErrorEl.innerHTML = '<p>Моля, въведете име на ученика.</p>';
+      finalErrorEl.style.display = 'block';
+      finalStudentNameEl.focus();
+      return;
+    }
+    if(!parentEmail){
+      finalErrorEl.innerHTML = '<p>Все още не ни познавате? <a href="nvo7.html" style="color:#c24508; font-weight:700;">Разгледайте нашите курсове тук</a> — или въведете имейл на родителя, за да изпратите резултата за преглед.</p>';
+      finalErrorEl.style.display = 'block';
+      finalParentEmailEl.focus();
+      return;
+    }
+    if(!finalParentEmailEl.checkValidity()){
+      finalErrorEl.innerHTML = '<p>Моля, въведете валиден имейл на родителя.</p>';
+      finalErrorEl.style.display = 'block';
+      finalParentEmailEl.focus();
+      return;
+    }
+    if(!lastPart1Results || !lastPart2Items){
+      console.error('Липсват резултати от матурата — бутонът е кликнат без изчислен резултат.');
+      finalErrorEl.innerHTML = '<p>⚠️ Възникна грешка — презаредете страницата и опитайте отново.</p>';
+      finalErrorEl.style.display = 'block';
+      return;
+    }
+
+    finalSendBtn.disabled = true;
+    finalSendBtn.textContent = 'Изпращане...';
+
+    const body = new FormData();
+    body.append('Име на ученика', studentName);
+    body.append('Имейл на родителя', parentEmail);
+    body.append('Резултат от пробна матура', buildSummaryText(studentName, lastPart1Results, lastPart2Items));
+    body.append('_replyto', parentEmail);
+    body.append('_subject', '🎓 Пробна матура НВО 7. клас — ' + studentName);
+
+    try{
+      const res = await fetch(FINAL_FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body
+      });
+
+      if(res.ok){
+        unlockFinal();
+        trackEvent('generate_lead', {
+          event_category: 'matura2026',
+          method: 'final_form',
+          auto_score: lastPart1Results.autoScore
+        });
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const hint = data?.error || data?.errors?.[0]?.message || ('Код ' + res.status);
+        console.error('Formspree отказа заявката:', res.status, data);
+        finalErrorEl.innerHTML = '<p>⚠️ ' + hint + ' — Обадете се на <a href="tel:+359885501283">+359 885 501 283</a></p>';
+        finalErrorEl.style.display = 'block';
+        finalSendBtn.disabled = false;
+        finalSendBtn.textContent = '🔓 Изпрати за преглед и виж резултата';
+      }
+    } catch (err){
+      console.error('Заявката не стигна до Formspree:', err);
+      finalErrorEl.innerHTML = '<p>Няма интернет връзка. Обадете се на <a href="tel:+359885501283">+359 885 501 283</a>.</p>';
+      finalErrorEl.style.display = 'block';
+      finalSendBtn.disabled = false;
+      finalSendBtn.textContent = '🔓 Изпрати за преглед и виж резултата';
+    }
+  });
+}
+
+/* =========================================================
+   СТАРТ
+========================================================= */
+
+document.getElementById('p1-total-q').textContent = part1Steps.length;
+document.getElementById('p2-total-q').textContent = part2Steps.length;
+</script>
+
+</body>
+</html>
