@@ -1447,7 +1447,6 @@
 
       .timeline-track { display: none; }
 
-      .cta-buttons { flex-direction: column; align-items: center; }
       .btn-cta-primary, .btn-cta-outline { width: 100%; max-width: 320px; justify-content: center; }
 
       .modal-box { padding: 2rem 1.5rem 2.5rem; }
@@ -1480,11 +1479,18 @@
       }
       .reg-form-wrap { order: 4; margin: 0; }
       .modal-box { background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%); }
-      .pricing-cta-flow .cta-buttons { order: 5; margin: 0; }
+      /* Buttons + hint broken out of .cta-buttons so the hint can sit between
+         the entrance-test button and the call button on mobile. */
+      .cta-buttons { display: contents; }
+      .cta-buttons a[href="entrance_test.html"] { order: 5; }
+      .cta-buttons a[href^="tel:"] { order: 7; }
       .btn-cta-outline {
-        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
-        border-color: rgba(255,255,255,0.25);
+        background: transparent;
+        border-color: #1B2E52;
+        color: #1B2E52;
       }
+      .btn-cta-outline:hover { background: rgba(27,46,82,0.06); }
+      .btn-cta-outline::after { content: '\2192'; margin-left: 6px; }
       .pricing-cta-flow .cta-buttons-hint { order: 6; margin-top: 0; color: var(--light-text); }
       .urgency-block, .cta-section > h2, .cta-section > p,
       .course-info-block > h2, .course-info-block > p {
@@ -1493,12 +1499,13 @@
       .schedule-widget {
         display: none;
       }
+      .hero-pills { display: none; }
       .schedule-link-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        order: 7;
+        order: 8;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border: 2px solid rgba(255,255,255,0.25);
         border-radius: 50px;
@@ -1536,7 +1543,7 @@
          the (display:contents) course-info-block on mobile. */
       .course-reviews {
         display: block;
-        order: 8;
+        order: 9;
         margin: 0;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border-radius: 20px;
