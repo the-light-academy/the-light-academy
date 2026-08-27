@@ -1482,8 +1482,8 @@
       /* Buttons + hint broken out of .cta-buttons so the hint can sit between
          the entrance-test button and the call button on mobile. */
       .cta-buttons { display: contents; }
-      .cta-buttons a[href="entrance_test.html"] { order: 5; }
-      .cta-buttons a[href^="tel:"] { order: 7; }
+      .cta-buttons a[href="entrance_test.html"] { order: 6; }
+      .cta-buttons a[href^="tel:"] { order: 8; }
       .btn-cta-outline {
         background: transparent;
         border-color: #1B2E52;
@@ -1491,8 +1491,8 @@
       }
       .btn-cta-outline:hover { background: rgba(27,46,82,0.06); }
       .btn-cta-outline::after { content: '\2192'; margin-left: 6px; }
-      .pricing-cta-flow .cta-buttons-hint { order: 6; margin-top: 0; color: var(--light-text); }
-      .urgency-block, .cta-section > h2, .cta-section > p,
+      .pricing-cta-flow .cta-buttons-hint { order: 7; margin-top: 0; color: var(--light-text); }
+      .cta-section > h2, .cta-section > p,
       .course-info-block > h2, .course-info-block > p {
         display: none;
       }
@@ -1500,12 +1500,54 @@
         display: none;
       }
       .hero-pills { display: none; }
+
+      /* Discount + availability block, right after the registration form.
+         Days/hours render as a plain countdown line (no boxes); the two
+         group-availability boxes keep their card styling. */
+      .cta-left-col .urgency-block {
+        display: block;
+        order: 5;
+        margin: 0;
+        max-width: none;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
+      }
+      .urgency-timer {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: "days hours" "g1 g2";
+      }
+      .urgency-timer-box:nth-child(1) { grid-area: days; }
+      .urgency-timer-box:nth-child(2) { grid-area: hours; }
+      .urgency-timer-box:nth-child(3) { grid-area: g1; }
+      .urgency-timer-box:nth-child(4) { grid-area: g2; }
+      .urgency-timer-box:nth-child(1),
+      .urgency-timer-box:nth-child(2) {
+        background: none;
+        border: none;
+        padding: 0;
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 6px;
+      }
+      .urgency-timer-box:nth-child(1) .urgency-timer-num,
+      .urgency-timer-box:nth-child(2) .urgency-timer-num {
+        font-size: 1.6rem;
+      }
+      .urgency-timer-box:nth-child(1) .urgency-timer-label,
+      .urgency-timer-box:nth-child(2) .urgency-timer-label {
+        font-size: 0.85rem;
+        text-transform: none;
+        font-weight: 700;
+      }
       .schedule-link-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        order: 8;
+        order: 9;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border: 2px solid rgba(255,255,255,0.25);
         border-radius: 50px;
@@ -1543,7 +1585,7 @@
          the (display:contents) course-info-block on mobile. */
       .course-reviews {
         display: block;
-        order: 9;
+        order: 10;
         margin: 0;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border-radius: 20px;
