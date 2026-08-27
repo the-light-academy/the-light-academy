@@ -1142,8 +1142,7 @@ const DIAGRAMS = {
     s += svgLine(bStart,bEnd); s += svgLine(aStart,aEnd);
     s += svgLine(A,C); s += svgLine(B,C);
     s += svgAngleArc(B, [B[0]-70,B[1]], C, 26, '130°');
-    s += svgAngleArc(A, [A[0]+70,A[1]], C, 26, '155°');
-    s += svgAngleArc(C, A, B, 22, '75°', '#d99206');
+    s += svgAngleArc(A, [A[0]-70,A[1]], C, 26, '155°');
     s += svgDot(A); s += svgDot(B); s += svgDot(C);
     s += svgLabel([bStart[0],bStart[1]], 'b', -4, -10);
     s += svgLabel([aStart[0],aStart[1]], 'a', -4, -10);
