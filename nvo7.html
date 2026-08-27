@@ -1229,7 +1229,7 @@
       margin-bottom: 1.25rem;
     }
     .urgency-text strong { color: var(--sun); font-weight: 900; }
-    .urgency-timer { display: flex; justify-content: center; gap: 14px; }
+    .urgency-timer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .urgency-timer-box {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
@@ -2378,6 +2378,14 @@
         <div class="urgency-timer-box">
           <span class="urgency-timer-num" id="urgencyHours">–</span>
           <span class="urgency-timer-label">часа</span>
+        </div>
+        <div class="urgency-timer-box">
+          <span class="urgency-timer-num">7</span>
+          <span class="urgency-timer-label">Група 1 места</span>
+        </div>
+        <div class="urgency-timer-box">
+          <span class="urgency-timer-num">8</span>
+          <span class="urgency-timer-label">Група 2 места</span>
         </div>
       </div>
     </div>
