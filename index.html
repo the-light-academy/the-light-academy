@@ -765,6 +765,39 @@
     .about-blob.blob-1 { width: 320px; height: 320px; background: var(--sun); opacity: 0.12; top: 0; right: -20px; }
     .about-blob.blob-2 { width: 240px; height: 240px; background: var(--peach); opacity: 0.10; bottom: -10px; left: -40px; }
 
+    /* Quiet digitization texture behind the About photo/video */
+    .about-digital-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .digi {
+      position: absolute;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+    }
+    .digi.c-orange { color: rgba(232,88,10,0.35); }
+    .digi.c-teal { color: rgba(26,140,133,0.35); }
+    .digi.d1 { animation: aboutDigitalFloat1 16s ease-in-out infinite; }
+    .digi.d2 { animation: aboutDigitalFloat2 20s ease-in-out infinite; }
+    .digi.d3 { animation: aboutDigitalFloat3 13s ease-in-out infinite; }
+    @keyframes aboutDigitalFloat1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(6px, -8px); }
+    }
+    @keyframes aboutDigitalFloat2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-7px, 6px); }
+    }
+    @keyframes aboutDigitalFloat3 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(5px, 5px) rotate(2deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .digi { animation: none; }
+    }
+
     .about-photo-circle {
       position: relative;
       border-radius: 50%;
@@ -1298,6 +1331,7 @@
         padding: 0.5rem 0 1.25rem;
       }
       .about-blob { display: none; }
+      .about-digital-bg { display: none; }
       .photo-secondary-1 { width: 145px; height: 145px; }
       .photo-main { width: 175px; height: 175px; margin-left: -30px; }
       .photo-secondary-2 { width: 110px; height: 110px; margin-left: -26px; }
@@ -1510,7 +1544,7 @@
     <span class="hero-dot hero-dot--1" aria-hidden="true"></span>
     <span class="hero-dot hero-dot--2" aria-hidden="true"></span>
     <h1 data-i18n="hero.title">Където знанието<br>среща креативността</h1>
-    <p data-i18n="hero.subtitle">Понеже съвременното образование изисква нов подход</p>
+    <p data-i18n="hero.subtitle">Понеже съвременното преподаване изисква нов подход</p>
     <div class="hero-cta">
       <a href="course_nvo_4_class.html" class="btn btn-primary" data-i18n="hero.btn1">НВО 4 клас</a>
       <a href="nvo7.html" class="btn btn-nvo" data-i18n="hero.btn2">📐 НВО 7 клас</a>
@@ -1524,6 +1558,16 @@
       <div class="about-photos">
         <div class="about-blob blob-1"></div>
         <div class="about-blob blob-2"></div>
+        <div class="about-digital-bg" aria-hidden="true">
+          <span class="digi d1 c-teal" style="top:-16px; left:8%; font-size:22px;">01</span>
+          <span class="digi d2 c-orange" style="top:-14px; right:10%; font-size:18px;">{ }</span>
+          <span class="digi d3 c-teal" style="top:14px; left:-18px; font-size:20px;">&lt;/&gt;</span>
+          <span class="digi d1 c-orange" style="top:30%; right:-20px; font-size:24px;">01</span>
+          <span class="digi d2 c-teal" style="bottom:22%; left:-16px; font-size:16px;">AI</span>
+          <span class="digi d3 c-orange" style="bottom:-14px; left:14%; font-size:18px;">10</span>
+          <span class="digi d1 c-teal" style="bottom:-16px; right:12%; font-size:20px;">&lt;/&gt;</span>
+          <span class="digi d2 c-orange" style="bottom:16px; right:-16px; font-size:16px;">#</span>
+        </div>
 
         <div class="about-video" id="aboutMedia">
           <video id="aboutVideo" class="media-layer active" data-ratio="1.778" src="photos/about_us_video.mp4" preload="metadata" playsinline muted autoplay loop></video>
@@ -2227,7 +2271,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.schedule": "Всички курсове и уроци",
         "navdrop.weekly": "График",
         "hero.title": "Където знанието<br>среща креативността",
-        "hero.subtitle": "Понеже съвременното образование изисква нов подход",
+        "hero.subtitle": "Понеже съвременното преподаване изисква нов подход",
         "hero.btn1": "НВО 4 клас",
         "hero.btn2": "📐 НВО 7 клас",
         "hero.btn3": "Всички курсове",
