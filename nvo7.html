@@ -2686,6 +2686,12 @@
         if (res.ok) {
           document.getElementById('regForm').style.display = 'none';
           document.getElementById('formSuccess').style.display = 'block';
+          if (typeof gtag === 'function') {
+            gtag('event', 'generate_lead', { event_category: 'nvo7', method: 'registration_form' });
+          }
+          if (typeof fbq === 'function') {
+            fbq('track', 'Lead');
+          }
         } else {
           const data = await res.json().catch(() => ({}));
           const hint = data?.error || data?.errors?.[0]?.message || `Код ${res.status}`;
