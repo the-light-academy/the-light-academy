@@ -346,14 +346,10 @@
     <section class="course-content">
       <aside class="price-box">
         <span class="price-label">Такса за курса</span>
-
-        <div class="price-switch" id="priceSwitch">
-          <button type="button" class="active" data-price="280" data-onetime="800">5–8 деца в групата</button>
-          <button type="button" data-price="320" data-onetime="900">До 4 деца в групата</button>
-        </div>
+        <span class="price-note" style="display:block; margin-bottom:0.4rem;">До 8 деца в групата</span>
 
         <div class="price-value-wrap">
-          <span class="price-value slide-in-up" id="priceValue">280 <small>€ / вноска</small></span>
+          <span class="price-value" id="priceValue">280 <small>€ / вноска</small></span>
         </div>
         <span class="price-note">цената е за 1 вноска от общо 3</span>
         <span class="price-onetime" id="priceOnetime">или еднократно плащане – 800 €</span>
@@ -459,41 +455,6 @@
         s.style.animationDelay = (Math.random() * 8) + 's';
         wrap.appendChild(s);
       }
-    })();
-
-    (function () {
-      const buttons = document.querySelectorAll('#priceSwitch button');
-      const valueWrap = document.querySelector('.price-value-wrap');
-      const onetimeEl = document.getElementById('priceOnetime');
-      let current = document.getElementById('priceValue');
-
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (btn.classList.contains('active')) return;
-          buttons.forEach(b => b.classList.toggle('active', b === btn));
-
-          const price = btn.dataset.price;
-          const onetime = btn.dataset.onetime;
-          const goingUp = Number(price) > Number(current.textContent);
-
-          const next = document.createElement('span');
-          next.className = 'price-value ' + (goingUp ? 'slide-out-down' : 'slide-out-up');
-          next.id = 'priceValue';
-          next.innerHTML = price + ' <small>€ / вноска</small>';
-          valueWrap.appendChild(next);
-
-          requestAnimationFrame(() => {
-            current.classList.remove('slide-in-up');
-            current.classList.add(goingUp ? 'slide-out-up' : 'slide-out-down');
-            next.classList.remove('slide-out-up', 'slide-out-down');
-            next.classList.add('slide-in-up');
-          });
-
-          setTimeout(() => { current.remove(); current = next; }, 420);
-
-          onetimeEl.textContent = 'или еднократно плащане – ' + onetime + ' €';
-        });
-      });
     })();
 
     (function () {

@@ -345,17 +345,12 @@
     <section class="course-content">
       <aside class="price-box">
         <span class="price-label">Такса за курса</span>
-
-        <div class="price-switch" id="priceSwitch">
-          <button type="button" class="active" data-price="110" data-save="">5–8 деца в групата</button>
-          <button type="button" data-price="130" data-save="Разлика от 20 € /месец за по-малка група">До 4 деца в групата</button>
-        </div>
+        <span class="price-note" style="display:block; margin-bottom:0.4rem;">До 8 деца в групата</span>
 
         <div class="price-value-wrap">
-          <span class="price-value slide-in-up" id="priceValue">110 <small>€ / месец</small></span>
+          <span class="price-value" id="priceValue">110 <small>€ / месец</small></span>
         </div>
         <span class="price-note">плащане на месечна база</span>
-        <span class="price-save" id="priceSave">Разлика от 20 € /месец за по-малка група</span>
 
         <button type="button" class="btn-enroll" style="margin-top:1.1rem; width:100%; justify-content:center;" onclick="scrollToEnrollForm()">Запиши се</button>
         <span style="display:block; margin-top:0.65rem; text-align:center; font-size:0.82rem; font-weight:700; color:var(--mid);">за да запазите място в курса</span>
@@ -478,45 +473,6 @@
       });
     })();
 
-    (function () {
-      const buttons = document.querySelectorAll('#priceSwitch button');
-      const valueWrap = document.querySelector('.price-value-wrap');
-      const saveEl = document.getElementById('priceSave');
-      let current = document.getElementById('priceValue');
-
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (btn.classList.contains('active')) return;
-          buttons.forEach(b => b.classList.toggle('active', b === btn));
-
-          const price = btn.dataset.price;
-          const save = btn.dataset.save;
-          const goingUp = Number(price) > Number(current.textContent);
-
-          const next = document.createElement('span');
-          next.className = 'price-value ' + (goingUp ? 'slide-out-down' : 'slide-out-up');
-          next.id = 'priceValue';
-          next.innerHTML = price + ' <small>€ / месец</small>';
-          valueWrap.appendChild(next);
-
-          requestAnimationFrame(() => {
-            current.classList.remove('slide-in-up');
-            current.classList.add(goingUp ? 'slide-out-up' : 'slide-out-down');
-            next.classList.remove('slide-out-up', 'slide-out-down');
-            next.classList.add('slide-in-up');
-          });
-
-          setTimeout(() => { current.remove(); current = next; }, 420);
-
-          if (save) {
-            saveEl.textContent = save;
-            saveEl.classList.add('show');
-          } else {
-            saveEl.classList.remove('show');
-          }
-        });
-      });
-    })();
   </script>
 
   <script>
