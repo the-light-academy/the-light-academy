@@ -631,13 +631,13 @@
     .step.flip .step-bullets li::before { margin-top: 2px; }
 
     /* Геймификация — gamified hover effect (desktop) */
-    #section-obratna .step-image {
+    #section-geymifikatsia .step-image {
       transition: box-shadow 0.4s ease;
     }
-    #section-obratna .step-image:hover {
+    #section-geymifikatsia .step-image:hover {
       box-shadow: 0 14px 40px rgba(232,88,10,0.32), 0 0 0 4px rgba(26,140,133,0.22);
     }
-    #section-obratna .step-image::before {
+    #section-geymifikatsia .step-image::before {
       content: '\f091';
       font-family: 'Font Awesome 6 Free';
       font-weight: 900;
@@ -660,7 +660,7 @@
       z-index: 3;
       pointer-events: none;
     }
-    #section-obratna .step-image:hover::before {
+    #section-geymifikatsia .step-image:hover::before {
       opacity: 1;
       transform: scale(1) rotate(0deg);
     }
@@ -1673,53 +1673,53 @@
       .toggle-group { margin-bottom: 0.9rem; }
 
       /* Step 1 (Gen Alpha) — full-bleed photo background w/ glass cards, mobile only */
-      #section-vhodyasht {
+      #section-gen-alpha {
         position: relative;
         overflow: hidden;
         border-radius: 16px;
         min-height: 560px;
       }
-      #section-vhodyasht .step-image {
+      #section-gen-alpha .step-image {
         position: absolute !important;
         inset: 0;
         z-index: 0;
         border-radius: 0;
       }
-      #section-vhodyasht .step-image img {
+      #section-gen-alpha .step-image img {
         position: absolute;
         inset: 0;
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
       }
-      #section-vhodyasht .step-image::after {
+      #section-gen-alpha .step-image::after {
         content: '';
         position: absolute;
         inset: 0;
         background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
       }
-      #section-vhodyasht .step-image-label { display: none; }
-      #section-vhodyasht .step-text {
+      #section-gen-alpha .step-image-label { display: none; }
+      #section-gen-alpha .step-text {
         position: relative;
         z-index: 2;
         padding: 1.75rem 1.25rem 2rem;
       }
-      #section-vhodyasht .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
-      #section-vhodyasht .step-title { color: #fff; }
-      #section-vhodyasht .step-divider { background: #fff; }
-      #section-vhodyasht .step-body { color: rgba(255,255,255,0.9); }
-      #section-vhodyasht .ga-card {
+      #section-gen-alpha .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-gen-alpha .step-title { color: #fff; }
+      #section-gen-alpha .step-divider { background: #fff; }
+      #section-gen-alpha .step-body { color: rgba(255,255,255,0.9); }
+      #section-gen-alpha .ga-card {
         background: rgba(255,255,255,0.14);
         border-color: rgba(255,255,255,0.3);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       }
-      #section-vhodyasht .ga-card.open { border-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-      #section-vhodyasht .ga-icon { background: rgba(255,255,255,0.25); }
-      #section-vhodyasht .ga-problem { color: #fff; }
-      #section-vhodyasht .ga-chevron { color: rgba(255,255,255,0.8); }
-      #section-vhodyasht .ga-card.open .ga-chevron { color: #fff; }
-      #section-vhodyasht .ga-answer-text { color: rgba(255,255,255,0.88); }
+      #section-gen-alpha .ga-card.open { border-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+      #section-gen-alpha .ga-icon { background: rgba(255,255,255,0.25); }
+      #section-gen-alpha .ga-problem { color: #fff; }
+      #section-gen-alpha .ga-chevron { color: rgba(255,255,255,0.8); }
+      #section-gen-alpha .ga-card.open .ga-chevron { color: #fff; }
+      #section-gen-alpha .ga-answer-text { color: rgba(255,255,255,0.88); }
 
       /* Step 2 (Ние знаем това) — same full-bleed photo + glass treatment, mobile only */
       #section-osnovi {
@@ -1771,89 +1771,89 @@
       #section-osnovi .ga-answer-text { color: rgba(255,255,255,0.88); }
 
       /* Step 3 (Ето как изглежда на практика) — same full-bleed photo + glass treatment, mobile only */
-      #section-malki-grupi {
+      #section-nashiyat-podhod {
         position: relative;
         overflow: hidden;
         border-radius: 16px;
         min-height: 560px;
       }
-      #section-malki-grupi .step-image {
+      #section-nashiyat-podhod .step-image {
         position: absolute !important;
         inset: 0;
         z-index: 0;
         border-radius: 0;
       }
-      #section-malki-grupi .step-image img {
+      #section-nashiyat-podhod .step-image img {
         position: absolute;
         inset: 0;
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
       }
-      #section-malki-grupi .step-image::after {
+      #section-nashiyat-podhod .step-image::after {
         content: '';
         position: absolute;
         inset: 0;
         background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
       }
-      #section-malki-grupi .step-image-label { display: none; }
-      #section-malki-grupi .step-text {
+      #section-nashiyat-podhod .step-image-label { display: none; }
+      #section-nashiyat-podhod .step-text {
         position: relative;
         z-index: 2;
         padding: 1.75rem 1.25rem 2rem;
       }
-      #section-malki-grupi .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
-      #section-malki-grupi .step-title { color: #fff; }
-      #section-malki-grupi .step-divider { background: #fff; }
-      #section-malki-grupi .practice-card {
+      #section-nashiyat-podhod .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-nashiyat-podhod .step-title { color: #fff; }
+      #section-nashiyat-podhod .step-divider { background: #fff; }
+      #section-nashiyat-podhod .practice-card {
         background: rgba(255,255,255,0.14);
         border-color: rgba(255,255,255,0.3);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       }
-      #section-malki-grupi .practice-card-title { color: #fff; }
-      #section-malki-grupi .practice-card-text { color: rgba(255,255,255,0.88); }
-      #section-malki-grupi .ga-icon { background: rgba(255,255,255,0.25); }
-      #section-malki-grupi .exam-timer { background: rgba(0,0,0,0.45); }
+      #section-nashiyat-podhod .practice-card-title { color: #fff; }
+      #section-nashiyat-podhod .practice-card-text { color: rgba(255,255,255,0.88); }
+      #section-nashiyat-podhod .ga-icon { background: rgba(255,255,255,0.25); }
+      #section-nashiyat-podhod .exam-timer { background: rgba(0,0,0,0.45); }
 
       /* Step 4 (Геймификация) — same full-bleed video + glass treatment, mobile only */
-      #section-obratna {
+      #section-geymifikatsia {
         position: relative;
         overflow: hidden;
         border-radius: 16px;
         min-height: 560px;
       }
-      #section-obratna .step-image {
+      #section-geymifikatsia .step-image {
         position: absolute !important;
         inset: 0;
         z-index: 0;
         border-radius: 0;
       }
-      #section-obratna .step-image video {
+      #section-geymifikatsia .step-image video {
         position: absolute;
         inset: 0;
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
       }
-      #section-obratna .step-image::before { display: none; }
-      #section-obratna .step-image::after {
+      #section-geymifikatsia .step-image::before { display: none; }
+      #section-geymifikatsia .step-image::after {
         content: '';
         position: absolute;
         inset: 0;
         background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
         opacity: 1;
       }
-      #section-obratna .step-image-label { display: none; }
-      #section-obratna .step-text {
+      #section-geymifikatsia .step-image-label { display: none; }
+      #section-geymifikatsia .step-text {
         position: relative;
         z-index: 2;
         padding: 1.75rem 1.25rem 2rem;
       }
-      #section-obratna .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
-      #section-obratna .step-title { color: #fff; }
-      #section-obratna .step-divider { background: #fff; }
-      #section-obratna .step-body { color: rgba(255,255,255,0.9); }
+      #section-geymifikatsia .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
+      #section-geymifikatsia .step-title { color: #fff; }
+      #section-geymifikatsia .step-divider { background: #fff; }
+      #section-geymifikatsia .step-body { color: rgba(255,255,255,0.9); }
     }
   </style>
   <script type="application/ld+json">
@@ -2053,10 +2053,10 @@
     <h1>Подготовка за <span>НВО</span><br>7 клас по математика</h1>
     <p>Динамична, персонализирана и дигитална подготовка — от входящ тест до пробен изпит. 24/7 достъп до онлайн упражнения!</p>
     <div class="hero-pills">
-      <a href="#section-vhodyasht" class="hero-pill">Gen Alpha учи различно →</a>
-      <a href="#section-malki-grupi" class="hero-pill">Нашият подход →</a>
-      <a href="#section-malki-grupi" class="hero-pill">Пробни матури →</a>
-      <a href="#section-obratna" class="hero-pill">Геймификация →</a>
+      <a href="#section-gen-alpha" class="hero-pill">Gen Alpha учи различно →</a>
+      <a href="#section-nashiyat-podhod" class="hero-pill">Нашият подход →</a>
+      <a href="#section-nashiyat-podhod" class="hero-pill">Пробни матури →</a>
+      <a href="#section-geymifikatsia" class="hero-pill">Геймификация →</a>
       <a href="#section-tseni" class="hero-pill">Цени →</a>
     </div>
 
@@ -2077,7 +2077,7 @@
     </div>
 
     <!-- 1: Gen Alpha — image LEFT -->
-    <div id="section-vhodyasht" class="step" data-step="1">
+    <div id="section-gen-alpha" class="step" data-step="1">
       <div class="step-image">
         <img src="photos/gen_alpha_teen.jpg" alt="Тийнейджър, отегчен по време на класическа лекция">
         <div class="step-image-label">Скучна лекция = изключено внимание</div>
@@ -2205,7 +2205,7 @@
     </div>
 
     <!-- 3: Малки групи — image LEFT -->
-    <div id="section-malki-grupi" class="step" data-step="3">
+    <div id="section-nashiyat-podhod" class="step" data-step="3">
       <div class="step-image">
         <img src="photos/teen-laptop.jpg" alt="Ученик практикува онлайн пробен изпит нощем на лаптоп">
         <div class="step-image-label">Практика по всяко време</div>
@@ -2239,7 +2239,7 @@
     </div>
 
     <!-- 4: Геймификация — image RIGHT -->
-    <div id="section-obratna" class="step flip" data-step="4">
+    <div id="section-geymifikatsia" class="step flip" data-step="4">
       <div class="step-text">
         <h2 class="step-title">Геймификация на задачите</h2>
         <div class="step-divider"></div>
@@ -2421,7 +2421,7 @@
   </div>
 
   <!-- CTA -->
-  <section class="cta-section" id="section-cta">
+  <section class="cta-section" id="section-zapishete-se">
     <h2>Готови ли сте за резултати?</h2>
     <p>Модерен подход, индивидуално внимание и ясна стратегия за успех на НВО.</p>
 
