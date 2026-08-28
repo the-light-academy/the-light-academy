@@ -896,6 +896,10 @@
       margin: 2.5rem auto 0;
       padding: 0 1.5rem;
     }
+    /* Zero-size scroll-anchor target — display:block so it always keeps a real
+       box, even inside a (display:contents) ancestor, unlike an id on the
+       collapsing container itself which mobile browsers can't scroll to. */
+    .section-anchor { display: block; width: 0; height: 0; overflow: hidden; }
     .course-info-block h2 {
       font-family: 'Bad Script', cursive;
       font-size: clamp(1.5rem, 3vw, 2rem);
@@ -1560,6 +1564,7 @@
         text-transform: none;
         font-weight: 700;
       }
+      .section-anchor { order: 9; }
       .schedule-link-btn {
         display: flex;
         align-items: center;
@@ -2306,7 +2311,7 @@
   </section>
 
   <div class="post-pricing-group">
-  <div class="course-info-block" id="section-pri-nas">
+  <div class="course-info-block">
     <h2>При нас...</h2>
     <p>учениците наистина разбират, защото преподаваме на техния език. Използваме нов подход в образованието – знаем как учат поколенията Z и Alpha и знаем как да постигнем резултати с тях.</p>
 
@@ -2341,6 +2346,7 @@
       </div>
     </div>
 
+    <span id="section-pri-nas" class="section-anchor"></span>
     <a href="schedule.html" class="schedule-link-btn">
       <i class="fa-solid fa-calendar-days"></i>
       График на курсовете
