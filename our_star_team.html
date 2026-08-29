@@ -678,7 +678,13 @@
         resizeTimer = setTimeout(rebuild, 150);
       }
 
-      window.addEventListener('scroll', update, { passive: true });
+      let lineTicking = false;
+      window.addEventListener('scroll', () => {
+        if (!lineTicking) {
+          window.requestAnimationFrame(() => { update(); lineTicking = false; });
+          lineTicking = true;
+        }
+      }, { passive: true });
       window.addEventListener('resize', onResize, { passive: true });
       window.addEventListener('load', rebuild);
       rebuild();

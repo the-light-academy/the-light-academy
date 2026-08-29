@@ -2558,7 +2558,13 @@
           `translateY(${-window.scrollY * 0.28}px)`;
       }
     }
-    window.addEventListener('scroll', applyParallax, { passive: true });
+    let parallaxTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!parallaxTicking) {
+        window.requestAnimationFrame(() => { applyParallax(); parallaxTicking = false; });
+        parallaxTicking = true;
+      }
+    }, { passive: true });
 
     // ── Pricing calculator ──
     const PLAN = { installment: 360, full: 999 };
@@ -2800,7 +2806,13 @@
       const progress = Math.min(Math.max((window.scrollY + window.innerHeight * 0.6 - journeyTop) / journey.offsetHeight, 0), 1);
       timelineFill.style.height = (progress * 100) + '%';
     }
-    window.addEventListener('scroll', updateTimeline, { passive: true });
+    let timelineTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!timelineTicking) {
+        window.requestAnimationFrame(() => { updateTimeline(); timelineTicking = false; });
+        timelineTicking = true;
+      }
+    }, { passive: true });
     updateTimeline();
   </script>
 
