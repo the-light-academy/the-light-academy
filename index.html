@@ -381,6 +381,8 @@
     .btn-outline { background: transparent; color: var(--sun-dark); border: 2px solid var(--sun); }
     .btn-nvo { background: #E8580A; color: #fff; border: 2px solid #E8580A; }
     .btn-nvo:hover { background: #C24508; border-color: #C24508; color: #fff; }
+    .btn-brown { background: var(--mid); color: #fff; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-brown:hover { background: var(--dark); color: #fff; }
 
     /* ── PAGE SCROLL LINE (orange line winding behind every section, desktop only) ── */
     .scroll-line-bg {
@@ -1624,7 +1626,10 @@
         <p data-i18n="about.text1">🌟 Бутиков образователен център в кв. Лозенец, София, който предлага курсове и индивидуални уроци за деца.</p>
         <p data-i18n="about.text2">✨ Нашите малки групи означават, че всяко дете получава вниманието, което заслужава.</p>
         <p data-i18n="about.text3">💛Основан с любов и посвещение към детското образование, The Light Academy е място, където децата се вдъхновяват, учат и развиват своя потенциал.</p>
-        <a href="#contact" class="btn btn-primary" style="margin-top:1rem; display:inline-block;" data-i18n="about.btn">Свържете се с нас</a>
+        <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+          <a href="#contact" class="btn btn-primary" data-i18n="about.btn">Свържете се с нас</a>
+          <a href="our_star_team.html" class="btn btn-brown"><i class="fa-solid fa-star"></i> Нашият екип</a>
+        </div>
       </div>
     </div>
   </section>
