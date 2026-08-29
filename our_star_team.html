@@ -640,35 +640,47 @@
         return d;
       }
 
-      let docWidth = 0, docHeight = 0, startY = 0, endY = 0;
+      // The SVG only needs to cover the stretch of the page the line
+      // actually occupies (roughly the team-members section), not the
+      // whole document -- a full-document-height layer with an animated
+      // clip-path is unnecessarily expensive to composite, especially on
+      // engines (Safari/WebKit in particular) that handle clip-path
+      // masking poorly. Positioning the SVG at the line's own top and
+      // sizing it to just that span keeps the clipped/composited area
+      // small regardless of how long the rest of the page is.
+      let svgTop = 0, svgHeight = 0, startY = 0, endY = 0;
 
       function rebuild() {
-        docWidth = document.documentElement.scrollWidth;
-        docHeight = document.documentElement.scrollHeight;
-        svg.setAttribute('width', docWidth);
-        svg.setAttribute('height', docHeight);
-        svg.setAttribute('viewBox', `0 0 ${docWidth} ${docHeight}`);
-        clipRect.setAttribute('width', docWidth);
-
+        const docWidth = document.documentElement.scrollWidth;
         const points = photos.map(centerOf);
-        path.setAttribute('d', smoothPath(points));
 
         startY = points[0].y - 100;
         endY = points[points.length - 1].y + 100;
+        svgTop = Math.max(startY - 40, 0);
+        svgHeight = Math.max(endY - svgTop + 40, 1);
+
+        svg.style.top = svgTop + 'px';
+        svg.setAttribute('width', docWidth);
+        svg.setAttribute('height', svgHeight);
+        svg.setAttribute('viewBox', `0 0 ${docWidth} ${svgHeight}`);
+        clipRect.setAttribute('width', docWidth);
+
+        const localPoints = points.map(p => ({ x: p.x, y: p.y - svgTop }));
+        path.setAttribute('d', smoothPath(localPoints));
 
         update();
       }
 
       function update() {
-        if (!docHeight) return;
+        if (!svgHeight) return;
         if (prefersReduced) {
-          clipRect.setAttribute('height', docHeight);
+          clipRect.setAttribute('height', svgHeight);
           return;
         }
         const viewportPoint = window.scrollY + window.innerHeight * 0.6;
         const span = Math.max(endY - startY, 1);
         const progress = Math.min(Math.max((viewportPoint - startY) / span, 0), 1);
-        clipRect.setAttribute('height', progress * docHeight);
+        clipRect.setAttribute('height', progress * svgHeight);
       }
 
       let resizeTimer = null;
