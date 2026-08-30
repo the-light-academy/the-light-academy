@@ -132,7 +132,7 @@
 
     /* ── CURVY CONNECTOR LINE THROUGH THE 4 TEACHER PHOTOS ── */
     .team-line-svg { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
-    .team-line-path { fill: none; stroke: url(#teamLineGradient); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 2 16; opacity: 0.85; }
+    .team-line-path { fill: none; stroke: url(#teamLineGradient); stroke-width: 5; stroke-linecap: round; opacity: 0.85; }
 
     /* ── PAGE LAYOUT ── */
     main.team-page { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 1.25rem 4rem; }
@@ -198,7 +198,7 @@
     .team-photo-ring {
       position: absolute; inset: -9px; border-radius: 50%;
       background: conic-gradient(from 0deg, var(--sun) 0%, var(--navy-2) 50%, var(--sun) 100%);
-      opacity: 0.55; animation: teamRingSpin 11s linear infinite;
+      opacity: 0.55;
       transition: opacity 0.4s ease;
     }
     .team-photo {
@@ -211,7 +211,9 @@
     .team-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .team-photo-icon { width: 40%; height: 40%; color: var(--sun-dark); opacity: 0.55; }
     .team-photo-wrap:hover .team-photo { transform: scale(1.08); }
-    .team-photo-wrap:hover .team-photo-ring { opacity: 0.95; animation-duration: 3s; }
+    /* Spins only on hover -- an always-running conic-gradient rotation on
+       four elements at once is unnecessary continuous compositor work. */
+    .team-photo-wrap:hover .team-photo-ring { opacity: 0.95; animation: teamRingSpin 3s linear infinite; }
     @keyframes teamRingSpin { to { transform: rotate(360deg); } }
 
     .team-text { flex: 1 1 420px; min-width: 0; }
@@ -273,7 +275,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .team-member { transition: none; opacity: 1; transform: none; }
-      .team-photo-ring { animation: none; }
+      .team-photo-ring, .team-photo-wrap:hover .team-photo-ring { animation: none; }
     }
   </style>
 </head>
@@ -415,11 +417,8 @@
         <stop offset="50%" stop-color="#A17522" />
         <stop offset="100%" stop-color="#1B2E52" />
       </linearGradient>
-      <clipPath id="teamLineClip">
-        <rect id="teamLineClipRect" x="0" y="0" width="0" height="0" />
-      </clipPath>
     </defs>
-    <path id="teamLinePath" class="team-line-path" clip-path="url(#teamLineClip)" />
+    <path id="teamLinePath" class="team-line-path" />
   </svg>
 
   <main class="team-page">
@@ -597,15 +596,17 @@
     // Draws a soft curved line that winds through the centers of the four
     // teacher photos (in DOM order) and reveals itself as the visitor
     // scrolls past that stretch of the page — same progressive-reveal
-    // technique (a clip-path rect growing in height) used for the wiggly
-    // line on index.html, just following real anchor points instead of a
-    // sine wave.
+    // technique: a stroke-dasharray/stroke-dashoffset "draw the line"
+    // animation (the standard, cheap way to do this -- no masking involved,
+    // just a stroke property). An earlier version used a JS-mutated SVG
+    // clip-path instead, which is a well-documented weak spot on
+    // Safari/WebKit and was reported as making the whole page's scrolling
+    // lock up on iPhone; this avoids that mechanism entirely.
     function initTeamLine() {
       const svg = document.getElementById('teamLineSvg');
       const path = document.getElementById('teamLinePath');
-      const clipRect = document.getElementById('teamLineClipRect');
       const photos = Array.from(document.querySelectorAll('.team-photo'));
-      if (!svg || !path || !clipRect || photos.length < 2) return;
+      if (!svg || !path || photos.length < 2) return;
 
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -645,7 +646,7 @@
       // masking poorly. Positioning the SVG at the line's own top and
       // sizing it to just that span keeps the clipped/composited area
       // small regardless of how long the rest of the page is.
-      let svgTop = 0, svgHeight = 0, startY = 0, endY = 0;
+      let svgTop = 0, svgHeight = 0, startY = 0, endY = 0, pathLength = 0;
 
       function rebuild() {
         const docWidth = document.documentElement.scrollWidth;
@@ -660,24 +661,26 @@
         svg.setAttribute('width', docWidth);
         svg.setAttribute('height', svgHeight);
         svg.setAttribute('viewBox', `0 0 ${docWidth} ${svgHeight}`);
-        clipRect.setAttribute('width', docWidth);
 
         const localPoints = points.map(p => ({ x: p.x, y: p.y - svgTop }));
         path.setAttribute('d', smoothPath(localPoints));
+
+        pathLength = path.getTotalLength();
+        path.style.strokeDasharray = pathLength;
 
         update();
       }
 
       function update() {
-        if (!svgHeight) return;
+        if (!pathLength) return;
         if (prefersReduced) {
-          clipRect.setAttribute('height', svgHeight);
+          path.style.strokeDashoffset = 0;
           return;
         }
         const viewportPoint = window.scrollY + window.innerHeight * 0.6;
         const span = Math.max(endY - startY, 1);
         const progress = Math.min(Math.max((viewportPoint - startY) / span, 0), 1);
-        clipRect.setAttribute('height', progress * svgHeight);
+        path.style.strokeDashoffset = pathLength * (1 - progress);
       }
 
       let resizeTimer = null;
