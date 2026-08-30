@@ -640,22 +640,20 @@
 
       // The SVG only needs to cover the stretch of the page the line
       // actually occupies (roughly the team-members section), not the
-      // whole document -- a full-document-height layer with an animated
-      // clip-path is unnecessarily expensive to composite, especially on
-      // engines (Safari/WebKit in particular) that handle clip-path
-      // masking poorly. Positioning the SVG at the line's own top and
-      // sizing it to just that span keeps the clipped/composited area
-      // small regardless of how long the rest of the page is.
-      let svgTop = 0, svgHeight = 0, startY = 0, endY = 0, pathLength = 0;
+      // whole document. Positioning the SVG at the line's own top and
+      // sizing it to just that span keeps it small regardless of how long
+      // the rest of the page is.
+      let svgTop = 0, pathLength = 0;
+      let revealed = false;
 
       function rebuild() {
         const docWidth = document.documentElement.scrollWidth;
         const points = photos.map(centerOf);
 
-        startY = points[0].y - 100;
-        endY = points[points.length - 1].y + 100;
+        const startY = points[0].y - 100;
+        const endY = points[points.length - 1].y + 100;
         svgTop = Math.max(startY - 40, 0);
-        svgHeight = Math.max(endY - svgTop + 40, 1);
+        const svgHeight = Math.max(endY - svgTop + 40, 1);
 
         svg.style.top = svgTop + 'px';
         svg.setAttribute('width', docWidth);
@@ -667,20 +665,21 @@
 
         pathLength = path.getTotalLength();
         path.style.strokeDasharray = pathLength;
-
-        update();
+        path.style.strokeDashoffset = revealed ? 0 : pathLength;
       }
 
-      function update() {
-        if (!pathLength) return;
-        if (prefersReduced) {
-          path.style.strokeDashoffset = 0;
-          return;
-        }
-        const viewportPoint = window.scrollY + window.innerHeight * 0.6;
-        const span = Math.max(endY - startY, 1);
-        const progress = Math.min(Math.max((viewportPoint - startY) / span, 0), 1);
-        path.style.strokeDashoffset = pathLength * (1 - progress);
+      // Drawn once, the same way the team-member rows fade in: an
+      // IntersectionObserver flips a class/style once when the section
+      // scrolls into view, then a plain CSS transition animates it. No
+      // 'scroll' listener at all for the line itself -- deliberately, after
+      // a JS-mutated clip-path here was reported as locking up scrolling on
+      // iPhone Chrome (WebKit); this rules the line out entirely as a
+      // contributor, since it no longer does anything on a scroll event.
+      function reveal() {
+        if (revealed || !pathLength) return;
+        revealed = true;
+        path.style.transition = prefersReduced ? 'none' : 'stroke-dashoffset 1.6s ease';
+        path.style.strokeDashoffset = 0;
       }
 
       let resizeTimer = null;
@@ -689,16 +688,23 @@
         resizeTimer = setTimeout(rebuild, 150);
       }
 
-      let lineTicking = false;
-      window.addEventListener('scroll', () => {
-        if (!lineTicking) {
-          window.requestAnimationFrame(() => { update(); lineTicking = false; });
-          lineTicking = true;
-        }
-      }, { passive: true });
       window.addEventListener('resize', onResize, { passive: true });
       window.addEventListener('load', rebuild);
       rebuild();
+
+      if (prefersReduced) {
+        reveal();
+      } else {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              reveal();
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.1 });
+        observer.observe(photos[0]);
+      }
     }
     initTeamLine();
   </script>
