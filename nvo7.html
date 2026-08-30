@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
+  <meta charset="UTF-8" />
   <!-- Meta Pixel Code -->
   <script>
   !function(f,b,e,v,n,t,s)
@@ -28,7 +29,6 @@
 
     gtag('config', 'G-551MW59126');
   </script>
-  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>НВО 7 клас по Математика в Лозенец, София – Подготовка за изпита | The Light Academy</title>
   <meta name="description" content="Цялогодишна подготовка за НВО по математика за 7. клас в кв. Лозенец, София. Малки групи, опитен преподавател и структурирана програма за държавния изпит след 7. клас." />
@@ -890,6 +890,11 @@
     .cta-left-col .cta-buttons { margin: 0; order: 2; }
     .cta-left-col .cta-buttons-hint { order: 3; margin-top: 0; }
 
+    /* Teacher intro (photo + short bio) inside "При нас" -- desktop only,
+       matching the section's own text which is likewise hidden on mobile
+       to keep that compact layout intact. */
+    .teacher-intro { display: none; }
+
     /* -- Course info cards below calculator -- */
     .course-info-block {
       max-width: 1100px;
@@ -1022,6 +1027,35 @@
       }
       .course-info-block h2 { color: #fff; }
       .course-info-block > p { color: rgba(255,255,255,0.75); }
+
+      .teacher-intro {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+        margin-bottom: 1.75rem;
+        padding-bottom: 1.75rem;
+        border-bottom: 1px solid rgba(255,255,255,0.14);
+      }
+      .teacher-intro-photo {
+        flex: 0 0 auto;
+        width: 76px; height: 76px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(247,173,25,0.5);
+        box-shadow: 0 10px 24px -10px rgba(9,18,38,0.6);
+      }
+      .teacher-intro-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .teacher-intro-text { display: flex; flex-direction: column; }
+      .teacher-intro-text strong { color: #fff; font-size: 1.05rem; }
+      .teacher-intro-role {
+        color: var(--sun);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin: 2px 0 6px;
+      }
+      .teacher-intro-text p { color: rgba(255,255,255,0.75); font-size: 0.92rem; margin: 0; }
 
       .schedule-widget {
         background: rgba(255,255,255,0.07);
@@ -2313,6 +2347,14 @@
 
   <div class="post-pricing-group">
   <div class="course-info-block">
+    <div class="teacher-intro">
+      <div class="teacher-intro-photo"><img src="photos/ani_profile_photo.jpg" alt="Ани — учител по математика"></div>
+      <div class="teacher-intro-text">
+        <strong>Ани</strong>
+        <span class="teacher-intro-role">Учител по математика</span>
+        <p>Превръща трудните задачи в игри и предизвикателства — с грижа за всяко дете.</p>
+      </div>
+    </div>
     <h2>При нас...</h2>
     <p>учениците наистина разбират, защото преподаваме на техния език. Използваме нов подход в образованието – знаем как учат поколенията Z и Alpha и знаем как да постигнем резултати с тях.</p>
 
