@@ -182,6 +182,41 @@
     .enroll-error { background: var(--orange-light); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--orange); text-align: center; margin-top: 1rem; }
     .enroll-error a { color: var(--orange); font-weight: 700; }
 
+    /* ── FUN COURSE PROMO SECTION ── */
+    .fun-course { margin-top: 1.75rem; background: linear-gradient(180deg, #fff9f0, #ffffff); border: 1px solid var(--line); border-radius: 28px; padding: 2.6rem 2.2rem; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+    .fun-course-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .fun-course-stars span { position: absolute; bottom: -10%; opacity: 0; animation: funStarFloat linear infinite; }
+    @keyframes funStarFloat {
+      0% { transform: translateY(0) scale(0.7) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-620px) scale(1.05) rotate(25deg); opacity: 0; }
+    }
+    .fun-course-inner { position: relative; z-index: 1; }
+    .fun-course-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--sun-light); color: var(--sun-dark); font-weight: 800; font-size: 0.85rem; padding: 8px 18px; border-radius: 999px; margin-bottom: 1.1rem; }
+    .fun-title { font-family: 'Bad Script', cursive; font-weight: 400; font-size: clamp(1.7rem, 4vw, 2.4rem); color: var(--orange); line-height: 1.3; margin-bottom: 1rem; }
+    .fun-lead { color: var(--mid); font-size: 1rem; max-width: 760px; margin-bottom: 0.9rem; }
+    .fun-kicker { font-weight: 800; color: var(--orange); margin-bottom: 0.7rem; }
+
+    .fun-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; margin: 0.4rem 0 1.8rem; }
+    .fun-feature { display: flex; align-items: flex-start; gap: 10px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 0.9rem 1rem; opacity: 0; transform: translateY(16px) scale(0.96); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1); }
+    .fun-feature.in-view { opacity: 1; transform: translateY(0) scale(1); }
+    .fun-feature .star { font-size: 1.2rem; flex-shrink: 0; }
+    .fun-feature .txt { color: var(--dark); font-weight: 700; font-size: 0.93rem; line-height: 1.5; }
+
+    .fun-rhyme { position: relative; margin: 0 0 1.8rem; background: linear-gradient(135deg, #eaf6ff, #dff1ff); border: 1px solid rgba(56,142,214,0.18); border-radius: 20px; padding: 1.6rem 2.2rem 1.6rem 1.8rem; overflow: hidden; transition: transform 0.3s ease; }
+    .fun-rhyme:hover { transform: translateY(-2px); }
+    .fun-rhyme::before { content: "🎵"; position: absolute; top: 14px; right: 18px; font-size: 1.6rem; opacity: 0.55; }
+    .fun-rhyme p { font-family: 'Pacifico', cursive; font-size: 1.02rem; line-height: 1.9; color: #245a86; margin: 0; }
+
+    .fun-org { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.9rem; margin: 0 0 1.6rem; }
+    .fun-org-item { background: linear-gradient(180deg, #fffaf1, #fff3df); border: 1px solid rgba(245,166,35,0.2); border-radius: 16px; padding: 1rem 1.1rem; }
+    .fun-org-item strong { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); margin-bottom: 4px; }
+    .fun-org-item span { display: block; font-weight: 700; color: var(--brown); font-size: 0.95rem; line-height: 1.4; }
+
+    .fun-cta { text-align: center; margin-top: 0.4rem; }
+    .fun-cta p { font-weight: 800; color: var(--orange); font-size: 1.02rem; margin-bottom: 1rem; }
+
     @media (max-width: 768px) {
       .top-bar { display: none; }
       nav { padding: 0 1rem; }
@@ -195,6 +230,7 @@
       .course-hero { padding: 2.3rem 1.2rem; }
       .course-page { padding: 1rem 1rem 3rem; }
       .group-tabs { flex-direction: column; }
+      .fun-course { padding: 1.8rem 1.3rem; border-radius: 22px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -243,10 +279,10 @@
     "provider": { "@id": "https://the-light-academy.github.io/the-light-academy/#organization" },
     "offers": {
       "@type": "Offer",
-      "price": "110",
+      "price": "120",
       "priceCurrency": "EUR",
       "url": "https://the-light-academy.github.io/the-light-academy/course_english.html",
-      "description": "110 EUR на месец, до 8 деца в група",
+      "description": "120 EUR на месец, до 8 деца в група",
       "category": "Education"
     }
   }
@@ -362,13 +398,55 @@
       <p>Развитие на комуникационни умения, увереност при говорене и обогатяване на речника в приятна, подкрепяща среда — за деца от 1. до 4. клас.</p>
     </section>
 
+    <section class="fun-course" id="funCourse">
+      <div class="fun-course-stars" id="funCourseStars"></div>
+      <div class="fun-course-inner">
+        <span class="fun-course-badge">🐻 Let's learn English and have fun!</span>
+        <h2 class="fun-title">🌟 Забавен курс по английски език за деца от 1. до 4. клас 🌟</h2>
+
+        <p class="fun-lead">Искате ли вашето дете да учи английски с усмивка, игри и много забавление? Тогава този курс е точно за него!</p>
+        <p class="fun-lead">При нас английският не е скучно зубрене на думи и правила. Децата учат чрез игри, песни, приказки, ролеви ситуации и интересни предизвикателства. Така новите думи и изрази се запомнят лесно и естествено, а ученето се превръща в истинско приключение.</p>
+        <p class="fun-lead">По време на занятията малките ученици ще пеят, ще играят, ще рисуват, ще разказват истории и ще откриват света на английския език по забавен и увлекателен начин. Нашата цел е не само да научат нови думи, а да започнат уверено да ги използват в ежедневното общуване.</p>
+
+        <p class="fun-kicker">🚀 В курса децата ще:</p>
+        <div class="fun-features" id="funFeatures">
+          <div class="fun-feature"><span class="star">⭐</span><span class="txt">Учат английски чрез игри и забавни дейности</span></div>
+          <div class="fun-feature"><span class="star">⭐</span><span class="txt">Общуват и говорят още от първите уроци</span></div>
+          <div class="fun-feature"><span class="star">⭐</span><span class="txt">Развиват увереност и любов към чуждите езици</span></div>
+          <div class="fun-feature"><span class="star">⭐</span><span class="txt">Учат нови думи чрез песни, истории и творчество</span></div>
+          <div class="fun-feature"><span class="star">⭐</span><span class="txt">Подобряват уменията си за слушане, четене и писане</span></div>
+          <div class="fun-feature"><span class="star">⭐</span><span class="txt">Създават нови приятелства и преживяват весели моменти</span></div>
+        </div>
+
+        <div class="fun-rhyme">
+          <p>Hello, hello, let's all play,<br>Learn new English every day!<br>Read and sing, jump and smile,<br>Learning English is worthwhile!<br><br>🌈 One, two, three, let's begin,<br>Learning English is a win!</p>
+        </div>
+
+        <p class="fun-kicker">📅 Организация на курса</p>
+        <div class="fun-org">
+          <div class="fun-org-item"><strong>🕕 Кога</strong><span>Вторник 16:00–17:45 или петък 10:00–11:45</span></div>
+          <div class="fun-org-item"><strong>👧👦 За кого</strong><span>За деца от 1. до 4. клас</span></div>
+          <div class="fun-org-item"><strong>📍 Къде</strong><span>Light Academy, ул. „Горски пътник“ №56</span></div>
+          <div class="fun-org-item"><strong>⏱️ Колко време</strong><span>2 учебни часа с кратка почивка</span></div>
+          <div class="fun-org-item"><strong>💳 Такса за курса</strong><span>120 евро на месец</span></div>
+        </div>
+
+        <p class="fun-lead">📚 <strong>Какво ни очаква?</strong> Много игри, нови приятели, интересни теми и много английски език!</p>
+
+        <div class="fun-cta">
+          <p>✨ Join the fun! 🎈 Запишете детето си още днес и нека ученето се превърне в истинско забавление! 🇬🇧📚😊</p>
+          <button type="button" class="btn-enroll" onclick="scrollToEnrollForm()">Запиши се сега</button>
+        </div>
+      </div>
+    </section>
+
     <section class="course-content">
       <aside class="price-box">
         <span class="price-label">Такса за курса</span>
         <span class="price-note" style="display:block; margin-bottom:0.4rem;">До 8 деца в групата</span>
 
         <div class="price-value-wrap">
-          <span class="price-value" id="priceValue">110 <small>€ / месец</small></span>
+          <span class="price-value" id="priceValue">120 <small>€ / месец</small></span>
         </div>
         <span class="price-note">плащане на месечна база</span>
 
@@ -491,6 +569,42 @@
           rows.forEach(r => r.classList.toggle('active', r.dataset.group === g));
         });
       });
+    })();
+
+    // ── Fun course promo: floating stars + scroll-triggered feature cards ──
+    (function () {
+      const starsWrap = document.getElementById('funCourseStars');
+      if (starsWrap) {
+        const glyphs = ['⭐', '🌟', '✨', '🎈', '📚'];
+        const count = window.innerWidth < 600 ? 6 : 10;
+        for (let i = 0; i < count; i++) {
+          const s = document.createElement('span');
+          s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+          s.style.left = Math.random() * 100 + '%';
+          s.style.fontSize = (14 + Math.random() * 18) + 'px';
+          s.style.animationDuration = (11 + Math.random() * 9) + 's';
+          s.style.animationDelay = (Math.random() * 10) + 's';
+          starsWrap.appendChild(s);
+        }
+      }
+
+      const features = Array.from(document.querySelectorAll('.fun-feature'));
+      if (features.length) {
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const i = features.indexOf(entry.target);
+                setTimeout(() => entry.target.classList.add('in-view'), Math.max(i, 0) * 90);
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.2 });
+          features.forEach(f => observer.observe(f));
+        } else {
+          features.forEach(f => f.classList.add('in-view'));
+        }
+      }
     })();
 
   </script>
