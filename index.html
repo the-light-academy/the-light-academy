@@ -1,23 +1,6 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <!-- Meta Pixel Code -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '1422253886488445');
-  fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=1422253886488445&ev=PageView&noscript=1"
-  /></noscript>
-  <!-- End Meta Pixel Code -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -2119,6 +2102,21 @@ The Light Academy прави впечатление с малките групи
         document.head.appendChild(inlineScript);
       }
 
+      function loadMetaPixel() {
+        if (window.__lightAcademyPixelLoaded) return;
+        window.__lightAcademyPixelLoaded = true;
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1422253886488445');
+        fbq('track', 'PageView');
+      }
+
       function disableAnalytics() {
         try {
           if (window.dataLayer) {
@@ -2139,6 +2137,7 @@ The Light Academy прави впечатление с малките групи
 
         if (choice === 'accepted') {
           loadAnalytics();
+          loadMetaPixel();
         } else {
           disableAnalytics();
         }
@@ -2147,6 +2146,7 @@ The Light Academy прави впечатление с малките групи
       const savedChoice = localStorage.getItem(STORAGE_KEY);
       if (savedChoice === 'accepted') {
         loadAnalytics();
+        loadMetaPixel();
         setBannerVisible(false);
       } else if (savedChoice === 'rejected' || savedChoice === 'basic') {
         setBannerVisible(false);
