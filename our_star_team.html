@@ -564,33 +564,16 @@
     })();
   </script>
 
-  <script>
-    // Scatters the floating background symbols (digits, letters, stars, shapes)
-    // slightly deeper into the page than their CSS top:%, and gives the whole
-    // layer a gentle scroll parallax via a --pxy custom property.
-    (function () {
-      const bg = document.getElementById('teamBg');
-      if (!bg) return;
-      const root = document.documentElement;
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReduced) return;
-
-      let ticking = false;
-      function update() {
-        ticking = false;
-        const px = Math.max(-60, Math.min(60, window.scrollY * 0.04));
-        bg.style.transform = 'translateY(' + px + 'px)';
-      }
-      function onScroll() {
-        if (!ticking) {
-          window.requestAnimationFrame(update);
-          ticking = true;
-        }
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      update();
-    })();
-  </script>
+  <!-- The background layer (#teamBg) previously also got a JS-driven
+       scroll parallax (translateY tied to window.scrollY, rAF-throttled).
+       Removed: it's a full-document-height absolutely positioned layer
+       with ~23 continuously CSS-animating children and no will-change
+       hint, so mutating its transform on every scroll tick likely forced
+       full-layer repaints rather than a cheap composite -- a plausible
+       cause of the reported "scrolling freezes after a while" on desktop
+       Chrome (repaint cost would scale with how far the visitor has
+       scrolled). The floating symbols keep their own idle CSS float
+       animations; this page now has zero custom 'scroll' listeners. -->
 
   <script>
     // Draws a soft curved line that winds through the centers of the four
