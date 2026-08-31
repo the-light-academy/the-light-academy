@@ -91,9 +91,27 @@
     .hero-letters span { position: absolute; font-family: 'Playfair Display', serif; font-weight: 700; color: rgba(255,255,255,0.24); animation: floatLetter linear infinite; }
     @keyframes floatLetter { 0% { transform: translateY(110%) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-140%) rotate(18deg); opacity: 0; } }
 
-    .course-content { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+    .course-content { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; margin-top: 1.5rem; position: relative; }
 
-    .price-box { background: #f8f0e7; border: 1px solid rgba(111, 67, 35, 0.14); border-radius: 20px; padding: 1.5rem 1.25rem; box-shadow: 0 12px 28px rgba(40, 30, 20, 0.06); position: sticky; top: 90px; height: fit-content; }
+    .content-blob { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.4; pointer-events: none; z-index: 0; }
+    .content-blob-1 { width: 260px; height: 260px; background: var(--sun); top: -50px; left: -70px; }
+    .content-blob-2 { width: 220px; height: 220px; background: var(--orange); top: 40%; left: 40px; }
+
+    .price-box {
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 20px; padding: 1.5rem 1.25rem;
+      box-shadow: 0 16px 36px rgba(111, 67, 35, 0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+      position: sticky; top: 90px; height: fit-content; z-index: 1;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .price-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 22px 46px rgba(111, 67, 35, 0.18), inset 0 1px 0 rgba(255,255,255,0.7);
+      border-color: rgba(245,166,35,0.55);
+    }
     .price-label { display: block; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.9rem; }
 
     .price-switch { display: flex; background: var(--sun-light); border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 1.1rem; }
@@ -111,23 +129,32 @@
     .price-save { display: inline-block; margin-top: 0.9rem; font-size: 0.78rem; font-weight: 800; color: #1c7a4a; background: #e5f5ec; padding: 6px 12px; border-radius: 999px; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease; }
     .price-save.show { opacity: 1; transform: translateY(0); }
 
-    .course-info { background: var(--white); border: 1px solid var(--line); border-radius: 24px; padding: 1.8rem; box-shadow: 0 10px 24px rgba(30, 18, 12, 0.04); }
+    .course-info { background: var(--white); border: 1px solid var(--line); border-radius: 24px; padding: 1.8rem; box-shadow: 0 10px 24px rgba(30, 18, 12, 0.04); position: relative; z-index: 1; }
     .course-info h2 { font-family: 'Playfair Display', serif; color: var(--sun-dark); font-size: clamp(1.7rem, 3vw, 2.2rem); margin-bottom: 0.8rem; }
     .course-info > p { color: var(--mid); font-size: 1rem; margin-bottom: 1.4rem; }
 
     .group-tabs { display: flex; gap: 0.6rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
     .group-tab { flex: 1; min-width: 160px; text-align: left; background: linear-gradient(180deg, #fffaf1, #fff3df); border: 1.5px solid rgba(245,166,35,0.22); border-radius: 16px; padding: 0.9rem 1rem; cursor: pointer; font-family: 'Nunito', sans-serif; transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease; }
-    .group-tab:hover { transform: translateY(-2px); }
+    .group-tab:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(245,166,35,0.2); border-color: rgba(245,166,35,0.45); }
     .group-tab strong { display: block; color: var(--sun-dark); font-size: 0.98rem; margin-bottom: 2px; }
     .group-tab span { color: var(--mid); font-size: 0.87rem; }
     .group-tab.active { border-color: var(--orange); box-shadow: 0 10px 22px rgba(232,88,10,0.16); background: linear-gradient(180deg, #fff, #fff7ec); }
     .group-tab.active strong { color: var(--orange); }
 
-    .group-detail { position: relative; background: var(--orange-light); border: 1px solid rgba(232,88,10,0.14); border-radius: 18px; padding: 1.3rem 1.4rem; min-height: 92px; }
+    .group-detail {
+      position: relative;
+      background: rgba(255,240,232,0.55);
+      backdrop-filter: blur(10px) saturate(150%);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+      border: 1px solid rgba(232,88,10,0.18); border-radius: 18px; padding: 1.3rem 1.4rem; min-height: 92px;
+      transition: box-shadow 0.3s ease;
+    }
+    .group-detail:hover { box-shadow: 0 14px 32px rgba(232,88,10,0.14); }
     .group-detail-row { display: none; align-items: center; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.4s ease; }
     .group-detail-row.active { display: flex; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .detail-pill { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid rgba(232,88,10,0.16); padding: 8px 14px; border-radius: 999px; font-size: 0.87rem; font-weight: 700; color: var(--brown); }
+    .detail-pill { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid rgba(232,88,10,0.16); padding: 8px 14px; border-radius: 999px; font-size: 0.87rem; font-weight: 700; color: var(--brown); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .detail-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(232,88,10,0.18); }
     .detail-pill .ic { font-size: 1rem; }
 
     /* ── AT A GLANCE ── */
@@ -143,8 +170,14 @@
     .glance-text strong { display: block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); margin-bottom: 3px; }
     .glance-text span { display: block; font-family: 'Nunito', sans-serif; font-weight: 700; color: var(--brown); font-size: 1rem; line-height: 1.35; }
 
-    .btn-enroll { display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: var(--white); font-weight: 800; font-size: 0.95rem; padding: 12px 22px; border-radius: 999px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 10px 22px rgba(232,88,10,0.28); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-enroll { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: var(--white); font-weight: 800; font-size: 0.95rem; padding: 12px 22px; border-radius: 999px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 10px 22px rgba(232,88,10,0.28); transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .btn-enroll:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(232,88,10,0.34); }
+    .btn-enroll::after {
+      content: ""; position: absolute; top: 0; left: -75%; width: 45%; height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: skewX(-20deg); transition: left 0.55s ease;
+    }
+    .btn-enroll:hover::after { left: 125%; }
 
     /* ── ENROLL FORM (inline, always open at the bottom of the page) ── */
     .enroll-form-section { margin-top: 1.9rem; border-top: 1px solid var(--line); padding-top: 1.7rem; scroll-margin-top: 90px; }
@@ -199,23 +232,64 @@
     .fun-kicker { font-weight: 800; color: var(--orange); margin-bottom: 0.7rem; }
 
     .fun-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; margin: 0.4rem 0 1.8rem; }
-    .fun-feature { display: flex; align-items: flex-start; gap: 10px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 0.9rem 1rem; opacity: 0; transform: translateY(16px) scale(0.96); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1); }
+    .fun-feature {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px) saturate(150%);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+      border: 1px solid var(--line); border-radius: 16px; padding: 0.9rem 1rem;
+      opacity: 0; transform: translateY(16px) scale(0.96);
+      transition: opacity 0.5s ease, transform 0.35s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease, border-color 0.25s ease;
+    }
     .fun-feature.in-view { opacity: 1; transform: translateY(0) scale(1); }
-    .fun-feature .star { font-size: 1.2rem; flex-shrink: 0; }
+    .fun-feature:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 14px 30px rgba(232,88,10,0.16); border-color: rgba(232,88,10,0.32); cursor: default; }
+    .fun-feature .star { font-size: 1.2rem; flex-shrink: 0; transition: transform 0.4s ease; }
+    .fun-feature:hover .star { transform: rotate(-14deg) scale(1.25); }
     .fun-feature .txt { color: var(--dark); font-weight: 700; font-size: 0.93rem; line-height: 1.5; }
 
-    .fun-rhyme { position: relative; margin: 0 0 1.8rem; background: linear-gradient(135deg, #eaf6ff, #dff1ff); border: 1px solid rgba(56,142,214,0.18); border-radius: 20px; padding: 1.6rem 2.2rem 1.6rem 1.8rem; overflow: hidden; transition: transform 0.3s ease; }
-    .fun-rhyme:hover { transform: translateY(-2px); }
-    .fun-rhyme::before { content: "🎵"; position: absolute; top: 14px; right: 18px; font-size: 1.6rem; opacity: 0.55; }
+    .fun-rhyme { position: relative; margin: 0 0 1.8rem; background: linear-gradient(135deg, #eaf6ff, #dff1ff); border: 1px solid rgba(56,142,214,0.18); border-radius: 20px; padding: 1.6rem 2.2rem 1.6rem 1.8rem; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .fun-rhyme:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(56,142,214,0.22); }
+    .fun-rhyme::before { content: "🎵"; position: absolute; top: 14px; right: 18px; font-size: 1.6rem; opacity: 0.55; transition: transform 0.4s ease; }
+    .fun-rhyme:hover::before { transform: rotate(18deg) scale(1.15); }
     .fun-rhyme p { font-family: 'Pacifico', cursive; font-size: 1.02rem; line-height: 1.9; color: #245a86; margin: 0; }
 
     .fun-org { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.9rem; margin: 0 0 1.6rem; }
-    .fun-org-item { background: linear-gradient(180deg, #fffaf1, #fff3df); border: 1px solid rgba(245,166,35,0.2); border-radius: 16px; padding: 1rem 1.1rem; }
+    .fun-org-item {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      border: 1px solid rgba(245,166,35,0.28); border-radius: 16px; padding: 1rem 1.1rem;
+      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .fun-org-item:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(245,166,35,0.22); border-color: rgba(245,166,35,0.55); }
     .fun-org-item strong { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); margin-bottom: 4px; }
     .fun-org-item span { display: block; font-weight: 700; color: var(--brown); font-size: 0.95rem; line-height: 1.4; }
 
     .fun-cta { text-align: center; margin-top: 0.4rem; }
     .fun-cta p { font-weight: 800; color: var(--orange); font-size: 1.02rem; margin-bottom: 1rem; }
+
+    /* ── COURSE MINI-FAQ (click to expand) ── */
+    .mini-faq { margin-top: 1.75rem; background: linear-gradient(135deg, #fff3df, #ffe8d4); border-radius: 28px; padding: 2.4rem 2.2rem; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .mini-faq h2 { font-family: 'Bad Script', cursive; font-weight: 400; color: var(--orange); font-size: clamp(1.5rem, 3.5vw, 2rem); margin-bottom: 1.3rem; }
+    .mini-faq-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .mini-faq-item {
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid rgba(232,88,10,0.18); border-radius: 16px; overflow: hidden;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .mini-faq-item:hover { border-color: rgba(232,88,10,0.4); box-shadow: 0 10px 26px rgba(232,88,10,0.14); }
+    .mini-faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      background: none; border: none; cursor: pointer; text-align: left;
+      padding: 1rem 1.2rem; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.98rem; color: var(--dark);
+    }
+    .mini-faq-q:hover { color: var(--orange); }
+    .mini-faq-q .chev { flex-shrink: 0; color: var(--orange); transition: transform 0.3s ease; }
+    .mini-faq-item.open .mini-faq-q .chev { transform: rotate(180deg); }
+    .mini-faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .mini-faq-a-inner { padding: 0 1.2rem 1.1rem; color: var(--mid); font-size: 0.93rem; line-height: 1.7; }
 
     @media (max-width: 768px) {
       .top-bar { display: none; }
@@ -231,6 +305,8 @@
       .course-page { padding: 1rem 1rem 3rem; }
       .group-tabs { flex-direction: column; }
       .fun-course { padding: 1.8rem 1.3rem; border-radius: 22px; }
+      .mini-faq { padding: 1.8rem 1.3rem; border-radius: 22px; }
+      .content-blob { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -440,7 +516,46 @@
       </div>
     </section>
 
+    <section class="mini-faq" id="miniFaq">
+      <h2>❓ Въпроси за курса</h2>
+      <div class="mini-faq-list" id="miniFaqList">
+        <article class="mini-faq-item">
+          <button type="button" class="mini-faq-q">
+            <span>На какво ниво трябва да е детето, за да се запише?</span>
+            <svg class="chev" width="14" height="9" viewBox="0 0 14 9" fill="none"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="mini-faq-a"><div class="mini-faq-a-inner">Никакво предварително ниво не се изисква — групите са съобразени с възрастта, а не с нивото. Учим от самите основи, чрез игра и повторение, така че всяко дете тръгва от там, където е.</div></div>
+        </article>
+
+        <article class="mini-faq-item">
+          <button type="button" class="mini-faq-q">
+            <span>Какви материали се използват в часовете?</span>
+            <svg class="chev" width="14" height="9" viewBox="0 0 14 9" fill="none"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="mini-faq-a"><div class="mini-faq-a-inner">Работим с интерактивни дигитални материали, песни, флашкарти и ролеви игри — не разчитаме само на учебник, а комбинираме различни методи, за да остане детето ангажирано.</div></div>
+        </article>
+
+        <article class="mini-faq-item">
+          <button type="button" class="mini-faq-q">
+            <span>Какво се случва, ако детето пропусне занятие?</span>
+            <svg class="chev" width="14" height="9" viewBox="0 0 14 9" fill="none"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="mini-faq-a"><div class="mini-faq-a-inner">Споделяме кратко резюме на пропуснатия урок с родителя, а преподавателят наваксва темата индивидуално в следващия час, за да не изостава детето от групата.</div></div>
+        </article>
+
+        <article class="mini-faq-item">
+          <button type="button" class="mini-faq-q">
+            <span>Мога ли да присъствам на час преди да запиша детето?</span>
+            <svg class="chev" width="14" height="9" viewBox="0 0 14 9" fill="none"><path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="mini-faq-a"><div class="mini-faq-a-inner">Да — свържете се с нас, за да уговорим удобно за вас посещение на час, преди да вземете решение за записване.</div></div>
+        </article>
+      </div>
+    </section>
+
     <section class="course-content">
+      <div class="content-blob content-blob-1"></div>
+      <div class="content-blob content-blob-2"></div>
       <aside class="price-box">
         <span class="price-label">Такса за курса</span>
         <span class="price-note" style="display:block; margin-bottom:0.4rem;">До 8 деца в групата</span>
@@ -605,6 +720,36 @@
           features.forEach(f => f.classList.add('in-view'));
         }
       }
+    })();
+
+    // ── Course mini-FAQ: click to expand/collapse ──
+    (function () {
+      const items = Array.from(document.querySelectorAll('.mini-faq-item'));
+      if (!items.length) return;
+
+      items.forEach(item => {
+        const btn = item.querySelector('.mini-faq-q');
+        const answer = item.querySelector('.mini-faq-a');
+        btn.addEventListener('click', () => {
+          const isOpen = item.classList.contains('open');
+          if (isOpen) {
+            item.classList.remove('open');
+            answer.style.maxHeight = '0px';
+          } else {
+            item.classList.add('open');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+          }
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        items.forEach(item => {
+          if (item.classList.contains('open')) {
+            const answer = item.querySelector('.mini-faq-a');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+          }
+        });
+      });
     })();
 
   </script>
