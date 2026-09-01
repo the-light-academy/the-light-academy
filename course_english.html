@@ -253,17 +253,23 @@
     .fun-rhyme:hover::before { transform: rotate(18deg) scale(1.15); }
     .fun-rhyme p { font-family: 'Pacifico', cursive; font-size: 1.02rem; line-height: 1.9; color: #245a86; margin: 0; }
 
-    .fun-org { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.9rem; margin: 0 0 1.6rem; }
-    .fun-org-item {
+    .fun-location-bar {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.9rem;
       background: rgba(255,255,255,0.5);
       backdrop-filter: blur(12px) saturate(160%);
       -webkit-backdrop-filter: blur(12px) saturate(160%);
-      border: 1px solid rgba(245,166,35,0.28); border-radius: 16px; padding: 1rem 1.1rem;
-      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease, border-color 0.25s ease;
+      border: 1px solid rgba(245,166,35,0.28); border-radius: 16px; padding: 1rem 1.2rem;
+      margin: 0 0 1.6rem;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
     }
-    .fun-org-item:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(245,166,35,0.22); border-color: rgba(245,166,35,0.55); }
-    .fun-org-item strong { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); margin-bottom: 4px; }
-    .fun-org-item span { display: block; font-weight: 700; color: var(--brown); font-size: 0.95rem; line-height: 1.4; }
+    .fun-location-bar:hover { box-shadow: 0 14px 30px rgba(245,166,35,0.18); border-color: rgba(245,166,35,0.5); }
+    .fun-location-bar .loc-text { font-weight: 700; color: var(--brown); font-size: 0.95rem; }
+    .fun-location-jump {
+      display: inline-flex; align-items: center; gap: 6px; background: var(--sun-light); color: var(--sun-dark);
+      font-weight: 800; font-size: 0.85rem; padding: 8px 16px; border-radius: 999px; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif; transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .fun-location-jump:hover { background: var(--orange); color: var(--white); transform: translateY(-2px); }
 
     .fun-cta { text-align: center; margin-top: 0.4rem; }
     .fun-cta p { font-weight: 800; color: var(--orange); font-size: 1.02rem; margin-bottom: 1rem; }
@@ -481,8 +487,7 @@
         <h2 class="fun-title">🌟 Забавен курс по английски език за деца от 1. до 4. клас 🌟</h2>
 
         <p class="fun-lead">Искате ли вашето дете да учи английски с усмивка, игри и много забавление? Тогава този курс е точно за него!</p>
-        <p class="fun-lead">При нас английският не е скучно зубрене на думи и правила. Децата учат чрез игри, песни, приказки, ролеви ситуации и интересни предизвикателства. Така новите думи и изрази се запомнят лесно и естествено, а ученето се превръща в истинско приключение.</p>
-        <p class="fun-lead">По време на занятията малките ученици ще пеят, ще играят, ще рисуват, ще разказват истории и ще откриват света на английския език по забавен и увлекателен начин. Нашата цел е не само да научат нови думи, а да започнат уверено да ги използват в ежедневното общуване.</p>
+        <p class="fun-lead">При нас английският не е скучно зубрене на думи и правила — а истинско приключение, в което новите думи и изрази се запомнят лесно и естествено.</p>
 
         <p class="fun-kicker">🚀 В курса децата ще:</p>
         <div class="fun-features" id="funFeatures">
@@ -498,16 +503,10 @@
           <p>Hello, hello, let's all play,<br>Learn new English every day!<br>Read and sing, jump and smile,<br>Learning English is worthwhile!<br><br>🌈 One, two, three, let's begin,<br>Learning English is a win!</p>
         </div>
 
-        <p class="fun-kicker">📅 Организация на курса</p>
-        <div class="fun-org">
-          <div class="fun-org-item"><strong>🕕 Кога</strong><span>Вторник 16:00–17:45 или петък 10:00–11:45</span></div>
-          <div class="fun-org-item"><strong>👧👦 За кого</strong><span>За деца от 1. до 4. клас</span></div>
-          <div class="fun-org-item"><strong>📍 Къде</strong><span>Light Academy, ул. „Горски пътник“ №56</span></div>
-          <div class="fun-org-item"><strong>⏱️ Колко време</strong><span>2 учебни часа с кратка почивка</span></div>
-          <div class="fun-org-item"><strong>💳 Такса за курса</strong><span>120 евро на месец</span></div>
+        <div class="fun-location-bar">
+          <span class="loc-text">📍 Light Academy, ул. „Горски пътник“ №56</span>
+          <button type="button" class="fun-location-jump" onclick="scrollToCourseDetails()">Групи, час и цена ⬇</button>
         </div>
-
-        <p class="fun-lead">📚 <strong>Какво ни очаква?</strong> Много игри, нови приятели, интересни теми и много английски език!</p>
 
         <div class="fun-cta">
           <p>✨ Join the fun! 🎈 Запишете детето си още днес и нека ученето се превърне в истинско забавление! 🇬🇧📚😊</p>
@@ -569,9 +568,9 @@
         <span style="display:block; margin-top:0.65rem; text-align:center; font-size:0.82rem; font-weight:700; color:var(--mid);">за да запазите място в курса</span>
       </aside>
 
-      <div class="course-info">
-        <h2>При нас</h2>
-        <p>децата учат английски чрез игра, разговор и практика в малки групи. От най-ранна възраст изграждат смелост да говорят, без страх от грешки, и надграждат речник и граматика по естествен, забавен начин — стабилна основа за следващите учебни етапи.</p>
+      <div class="course-info" id="courseDetails">
+        <h2>Групи и график</h2>
+        <p>Изберете удобна за вас група — вижте деня, часа и датата на старт.</p>
 
         <div class="group-tabs" id="groupTabs">
           <button type="button" class="group-tab active" data-group="1">
@@ -586,11 +585,9 @@
 
         <div class="group-detail">
           <div class="group-detail-row active" data-group="1">
-            <span class="detail-pill"><span class="ic">📅</span> Вторник, 16:00–17:45</span>
             <span class="detail-pill"><span class="ic">🚀</span> Старт: 6 октомври 2026 г.</span>
           </div>
           <div class="group-detail-row" data-group="2">
-            <span class="detail-pill"><span class="ic">📅</span> Петък, 10:00–11:45</span>
             <span class="detail-pill"><span class="ic">🚀</span> Старт: 9 октомври 2026 г.</span>
           </div>
         </div>
@@ -796,6 +793,11 @@
       box.classList.remove('enroll-highlight');
       void box.offsetWidth;
       box.classList.add('enroll-highlight');
+    }
+
+    function scrollToCourseDetails() {
+      const box = document.getElementById('courseDetails');
+      if (box) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     async function submitEnrollForm(e) {
