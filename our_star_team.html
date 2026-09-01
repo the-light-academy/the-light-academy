@@ -593,14 +593,20 @@
 
   <script>
     // Draws a soft curved line that winds through the centers of the four
-    // teacher photos (in DOM order) and reveals itself as the visitor
-    // scrolls past that stretch of the page — same progressive-reveal
-    // technique: a stroke-dasharray/stroke-dashoffset "draw the line"
-    // animation (the standard, cheap way to do this -- no masking involved,
-    // just a stroke property). An earlier version used a JS-mutated SVG
-    // clip-path instead, which is a well-documented weak spot on
+    // teacher photos (in DOM order) and its drawn length now tracks scroll
+    // position continuously — the line grows as you scroll down through the
+    // section and shrinks back if you scroll up. A stroke-dasharray/
+    // stroke-dashoffset "draw the line" animation (the standard, cheap way
+    // to do this -- no masking involved, just a stroke property, painted,
+    // never triggers layout). An earlier version used a JS-mutated SVG
+    // clip-path tied to scroll, which is a well-documented weak spot on
     // Safari/WebKit and was reported as making the whole page's scrolling
-    // lock up on iPhone; this avoids that mechanism entirely.
+    // lock up on iPhone; this avoids that mechanism entirely by only ever
+    // touching stroke-dashoffset. The scroll listener itself is passive and
+    // rAF-throttled, and on every tick it only reads window.scrollY/
+    // innerHeight (cheap, no forced layout) against numbers cached once in
+    // rebuild() -- never a fresh getBoundingClientRect() per scroll tick,
+    // which is what would make this expensive again.
     function initTeamLine() {
       const svg = document.getElementById('teamLineSvg');
       const path = document.getElementById('teamLinePath');
@@ -643,14 +649,17 @@
       // sizing it to just that span keeps it small regardless of how long
       // the rest of the page is.
       let svgTop = 0, pathLength = 0;
-      let revealed = false;
+      let sectionStart = 0, sectionEnd = 0;
 
       function rebuild() {
         const docWidth = document.documentElement.scrollWidth;
         const points = photos.map(centerOf);
 
-        const startY = points[0].y - 100;
-        const endY = points[points.length - 1].y + 100;
+        sectionStart = points[0].y;
+        sectionEnd = points[points.length - 1].y;
+
+        const startY = sectionStart - 100;
+        const endY = sectionEnd + 100;
         svgTop = Math.max(startY - 40, 0);
         const svgHeight = Math.max(endY - svgTop + 40, 1);
 
@@ -664,46 +673,66 @@
 
         pathLength = path.getTotalLength();
         path.style.strokeDasharray = pathLength;
-        path.style.strokeDashoffset = revealed ? 0 : pathLength;
       }
 
-      // Drawn once, the same way the team-member rows fade in: an
-      // IntersectionObserver flips a class/style once when the section
-      // scrolls into view, then a plain CSS transition animates it. No
-      // 'scroll' listener at all for the line itself -- deliberately, after
-      // a JS-mutated clip-path here was reported as locking up scrolling on
-      // iPhone Chrome (WebKit); this rules the line out entirely as a
-      // contributor, since it no longer does anything on a scroll event.
-      function reveal() {
-        if (revealed || !pathLength) return;
-        revealed = true;
-        path.style.transition = prefersReduced ? 'none' : 'stroke-dashoffset 1.6s ease';
+      // Maps the current scroll position to a 0–1 progress value across the
+      // team section and writes it straight to stroke-dashoffset. Only
+      // cached numbers (sectionStart/sectionEnd/pathLength from rebuild())
+      // and window.scrollY/innerHeight are read here -- nothing that forces
+      // a synchronous layout -- so this stays cheap even called every frame.
+      function applyProgress() {
+        if (!pathLength) return;
+        const viewportH = window.innerHeight;
+        const bandStart = sectionStart - viewportH * 0.85;
+        const bandEnd = sectionEnd - viewportH * 0.25;
+        const span = Math.max(bandEnd - bandStart, 1);
+        const progress = Math.min(1, Math.max(0, (window.scrollY - bandStart) / span));
+        path.style.strokeDashoffset = pathLength * (1 - progress);
+      }
+
+      if (prefersReduced) {
+        // No scroll-linked motion for reduced-motion visitors: draw it once
+        // and leave it fully revealed, static.
         path.style.strokeDashoffset = 0;
+      } else {
+        let ticking = false;
+        function onScroll() {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            ticking = false;
+            applyProgress();
+          });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        applyProgress();
       }
 
       let resizeTimer = null;
       function onResize() {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(rebuild, 150);
+        resizeTimer = setTimeout(() => {
+          rebuild();
+          if (prefersReduced) {
+            path.style.strokeDashoffset = 0;
+          } else {
+            applyProgress();
+          }
+        }, 150);
       }
 
       window.addEventListener('resize', onResize, { passive: true });
-      window.addEventListener('load', rebuild);
+      window.addEventListener('load', () => {
+        rebuild();
+        if (prefersReduced) {
+          path.style.strokeDashoffset = 0;
+        } else {
+          applyProgress();
+        }
+      });
       rebuild();
-
-      if (prefersReduced) {
-        reveal();
-      } else {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              reveal();
-              observer.disconnect();
-            }
-          });
-        }, { threshold: 0.1 });
-        observer.observe(photos[0]);
-      }
+      if (prefersReduced) path.style.strokeDashoffset = 0;
+      else applyProgress();
     }
     initTeamLine();
   </script>
