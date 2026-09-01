@@ -113,24 +113,18 @@
       color: var(--dark);
     }
     .cookie-settings {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 1500;
-      background: rgba(255,255,255,0.96);
-      color: var(--dark);
-      border: 1px solid rgba(92, 74, 50, 0.12);
-      border-radius: 999px;
-      padding: 10px 16px;
-      font-weight: 800;
-      font-size: 0.8rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: fixed; right: 18px; bottom: 18px; z-index: 1500;
+      width: 44px; height: 44px; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.96); color: var(--dark);
+      border: 1px solid rgba(92, 74, 50, 0.12); border-radius: 50%;
+      font-size: 1.25rem; line-height: 1;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08); cursor: pointer;
+      opacity: 0.55;
+      transition: opacity 0.3s ease, transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .cookie-settings:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+    .cookie-settings:hover, .cookie-settings:focus-visible {
+      opacity: 1; transform: translateY(-1px); box-shadow: 0 14px 30px rgba(0,0,0,0.12);
     }
     @media (max-width: 720px) {
       .cookie-banner {
@@ -2067,7 +2061,7 @@ The Light Academy прави впечатление с малките групи
     </div>
   </div>
 
-  <button id="cookieSettingsBtn" class="cookie-settings" type="button" aria-label="Cookie settings" data-i18n="cookies.settings">Настройки на бисквитките</button>
+  <button id="cookieSettingsBtn" class="cookie-settings" type="button" aria-label="Настройки на бисквитките" title="Настройки на бисквитките">🍪</button>
 
   <script>
     (function () {
@@ -2289,7 +2283,6 @@ The Light Academy прави впечатление с малките групи
         "cookies.accept": "Accept all",
         "cookies.essential": "Only essential",
         "cookies.reject": "Reject",
-        "cookies.settings": "Cookie settings"
       },
       bg: {
         "topbar.address": "Горски пътник 56",
@@ -2407,7 +2400,6 @@ The Light Academy прави впечатление с малките групи
         "cookies.accept": "Приемам всички",
         "cookies.essential": "Само основни",
         "cookies.reject": "Отказвам",
-        "cookies.settings": "Настройки на бисквитките"
       }
     };
 
