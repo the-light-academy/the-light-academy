@@ -78,6 +78,13 @@
     .dropdown-direct-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
     .dropdown-direct-link:hover { background: var(--sun-light); color: var(--sun-dark); }
 
+    @media (max-width: 768px) {
+      .top-bar { display: none; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+
     /* ── PAGE LAYOUT ── */
     main.faq-page { max-width: 900px; margin: 0 auto; padding: 0 1.25rem 4.5rem; }
 
