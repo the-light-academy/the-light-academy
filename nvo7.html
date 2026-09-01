@@ -822,23 +822,6 @@
       line-height: 1.5;
     }
 
-    .early-bird-banner {
-      margin-top: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      background: var(--teal-light);
-      color: var(--teal);
-      font-weight: 700;
-      font-size: 0.92rem;
-      padding: 0.85rem 1.3rem;
-      border-radius: 999px;
-      text-align: center;
-    }
-    .early-bird-banner strong { font-weight: 900; }
-
     /* Desktop: CTA (urgency+form) before "При нас"; DOM order unchanged so
        mobile (no override) keeps its original "При нас" -> CTA order. */
     .post-pricing-group { display: flex; flex-direction: column; }
@@ -1273,6 +1256,13 @@
       color: var(--orange);
       line-height: 1;
     }
+    .urgency-timer-total {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+    }
+    .spots-count.counting { color: #ff8a4c; }
     .urgency-timer-label {
       display: block;
       font-size: 0.72rem;
@@ -1498,13 +1488,6 @@
       .pricing-heading { order: 1; margin: 0; }
       .pricing-heading h2, .pricing-heading p { display: none; }
       .pricing-card { order: 2; }
-      .early-bird-banner {
-        order: 3;
-        margin: 0;
-        padding: 0.55rem 0.9rem;
-        font-size: 0.8rem;
-        gap: 0.4rem;
-      }
       .reg-form-wrap { order: 4; margin: 0; }
       .modal-box { background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%); }
       /* Buttons + hint broken out of .cta-buttons so the hint can sit between
@@ -1529,9 +1512,7 @@
       }
       .hero-pills { display: none; }
 
-      /* Discount + availability block, right after the registration form.
-         Days/hours render as a plain countdown line (no boxes); the two
-         group-availability boxes keep their card styling. */
+      /* Availability block, right after the registration form. */
       .cta-left-col .urgency-block {
         display: block;
         order: 5;
@@ -1540,35 +1521,6 @@
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border: 1px solid rgba(255,255,255,0.1);
         box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
-      }
-      .urgency-timer {
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas: "days hours" "g1 g2";
-      }
-      .urgency-timer-box:nth-child(1) { grid-area: days; }
-      .urgency-timer-box:nth-child(2) { grid-area: hours; }
-      .urgency-timer-box:nth-child(3) { grid-area: g1; }
-      .urgency-timer-box:nth-child(4) { grid-area: g2; }
-      .urgency-timer-box:nth-child(1),
-      .urgency-timer-box:nth-child(2) {
-        background: none;
-        border: none;
-        padding: 0;
-        min-width: 0;
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        gap: 6px;
-      }
-      .urgency-timer-box:nth-child(1) .urgency-timer-num,
-      .urgency-timer-box:nth-child(2) .urgency-timer-num {
-        font-size: 1.6rem;
-      }
-      .urgency-timer-box:nth-child(1) .urgency-timer-label,
-      .urgency-timer-box:nth-child(2) .urgency-timer-label {
-        font-size: 0.85rem;
-        text-transform: none;
-        font-weight: 700;
       }
       #section-pri-nas { order: 9; }
       #section-zapishete-se { order: 5; }
@@ -2373,10 +2325,6 @@
       </div>
     </div>
 
-    <div class="early-bird-banner">
-      <i class="fa-solid fa-bolt"></i>
-      <span><strong>5% отстъпка</strong> за ранно записване до 31 август</span>
-    </div>
   </section>
 
   <div class="post-pricing-group">
@@ -2513,22 +2461,14 @@
     <div class="cta-left-col">
     <span id="section-zapishete-se" class="section-anchor"></span>
     <div class="urgency-block">
-      <p class="urgency-text"><strong>5% отстъпка</strong> за ранно записване — само до 31 август. 2 групи × 8 деца, местата намаляват. Не чакайте есента, за да разберете, че мястото е заето.</p>
+      <p class="urgency-text">2 групи × 8 деца, местата намаляват. Не чакайте есента, за да разберете, че мястото е заето.</p>
       <div class="urgency-timer" id="urgencyTimer">
         <div class="urgency-timer-box">
-          <span class="urgency-timer-num" id="urgencyDays">–</span>
-          <span class="urgency-timer-label">дни</span>
-        </div>
-        <div class="urgency-timer-box">
-          <span class="urgency-timer-num" id="urgencyHours">–</span>
-          <span class="urgency-timer-label">часа</span>
-        </div>
-        <div class="urgency-timer-box">
-          <span class="urgency-timer-num">7</span>
+          <span class="urgency-timer-num"><span class="spots-count" id="spotsGroup1" data-target="6">8</span><span class="urgency-timer-total">/8</span></span>
           <span class="urgency-timer-label">Група 1 места</span>
         </div>
         <div class="urgency-timer-box">
-          <span class="urgency-timer-num">8</span>
+          <span class="urgency-timer-num"><span class="spots-count" id="spotsGroup2" data-target="7">8</span><span class="urgency-timer-total">/8</span></span>
           <span class="urgency-timer-label">Група 2 места</span>
         </div>
       </div>
@@ -2855,24 +2795,48 @@
       timerObserver.observe(timerEl);
     })();
 
-    // Urgency countdown — real days/hours remaining until 31 август (early-bird deadline)
+    // Remaining-spots counters — animate down from 8 to the real number left,
+    // once when the block scrolls into view (not a live countdown, just a
+    // one-time "places are filling up" reveal).
     (function () {
-      const daysEl = document.getElementById('urgencyDays');
-      const hoursEl = document.getElementById('urgencyHours');
-      if (!daysEl || !hoursEl) return;
+      const counters = Array.from(document.querySelectorAll('.spots-count'));
+      const timerEl = document.getElementById('urgencyTimer');
+      if (!counters.length || !timerEl) return;
 
-      function update() {
-        const now = new Date();
-        const target = new Date(now.getFullYear(), 7, 31, 23, 59, 59); // 31 август
-        let diff = target - now;
-        if (diff < 0) diff = 0;
-        const totalHours = Math.floor(diff / (1000 * 60 * 60));
-        daysEl.textContent = Math.floor(totalHours / 24);
-        hoursEl.textContent = totalHours % 24;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function animateCounter(el) {
+        const target = parseInt(el.dataset.target, 10);
+        if (prefersReduced || isNaN(target)) {
+          el.textContent = isNaN(target) ? el.textContent : target;
+          return;
+        }
+        let current = 8;
+        el.textContent = current;
+        if (current <= target) return;
+        el.classList.add('counting');
+        const step = setInterval(() => {
+          current--;
+          el.textContent = current;
+          if (current <= target) {
+            clearInterval(step);
+            el.classList.remove('counting');
+          }
+        }, 550);
       }
 
-      update();
-      setInterval(update, 60000);
+      let started = false;
+      const spotsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !started) {
+            started = true;
+            counters.forEach(animateCounter);
+            spotsObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.4 });
+
+      spotsObserver.observe(timerEl);
     })();
 
     // Timeline fill grows with scroll
