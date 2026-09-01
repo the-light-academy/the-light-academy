@@ -1116,6 +1116,9 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    /* Tapped (mobile) or clicked — same pause as desktop :hover, so a
+       review stays still long enough to read, then resumes on its own. */
+    .course-reviews-carousel.paused .course-reviews-track { animation-play-state: paused; }
     @media (prefers-reduced-motion: reduce) {
       .course-reviews-track { animation: none; }
     }
@@ -2865,6 +2868,25 @@
       }, { threshold: 0.4 });
 
       spotsObserver.observe(timerEl);
+    })();
+
+    // Reviews carousel — desktop already pauses on :hover (pure CSS). On
+    // mobile there's no hover, so a tap/click pauses it the same way, then
+    // it resumes on its own a few seconds later (long enough to read one
+    // card); tapping again while paused just extends that window.
+    (function () {
+      const carousel = document.querySelector('.course-reviews-carousel');
+      if (!carousel) return;
+
+      let resumeTimer = null;
+      function pauseForReading() {
+        carousel.classList.add('paused');
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => carousel.classList.remove('paused'), 6000);
+      }
+
+      carousel.addEventListener('touchstart', pauseForReading, { passive: true });
+      carousel.addEventListener('click', pauseForReading);
     })();
 
     // Timeline fill grows with scroll
