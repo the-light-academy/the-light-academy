@@ -1262,7 +1262,14 @@
       font-weight: 700;
       color: rgba(255,255,255,0.5);
     }
+    .spots-count {
+      display: inline-block;
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.28s cubic-bezier(.4,0,.2,1);
+    }
     .spots-count.counting { color: #ff8a4c; }
+    .spots-count.digit-swap { transform: translateY(-10px); opacity: 0; }
     .urgency-timer-label {
       display: block;
       font-size: 0.72rem;
@@ -2810,6 +2817,19 @@
 
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+      // Swaps the digit with a brief slide-up-and-fade "flip" instead of an
+      // instant textContent change, so each step reads as a smooth
+      // transition rather than a jump cut.
+      function swapDigit(el, value, onSettled) {
+        el.classList.add('digit-swap');
+        setTimeout(() => {
+          el.textContent = value;
+          void el.offsetWidth; // force reflow so removing the class transitions back in
+          el.classList.remove('digit-swap');
+          if (onSettled) setTimeout(onSettled, 280);
+        }, 280);
+      }
+
       function animateCounter(el) {
         const target = parseInt(el.dataset.target, 10);
         if (prefersReduced || isNaN(target)) {
@@ -2820,14 +2840,17 @@
         el.textContent = current;
         if (current <= target) return;
         el.classList.add('counting');
-        const step = setInterval(() => {
+        function step() {
           current--;
-          el.textContent = current;
-          if (current <= target) {
-            clearInterval(step);
-            el.classList.remove('counting');
-          }
-        }, 550);
+          swapDigit(el, current, () => {
+            if (current > target) {
+              setTimeout(step, 350);
+            } else {
+              el.classList.remove('counting');
+            }
+          });
+        }
+        setTimeout(step, 350);
       }
 
       let started = false;
