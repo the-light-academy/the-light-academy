@@ -310,6 +310,15 @@
     }
     .hero-dot--1 { top: 18%; left: 8%; width: 34px; height: 34px; background: var(--sun); opacity: 0.14; }
     .hero-dot--2 { bottom: 22%; right: 10%; width: 22px; height: 22px; background: var(--peach); opacity: 0.16; }
+
+    /* Mobile-only hero: replaces the photo background with a dark glass
+       look (floating yellow circles on navy) and swaps the visible title
+       for the brand name. The real h1/subtitle stay in the DOM for SEO —
+       just visually hidden (sr-only) below 768px — while these decorative
+       stand-ins are aria-hidden so screen readers only ever hear the real
+       ones once. Desktop never sees any of this (display: none by default). */
+    .hero-mobile-glass { display: none; }
+    .hero-mobile-title, .hero-mobile-subtitle { display: none; }
     .hero h1 {
       font-family: 'Bad Script', cursive;
       font-weight: 400;
@@ -1304,10 +1313,69 @@
 
       .hero {
         padding: 4rem 1.2rem 3rem;
+        background: linear-gradient(165deg, #101d33 0%, #0a1424 55%, #080f1c 100%);
+      }
+      .hero::before, .hero::after { display: none; }
+
+      /* Real heading/subtitle: kept for SEO + screen readers, just
+         visually hidden (never display:none, which would drop them from
+         the accessibility tree too). */
+      .hero h1, .hero > p[data-i18n="hero.subtitle"] {
+        position: absolute !important;
+        width: 1px; height: 1px;
+        margin: -1px; padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
       }
 
-      .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
-      .hero p { font-size: 1rem; max-width: 100%; }
+      .hero-mobile-glass {
+        display: block;
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .hero-mobile-glass span {
+        position: absolute;
+        border-radius: 50%;
+        background: var(--sun);
+        filter: blur(26px);
+      }
+      .hmc-1 { width: 150px; height: 150px; top: 6%; left: -40px; opacity: 0.55; animation: heroCircleFloat1 9s ease-in-out infinite; }
+      .hmc-2 { width: 100px; height: 100px; top: 52%; right: -25px; opacity: 0.4; animation: heroCircleFloat2 11s ease-in-out infinite; }
+      .hmc-3 { width: 70px; height: 70px; bottom: 8%; left: 18%; opacity: 0.45; animation: heroCircleFloat3 8s ease-in-out infinite; }
+      .hmc-4 { width: 90px; height: 90px; top: 16%; right: 12%; opacity: 0.35; animation: heroCircleFloat1 13s ease-in-out infinite reverse; }
+
+      .hero-mobile-title {
+        display: block;
+        position: relative;
+        z-index: 1;
+        font-family: 'Bad Script', cursive;
+        font-weight: 400;
+        font-size: clamp(2.2rem, 9vw, 3rem);
+        color: #fff;
+        margin-bottom: 0.7rem;
+      }
+      .hero-mobile-subtitle {
+        display: inline-block;
+        position: relative;
+        z-index: 1;
+        color: var(--sun);
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+        padding: 8px 22px;
+        border: 1.5px solid rgba(247,173,25,0.5);
+        border-radius: 999px;
+        background: rgba(247,173,25,0.08);
+        backdrop-filter: blur(6px);
+        margin-bottom: 1.8rem;
+      }
+
+      .hero-cta { position: relative; z-index: 1; }
       .hero-cta .btn { padding: 10px 20px; font-size: 0.95rem; }
 
       .section { padding: 3rem 1.2rem; }
@@ -1566,6 +1634,14 @@
   <section class="hero">
     <span class="hero-dot hero-dot--1" aria-hidden="true"></span>
     <span class="hero-dot hero-dot--2" aria-hidden="true"></span>
+    <div class="hero-mobile-glass" aria-hidden="true">
+      <span class="hmc hmc-1"></span>
+      <span class="hmc hmc-2"></span>
+      <span class="hmc hmc-3"></span>
+      <span class="hmc hmc-4"></span>
+    </div>
+    <div class="hero-mobile-title" aria-hidden="true">The Light Academy</div>
+    <div class="hero-mobile-subtitle" data-i18n="hero.mobileSubtitle" aria-hidden="true">Академия за знания</div>
     <h1 data-i18n="hero.title">Където знанието<br>среща креативността</h1>
     <p data-i18n="hero.subtitle">Понеже съвременното преподаване изисква нов подход</p>
     <div class="hero-cta">
@@ -2190,6 +2266,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.weekly": "Weekly schedule",
         "hero.title": "Where Knowledge<br>Meets Creativity",
         "hero.subtitle": "Because modern education demands a new approach",
+        "hero.mobileSubtitle": "Academy of Knowledge",
         "hero.btn1": "NVO Grade 4",
         "hero.btn2": "📐 NVO 7th Grade",
         "hero.btn3": "All Courses",
@@ -2310,6 +2387,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.weekly": "График",
         "hero.title": "Където знанието<br>среща креативността",
         "hero.subtitle": "Понеже съвременното преподаване изисква нов подход",
+        "hero.mobileSubtitle": "Академия за знания",
         "hero.btn1": "НВО 4 клас",
         "hero.btn2": "📐 НВО 7 клас",
         "hero.btn3": "Всички курсове",
