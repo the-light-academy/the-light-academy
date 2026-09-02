@@ -513,7 +513,7 @@
        just visually hidden (sr-only) below 768px — while these decorative
        stand-ins are aria-hidden so screen readers only ever hear the real
        ones once. Desktop never sees any of this (display: none by default). */
-    .hero-mobile-glass { display: none; }
+    .hero-mobile-shapes { display: none; }
     .hero-mobile-title, .hero-mobile-subtitle { display: none; }
     .hero h1 {
       position: relative;
@@ -1565,7 +1565,7 @@
         display: none;
       }
 
-      .hero-mobile-glass {
+      .hero-mobile-shapes {
         display: block;
         position: absolute;
         inset: 0;
@@ -1573,29 +1573,36 @@
         pointer-events: none;
         z-index: 0;
       }
-      .hero-mobile-glass span {
+      .hms {
         position: absolute;
-        border-radius: 50%;
-        background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95) 0%, #FFD873 16%, var(--sun) 45%, rgba(247,173,25,0.4) 75%, rgba(247,173,25,0) 100%);
-        filter: blur(3px);
-        box-shadow: 0 0 34px rgba(247,173,25,0.4);
+        overflow: visible;
+        color: var(--sun);
+        filter: drop-shadow(0 0 8px rgba(247,173,25,0.5));
       }
-      .hmc-1 { width: 150px; height: 150px; top: 6%; left: -40px; opacity: 0.85; animation: heroGlassFloat1 4s ease-in-out infinite; }
-      .hmc-2 { width: 100px; height: 100px; top: 52%; right: -25px; opacity: 0.75; animation: heroGlassFloat2 5s ease-in-out infinite; }
-      .hmc-3 { width: 70px; height: 70px; bottom: 8%; left: 18%; opacity: 0.8; animation: heroGlassFloat3 3.5s ease-in-out infinite; }
-      .hmc-4 { width: 90px; height: 90px; top: 16%; right: 12%; opacity: 0.7; animation: heroGlassFloat1 6s ease-in-out infinite reverse; }
+      .hms circle, .hms rect, .hms path {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 3.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vector-effect: non-scaling-stroke;
+      }
+      .hms-1 { width: 128px; height: 128px; top: 4%; left: -16px; opacity: 0.6; animation: heroShapeDrift1 7s ease-in-out infinite; }
+      .hms-2 { width: 86px; height: 86px; top: 50%; right: -12px; opacity: 0.55; animation: heroShapeDrift2 8s ease-in-out infinite; }
+      .hms-3 { width: 58px; height: 58px; bottom: 9%; left: 16%; opacity: 0.55; animation: heroShapeDrift3 6.5s ease-in-out infinite; }
+      .hms-4 { width: 46px; height: 46px; top: 15%; right: 16%; opacity: 0.6; animation: heroShapeDrift2 9s ease-in-out infinite reverse; }
 
-      @keyframes heroGlassFloat1 {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(-32px, 28px) scale(1.12); }
+      @keyframes heroShapeDrift1 {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        50% { transform: translate(-14px, 12px) rotate(8deg); }
       }
-      @keyframes heroGlassFloat2 {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(28px, -26px) scale(1.08); }
+      @keyframes heroShapeDrift2 {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        50% { transform: translate(12px, -14px) rotate(-10deg); }
       }
-      @keyframes heroGlassFloat3 {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(22px, 24px) scale(1.15); }
+      @keyframes heroShapeDrift3 {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        50% { transform: translate(10px, 10px) rotate(12deg); }
       }
 
       .hero-mobile-title {
@@ -1906,11 +1913,11 @@
       <path d="M422 691c-80-145-3-305 90-368 187-126 122-280 319-239 153 32 132 178 354 197 185 16 264 68 325 161" />
     </svg>
 
-    <div class="hero-mobile-glass" aria-hidden="true">
-      <span class="hmc hmc-1"></span>
-      <span class="hmc hmc-2"></span>
-      <span class="hmc hmc-3"></span>
-      <span class="hmc hmc-4"></span>
+    <div class="hero-mobile-shapes" aria-hidden="true">
+      <svg class="hms hms-1" viewBox="0 0 100 100"><path d="M50 12 L88 82 L12 82 Z" /></svg>
+      <svg class="hms hms-2" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" /></svg>
+      <svg class="hms hms-3" viewBox="0 0 100 100"><rect x="16" y="16" width="68" height="68" rx="4" /></svg>
+      <svg class="hms hms-4" viewBox="0 0 100 100"><path d="M50 18 V82 M18 50 H82" /></svg>
     </div>
     <div class="hero-mobile-title" aria-hidden="true">The Light Academy</div>
     <div class="hero-mobile-subtitle" data-i18n="hero.mobileSubtitle" aria-hidden="true">Академия за знания</div>
