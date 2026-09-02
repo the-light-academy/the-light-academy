@@ -2289,7 +2289,7 @@
       </div>
       <div class="step-dot">04</div>
       <div class="step-image">
-        <video src="photos/gamification.mp4?v=3" width="1080" height="1920" muted autoplay loop playsinline preload="metadata" aria-label="Видео с илюстрация на геймификация на упражненията"></video>
+        <video id="gamificationVideo" src="photos/gamification.mp4?v=4" width="1080" height="1920" muted loop playsinline preload="none" poster="photos/gamification-poster.jpg" aria-label="Видео с илюстрация на геймификация на упражненията"></video>
         <div class="step-image-label">Учене през игра</div>
       </div>
     </div>
@@ -2887,6 +2887,33 @@
 
       carousel.addEventListener('touchstart', pauseForReading, { passive: true });
       carousel.addEventListener('click', pauseForReading);
+    })();
+
+    // Gamification video (Геймификация section) — no autoplay on page load.
+    // preload="none" + poster keep it from fetching anything until the
+    // section actually scrolls into view; only then do we load() and
+    // play() it, and it pauses again once scrolled out so it doesn't keep
+    // decoding/playing off-screen.
+    (function () {
+      const video = document.getElementById('gamificationVideo');
+      if (!video || !('IntersectionObserver' in window)) return;
+
+      let loaded = false;
+      const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (!loaded) {
+              loaded = true;
+              video.load();
+            }
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      videoObserver.observe(video);
     })();
 
     // Timeline fill grows with scroll
