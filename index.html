@@ -1406,7 +1406,12 @@
       .photo-secondary-2 { width: 125px; height: 125px; bottom: 45px; left: -85px; }
 
       /* Nav links overflow at tablet widths — switch to hamburger like mobile */
-      nav { padding: 0 1.2rem; }
+      nav {
+        padding: 0 1.2rem;
+        background: rgba(255,255,255,0.42);
+        backdrop-filter: blur(22px) saturate(180%);
+        -webkit-backdrop-filter: blur(22px) saturate(180%);
+      }
       .nav-toggle { display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center; }
       .nav-toggle span { background: var(--sun-dark); }
       .nav-toggle span + span { margin-top: 5px; }
@@ -1421,10 +1426,10 @@
         width: 100%;
         gap: 0.75rem;
         padding: 1rem 0.9rem 1.2rem;
-        background: rgba(255,255,255,0.72);
-        backdrop-filter: blur(20px) saturate(160%);
-        -webkit-backdrop-filter: blur(20px) saturate(160%);
-        border: 1px solid rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.42);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid rgba(255,255,255,0.55);
         border-top: none;
         border-radius: 0 0 18px 18px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.12);
@@ -1435,8 +1440,9 @@
       }
 
       .nav-links a {
-        padding: 10px 14px;
-        font-size: 14px;
+        padding: 12px 14px;
+        font-size: 17px;
+        color: var(--dark);
         border-radius: 999px;
       }
 
@@ -1471,6 +1477,9 @@
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 0.75rem;
+        background: rgba(255,255,255,0.42);
+        backdrop-filter: blur(22px) saturate(180%);
+        -webkit-backdrop-filter: blur(22px) saturate(180%);
       }
 
       .nav-toggle { display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center; }
@@ -1487,10 +1496,10 @@
         width: 100%;
         gap: 0.75rem;
         padding: 1rem 0.9rem 1.2rem;
-        background: rgba(255,255,255,0.72);
-        backdrop-filter: blur(20px) saturate(160%);
-        -webkit-backdrop-filter: blur(20px) saturate(160%);
-        border: 1px solid rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.42);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid rgba(255,255,255,0.55);
         border-top: none;
         border-radius: 0 0 18px 18px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.12);
@@ -1501,8 +1510,9 @@
       }
 
       .nav-links a {
-        padding: 10px 14px;
-        font-size: 13px;
+        padding: 12px 14px;
+        font-size: 17px;
+        color: var(--dark);
         border-radius: 999px;
       }
 
