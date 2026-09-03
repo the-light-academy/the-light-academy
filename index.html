@@ -337,24 +337,39 @@
       will-change: transform;
     }
     .hero-disc {
-      background: linear-gradient(155deg, var(--c1) 0%, var(--c2) 100%);
-      opacity: var(--o, 0.88);
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.4),
-        inset 6px 8px 18px rgba(255,255,255,0.55),
-        inset -12px -16px 26px rgba(60,30,0,0.16),
-        0 26px 46px rgba(120,70,10,0.16);
+      opacity: var(--o, 0.95);
       transform: perspective(1200px) translate3d(var(--dx), var(--dy), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz));
     }
-    .hero-disc::after {
+    /* Two stacked faces sell the "extruded coin" thickness the flat
+       gradient version lacked: a darker, more saturated rim peeking out
+       a little below a lighter glossy face on top. */
+    .hero-disc-rim {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: var(--c2);
+      filter: brightness(0.7) saturate(1.25);
+      transform: translateY(calc(var(--size) * 0.1));
+    }
+    .hero-disc-face {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(155deg, var(--c1) 0%, var(--c2) 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.45),
+        inset 6px 8px 18px rgba(255,255,255,0.6),
+        inset -12px -16px 26px rgba(0,0,0,0.16),
+        0 26px 46px rgba(60,30,10,0.2);
+    }
+    .hero-disc-face::after {
       content: '';
       position: absolute; top: 10%; left: 14%;
       width: 46%; height: 30%;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0) 75%);
+      background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0) 75%);
     }
     .hero-disc-ring {
-      border: 1.5px solid rgba(255,255,255,var(--ring-a, 0.55));
+      border: 2px solid rgba(255,255,255,var(--ring-a, 0.6));
+      box-shadow: 0 0 0 1px rgba(120,70,10,0.06);
       transform: perspective(1200px) translate3d(var(--dx), var(--dy), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(var(--ring-scale, 1.35));
     }
     .hero-particle {
@@ -3374,20 +3389,25 @@ The Light Academy прави впечатление с малките групи
       const scene = document.getElementById('heroDiscScene');
       if (!hero || !scene) return;
 
+      // "amp" is the small ambient wobble every disc has; "travel" is a
+      // much larger, slower one-axis journey that a few edge-positioned
+      // discs use to actually glide in and out from under the glass card
+      // over a minute or so, so the card's backdrop-filter blur has
+      // something to visibly soften as it passes.
       const discs = [
-        { type: 'disc', x: '10%', y: '20%', size: 210, rx: 64, ry: -10, rz: 8, c1: '#FFEAB8', c2: '#F0930F', depth: 0.6, ring: { scale: 1.5, a: 0.6 }, amp: [11, 9], speed: 0.55, phase: 0 },
-        { type: 'disc', x: '87%', y: '13%', size: 120, rx: 58, ry: 14, rz: -12, c1: '#DFF6F1', c2: '#5FB8AE', depth: 0.45, amp: [8, 10], speed: 0.7, phase: 1.4 },
-        { type: 'disc', x: '52%', y: '5%', size: 66, rx: 70, ry: 0, rz: 4, c1: '#FFFDF6', c2: '#FFDFA6', depth: 0.2, o: 0.62, amp: [6, 6], speed: 0.9, phase: 2.6 },
-        { type: 'disc', x: '91%', y: '63%', size: 260, rx: 50, ry: -16, rz: -6, c1: '#FFDEC2', c2: '#FF8F6B', depth: 0.75, ring: { scale: 1.4, a: 0.62 }, amp: [13, 10], speed: 0.5, phase: 0.8 },
-        { type: 'disc', x: '5%', y: '68%', size: 180, rx: 60, ry: 12, rz: 10, c1: '#EADCFF', c2: '#F4A9CE', depth: 0.55, ring: { scale: 1.45, a: 0.58 }, amp: [10, 12], speed: 0.6, phase: 3.4 },
-        { type: 'disc', x: '33%', y: '9%', size: 58, rx: 66, ry: -6, rz: 0, c1: '#ECF4C4', c2: '#E9D46A', depth: 0.18, o: 0.5, amp: [5, 5], speed: 0.85, phase: 1.9 },
-        { type: 'disc', x: '17%', y: '86%', size: 52, rx: 55, ry: 8, rz: -4, c1: '#FFF2CE', c2: '#F5B95C', depth: 0.35, o: 0.62, amp: [5, 4], speed: 0.75, phase: 0.4 },
-        { type: 'particle', x: '24%', y: '38%', size: 10, c1: '#FFD873', depth: 0.5, o: 0.5, amp: [4, 5], speed: 1.1, phase: 0.2 },
-        { type: 'particle', x: '70%', y: '32%', size: 7, c1: '#8FD9CE', depth: 0.4, o: 0.45, amp: [3, 4], speed: 1.3, phase: 1.1 },
-        { type: 'particle', x: '61%', y: '78%', size: 9, c1: '#F4A9CE', depth: 0.55, o: 0.5, amp: [5, 3], speed: 0.95, phase: 2.0 },
-        { type: 'particle', x: '41%', y: '58%', size: 6, c1: '#E9D46A', depth: 0.3, o: 0.4, amp: [3, 3], speed: 1.4, phase: 2.8 },
-        { type: 'particle', x: '80%', y: '84%', size: 8, c1: '#F0930F', depth: 0.6, o: 0.4, amp: [4, 4], speed: 1.0, phase: 1.6 },
-        { type: 'particle', x: '13%', y: '48%', size: 5, c1: '#FFFDF6', depth: 0.25, o: 0.55, amp: [2, 3], speed: 1.5, phase: 3.6 },
+        { type: 'disc', x: '9%', y: '20%', size: 210, rx: 64, ry: -10, rz: 8, c1: '#FFE8A6', c2: '#F0930F', depth: 0.55, ring: { scale: 1.45, a: 0.6 }, amp: [10, 8], speed: 0.5, phase: 0, travel: { axis: 'x', px: 190, period: 46 } },
+        { type: 'disc', x: '85%', y: '11%', size: 120, rx: 58, ry: 14, rz: -12, c1: '#CDB8FF', c2: '#7C4DE0', depth: 0.45, ring: { scale: 1.4, a: 0.55 }, amp: [8, 10], speed: 0.7, phase: 1.4 },
+        { type: 'disc', x: '52%', y: '4%', size: 60, rx: 70, ry: 0, rz: 4, c1: '#FFFDF6', c2: '#FFDFA6', depth: 0.2, o: 0.85, ring: { scale: 1.4, a: 0.45 }, amp: [6, 6], speed: 0.9, phase: 2.6 },
+        { type: 'disc', x: '92%', y: '62%', size: 260, rx: 50, ry: -16, rz: -6, c1: '#FFC98A', c2: '#F2790C', depth: 0.65, ring: { scale: 1.35, a: 0.62 }, amp: [12, 9], speed: 0.45, phase: 0.8, travel: { axis: 'x', px: -220, period: 54 } },
+        { type: 'disc', x: '4%', y: '66%', size: 180, rx: 60, ry: 12, rz: 10, c1: '#FFB0D0', c2: '#E8437F', depth: 0.5, ring: { scale: 1.4, a: 0.58 }, amp: [9, 11], speed: 0.55, phase: 3.4, travel: { axis: 'y', px: -140, period: 40 } },
+        { type: 'disc', x: '32%', y: '8%', size: 56, rx: 66, ry: -6, rz: 0, c1: '#E3F49A', c2: '#8FC93B', depth: 0.18, o: 0.7, ring: { scale: 1.4, a: 0.45 }, amp: [5, 5], speed: 0.85, phase: 1.9 },
+        { type: 'disc', x: '72%', y: '88%', size: 76, rx: 60, ry: 10, rz: -8, c1: '#9EEDE6', c2: '#1FA6A0', depth: 0.35, ring: { scale: 1.4, a: 0.5 }, amp: [6, 5], speed: 0.75, phase: 0.4 },
+        { type: 'particle', x: '24%', y: '38%', size: 10, c1: '#FFD873', depth: 0.5, o: 0.55, amp: [4, 5], speed: 1.1, phase: 0.2 },
+        { type: 'particle', x: '68%', y: '30%', size: 7, c1: '#9EEDE6', depth: 0.4, o: 0.5, amp: [3, 4], speed: 1.3, phase: 1.1 },
+        { type: 'particle', x: '61%', y: '78%', size: 9, c1: '#FFB0D0', depth: 0.55, o: 0.55, amp: [5, 3], speed: 0.95, phase: 2.0 },
+        { type: 'particle', x: '41%', y: '58%', size: 6, c1: '#E3F49A', depth: 0.3, o: 0.45, amp: [3, 3], speed: 1.4, phase: 2.8 },
+        { type: 'particle', x: '80%', y: '80%', size: 8, c1: '#CDB8FF', depth: 0.6, o: 0.45, amp: [4, 4], speed: 1.0, phase: 1.6 },
+        { type: 'particle', x: '13%', y: '48%', size: 5, c1: '#FFFDF6', depth: 0.25, o: 0.6, amp: [2, 3], speed: 1.5, phase: 3.6 },
       ];
 
       const items = discs.map((d) => {
@@ -3403,6 +3423,12 @@ The Light Academy прави впечатление с малките групи
           el.style.setProperty('--rx', d.rx + 'deg');
           el.style.setProperty('--ry', d.ry + 'deg');
           el.style.setProperty('--rz', d.rz + 'deg');
+          const rim = document.createElement('div');
+          rim.className = 'hero-disc-rim';
+          el.appendChild(rim);
+          const face = document.createElement('div');
+          face.className = 'hero-disc-face';
+          el.appendChild(face);
         }
         scene.appendChild(el);
 
@@ -3421,7 +3447,7 @@ The Light Academy прави впечатление с малките групи
           scene.appendChild(ring);
         }
 
-        return { el, ring, depth: d.depth, amp: d.amp, speed: d.speed, phase: d.phase };
+        return { el, ring, depth: d.depth, amp: d.amp, speed: d.speed, phase: d.phase, travel: d.travel };
       });
 
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3449,8 +3475,16 @@ The Light Academy прави впечатление с малките групи
           cursorX += (targetX - cursorX) * ease;
           cursorY += (targetY - cursorY) * ease;
           items.forEach((it) => {
-            const driftX = Math.sin(t * 0.18 * it.speed + it.phase) * it.amp[0];
-            const driftY = Math.cos(t * 0.15 * it.speed + it.phase) * it.amp[1];
+            let driftX = Math.sin(t * 0.18 * it.speed + it.phase) * it.amp[0];
+            let driftY = Math.cos(t * 0.15 * it.speed + it.phase) * it.amp[1];
+            if (it.travel) {
+              // A slow, wide one-axis glide (sine easing in/out at each
+              // end) that carries this disc under the glass card and
+              // back over a full minute-ish cycle.
+              const wave = Math.sin((t / it.travel.period) * Math.PI * 2);
+              if (it.travel.axis === 'x') driftX += wave * it.travel.px;
+              else driftY += wave * it.travel.px;
+            }
             const dx = (cursorX * maxRange * it.depth + driftX).toFixed(2) + 'px';
             const dy = (cursorY * maxRange * it.depth + driftY).toFixed(2) + 'px';
             it.el.style.setProperty('--dx', dx);
