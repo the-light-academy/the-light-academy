@@ -516,6 +516,7 @@
        ones once. Desktop never sees any of this (display: none by default). */
     .hero-mobile-shapes { display: none; }
     .hero-mobile-title, .hero-mobile-subtitle { display: none; }
+    .hero-scroll-cue { display: none; }
     .hero h1 {
       position: relative;
       font-family: 'Playfair Display', serif;
@@ -1526,6 +1527,10 @@
 
       .hero {
         padding: 4rem 1.2rem 3rem;
+        min-height: calc(100svh - 64px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         background:
           linear-gradient(rgba(6,11,22,0.72), rgba(6,11,22,0.8)),
           url('photos/background_index.jpg') center/cover no-repeat;
@@ -1627,6 +1632,33 @@
 
       .hero-cta { position: relative; z-index: 1; }
       .hero-cta .btn { padding: 10px 20px; font-size: 0.95rem; }
+
+      .hero-scroll-cue {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        position: absolute;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        z-index: 1;
+        color: #fff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+        animation: heroScrollCueFloat 2.2s ease-in-out infinite;
+      }
+      .hero-scroll-cue svg { width: 18px; height: 18px; }
+      @keyframes heroScrollCueFloat {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(7px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hero-scroll-cue { animation: none; }
+      }
 
       .section { padding: 3rem 1.2rem; }
       .section-title { font-size: clamp(1.4rem, 4vw, 1.8rem); }
@@ -1913,7 +1945,7 @@
       <div class="hero-card-footer">
         <span data-i18n="hero.footerLeft">Лозенец, София</span>
         <div class="hero-progress" aria-hidden="true"><b></b></div>
-        <span data-i18n="hero.footerRight">Разгледайте отзивите ↓</span>
+        <span data-i18n="hero.footerRight">Вижте още ↓</span>
       </div>
     </div>
 
@@ -1928,6 +1960,11 @@
       <span data-i18n="hero.motion">Анимация</span>
     </button>
     <div class="hero-toast" id="heroToast" role="status" aria-live="polite"></div>
+
+    <a href="#about" class="hero-scroll-cue">
+      <span data-i18n="hero.scrollCue">Вижте още</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+    </a>
   </section>
 
   <!-- ABOUT -->
@@ -2548,7 +2585,8 @@ The Light Academy прави впечатление с малките групи
         "hero.mobileSubtitle": "Academy of Knowledge",
         "hero.eyebrow": "BOUTIQUE ACADEMY · LOZENETS",
         "hero.footerLeft": "Lozenets, Sofia",
-        "hero.footerRight": "See our reviews ↓",
+        "hero.footerRight": "See more ↓",
+        "hero.scrollCue": "See more",
         "hero.noteStrong": "5.0 ★ on Google",
         "hero.noteSmall": "7 happy parents",
         "hero.motion": "Motion",
@@ -2675,7 +2713,8 @@ The Light Academy прави впечатление с малките групи
         "hero.mobileSubtitle": "Академия за знания",
         "hero.eyebrow": "БУТИКОВА АКАДЕМИЯ · ЛОЗЕНЕЦ",
         "hero.footerLeft": "Лозенец, София",
-        "hero.footerRight": "Разгледайте отзивите ↓",
+        "hero.footerRight": "Вижте още ↓",
+        "hero.scrollCue": "Вижте още",
         "hero.noteStrong": "5.0 ★ в Google",
         "hero.noteSmall": "7 доволни родители",
         "hero.motion": "Анимация",
