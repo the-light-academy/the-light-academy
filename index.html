@@ -273,7 +273,7 @@
        Mobile keeps its own separate photo-based hero (see the mobile media
        query) and neutralizes every element added here. */
     .hero {
-      background: linear-gradient(115deg, #B86308 0%, #E78A0F 24%, #F7AD19 47%, #FFD873 70%, #FFF4D9 100%);
+      background: linear-gradient(160deg, var(--cream) 0%, var(--sun-light) 45%, var(--peach-light) 100%);
       padding: 6.5rem 2rem 4.5rem;
       text-align: center;
       position: relative;
@@ -290,85 +290,65 @@
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 4% 77%, rgba(158,78,4,0.5), transparent 31%),
-        radial-gradient(ellipse at 50% 48%, rgba(255,187,35,0.45), transparent 34%),
-        radial-gradient(ellipse at 88% 18%, rgba(255,248,191,0.6), transparent 30%);
-      filter: blur(34px);
-      animation: heroBreathe 14s ease-in-out infinite alternate;
+        radial-gradient(ellipse at 10% 80%, rgba(226,160,125,0.22), transparent 32%),
+        radial-gradient(ellipse at 50% 50%, rgba(255,244,217,0.4), transparent 36%),
+        radial-gradient(ellipse at 88% 15%, rgba(255,255,255,0.5), transparent 30%);
+      filter: blur(40px);
+      animation: heroBreathe 20s ease-in-out infinite alternate;
     }
-    .hero-noise {
-      position: absolute; inset: 0; z-index: 1; pointer-events: none;
-      opacity: 0.16; mix-blend-mode: soft-light;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-    }
+    /* Soft, low-contrast "glass bubble" background: a few large translucent
+       spheres that drift gently and ease toward the cursor -- calm by
+       design, so kept deliberately sparse (no noise texture, trail lines,
+       or small particle dots). */
     .hero-aurora {
       position: absolute; border-radius: 50%; z-index: 0;
-      filter: blur(70px); mix-blend-mode: screen; opacity: 0.7;
-      animation: heroAuroraFloat 13s ease-in-out infinite alternate;
+      filter: blur(80px); opacity: 0.4;
+      --cursor-x: 0px; --cursor-y: 0px;
+      transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
+      transition: transform 1.6s cubic-bezier(.16,.8,.22,1);
+      animation: heroAuroraFloat 20s ease-in-out infinite alternate;
       pointer-events: none;
     }
-    .hero-aurora-1 { width: 40vw; height: 46vw; left: 18%; top: 6%; background: #FFE36D; }
-    .hero-aurora-2 { width: 30vw; height: 40vw; right: 6%; bottom: -14%; background: #FFBA20; animation-delay: -6s; }
-    .hero-aurora-3 { width: 26vw; height: 30vw; left: -8%; bottom: -6%; background: #C66D06; animation-delay: -3s; }
+    .hero-aurora-1 { width: 38vw; height: 42vw; left: 16%; top: 4%; background: #FFF1D6; }
+    .hero-aurora-2 { width: 28vw; height: 36vw; right: 8%; bottom: -10%; background: #FBE0C4; animation-delay: -6s; }
+    .hero-aurora-3 { width: 24vw; height: 26vw; left: -6%; bottom: -4%; background: #F3D2C9; animation-delay: -3s; }
     .hero-orb {
       position: absolute; z-index: 0;
       border-radius: 50%;
-      background: radial-gradient(ellipse at 48% 28%, #FFF9D7 0%, #FFE98B 17%, #FFC735 36%, #E48A09 55%, #A95605 70%, #F3A511 86%, #FFF3BD 100%);
-      box-shadow: inset 18px 13px 22px rgba(255,255,255,0.42), inset -22px -29px 38px rgba(116,57,0,0.3), 0 22px 56px rgba(128,73,2,0.25);
-      filter: saturate(1.1);
+      background: radial-gradient(circle at 30% 24%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.45) 8%, rgba(255,244,224,0.22) 26%, rgba(255,224,190,0.12) 48%, rgba(255,224,190,0.04) 70%, rgba(255,224,190,0) 100%);
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow:
+        inset 12px 12px 26px rgba(255,255,255,0.55),
+        inset -24px -24px 44px rgba(226,160,125,0.14),
+        0 20px 50px rgba(161,117,34,0.10);
       --cursor-x: 0px; --cursor-y: 0px;
       transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
-      transition: transform 0.5s cubic-bezier(.16,.8,.22,1);
+      transition: transform 1.8s cubic-bezier(.16,.8,.22,1);
       pointer-events: none;
     }
     .hero-orb::after {
       content: '';
-      position: absolute; inset: 17% 23% 16% 19%;
+      position: absolute; top: 8%; left: 12%;
+      width: 42%; height: 26%;
       border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,0.9), rgba(255,237,135,0.18) 52%, transparent 68%);
-      filter: blur(9px);
-      transform: rotate(-18deg);
+      background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0) 70%);
+      filter: blur(2px);
+      transform: rotate(-22deg);
     }
     .hero-orb-left {
-      width: clamp(180px, 20vw, 320px); height: clamp(180px, 20vw, 320px);
-      left: 5%; top: 10%;
+      width: clamp(200px, 24vw, 380px); height: clamp(200px, 24vw, 380px);
+      left: 2%; top: 6%;
     }
     .hero-orb-right {
-      width: clamp(210px, 22vw, 360px); height: clamp(210px, 22vw, 360px);
-      right: 4%; bottom: 6%;
+      width: clamp(170px, 19vw, 300px); height: clamp(170px, 19vw, 300px);
+      right: 6%; bottom: 10%;
+      background: radial-gradient(circle at 32% 26%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 8%, rgba(224,214,255,0.22) 28%, rgba(255,214,235,0.14) 50%, rgba(255,214,235,0.05) 72%, rgba(255,214,235,0) 100%);
     }
-    .hero-cursor-form {
-      --cursor-x: 0px; --cursor-y: 0px;
-      position: absolute; z-index: 0; pointer-events: none;
-      display: grid; place-items: center;
-      background: radial-gradient(circle at 35% 25%, rgba(255,255,249,0.95), rgba(255,226,87,0.48) 38%, rgba(214,126,5,0.55));
-      border: 1px solid rgba(255,255,255,0.58);
-      border-radius: 50%;
-      box-shadow: inset 5px 5px 10px rgba(255,255,255,0.42), inset -8px -10px 18px rgba(132,70,1,0.2), 0 12px 28px rgba(143,80,2,0.16);
-      transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
-      transition: transform 900ms cubic-bezier(.16,.8,.22,1);
-      will-change: transform;
+    .hero-orb-top {
+      width: clamp(120px, 13vw, 210px); height: clamp(120px, 13vw, 210px);
+      right: 14%; top: -4%;
+      background: radial-gradient(circle at 30% 24%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 10%, rgba(255,236,214,0.2) 32%, rgba(255,224,190,0.1) 55%, rgba(255,224,190,0) 80%);
     }
-    .hero-cursor-form::after {
-      content: attr(data-label);
-      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-      color: rgba(74,46,3,0.72);
-      text-shadow: 0 1px rgba(255,255,255,0.38);
-    }
-    .form-one { width: 62px; height: 62px; left: 8%; top: 20%; opacity: 0.85; }
-    .form-two { width: 40px; height: 40px; right: 20%; top: 12%; background: rgba(255,247,198,0.26); opacity: 0.78; }
-    .form-three { width: 76px; height: 76px; right: 7%; top: 54%; background: radial-gradient(circle at 35% 25%, rgba(255,255,249,0.78), rgba(255,206,54,0.44) 43%, rgba(195,106,1,0.52)); opacity: 0.7; }
-    .form-four { width: 48px; height: 48px; left: 22%; bottom: 8%; background: rgba(255,244,177,0.24); opacity: 0.7; }
-    .form-five { width: 34px; height: 34px; left: 52%; top: 14%; opacity: 0.82; }
-    .hero-trails { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; overflow: visible; pointer-events: none; }
-    .hero-trails path {
-      fill: none; stroke: rgba(255,255,255,0.4); stroke-width: 2;
-      vector-effect: non-scaling-stroke; stroke-linecap: round;
-      transform-box: fill-box; transform-origin: center;
-      animation: heroTrail 34s ease-in-out infinite alternate;
-    }
-    .hero-trails path:nth-child(2) { stroke: rgba(255,255,255,0.3); animation-delay: -12s; animation-duration: 42s; }
-    .hero-trails path:nth-child(3) { opacity: 0.6; animation-delay: -21s; animation-duration: 38s; }
 
     .hero-glass-card {
       position: relative;
@@ -477,7 +457,6 @@
 
     @keyframes heroBreathe { to { transform: rotate(8deg) scale(1.1); } }
     @keyframes heroAuroraFloat { to { transform: translate(5%, 8%) scale(1.15); } }
-    @keyframes heroTrail { from { transform: translate(-1.2%, 1.5%) scale(1.02); } to { transform: translate(1.6%, -1.5%) scale(1.04); } }
     @keyframes heroNoteFloat { to { transform: translateY(-10px) rotate(4deg); } }
     @keyframes heroSoundBar { to { height: 13px; } }
     @keyframes heroCircleFloat1 {
@@ -1446,7 +1425,7 @@
       .hero-floating-note, .hero-motion-button { display: none; }
       .hero-orb-left { left: -8%; opacity: 0.75; }
       .hero-orb-right { right: -12%; opacity: 0.75; }
-      .form-two, .form-five { display: none; }
+      .hero-orb-top { display: none; }
     }
 
     /* ── MOBILE RESPONSIVE ── */
@@ -1552,9 +1531,7 @@
         margin: 0;
         overflow: visible;
       }
-      .hero-wavy-line,
-      .hero-blob-defs, .hero-noise, .hero-aurora, .hero-orb, .hero-cursor-form,
-      .hero-trails, .hero-card-shine, .hero-eyebrow, .hero-card-footer,
+      .hero-aurora, .hero-orb, .hero-card-shine, .hero-eyebrow, .hero-card-footer,
       .hero-floating-note, .hero-motion-button, .hero-toast {
         display: none;
       }
@@ -1880,22 +1857,12 @@
     <span class="hero-dot hero-dot--1" aria-hidden="true"></span>
     <span class="hero-dot hero-dot--2" aria-hidden="true"></span>
 
-    <div class="hero-noise" aria-hidden="true"></div>
-    <div class="hero-aurora hero-aurora-1" aria-hidden="true"></div>
-    <div class="hero-aurora hero-aurora-2" aria-hidden="true"></div>
-    <div class="hero-aurora hero-aurora-3" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb-left" data-cursor-depth="70" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb-right" data-cursor-depth="-85" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-one" data-cursor-depth="18" data-label="01" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-two" data-cursor-depth="-28" data-label="02" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-three" data-cursor-depth="35" data-label="03" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-four" data-cursor-depth="-14" data-label="04" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-five" data-cursor-depth="23" data-label="05" aria-hidden="true"></div>
-    <svg class="hero-trails" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M-90 594C125 882 397 699 507 586C649 441 286 40 686 70c192 14 173 188 400 179 261-11 228 337 429 248 126-56 144-128 241-176" />
-      <path d="M-88 735c167 126 399 31 516-25 193-93 288 231 516 109 195-104 165-244 348-228 166 15 266 91 472 55 107-19 160-84 214-131" />
-      <path d="M422 691c-80-145-3-305 90-368 187-126 122-280 319-239 153 32 132 178 354 197 185 16 264 68 325 161" />
-    </svg>
+    <div class="hero-aurora hero-aurora-1" data-cursor-depth="12" aria-hidden="true"></div>
+    <div class="hero-aurora hero-aurora-2" data-cursor-depth="-16" aria-hidden="true"></div>
+    <div class="hero-aurora hero-aurora-3" data-cursor-depth="9" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-left" data-cursor-depth="55" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-right" data-cursor-depth="-65" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-top" data-cursor-depth="40" aria-hidden="true"></div>
 
     <div class="hero-mobile-shapes" aria-hidden="true">
       <svg class="hms hms-1" viewBox="0 0 100 100"><path d="M50 12 L88 82 L12 82 Z" /></svg>
