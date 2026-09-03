@@ -310,13 +310,15 @@
     .hero-aurora-1 { width: 40vw; height: 46vw; left: 18%; top: 6%; background: #FFE36D; }
     .hero-aurora-2 { width: 30vw; height: 40vw; right: 6%; bottom: -14%; background: #FFBA20; animation-delay: -6s; }
     .hero-aurora-3 { width: 26vw; height: 30vw; left: -8%; bottom: -6%; background: #C66D06; animation-delay: -3s; }
-    .hero-blob-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
     .hero-orb {
       position: absolute; z-index: 0;
+      border-radius: 50%;
       background: radial-gradient(ellipse at 48% 28%, #FFF9D7 0%, #FFE98B 17%, #FFC735 36%, #E48A09 55%, #A95605 70%, #F3A511 86%, #FFF3BD 100%);
       box-shadow: inset 18px 13px 22px rgba(255,255,255,0.42), inset -22px -29px 38px rgba(116,57,0,0.3), 0 22px 56px rgba(128,73,2,0.25);
       filter: saturate(1.1);
-      transition: transform 0.3s ease;
+      --cursor-x: 0px; --cursor-y: 0px;
+      transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
+      transition: transform 0.5s cubic-bezier(.16,.8,.22,1);
       pointer-events: none;
     }
     .hero-orb::after {
@@ -328,18 +330,12 @@
       transform: rotate(-18deg);
     }
     .hero-orb-left {
-      width: clamp(180px, 20vw, 320px); height: clamp(240px, 27vw, 400px);
+      width: clamp(180px, 20vw, 320px); height: clamp(180px, 20vw, 320px);
       left: 5%; top: 10%;
-      clip-path: url(#heroBlobLeft);
-      transform: rotate(-13deg);
-      animation: heroOrbLeft 12s ease-in-out infinite alternate;
     }
     .hero-orb-right {
-      width: clamp(210px, 25vw, 400px); height: clamp(140px, 17vw, 250px);
+      width: clamp(210px, 22vw, 360px); height: clamp(210px, 22vw, 360px);
       right: 4%; bottom: 6%;
-      clip-path: url(#heroBlobRight);
-      transform: rotate(-18deg);
-      animation: heroOrbRight 11s ease-in-out infinite alternate;
     }
     .hero-cursor-form {
       --cursor-x: 0px; --cursor-y: 0px;
@@ -482,8 +478,6 @@
     @keyframes heroBreathe { to { transform: rotate(8deg) scale(1.1); } }
     @keyframes heroAuroraFloat { to { transform: translate(5%, 8%) scale(1.15); } }
     @keyframes heroTrail { from { transform: translate(-1.2%, 1.5%) scale(1.02); } to { transform: translate(1.6%, -1.5%) scale(1.04); } }
-    @keyframes heroOrbLeft { to { transform: translate(12px, 20px) rotate(-11deg) scale(1.04); } }
-    @keyframes heroOrbRight { to { transform: translate(-14px, -10px) rotate(-24deg) scale(1.05); } }
     @keyframes heroNoteFloat { to { transform: translateY(-10px) rotate(4deg); } }
     @keyframes heroSoundBar { to { height: 13px; } }
     @keyframes heroCircleFloat1 {
@@ -1886,22 +1880,12 @@
     <span class="hero-dot hero-dot--1" aria-hidden="true"></span>
     <span class="hero-dot hero-dot--2" aria-hidden="true"></span>
 
-    <svg class="hero-blob-defs" aria-hidden="true" focusable="false">
-      <defs>
-        <clipPath id="heroBlobLeft" clipPathUnits="objectBoundingBox">
-          <path d="M.48 .02C.69 .01 .88 .13 .92 .32C.97 .53 .84 .62 .89 .81C.92 .96 .71 1 .51 .96C.32 1 .16 .9 .11 .73C.06 .57 .14 .47 .07 .32C.01 .17 .22 .03 .48 .02Z" />
-        </clipPath>
-        <clipPath id="heroBlobRight" clipPathUnits="objectBoundingBox">
-          <path d="M.02 .49C.05 .27 .21 .13 .4 .16C.56 .18 .6 .03 .78 .08C.95 .12 1 .32 .95 .49C.91 .61 .99 .78 .81 .86C.65 .94 .55 .84 .42 .94C.23 1 .08 .86 .1 .68C.11 .59 .01 .6 .02 .49Z" />
-        </clipPath>
-      </defs>
-    </svg>
     <div class="hero-noise" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-1" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-2" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-3" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb-left" data-depth="16" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb-right" data-depth="-20" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-left" data-cursor-depth="70" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-right" data-cursor-depth="-85" aria-hidden="true"></div>
     <div class="hero-cursor-form form-one" data-cursor-depth="18" data-label="01" aria-hidden="true"></div>
     <div class="hero-cursor-form form-two" data-cursor-depth="-28" data-label="02" aria-hidden="true"></div>
     <div class="hero-cursor-form form-three" data-cursor-depth="35" data-label="03" aria-hidden="true"></div>
@@ -3400,7 +3384,6 @@ The Light Academy прави впечатление с малките групи
     (function () {
       const hero = document.querySelector('.hero');
       if (!hero) return;
-      const orbs = hero.querySelectorAll('[data-depth]');
       const cursorForms = hero.querySelectorAll('[data-cursor-depth]');
       const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -3409,11 +3392,6 @@ The Light Academy прави впечатление с малките групи
         const rect = hero.getBoundingClientRect();
         const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
         const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-        orbs.forEach((orb) => {
-          const depth = Number(orb.dataset.depth);
-          orb.style.marginLeft = `${x * depth}px`;
-          orb.style.marginTop = `${y * depth}px`;
-        });
         cursorForms.forEach((form, index) => {
           const depth = Number(form.dataset.cursorDepth);
           const driftX = x * depth;
