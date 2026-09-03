@@ -420,7 +420,9 @@
       font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
       color: var(--mid); opacity: 0.65;
     }
-    .hero-card-footer span:last-child { margin-left: auto; }
+    .hero-card-footer span:last-child, .hero-card-footer a:last-child { margin-left: auto; }
+    .hero-card-footer a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    .hero-card-footer a:hover { color: var(--sun-dark); text-decoration: underline; }
     .hero-progress { width: 64px; height: 1px; background: rgba(58,46,31,0.2); }
     .hero-progress b { display: block; width: 40%; height: 100%; background: var(--sun-dark); }
 
@@ -1868,7 +1870,7 @@
       <div class="hero-card-footer">
         <span data-i18n="hero.footerLeft">Лозенец, София</span>
         <div class="hero-progress" aria-hidden="true"><b></b></div>
-        <span data-i18n="hero.footerRight">Вижте още ↓</span>
+        <a href="#about" data-i18n="hero.footerRight">Вижте още ↓</a>
       </div>
     </div>
 
