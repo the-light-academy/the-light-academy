@@ -144,12 +144,20 @@
     .mobile-menu {
       display: none;
       flex-direction: column;
-      background: rgba(255,255,255,0.5);
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
       border-bottom: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
       padding: 1rem 2rem;
       gap: 0.5rem;
+      z-index: 90;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a {
@@ -1444,9 +1452,10 @@
         top: 0; left: 0;
       }
 
-      /* all content must sit above the parallax layer */
+      /* all content must sit above the parallax layer (.mobile-menu is
+         fixed-positioned and already stacks via its own z-index) */
       nav, .top-bar, .page-hero, .journey, .cta-section,
-      footer, .mobile-menu, .pricing-cta-flow {
+      footer, .pricing-cta-flow {
         position: relative;
         z-index: 1;
       }
