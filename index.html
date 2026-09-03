@@ -310,69 +310,58 @@
     .hero-aurora-1 { width: 40vw; height: 46vw; left: 18%; top: 6%; background: #FFE36D; }
     .hero-aurora-2 { width: 30vw; height: 40vw; right: 6%; bottom: -14%; background: #FFBA20; animation-delay: -6s; }
     .hero-aurora-3 { width: 26vw; height: 30vw; left: -8%; bottom: -6%; background: #C66D06; animation-delay: -3s; }
-    .hero-blob-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
-    .hero-orb {
-      position: absolute; z-index: 0;
-      background: radial-gradient(ellipse at 48% 28%, #FFF9D7 0%, #FFE98B 17%, #FFC735 36%, #E48A09 55%, #A95605 70%, #F3A511 86%, #FFF3BD 100%);
-      box-shadow: inset 18px 13px 22px rgba(255,255,255,0.42), inset -22px -29px 38px rgba(116,57,0,0.3), 0 22px 56px rgba(128,73,2,0.25);
-      filter: saturate(1.1);
-      transition: transform 0.3s ease;
+    /* ── HERO 3D FLOATING DISCS ──
+       A small "kinetic sculpture" of flattened 3D discs (circles tilted
+       via rotateX/rotateY), a few thin translucent rings, and tiny
+       particle spheres -- replacing the old irregular blob orbs. Discs
+       sit at z-index 0, strictly behind the glass card (z-index 2), so
+       the card's own backdrop-filter blur genuinely shows their color
+       moving underneath instead of a flat translucent rectangle. Base
+       position/size/color/tilt are set per-instance as CSS custom
+       properties by the disc data array in the hero script; --dx/--dy
+       carry the slow, eased cursor-follow + autonomous drift computed
+       in the same script's rAF loop. */
+    .hero-disc-scene {
+      position: absolute; inset: 0; z-index: 0;
       pointer-events: none;
     }
-    .hero-orb::after {
-      content: '';
-      position: absolute; inset: 17% 23% 16% 19%;
+    .hero-disc, .hero-disc-ring, .hero-particle {
+      position: absolute;
+      left: var(--x); top: var(--y);
+      width: var(--size); height: var(--size);
+      margin-left: calc(var(--size) / -2);
+      margin-top: calc(var(--size) / -2);
+      --dx: 0px; --dy: 0px;
       border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,0.9), rgba(255,237,135,0.18) 52%, transparent 68%);
-      filter: blur(9px);
-      transform: rotate(-18deg);
-    }
-    .hero-orb-left {
-      width: clamp(180px, 20vw, 320px); height: clamp(240px, 27vw, 400px);
-      left: 5%; top: 10%;
-      clip-path: url(#heroBlobLeft);
-      transform: rotate(-13deg);
-      animation: heroOrbLeft 12s ease-in-out infinite alternate;
-    }
-    .hero-orb-right {
-      width: clamp(210px, 25vw, 400px); height: clamp(140px, 17vw, 250px);
-      right: 4%; bottom: 6%;
-      clip-path: url(#heroBlobRight);
-      transform: rotate(-18deg);
-      animation: heroOrbRight 11s ease-in-out infinite alternate;
-    }
-    .hero-cursor-form {
-      --cursor-x: 0px; --cursor-y: 0px;
-      position: absolute; z-index: 0; pointer-events: none;
-      display: grid; place-items: center;
-      background: radial-gradient(circle at 35% 25%, rgba(255,255,249,0.95), rgba(255,226,87,0.48) 38%, rgba(214,126,5,0.55));
-      border: 1px solid rgba(255,255,255,0.58);
-      border-radius: 50%;
-      box-shadow: inset 5px 5px 10px rgba(255,255,255,0.42), inset -8px -10px 18px rgba(132,70,1,0.2), 0 12px 28px rgba(143,80,2,0.16);
-      transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
-      transition: transform 900ms cubic-bezier(.16,.8,.22,1);
+      pointer-events: none;
       will-change: transform;
     }
-    .hero-cursor-form::after {
-      content: attr(data-label);
-      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-      color: rgba(74,46,3,0.72);
-      text-shadow: 0 1px rgba(255,255,255,0.38);
+    .hero-disc {
+      background: linear-gradient(155deg, var(--c1) 0%, var(--c2) 100%);
+      opacity: var(--o, 0.88);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.4),
+        inset 6px 8px 18px rgba(255,255,255,0.55),
+        inset -12px -16px 26px rgba(60,30,0,0.16),
+        0 26px 46px rgba(120,70,10,0.16);
+      transform: perspective(1200px) translate3d(var(--dx), var(--dy), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz));
     }
-    .form-one { width: 62px; height: 62px; left: 8%; top: 20%; opacity: 0.85; }
-    .form-two { width: 40px; height: 40px; right: 20%; top: 12%; background: rgba(255,247,198,0.26); opacity: 0.78; }
-    .form-three { width: 76px; height: 76px; right: 7%; top: 54%; background: radial-gradient(circle at 35% 25%, rgba(255,255,249,0.78), rgba(255,206,54,0.44) 43%, rgba(195,106,1,0.52)); opacity: 0.7; }
-    .form-four { width: 48px; height: 48px; left: 22%; bottom: 8%; background: rgba(255,244,177,0.24); opacity: 0.7; }
-    .form-five { width: 34px; height: 34px; left: 52%; top: 14%; opacity: 0.82; }
-    .hero-trails { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; overflow: visible; pointer-events: none; }
-    .hero-trails path {
-      fill: none; stroke: rgba(255,255,255,0.4); stroke-width: 2;
-      vector-effect: non-scaling-stroke; stroke-linecap: round;
-      transform-box: fill-box; transform-origin: center;
-      animation: heroTrail 34s ease-in-out infinite alternate;
+    .hero-disc::after {
+      content: '';
+      position: absolute; top: 10%; left: 14%;
+      width: 46%; height: 30%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0) 75%);
     }
-    .hero-trails path:nth-child(2) { stroke: rgba(255,255,255,0.3); animation-delay: -12s; animation-duration: 42s; }
-    .hero-trails path:nth-child(3) { opacity: 0.6; animation-delay: -21s; animation-duration: 38s; }
+    .hero-disc-ring {
+      border: 1.5px solid rgba(255,255,255,var(--ring-a, 0.55));
+      transform: perspective(1200px) translate3d(var(--dx), var(--dy), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(var(--ring-scale, 1.35));
+    }
+    .hero-particle {
+      background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), var(--c1) 70%);
+      opacity: var(--o, 0.5);
+      transform: translate3d(var(--dx), var(--dy), 0);
+    }
 
     .hero-glass-card {
       position: relative;
@@ -481,9 +470,6 @@
 
     @keyframes heroBreathe { to { transform: rotate(8deg) scale(1.1); } }
     @keyframes heroAuroraFloat { to { transform: translate(5%, 8%) scale(1.15); } }
-    @keyframes heroTrail { from { transform: translate(-1.2%, 1.5%) scale(1.02); } to { transform: translate(1.6%, -1.5%) scale(1.04); } }
-    @keyframes heroOrbLeft { to { transform: translate(12px, 20px) rotate(-11deg) scale(1.04); } }
-    @keyframes heroOrbRight { to { transform: translate(-14px, -10px) rotate(-24deg) scale(1.05); } }
     @keyframes heroNoteFloat { to { transform: translateY(-10px) rotate(4deg); } }
     @keyframes heroSoundBar { to { height: 13px; } }
     @keyframes heroCircleFloat1 {
@@ -1450,9 +1436,8 @@
       /* Card takes almost the full width at tablet sizes -- the floating
          note/motion pieces have no room beside it, so they step aside. */
       .hero-floating-note, .hero-motion-button { display: none; }
-      .hero-orb-left { left: -8%; opacity: 0.75; }
-      .hero-orb-right { right: -12%; opacity: 0.75; }
-      .form-two, .form-five { display: none; }
+      .hero-particle { display: none; }
+      .hero-disc-scene { opacity: 0.8; }
     }
 
     /* ── MOBILE RESPONSIVE ── */
@@ -1558,9 +1543,8 @@
         margin: 0;
         overflow: visible;
       }
-      .hero-wavy-line,
-      .hero-blob-defs, .hero-noise, .hero-aurora, .hero-orb, .hero-cursor-form,
-      .hero-trails, .hero-card-shine, .hero-eyebrow, .hero-card-footer,
+      .hero-noise, .hero-aurora, .hero-disc-scene,
+      .hero-card-shine, .hero-eyebrow, .hero-card-footer,
       .hero-floating-note, .hero-motion-button, .hero-toast {
         display: none;
       }
@@ -1886,32 +1870,11 @@
     <span class="hero-dot hero-dot--1" aria-hidden="true"></span>
     <span class="hero-dot hero-dot--2" aria-hidden="true"></span>
 
-    <svg class="hero-blob-defs" aria-hidden="true" focusable="false">
-      <defs>
-        <clipPath id="heroBlobLeft" clipPathUnits="objectBoundingBox">
-          <path d="M.48 .02C.69 .01 .88 .13 .92 .32C.97 .53 .84 .62 .89 .81C.92 .96 .71 1 .51 .96C.32 1 .16 .9 .11 .73C.06 .57 .14 .47 .07 .32C.01 .17 .22 .03 .48 .02Z" />
-        </clipPath>
-        <clipPath id="heroBlobRight" clipPathUnits="objectBoundingBox">
-          <path d="M.02 .49C.05 .27 .21 .13 .4 .16C.56 .18 .6 .03 .78 .08C.95 .12 1 .32 .95 .49C.91 .61 .99 .78 .81 .86C.65 .94 .55 .84 .42 .94C.23 1 .08 .86 .1 .68C.11 .59 .01 .6 .02 .49Z" />
-        </clipPath>
-      </defs>
-    </svg>
     <div class="hero-noise" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-1" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-2" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-3" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb-left" data-depth="16" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb-right" data-depth="-20" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-one" data-cursor-depth="18" data-label="01" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-two" data-cursor-depth="-28" data-label="02" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-three" data-cursor-depth="35" data-label="03" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-four" data-cursor-depth="-14" data-label="04" aria-hidden="true"></div>
-    <div class="hero-cursor-form form-five" data-cursor-depth="23" data-label="05" aria-hidden="true"></div>
-    <svg class="hero-trails" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M-90 594C125 882 397 699 507 586C649 441 286 40 686 70c192 14 173 188 400 179 261-11 228 337 429 248 126-56 144-128 241-176" />
-      <path d="M-88 735c167 126 399 31 516-25 193-93 288 231 516 109 195-104 165-244 348-228 166 15 266 91 472 55 107-19 160-84 214-131" />
-      <path d="M422 691c-80-145-3-305 90-368 187-126 122-280 319-239 153 32 132 178 354 197 185 16 264 68 325 161" />
-    </svg>
+    <div class="hero-disc-scene" id="heroDiscScene" aria-hidden="true"></div>
 
     <div class="hero-mobile-shapes" aria-hidden="true">
       <svg class="hms hms-1" viewBox="0 0 100 100"><path d="M50 12 L88 82 L12 82 Z" /></svg>
@@ -3396,32 +3359,110 @@ The Light Academy прави впечатление с малките групи
       }, 200);
     });
 
-    // ── HERO: Aurora mouse-parallax + motion toggle ──
+    // ── HERO: 3D floating disc sculpture + slow cursor parallax ──
+    // A small "kinetic sculpture" of flattened 3D discs (built here, not
+    // hand-written in the HTML, so sizes/colors/tilts/depth live in one
+    // data array -- the vanilla-JS equivalent of a reusable <FloatingDisc>
+    // component). Cursor position is tracked cheaply (two numbers, no DOM
+    // reads/writes on the move event itself); a single requestAnimationFrame
+    // loop eases every disc toward the cursor at its own depth-based
+    // strength and adds a slow independent sine-wave drift, writing only
+    // CSS custom properties consumed by `transform` -- never layout
+    // properties -- so it stays GPU-cheap with 13 elements on screen.
     (function () {
       const hero = document.querySelector('.hero');
-      if (!hero) return;
-      const orbs = hero.querySelectorAll('[data-depth]');
-      const cursorForms = hero.querySelectorAll('[data-cursor-depth]');
-      const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const scene = document.getElementById('heroDiscScene');
+      if (!hero || !scene) return;
 
-      hero.addEventListener('pointermove', (event) => {
-        if (reduceMotion() || window.innerWidth <= 768) return;
-        const rect = hero.getBoundingClientRect();
-        const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-        const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-        orbs.forEach((orb) => {
-          const depth = Number(orb.dataset.depth);
-          orb.style.marginLeft = `${x * depth}px`;
-          orb.style.marginTop = `${y * depth}px`;
-        });
-        cursorForms.forEach((form, index) => {
-          const depth = Number(form.dataset.cursorDepth);
-          const driftX = x * depth;
-          const driftY = y * depth * (index % 2 ? -0.7 : 0.7);
-          form.style.setProperty('--cursor-x', `${driftX}px`);
-          form.style.setProperty('--cursor-y', `${driftY}px`);
-        });
+      const discs = [
+        { type: 'disc', x: '10%', y: '20%', size: 210, rx: 64, ry: -10, rz: 8, c1: '#FFEAB8', c2: '#F0930F', depth: 0.6, ring: { scale: 1.5, a: 0.6 }, amp: [11, 9], speed: 0.55, phase: 0 },
+        { type: 'disc', x: '87%', y: '13%', size: 120, rx: 58, ry: 14, rz: -12, c1: '#DFF6F1', c2: '#5FB8AE', depth: 0.45, amp: [8, 10], speed: 0.7, phase: 1.4 },
+        { type: 'disc', x: '52%', y: '5%', size: 66, rx: 70, ry: 0, rz: 4, c1: '#FFFDF6', c2: '#FFDFA6', depth: 0.2, o: 0.62, amp: [6, 6], speed: 0.9, phase: 2.6 },
+        { type: 'disc', x: '91%', y: '63%', size: 260, rx: 50, ry: -16, rz: -6, c1: '#FFDEC2', c2: '#FF8F6B', depth: 0.75, ring: { scale: 1.4, a: 0.62 }, amp: [13, 10], speed: 0.5, phase: 0.8 },
+        { type: 'disc', x: '5%', y: '68%', size: 180, rx: 60, ry: 12, rz: 10, c1: '#EADCFF', c2: '#F4A9CE', depth: 0.55, ring: { scale: 1.45, a: 0.58 }, amp: [10, 12], speed: 0.6, phase: 3.4 },
+        { type: 'disc', x: '33%', y: '9%', size: 58, rx: 66, ry: -6, rz: 0, c1: '#ECF4C4', c2: '#E9D46A', depth: 0.18, o: 0.5, amp: [5, 5], speed: 0.85, phase: 1.9 },
+        { type: 'disc', x: '17%', y: '86%', size: 52, rx: 55, ry: 8, rz: -4, c1: '#FFF2CE', c2: '#F5B95C', depth: 0.35, o: 0.62, amp: [5, 4], speed: 0.75, phase: 0.4 },
+        { type: 'particle', x: '24%', y: '38%', size: 10, c1: '#FFD873', depth: 0.5, o: 0.5, amp: [4, 5], speed: 1.1, phase: 0.2 },
+        { type: 'particle', x: '70%', y: '32%', size: 7, c1: '#8FD9CE', depth: 0.4, o: 0.45, amp: [3, 4], speed: 1.3, phase: 1.1 },
+        { type: 'particle', x: '61%', y: '78%', size: 9, c1: '#F4A9CE', depth: 0.55, o: 0.5, amp: [5, 3], speed: 0.95, phase: 2.0 },
+        { type: 'particle', x: '41%', y: '58%', size: 6, c1: '#E9D46A', depth: 0.3, o: 0.4, amp: [3, 3], speed: 1.4, phase: 2.8 },
+        { type: 'particle', x: '80%', y: '84%', size: 8, c1: '#F0930F', depth: 0.6, o: 0.4, amp: [4, 4], speed: 1.0, phase: 1.6 },
+        { type: 'particle', x: '13%', y: '48%', size: 5, c1: '#FFFDF6', depth: 0.25, o: 0.55, amp: [2, 3], speed: 1.5, phase: 3.6 },
+      ];
+
+      const items = discs.map((d) => {
+        const el = document.createElement('div');
+        el.className = d.type === 'particle' ? 'hero-particle' : 'hero-disc';
+        el.style.setProperty('--x', d.x);
+        el.style.setProperty('--y', d.y);
+        el.style.setProperty('--size', d.size + 'px');
+        el.style.setProperty('--c1', d.c1);
+        if (d.c2) el.style.setProperty('--c2', d.c2);
+        if (d.o) el.style.setProperty('--o', d.o);
+        if (d.type === 'disc') {
+          el.style.setProperty('--rx', d.rx + 'deg');
+          el.style.setProperty('--ry', d.ry + 'deg');
+          el.style.setProperty('--rz', d.rz + 'deg');
+        }
+        scene.appendChild(el);
+
+        let ring = null;
+        if (d.ring) {
+          ring = document.createElement('div');
+          ring.className = 'hero-disc-ring';
+          ring.style.setProperty('--x', d.x);
+          ring.style.setProperty('--y', d.y);
+          ring.style.setProperty('--size', d.size + 'px');
+          ring.style.setProperty('--rx', d.rx + 'deg');
+          ring.style.setProperty('--ry', (d.ry + 18) + 'deg');
+          ring.style.setProperty('--rz', (d.rz + 10) + 'deg');
+          ring.style.setProperty('--ring-scale', d.ring.scale);
+          ring.style.setProperty('--ring-a', d.ring.a);
+          scene.appendChild(ring);
+        }
+
+        return { el, ring, depth: d.depth, amp: d.amp, speed: d.speed, phase: d.phase };
       });
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let running = true;
+
+      if (!reduceMotion) {
+        let targetX = 0, targetY = 0; // normalized -1..1
+        let cursorX = 0, cursorY = 0; // eased toward target
+
+        hero.addEventListener('pointermove', (event) => {
+          const rect = hero.getBoundingClientRect();
+          targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+          targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+        });
+        hero.addEventListener('pointerleave', () => { targetX = 0; targetY = 0; });
+
+        const maxRange = 46; // px of travel at depth 1
+        const ease = 0.035;  // slow, luxurious catch-up -- not a snap
+        const start = performance.now();
+
+        function frame(now) {
+          requestAnimationFrame(frame);
+          if (!running || window.innerWidth <= 768) return;
+          const t = (now - start) / 1000;
+          cursorX += (targetX - cursorX) * ease;
+          cursorY += (targetY - cursorY) * ease;
+          items.forEach((it) => {
+            const driftX = Math.sin(t * 0.18 * it.speed + it.phase) * it.amp[0];
+            const driftY = Math.cos(t * 0.15 * it.speed + it.phase) * it.amp[1];
+            const dx = (cursorX * maxRange * it.depth + driftX).toFixed(2) + 'px';
+            const dy = (cursorY * maxRange * it.depth + driftY).toFixed(2) + 'px';
+            it.el.style.setProperty('--dx', dx);
+            it.el.style.setProperty('--dy', dy);
+            if (it.ring) {
+              it.ring.style.setProperty('--dx', dx);
+              it.ring.style.setProperty('--dy', dy);
+            }
+          });
+        }
+        requestAnimationFrame(frame);
+      }
 
       const motionButton = document.getElementById('heroMotionToggle');
       const toast = document.getElementById('heroToast');
@@ -3437,6 +3478,7 @@ The Light Academy прави впечатление с малките групи
         motionButton.addEventListener('click', () => {
           const on = motionButton.getAttribute('aria-pressed') !== 'true';
           motionButton.setAttribute('aria-pressed', String(on));
+          running = on;
           document.documentElement.style.setProperty('--motion-state', on ? 'running' : 'paused');
           showHeroToast(on ? (document.documentElement.lang === 'en' ? 'Ambient motion is on.' : 'Анимациите са включени.') : (document.documentElement.lang === 'en' ? 'Ambient motion is paused.' : 'Анимациите са спрени.'));
         });
