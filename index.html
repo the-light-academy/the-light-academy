@@ -273,7 +273,7 @@
        Mobile keeps its own separate photo-based hero (see the mobile media
        query) and neutralizes every element added here. */
     .hero {
-      background: linear-gradient(115deg, #B86308 0%, #E78A0F 24%, #F7AD19 47%, #FFD873 70%, #FFF4D9 100%);
+      background: url('photos/hero_bubbles_bg.jpg') center top/cover no-repeat;
       padding: 6.5rem 2rem 4.5rem;
       text-align: center;
       position: relative;
@@ -290,9 +290,9 @@
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 4% 77%, rgba(158,78,4,0.5), transparent 31%),
-        radial-gradient(ellipse at 50% 48%, rgba(255,187,35,0.45), transparent 34%),
-        radial-gradient(ellipse at 88% 18%, rgba(255,248,191,0.6), transparent 30%);
+        radial-gradient(ellipse at 4% 77%, rgba(158,78,4,0.22), transparent 31%),
+        radial-gradient(ellipse at 50% 48%, rgba(255,187,35,0.2), transparent 34%),
+        radial-gradient(ellipse at 88% 18%, rgba(255,248,191,0.28), transparent 30%);
       filter: blur(34px);
       animation: heroBreathe 14s ease-in-out infinite alternate;
     }
@@ -303,7 +303,7 @@
     }
     .hero-aurora {
       position: absolute; border-radius: 50%; z-index: 0;
-      filter: blur(70px); mix-blend-mode: screen; opacity: 0.7;
+      filter: blur(70px); mix-blend-mode: screen; opacity: 0.35;
       animation: heroAuroraFloat 13s ease-in-out infinite alternate;
       pointer-events: none;
     }
