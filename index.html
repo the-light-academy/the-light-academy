@@ -148,7 +148,10 @@
 
     /* ── TOP BAR ── */
     .top-bar {
-      background: var(--sun);
+      background: rgba(247,173,25,0.72);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.35);
       color: var(--white);
       font-size: 14px;
       font-weight: 700;
@@ -166,8 +169,11 @@
 
     /* ── NAV ── */
     nav {
-      background: var(--white);
-      border-bottom: 2px solid var(--sun-light);
+      background: rgba(255,255,255,0.68);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 8px 32px rgba(58,46,31,0.06);
       padding: 0 2rem;
       display: flex;
       align-items: center;
@@ -235,7 +241,7 @@
     .dropdown-toggle { background: none; border: none; cursor: pointer; padding: 6px; margin-left: -6px; color: var(--mid); display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
     .dropdown-toggle:hover { color: var(--sun-dark); background: var(--sun-light); }
     .dropdown-toggle[aria-expanded="true"] { transform: rotate(180deg); color: var(--sun-dark); }
-    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: var(--white); border: 1px solid rgba(58,46,31,0.1); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
+    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: rgba(255,255,255,0.78); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); border: 1px solid rgba(255,255,255,0.6); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
     .courses-dropdown.open { display: flex; }
     .dropdown-category-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
     .dropdown-category-row:hover { background: var(--sun-light); }
@@ -1415,8 +1421,11 @@
         width: 100%;
         gap: 0.75rem;
         padding: 1rem 0.9rem 1.2rem;
-        background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(18px);
+        background: rgba(255,255,255,0.72);
+        backdrop-filter: blur(20px) saturate(160%);
+        -webkit-backdrop-filter: blur(20px) saturate(160%);
+        border: 1px solid rgba(255,255,255,0.5);
+        border-top: none;
         border-radius: 0 0 18px 18px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.12);
       }
@@ -1478,8 +1487,11 @@
         width: 100%;
         gap: 0.75rem;
         padding: 1rem 0.9rem 1.2rem;
-        background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(18px);
+        background: rgba(255,255,255,0.72);
+        backdrop-filter: blur(20px) saturate(160%);
+        -webkit-backdrop-filter: blur(20px) saturate(160%);
+        border: 1px solid rgba(255,255,255,0.5);
+        border-top: none;
         border-radius: 0 0 18px 18px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.12);
       }
