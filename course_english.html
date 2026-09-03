@@ -36,9 +36,9 @@
     a { text-decoration: none; }
 
     /* ── TOP BAR / NAV (matches site) ── */
-    .top-bar { background: #F7AD19; color: var(--dark); font-size: 14px; font-weight: 700; padding: 8px 2rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+    .top-bar { background: rgba(247,173,25,0.72); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); border-bottom: 1px solid rgba(255,255,255,0.35); color: var(--dark); font-size: 14px; font-weight: 700; padding: 8px 2rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
     .top-bar a { color: var(--dark); }
-    nav { background: var(--white); border-bottom: 2px solid #FFF4D9; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; height: 64px; }
+    nav { background: rgba(255,255,255,0.68); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); border-bottom: 1px solid rgba(255,255,255,0.55); box-shadow: 0 8px 32px rgba(58,46,31,0.06); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; height: 64px; }
     .logo { font-family: 'Pacifico', cursive; font-size: 1.5rem; color: #A17522; display: flex; align-items: center; gap: 10px; }
     .logo-icon { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: transparent; }
     .logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -49,7 +49,7 @@
     .nav-links a.cta-nvo:hover { background: #c24508; }
     .hamburger { display: none; flex-direction: column; gap: 5px; background: transparent; border: none; cursor: pointer; padding: 6px; }
     .hamburger span { display: block; width: 24px; height: 3px; background: var(--mid); border-radius: 3px; }
-    .mobile-menu { display: none; flex-direction: column; background: rgba(255,255,255,0.96); border-bottom: 2px solid #FFF4D9; padding: 1rem 1.2rem; gap: 0.6rem; }
+    .mobile-menu { display: none; flex-direction: column; background: rgba(255,255,255,0.5); backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); border-bottom: 2px solid #FFF4D9; padding: 1rem 1.2rem; gap: 0.6rem; }
     .mobile-menu.open { display: flex; }
     .mobile-menu a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
     .mobile-menu a.cta-nvo { background: var(--orange); color: var(--white); text-align: center; }
@@ -57,7 +57,7 @@
     .dropdown-toggle { background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; color: var(--mid); display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
     .dropdown-toggle:hover { color: #A17522; background: #FFF4D9; }
     .dropdown-toggle[aria-expanded="true"] { transform: rotate(180deg); color: #A17522; }
-    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
+    .courses-dropdown { position: absolute; top: calc(100% + 12px); left: 0; min-width: 240px; background: rgba(255,255,255,0.78); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 20px 44px rgba(30,18,12,0.16); padding: 10px; display: none; flex-direction: column; gap: 2px; z-index: 60; }
     .courses-dropdown.open { display: flex; }
     .dropdown-category-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
     .dropdown-category-row:hover { background: #FFF4D9; }

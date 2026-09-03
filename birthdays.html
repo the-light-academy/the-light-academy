@@ -148,7 +148,10 @@
 
     /* ── TOP BAR ── */
     .top-bar {
-      background: #F7AD19;
+      background: rgba(247,173,25,0.72);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.35);
       color: var(--dark);
       font-size: 14px;
       font-weight: 700;
@@ -165,8 +168,11 @@
 
     /* ── NAV ── */
     nav {
-      background: var(--white);
-      border-bottom: 2px solid #FFF4D9;
+      background: rgba(255,255,255,0.68);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 8px 32px rgba(58,46,31,0.06);
       padding: 0 2rem;
       display: flex;
       align-items: center;
@@ -324,8 +330,10 @@
     }
     .slide-pause:hover { background: rgba(255,255,255,0.35); }
     nav {
-      background: var(--white);
-      border-bottom: 2px solid var(--sun-light);
+      background: rgba(255,255,255,0.68);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.55);
       padding: 0 2rem;
       display: flex;
       align-items: center;
