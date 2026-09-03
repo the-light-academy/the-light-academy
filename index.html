@@ -508,14 +508,7 @@
     .hero-dot--1 { top: 18%; left: 8%; width: 34px; height: 34px; background: var(--sun); opacity: 0.14; }
     .hero-dot--2 { bottom: 22%; right: 10%; width: 22px; height: 22px; background: var(--peach); opacity: 0.16; }
 
-    /* Mobile-only hero: replaces the photo background with a dark glass
-       look (floating yellow circles on navy) and swaps the visible title
-       for the brand name. The real h1/subtitle stay in the DOM for SEO —
-       just visually hidden (sr-only) below 768px — while these decorative
-       stand-ins are aria-hidden so screen readers only ever hear the real
-       ones once. Desktop never sees any of this (display: none by default). */
-    .hero-mobile-shapes { display: none; }
-    .hero-mobile-title, .hero-mobile-subtitle { display: none; }
+    /* Mobile's "see more" scroll cue, shown only below 768px. */
     .hero-scroll-cue { display: none; }
     .hero h1 {
       position: relative;
@@ -1525,113 +1518,30 @@
         padding: 6px 12px;
       }
 
+      /* Mobile now shares the exact desktop hero design (Aurora background,
+         disc sculpture, real glass card) instead of a separate photo-based
+         layout -- just scaled and re-spaced for a narrow, full-height
+         screen. Only the floating-note/motion-button/in-card footer step
+         aside for space, same as they already do at tablet widths. */
       .hero {
-        padding: 4rem 1.2rem 3rem;
+        padding: 2rem 1.1rem 2.6rem;
         min-height: calc(100svh - 64px);
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background:
-          linear-gradient(rgba(6,11,22,0.72), rgba(6,11,22,0.8)),
-          url('photos/background_index.jpg') center/cover no-repeat;
-      }
-      .hero::before, .hero::after { display: none; }
-
-      /* Real heading/subtitle: kept for SEO + screen readers, just
-         visually hidden (never display:none, which would drop them from
-         the accessibility tree too). */
-      .hero h1, .hero p[data-i18n="hero.subtitle"] {
-        position: absolute !important;
-        width: 1px; height: 1px;
-        margin: -1px; padding: 0;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
       }
       .hero-glass-card {
-        background: none;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        border-radius: 0;
-        width: auto;
-        max-width: none;
-        min-height: 0;
-        margin: 0;
-        overflow: visible;
+        padding: 2rem 1.6rem 1.4rem;
+        border-radius: 22px;
       }
-      .hero-noise, .hero-aurora, .hero-disc-scene,
-      .hero-card-shine, .hero-eyebrow, .hero-card-footer,
-      .hero-floating-note, .hero-motion-button, .hero-toast {
+      .hero-disc-scene {
+        transform: scale(0.6);
+        transform-origin: 50% 38%;
+      }
+      .hero-particle,
+      .hero-card-footer, .hero-floating-note, .hero-motion-button, .hero-toast {
         display: none;
       }
-
-      .hero-mobile-shapes {
-        display: block;
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        pointer-events: none;
-        z-index: 0;
-      }
-      .hms {
-        position: absolute;
-        overflow: visible;
-        color: var(--sun);
-        filter: drop-shadow(0 0 8px rgba(247,173,25,0.5));
-      }
-      .hms circle, .hms rect, .hms path {
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 3.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        vector-effect: non-scaling-stroke;
-      }
-      .hms-1 { width: 128px; height: 128px; top: 4%; left: -16px; opacity: 0.6; animation: heroShapeDrift1 7s ease-in-out infinite; }
-      .hms-2 { width: 86px; height: 86px; top: 50%; right: -12px; opacity: 0.55; animation: heroShapeDrift2 8s ease-in-out infinite; }
-      .hms-3 { width: 58px; height: 58px; bottom: 9%; left: 16%; opacity: 0.55; animation: heroShapeDrift3 6.5s ease-in-out infinite; }
-      .hms-4 { width: 46px; height: 46px; top: 15%; right: 16%; opacity: 0.6; animation: heroShapeDrift2 9s ease-in-out infinite reverse; }
-
-      @keyframes heroShapeDrift1 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        50% { transform: translate(-14px, 12px) rotate(8deg); }
-      }
-      @keyframes heroShapeDrift2 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        50% { transform: translate(12px, -14px) rotate(-10deg); }
-      }
-      @keyframes heroShapeDrift3 {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        50% { transform: translate(10px, 10px) rotate(12deg); }
-      }
-
-      .hero-mobile-title {
-        display: block;
-        position: relative;
-        z-index: 1;
-        font-family: 'Bad Script', cursive;
-        font-weight: 400;
-        font-size: clamp(2.2rem, 9vw, 3rem);
-        color: #fff;
-        margin-bottom: 0.7rem;
-      }
-      .hero-mobile-subtitle {
-        display: block;
-        position: relative;
-        z-index: 1;
-        color: var(--sun);
-        font-weight: 700;
-        font-size: 1.05rem;
-        letter-spacing: 0.02em;
-        margin-bottom: 1.8rem;
-      }
-
-      .hero-cta { position: relative; z-index: 1; }
-      .hero-cta .btn { padding: 10px 20px; font-size: 0.95rem; }
 
       .hero-scroll-cue {
         display: flex;
@@ -1922,15 +1832,6 @@
     <div class="hero-aurora hero-aurora-2" aria-hidden="true"></div>
     <div class="hero-aurora hero-aurora-3" aria-hidden="true"></div>
     <div class="hero-disc-scene" id="heroDiscScene" aria-hidden="true"></div>
-
-    <div class="hero-mobile-shapes" aria-hidden="true">
-      <svg class="hms hms-1" viewBox="0 0 100 100"><path d="M50 12 L88 82 L12 82 Z" /></svg>
-      <svg class="hms hms-2" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" /></svg>
-      <svg class="hms hms-3" viewBox="0 0 100 100"><rect x="16" y="16" width="68" height="68" rx="4" /></svg>
-      <svg class="hms hms-4" viewBox="0 0 100 100"><path d="M50 18 V82 M18 50 H82" /></svg>
-    </div>
-    <div class="hero-mobile-title" aria-hidden="true">The Light Academy</div>
-    <div class="hero-mobile-subtitle" data-i18n="hero.mobileSubtitle" aria-hidden="true">Академия за знания</div>
 
     <div class="hero-glass-card">
       <div class="hero-card-shine" aria-hidden="true"></div>
@@ -2582,7 +2483,6 @@ The Light Academy прави впечатление с малките групи
         "navdrop.weekly": "Weekly schedule",
         "hero.title": "The Light<br>Academy",
         "hero.subtitle": "Academy of Knowledge",
-        "hero.mobileSubtitle": "Academy of Knowledge",
         "hero.eyebrow": "BOUTIQUE ACADEMY · LOZENETS",
         "hero.footerLeft": "Lozenets, Sofia",
         "hero.footerRight": "See more ↓",
@@ -2710,7 +2610,6 @@ The Light Academy прави впечатление с малките групи
         "navdrop.weekly": "График",
         "hero.title": "The Light<br>Academy",
         "hero.subtitle": "Академия за знания",
-        "hero.mobileSubtitle": "Академия за знания",
         "hero.eyebrow": "БУТИКОВА АКАДЕМИЯ · ЛОЗЕНЕЦ",
         "hero.footerLeft": "Лозенец, София",
         "hero.footerRight": "Вижте още ↓",
@@ -3509,7 +3408,7 @@ The Light Academy прави впечатление с малките групи
 
         function frame(now) {
           requestAnimationFrame(frame);
-          if (!running || window.innerWidth <= 768) return;
+          if (!running) return;
           const t = (now - start) / 1000;
           cursorX += (targetX - cursorX) * ease;
           cursorY += (targetY - cursorY) * ease;
