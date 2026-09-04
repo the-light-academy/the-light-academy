@@ -1606,7 +1606,10 @@
       }
       .tla-news .tla-news__cut { width: 72px; height: 72px; font-size: 26px; }
       .tla-news .tla-news__columns { columns: 1; column-rule: none; }
-      .tla-news .tla-news__story:last-child { border-bottom: none; margin-bottom: 0; }
+      /* the three oldest stories are dropped on phones to keep the page
+         short; they stay in the markup and on news.html */
+      .tla-news .tla-news__story:nth-last-child(-n + 3) { display: none; }
+      .tla-news .tla-news__story:nth-last-child(4) { border-bottom: none; margin-bottom: 0; }
       .tla-news .tla-news__paper::after { right: 16%; }
     }
 
