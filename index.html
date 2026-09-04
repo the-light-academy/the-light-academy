@@ -3030,13 +3030,59 @@ The Light Academy прави впечатление с малките групи
       rebuildPath();
     }
 
+    // On phones each story shows only the opening few words of its blurb, so
+    // the front page reads as a list of headlines. The full text stays in the
+    // markup (kept in data-full) and comes back at wider widths.
+    const NEWS_TEASER_WORDS = 4;
+    // Bulgarian blurbs often have a short function word in 4th place; ending a
+    // teaser on one reads as a cut-off sentence, so it is dropped.
+    const NEWS_TEASER_TAIL = ['и', 'по', 'за', 'на', 'с', 'със', 'от', 'в', 'във',
+                              'до', 'при', 'или', 'а', 'но', 'че', 'да', 'то'];
+
+    function newsTeaser(text) {
+      const words = text.trim().split(/\s+/);
+      if (words.length <= NEWS_TEASER_WORDS) return text.trim();
+      const kept = words.slice(0, NEWS_TEASER_WORDS);
+      while (kept.length > 3 && NEWS_TEASER_TAIL.includes(
+               kept[kept.length - 1].toLowerCase().replace(/[.,;:!?]$/, ''))) {
+        kept.pop();
+      }
+      return kept.join(' ').replace(/[.,;:—-]$/, '') + '\u2026';
+    }
+
+    function applyNewsTeasers() {
+      const deks = document.querySelectorAll('.tla-news__dek');
+      if (!deks.length) return;
+      const short = window.innerWidth <= 768;
+      deks.forEach(dek => {
+        if (!dek.dataset.full) dek.dataset.full = dek.textContent.trim();
+        const next = short ? newsTeaser(dek.dataset.full) : dek.dataset.full;
+        if (dek.textContent !== next) dek.textContent = next;
+      });
+    }
+
+    // Bound to the breakpoint itself rather than the shared resize handler,
+    // which can miss a resize that lands while the page is still loading.
+    function initNewsTeasers() {
+      applyNewsTeasers();
+      const mq = window.matchMedia('(max-width: 768px)');
+      if (mq.addEventListener) mq.addEventListener('change', applyNewsTeasers);
+      else if (mq.addListener) mq.addListener(applyNewsTeasers);
+      // applyNewsTeasers only rewrites what is actually wrong, so re-asserting
+      // is free. Doing it on bfcache restore and whenever the section scrolls
+      // back into view means a missed breakpoint event self-corrects.
+      window.addEventListener('pageshow', applyNewsTeasers);
+    }
+
     // The news front page fades in as one sheet when it scrolls into view.
     function initUpdatesReveal() {
       const paper = document.querySelector('.tla-news__reveal');
       if (!paper) return;
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          applyNewsTeasers();
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
       observer.observe(paper);
@@ -3199,6 +3245,7 @@ The Light Academy прави впечатление с малките групи
       initLanguage();
       initMobileGalleries();
       initUpdatesReveal();
+      initNewsTeasers();
       initAboutVideo();
       initAboutMediaRotation();
       initMobileNavToggle();
@@ -3450,6 +3497,7 @@ The Light Academy прави впечатление с малките групи
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
+        applyNewsTeasers();
         if (window.innerWidth <= 768) { initMobileGalleries(); }
         else {
           if (document.querySelector('.mobile-carousel')) location.reload();
