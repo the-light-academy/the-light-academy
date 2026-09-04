@@ -1356,12 +1356,13 @@
 
     /* ── NEWS AS A NEWSPAPER FRONT PAGE (scoped: .tla-news) ── */
     .tla-news {
-      --tla-news-paper: #FFFCF4;
+      --tla-news-paper: rgba(255, 252, 244, 0.58);
       --tla-news-ink: #2B2318;
       --tla-news-body: #6B5738;
       --tla-news-rule: rgba(58, 46, 31, 0.20);
       --tla-news-kicker: #A17522;
       position: relative;
+      isolation: isolate;
       max-width: 1000px;
       margin: 0 auto;
       padding: 0 26px 46px;
@@ -1383,6 +1384,34 @@
     .tla-news .tla-news__page--l { left: 0; transform: rotate(-0.7deg); }
     .tla-news .tla-news__page--r { right: 0; transform: rotate(0.7deg); }
 
+    /* Floating glass discs live below the paper, so their colour and motion
+       are only visible through and around the newspaper. */
+    .tla-news .tla-news__orb {
+      position: absolute;
+      z-index: 1;
+      width: var(--orb-size);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 30% 24%, rgba(255,255,255,.88) 0 4%, transparent 18%),
+        linear-gradient(135deg, var(--orb-tint-a), var(--orb-tint-b));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: inset 7px 8px 14px rgba(255,255,255,.48), inset -10px -12px 18px rgba(80,50,115,.12), 0 18px 32px rgba(77,55,80,.24);
+      backdrop-filter: blur(7px) saturate(165%);
+      -webkit-backdrop-filter: blur(7px) saturate(165%);
+      animation: tla-news-orbit var(--orb-duration) ease-in-out var(--orb-delay) infinite alternate;
+    }
+    .tla-news .tla-news__orb--1 { --orb-size: 138px; --orb-duration: 12s; --orb-delay: -4s; --orb-tint-a: rgba(159,101,255,.76); --orb-tint-b: rgba(255,255,255,.24); left: -18px; top: 96px; }
+    .tla-news .tla-news__orb--2 { --orb-size: 94px; --orb-duration: 9s; --orb-delay: -2s; --orb-tint-a: rgba(255,181,46,.78); --orb-tint-b: rgba(255,255,255,.22); right: 4%; top: 12px; }
+    .tla-news .tla-news__orb--3 { --orb-size: 172px; --orb-duration: 15s; --orb-delay: -7s; --orb-tint-a: rgba(34,205,178,.68); --orb-tint-b: rgba(255,255,255,.20); right: -42px; top: 40%; }
+    .tla-news .tla-news__orb--4 { --orb-size: 112px; --orb-duration: 11s; --orb-delay: -5s; --orb-tint-a: rgba(65,159,255,.72); --orb-tint-b: rgba(255,255,255,.22); left: 8%; bottom: 50px; }
+    .tla-news .tla-news__orb--5 { --orb-size: 82px; --orb-duration: 8s; --orb-delay: -3s; --orb-tint-a: rgba(255,110,159,.68); --orb-tint-b: rgba(255,255,255,.22); right: 17%; bottom: 20px; }
+    @keyframes tla-news-orbit {
+      from { transform: translate3d(-22px, -18px, 0) rotate(-10deg); }
+      to { transform: translate3d(38px, 28px, 0) rotate(14deg); }
+    }
+
     /* the soft floor shadow the whole stack sits on */
     .tla-news::after {
       content: '';
@@ -1399,12 +1428,14 @@
 
     .tla-news .tla-news__paper {
       position: relative;
-      z-index: 1;
-      background: var(--tla-news-paper);
-      border: 1px solid var(--tla-news-rule);
+      z-index: 2;
+      background: linear-gradient(135deg, rgba(255,255,255,.50), rgba(255,252,244,.18));
+      border: 1px solid rgba(255,255,255,.78);
       border-radius: 16px;
       padding: clamp(1.4rem, 3.2vw, 2.6rem) clamp(1.1rem, 3vw, 2.6rem) clamp(1.5rem, 3vw, 2.4rem);
-      box-shadow: 0 26px 60px rgba(90, 66, 24, 0.16);
+      box-shadow: 0 26px 60px rgba(90, 66, 24, 0.16), inset 0 1px 0 rgba(255,255,255,.88);
+      backdrop-filter: blur(11px) saturate(155%);
+      -webkit-backdrop-filter: blur(11px) saturate(155%);
     }
 
     /* the speech-bubble tail from the reference */
@@ -1415,7 +1446,7 @@
       bottom: -25px;
       width: 56px;
       height: 26px;
-      background: var(--tla-news-paper);
+      background: rgba(255,252,244,.55);
       clip-path: polygon(0 0, 100% 0, 20% 100%);
     }
 
@@ -1611,11 +1642,14 @@
       .tla-news .tla-news__story:nth-last-child(-n + 3) { display: none; }
       .tla-news .tla-news__story:nth-last-child(4) { border-bottom: none; margin-bottom: 0; }
       .tla-news .tla-news__paper::after { right: 16%; }
+      .tla-news .tla-news__orb--3 { right: -72px; }
+      .tla-news .tla-news__orb--4 { left: -35px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .tla-news .tla-news__arrow,
       .tla-news.tla-news__reveal { transition: none !important; }
+      .tla-news .tla-news__orb { animation: none !important; }
       .tla-news.tla-news__reveal { opacity: 1; transform: none; }
       .tla-news .tla-news__lead:hover .tla-news__arrow,
       .tla-news .tla-news__story:hover .tla-news__arrow { transform: none; }
@@ -2202,6 +2236,11 @@
       <div class="tla-news tla-news__reveal">
         <span class="tla-news__page tla-news__page--l" aria-hidden="true"></span>
         <span class="tla-news__page tla-news__page--r" aria-hidden="true"></span>
+        <span class="tla-news__orb tla-news__orb--1" aria-hidden="true"></span>
+        <span class="tla-news__orb tla-news__orb--2" aria-hidden="true"></span>
+        <span class="tla-news__orb tla-news__orb--3" aria-hidden="true"></span>
+        <span class="tla-news__orb tla-news__orb--4" aria-hidden="true"></span>
+        <span class="tla-news__orb tla-news__orb--5" aria-hidden="true"></span>
         <article class="tla-news__paper">
           <header class="tla-news__masthead">
             <span class="tla-news__flag">The Light Academy</span>
