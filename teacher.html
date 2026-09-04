@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Табло на преподавателя – The Light Academy</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/portal.css" />
+</head>
+<body>
+  <div class="top-bar">
+    <span><a href="tel:+359885501283">+359 885 501 283</a></span>
+    <span><a href="tel:+359885416844">+359 885 416 844</a></span>
+  </div>
+  <nav>
+    <a href="index.html" class="logo"><span class="logo-icon"><img src="theLightAcademyLogo.png" alt="Logo"></span>The Light Academy</a>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+      <a href="index.html">Начало</a>
+      <a href="index.html#about">За нас</a>
+      <div class="nav-item-dropdown">
+        <a href="index.html#courses">Курсове</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Покажи всички курсове"><svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="courses-dropdown">
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Подготовка за НВО</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="nvo7.html">7 клас</a>
+              <a href="course_nvo_4_class.html">4 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Училищна подготовка</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_math_5_class.html">5 клас</a>
+              <a href="course_math_6_class.html">6 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_english.html">Английски език</a>
+              <a href="course_spanish.html">Испански език</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Природни науки</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_chemistry.html">Химия</a>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-direct-link" href="all_courses.html">📅 Всички курсове и уроци</a>
+          <a class="dropdown-direct-link" href="schedule.html">🗓️ График</a>
+        </div>
+      </div>
+      <a href="news.html">Новини</a>
+      <a href="faq.html">FAQ</a>
+      <a href="index.html#contact">Контакти</a>
+      <a href="birthdays.html">Рождени дни</a>
+      <a href="portal.html">Моят профил</a>
+    <a href="portal.html">Моят профил</a>
+      <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Начало</a>
+    <a href="index.html#about">За нас</a>
+    <a href="all_courses.html">Всички курсове</a>
+    <a href="news.html">Новини</a>
+    <a href="faq.html">FAQ</a>
+    <a href="index.html#contact">Контакти</a>
+    <a href="portal.html">Моят профил</a>
+    <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+  </div>
+
+  <main class="tla-p">
+    <div class="tla-p__head">
+      <div>
+        <h1 class="tla-p__title">Табло на преподавателя</h1>
+        <p class="tla-p__sub" id="whoami">Зареждане…</p>
+      </div>
+      <button type="button" class="tla-btn tla-btn--ghost" id="signOutBtn">Изход</button>
+    </div>
+
+    <div class="tla-msg tla-msg--error" id="tError" role="alert" hidden></div>
+    <div class="tla-msg tla-msg--ok" id="tOk" role="status" hidden></div>
+
+    <div class="tla-tabs" role="tablist">
+      <button class="tla-tab" role="tab" aria-selected="true"  data-panel="panelResults">Резултати</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
+    </div>
+
+    <!-- ── RESULTS ────────────────────────────────────────────── -->
+    <section class="tla-panel" id="panelResults">
+      <div class="tla-card">
+        <h2 class="tla-card__title">Всички предадени задания</h2>
+        <div class="tla-tablewrap">
+          <table class="tla-table" id="attemptsTable">
+            <thead>
+              <tr><th>Ученик</th><th>Задание</th><th>Предадено</th><th>Авт.</th><th>Ръчно</th><th>Общо</th><th>Статус</th><th></th></tr>
+            </thead>
+            <tbody><tr><td colspan="8" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tla-card" id="attemptDetail" hidden>
+        <h2 class="tla-card__title" id="detailTitle">Преглед</h2>
+        <div id="detailBody"></div>
+      </div>
+    </section>
+
+    <!-- ── ROSTER ─────────────────────────────────────────────── -->
+    <section class="tla-panel" id="panelRoster" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Добавяне на ученик</h2>
+        <form id="addUserForm">
+          <div class="tla-field tla-field--inline">
+            <div>
+              <label for="nuName">Име</label>
+              <input type="text" id="nuName" required placeholder="Иван Иванов" />
+            </div>
+            <div>
+              <label for="nuEmail">Имейл</label>
+              <input type="email" id="nuEmail" required placeholder="ivan@example.com" />
+            </div>
+            <div>
+              <label for="nuPass">Начална парола</label>
+              <input type="text" id="nuPass" required minlength="8" placeholder="поне 8 знака" />
+            </div>
+            <button type="submit" class="tla-btn" id="addUserBtn">Добави</button>
+          </div>
+        </form>
+        <p class="tla-muted">
+          Паролата се показва само сега — запишете си я и я дайте на ученика.
+          Той може да я смени по-късно.
+        </p>
+      </div>
+
+      <div class="tla-card">
+        <h2 class="tla-card__title">Ученици</h2>
+        <div class="tla-tablewrap">
+          <table class="tla-table" id="rosterTable">
+            <thead>
+              <tr><th>Име</th><th>Роля</th><th>Статус</th><th>Създаден</th><th></th></tr>
+            </thead>
+            <tbody><tr><td colspan="5" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ASSIGNMENTS ────────────────────────────────────────── -->
+    <section class="tla-panel" id="panelAssign" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Задания</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;">
+          Учениците виждат само публикуваните задания.
+        </p>
+        <ul class="tla-list" id="assignAdmin">
+          <li class="tla-empty">Зареждане…</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Light Academy София · <a href="index.html">Начало</a> · <a href="portal.html">Моят профил</a> · <a href="cookie-policy.html">Cookies</a> · <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></p>
+  </footer>
+
+  <script>
+    (function () {
+      function setupDropdown(root) {
+        const toggleBtn = root.querySelector('.dropdown-toggle');
+        const menu = root.querySelector('.courses-dropdown, .mobile-courses-dropdown');
+        if (!toggleBtn || !menu) return;
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const isOpen = menu.classList.toggle('open');
+          toggleBtn.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        menu.querySelectorAll('.dropdown-category-row').forEach(row => {
+          row.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cat = row.parentElement;
+            const wasOpen = cat.classList.contains('open');
+            menu.querySelectorAll('.dropdown-category').forEach(c => c.classList.remove('open'));
+            cat.classList.toggle('open', !wasOpen);
+          });
+        });
+      }
+
+      document.querySelectorAll('.nav-item-dropdown, .mobile-dropdown').forEach(setupDropdown);
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.courses-dropdown.open, .mobile-courses-dropdown.open').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+        document.querySelectorAll('.dropdown-category.open').forEach(c => c.classList.remove('open'));
+      });
+
+      const hamburger = document.querySelector('.hamburger');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+      }
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
+  <script src="assets/auth.js"></script>
+  <script>
+    (function () {
+      var esc = TLA.escapeHtml;
+      var state = { attempts: [], profiles: {}, assignments: {}, roster: [] };
+
+      document.getElementById('signOutBtn')
+        .addEventListener('click', function () { TLA.signOut(); });
+
+      function say(kind, msg) {
+        var box = document.getElementById(kind === 'ok' ? 'tOk' : 'tError');
+        box.textContent = msg;
+        box.hidden = false;
+        if (kind === 'ok') setTimeout(function () { box.hidden = true; }, 4000);
+      }
+      function clearMsgs() {
+        document.getElementById('tOk').hidden = true;
+        document.getElementById('tError').hidden = true;
+      }
+
+      /* ---- tabs ---- */
+      Array.prototype.forEach.call(document.querySelectorAll('.tla-tab'), function (tab) {
+        tab.addEventListener('click', function () {
+          Array.prototype.forEach.call(document.querySelectorAll('.tla-tab'), function (t) {
+            t.setAttribute('aria-selected', String(t === tab));
+          });
+          Array.prototype.forEach.call(document.querySelectorAll('.tla-panel'), function (p) {
+            p.hidden = (p.id !== tab.dataset.panel);
+          });
+        });
+      });
+
+      function statusBadge(s) {
+        if (s === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
+        if (s === 'submitted') return '<span class="tla-badge tla-badge--submitted">За оценка</span>';
+        return '<span class="tla-badge tla-badge--off">Незавършено</span>';
+      }
+
+      /* ---- results table ---- */
+      function renderAttempts() {
+        var tb = document.querySelector('#attemptsTable tbody');
+        if (!state.attempts.length) {
+          tb.innerHTML = '<tr><td colspan="8" class="tla-empty">Още няма предадени задания.</td></tr>';
+          return;
+        }
+        tb.innerHTML = state.attempts.map(function (t) {
+          var p = state.profiles[t.user_id];
+          var a = state.assignments[t.assignment_id];
+          return '<tr>' +
+            '<td>' + esc(p ? (p.full_name || '—') : '—') + '</td>' +
+            '<td>' + esc(a ? a.title : '—') + '</td>' +
+            '<td class="tla-num">' + esc(TLA.formatDate(t.submitted_at)) + '</td>' +
+            '<td class="tla-num">' + (t.auto_score != null ? esc(t.auto_score + '/' + t.auto_max) : '—') + '</td>' +
+            '<td class="tla-num">' + (t.manual_score != null ? esc(t.manual_score + '/' + (t.manual_max != null ? t.manual_max : '—')) : '—') + '</td>' +
+            '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') + '</td>' +
+            '<td>' + statusBadge(t.status) + '</td>' +
+            '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-open="' + esc(t.id) + '">Отвори</button></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      /* ---- one attempt: per-question review + manual marking ---- */
+      async function openAttempt(id) {
+        clearMsgs();
+        var res = await TLA.client.from('attempts')
+          .select('*').eq('id', id).maybeSingle();
+        if (res.error) { say('err', res.error.message); return; }
+        var t = res.data;
+        var p = state.profiles[t.user_id];
+        var a = state.assignments[t.assignment_id];
+
+        var html = '';
+        html += '<p class="tla-muted" style="margin-bottom:1rem;">' +
+          esc((p ? p.full_name : '—') + ' · ' + (a ? a.title : '—') +
+              ' · ' + TLA.formatDate(t.submitted_at)) + '</p>';
+
+        /* auto-graded questions */
+        var recs = Array.isArray(t.records) ? t.records : [];
+        if (recs.length) {
+          html += '<h3 class="tla-card__title">Автоматично оценени (' +
+                  esc(t.auto_score + ' / ' + t.auto_max) + ')</h3>';
+          html += recs.map(function (r) {
+            var cls = r.correct ? 'tla-q tla-q--right' : 'tla-q tla-q--wrong';
+            var given, expected;
+            if (r.kind === 'mc') {
+              var opts = r.options || [];
+              given = (r.chosenIndex == null) ? '(без отговор)' : opts[r.chosenIndex];
+              expected = opts[r.correctIndex];
+            } else {
+              given = r.studentAnswer;
+              expected = r.referenceAnswer;
+            }
+            return '<div class="' + cls + '">' +
+              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.text || r.prompt || '')) + '</div>' +
+              '<div class="tla-muted">Отговор: ' + esc(given) +
+              ' · Верен: ' + esc(expected) +
+              ' · ' + esc(r.earned + '/' + r.points) + ' т.</div>' +
+            '</div>';
+          }).join('');
+        }
+
+        /* free-text part that only a human can mark */
+        var p2 = Array.isArray(t.part2) ? t.part2 : [];
+        if (p2.length) {
+          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">За ръчна оценка</h3>';
+          html += p2.map(function (r) {
+            return '<div class="tla-q">' +
+              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.prompt || '')) + '</div>' +
+              '<div style="white-space:pre-wrap;">' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
+              (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Решение: ' + esc(r.solution) + '</div>' : '') +
+            '</div>';
+          }).join('');
+        }
+
+        html += '<div class="tla-field tla-field--inline" style="margin-top:1.5rem;">' +
+          '<div><label for="mScore">Ръчни точки</label>' +
+            '<input type="number" id="mScore" step="0.5" min="0" value="' +
+              (t.manual_score != null ? esc(t.manual_score) : '') + '" /></div>' +
+          '<div><label for="mMax">От колко</label>' +
+            '<input type="number" id="mMax" step="0.5" min="0" value="' +
+              (t.manual_max != null ? esc(t.manual_max) : (p2.length ? 35 : '')) + '" /></div>' +
+          '<button type="button" class="tla-btn" id="saveGrade">Запиши оценката</button>' +
+        '</div>' +
+        '<div class="tla-field"><label for="tNote">Бележка към ученика</label>' +
+          '<textarea id="tNote" rows="3">' + esc(t.teacher_note || '') + '</textarea></div>';
+
+        document.getElementById('detailTitle').textContent = 'Преглед на опит';
+        document.getElementById('detailBody').innerHTML = html;
+        document.getElementById('attemptDetail').hidden = false;
+        document.getElementById('attemptDetail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        document.getElementById('saveGrade').addEventListener('click', async function () {
+          var score = document.getElementById('mScore').value;
+          var max = document.getElementById('mMax').value;
+          var upd = await TLA.client.from('attempts').update({
+            manual_score: score === '' ? null : Number(score),
+            manual_max: max === '' ? null : Number(max),
+            teacher_note: document.getElementById('tNote').value || null,
+            status: score === '' ? 'submitted' : 'graded',
+            graded_at: score === '' ? null : new Date().toISOString()
+          }).eq('id', id);
+          if (upd.error) { say('err', upd.error.message); return; }
+          say('ok', 'Оценката е записана.');
+          await loadResults();
+        });
+      }
+
+      document.getElementById('attemptsTable').addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-open]');
+        if (btn) openAttempt(btn.getAttribute('data-open'));
+      });
+
+      /* ---- roster ---- */
+      function renderRoster() {
+        var tb = document.querySelector('#rosterTable tbody');
+        if (!state.roster.length) {
+          tb.innerHTML = '<tr><td colspan="5" class="tla-empty">Няма ученици.</td></tr>';
+          return;
+        }
+        tb.innerHTML = state.roster.map(function (p) {
+          var isTeacher = p.role === 'teacher';
+          return '<tr>' +
+            '<td>' + esc(p.full_name || '—') + '</td>' +
+            '<td>' + (isTeacher ? '<span class="tla-badge">Преподавател</span>' : 'Ученик') + '</td>' +
+            '<td>' + (p.active
+                ? '<span class="tla-badge tla-badge--graded">Активен</span>'
+                : '<span class="tla-badge tla-badge--off">Спрян</span>') + '</td>' +
+            '<td class="tla-num">' + esc(TLA.formatDate(p.created_at)) + '</td>' +
+            '<td>' + (isTeacher ? '' :
+              '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-toggle="' + esc(p.id) + '">' +
+                (p.active ? 'Спри достъпа' : 'Върни достъпа') + '</button> ' +
+              '<button type="button" class="tla-btn tla-btn--danger tla-btn--sm" data-del="' + esc(p.id) + '">Изтрий</button>'
+            ) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      /* Deactivating is a plain table update, so it works with or without
+         the Edge Function deployed. Creating and hard-deleting a user
+         need the service key, which only the function has. */
+      document.getElementById('rosterTable').addEventListener('click', async function (e) {
+        var tgl = e.target.closest('[data-toggle]');
+        var del = e.target.closest('[data-del]');
+        clearMsgs();
+
+        if (tgl) {
+          var id = tgl.getAttribute('data-toggle');
+          var row = state.roster.filter(function (p) { return p.id === id; })[0];
+          var upd = await TLA.client.from('profiles')
+            .update({ active: !row.active }).eq('id', id);
+          if (upd.error) { say('err', upd.error.message); return; }
+          say('ok', row.active ? 'Достъпът е спрян.' : 'Достъпът е върнат.');
+          await loadRoster();
+          return;
+        }
+
+        if (del) {
+          var did = del.getAttribute('data-del');
+          var drow = state.roster.filter(function (p) { return p.id === did; })[0];
+          if (!confirm('Изтриване на "' + (drow.full_name || '') +
+                       '". Това премахва профила и ВСИЧКИТЕ му резултати. ' +
+                       'Ако искате само да спрете достъпа, използвайте „Спри достъпа“. Продължавате?')) return;
+          try {
+            await adminCall('DELETE', { user_id: did });
+            say('ok', 'Профилът е изтрит.');
+            await loadRoster();
+            await loadResults();
+          } catch (err) { say('err', String(err.message || err)); }
+        }
+      });
+
+      /* Calls the Edge Function, forwarding the caller's own access token
+         so the function can check they really are a teacher. The service
+         key stays inside the function and never reaches this page. */
+      async function adminCall(method, body) {
+        var session = await TLA.getSession();
+        if (!session) throw new Error('Няма сесия.');
+        var res = await fetch(TLA_SUPABASE.url + '/functions/v1/admin-users', {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + session.access_token,
+            'apikey': TLA_SUPABASE.anonKey
+          },
+          body: JSON.stringify(body)
+        });
+        var data = null;
+        try { data = await res.json(); } catch (e) {}
+        if (!res.ok) {
+          throw new Error((data && data.error) ||
+            'Функцията admin-users не отговори (' + res.status + '). ' +
+            'Ако още не е инсталирана, добавяйте ученици от Supabase → Authentication → Users.');
+        }
+        return data;
+      }
+
+      document.getElementById('addUserForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        clearMsgs();
+        var btn = document.getElementById('addUserBtn');
+        btn.disabled = true;
+        try {
+          await adminCall('POST', {
+            email: document.getElementById('nuEmail').value.trim(),
+            password: document.getElementById('nuPass').value,
+            full_name: document.getElementById('nuName').value.trim()
+          });
+          say('ok', 'Ученикът е добавен.');
+          e.target.reset();
+          await loadRoster();
+        } catch (err) { say('err', String(err.message || err)); }
+        btn.disabled = false;
+      });
+
+      /* ---- assignments ---- */
+      function renderAssignAdmin() {
+        var el = document.getElementById('assignAdmin');
+        var list = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
+        list.sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
+        if (!list.length) { el.innerHTML = '<li class="tla-empty">Няма задания.</li>'; return; }
+        el.innerHTML = list.map(function (a) {
+          return '<li class="tla-item">' +
+            '<div class="tla-item__main">' +
+              '<span class="tla-badge tla-badge--' + a.kind + '">' +
+                (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span> ' +
+              '<span class="tla-item__title">' + esc(a.title) + '</span>' +
+              '<div class="tla-item__meta">' + esc(a.slug) + ' · ' +
+                (a.published ? 'публикувано' : 'скрито') + '</div>' +
+            '</div>' +
+            '<button type="button" class="tla-btn ' + (a.published ? 'tla-btn--ghost' : '') +
+              '" data-pub="' + esc(a.id) + '">' +
+              (a.published ? 'Скрий' : 'Публикувай') + '</button>' +
+          '</li>';
+        }).join('');
+      }
+
+      document.getElementById('assignAdmin').addEventListener('click', async function (e) {
+        var btn = e.target.closest('[data-pub]');
+        if (!btn) return;
+        clearMsgs();
+        var id = btn.getAttribute('data-pub');
+        var a = state.assignments[id];
+        var upd = await TLA.client.from('assignments')
+          .update({ published: !a.published }).eq('id', id);
+        if (upd.error) { say('err', upd.error.message); return; }
+        await loadAssignments();
+      });
+
+      /* ---- loaders ---- */
+      async function loadAssignments() {
+        var list = await TLA.listAssignments();
+        state.assignments = {};
+        list.forEach(function (a) { state.assignments[a.id] = a; });
+        renderAssignAdmin();
+      }
+
+      async function loadRoster() {
+        var res = await TLA.client.from('profiles')
+          .select('id, full_name, role, active, created_at')
+          .order('role', { ascending: true })
+          .order('full_name', { ascending: true });
+        if (res.error) { say('err', res.error.message); return; }
+        state.roster = res.data || [];
+        state.profiles = {};
+        state.roster.forEach(function (p) { state.profiles[p.id] = p; });
+        renderRoster();
+      }
+
+      async function loadResults() {
+        var res = await TLA.client.from('attempts')
+          .select('id, user_id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at')
+          .order('submitted_at', { ascending: false });
+        if (res.error) { say('err', res.error.message); return; }
+        state.attempts = res.data || [];
+        renderAttempts();
+      }
+
+      (async function () {
+        if (!TLA.isConfigured()) { say('err', TLA.notConfiguredMessage()); return; }
+        var auth = await TLA.requireAuth({ role: 'teacher' });
+        if (!auth) return;
+        document.getElementById('whoami').textContent =
+          (auth.profile && auth.profile.full_name) || auth.session.user.email;
+        await loadAssignments();
+        await loadRoster();
+        await loadResults();
+      })();
+    })();
+  </script>
+</body>
+</html>

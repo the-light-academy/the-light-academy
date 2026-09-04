@@ -704,7 +704,18 @@
     /* ── FOOTER ── */
     footer { background: #1E1308; padding: 1.5rem 2rem; text-align: center; color: #6A4E2A; font-size: 13px; }
     footer a { color: #F5A623; text-decoration: none; }
+  .portal-save-note{
+    margin-top:14px; padding:10px 14px; border-radius:12px;
+    background:rgba(247,173,25,0.14); color:#7A5600;
+    font-size:14px; font-weight:700;
+  }
+  .portal-save-note[hidden]{ display:none; }
 </style>
+  <!-- Student portal: session + result saving. Loaded before the exam
+       script so TLA exists by the time the exam finishes. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
+  <script src="assets/auth.js"></script>
 </head>
 <body>
 
@@ -848,6 +859,8 @@
         <p class="result-score-fraction" id="final-score-fraction">0 / 65</p>
         <span class="result-score-percentage" id="final-score-percentage">0%</span>
       </div>
+
+      <p class="portal-save-note" id="portal-save-note" hidden></p>
 
       <div class="part2-note">
         Част 2 (задачи 22–24, 35 точки) съдържа задачи с пълно решение, които не се
@@ -1735,6 +1748,43 @@ function showFinalScreen(){
     Math.round((results.autoScore / results.autoMax) * 100) + '%';
 
   showScreen(finalScreen);
+  saveAttemptToPortal(results);
+}
+
+/* Hands the result to the student portal. Reuses what the exam already
+   built -- calculatePart1() for Part 1 and buildPart2Records() for the
+   essay tasks the teacher marks by hand -- so no result format changes
+   here. Failure is reported on screen but never blocks the result the
+   student is looking at. */
+async function saveAttemptToPortal(results){
+  const note = document.getElementById('portal-save-note');
+  if (typeof TLA === 'undefined' || !TLA.isConfigured()) return;
+  try {
+    const session = await TLA.getSession();
+    if (!session) {
+      if (note) {
+        note.textContent = 'Резултатът не е записан — не сте влезли в профила си.';
+        note.hidden = false;
+      }
+      return;
+    }
+    await TLA.saveAttempt('matura2026', {
+      autoScore: results.autoScore,
+      autoMax: results.autoMax,
+      manualMax: 35,
+      records: results.records,
+      part2: buildPart2Records()
+    });
+    if (note) {
+      note.textContent = 'Резултатът е записан в профила ви.';
+      note.hidden = false;
+    }
+  } catch (err) {
+    if (note) {
+      note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
+      note.hidden = false;
+    }
+  }
 }
 
 document.getElementById('open-review-btn').addEventListener('click', () => {

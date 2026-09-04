@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вход – The Light Academy</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/portal.css" />
+</head>
+<body>
+  <div class="top-bar">
+    <span><a href="tel:+359885501283">+359 885 501 283</a></span>
+    <span><a href="tel:+359885416844">+359 885 416 844</a></span>
+  </div>
+  <nav>
+    <a href="index.html" class="logo"><span class="logo-icon"><img src="theLightAcademyLogo.png" alt="Logo"></span>The Light Academy</a>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+      <a href="index.html">Начало</a>
+      <a href="index.html#about">За нас</a>
+      <div class="nav-item-dropdown">
+        <a href="index.html#courses">Курсове</a>
+        <button type="button" class="dropdown-toggle" aria-expanded="false" aria-label="Покажи всички курсове"><svg width="10" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="courses-dropdown">
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Подготовка за НВО</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="nvo7.html">7 клас</a>
+              <a href="course_nvo_4_class.html">4 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Училищна подготовка</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_math_5_class.html">5 клас</a>
+              <a href="course_math_6_class.html">6 клас</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_english.html">Английски език</a>
+              <a href="course_spanish.html">Испански език</a>
+            </div>
+          </div>
+          <div class="dropdown-category">
+            <div class="dropdown-category-row"><span>Природни науки</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dropdown-submenu">
+              <a href="course_chemistry.html">Химия</a>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-direct-link" href="all_courses.html">📅 Всички курсове и уроци</a>
+          <a class="dropdown-direct-link" href="schedule.html">🗓️ График</a>
+        </div>
+      </div>
+      <a href="news.html">Новини</a>
+      <a href="faq.html">FAQ</a>
+      <a href="index.html#contact">Контакти</a>
+      <a href="birthdays.html">Рождени дни</a>
+      <a href="portal.html">Моят профил</a>
+    <a href="portal.html">Моят профил</a>
+      <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Начало</a>
+    <a href="index.html#about">За нас</a>
+    <a href="all_courses.html">Всички курсове</a>
+    <a href="news.html">Новини</a>
+    <a href="faq.html">FAQ</a>
+    <a href="index.html#contact">Контакти</a>
+    <a href="portal.html">Моят профил</a>
+    <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
+  </div>
+
+  <main class="tla-p tla-p--narrow">
+    <div class="tla-p__head">
+      <div>
+        <h1 class="tla-p__title">Вход за ученици</h1>
+        <p class="tla-p__sub">Влезте, за да отворите вашите изпити и домашни.</p>
+      </div>
+    </div>
+
+    <div class="tla-card">
+      <div class="tla-msg tla-msg--error" id="loginError" role="alert" hidden></div>
+      <div class="tla-msg tla-msg--warn" id="setupWarning" hidden></div>
+
+      <form id="loginForm" novalidate>
+        <div class="tla-field">
+          <label for="email">Имейл</label>
+          <input type="email" id="email" name="email" autocomplete="username"
+                 required placeholder="ime@example.com" />
+        </div>
+        <div class="tla-field">
+          <label for="password">Парола</label>
+          <input type="password" id="password" name="password"
+                 autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="tla-btn tla-btn--full" id="loginBtn">Вход</button>
+      </form>
+
+      <p class="tla-muted" style="margin-top:1rem;">
+        Нямате достъп? Профилите се създават от преподавателя —
+        пишете ни на <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a>.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Light Academy София · <a href="index.html">Начало</a> · <a href="portal.html">Моят профил</a> · <a href="cookie-policy.html">Cookies</a> · <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></p>
+  </footer>
+
+  <script>
+    (function () {
+      function setupDropdown(root) {
+        const toggleBtn = root.querySelector('.dropdown-toggle');
+        const menu = root.querySelector('.courses-dropdown, .mobile-courses-dropdown');
+        if (!toggleBtn || !menu) return;
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const isOpen = menu.classList.toggle('open');
+          toggleBtn.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        menu.querySelectorAll('.dropdown-category-row').forEach(row => {
+          row.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cat = row.parentElement;
+            const wasOpen = cat.classList.contains('open');
+            menu.querySelectorAll('.dropdown-category').forEach(c => c.classList.remove('open'));
+            cat.classList.toggle('open', !wasOpen);
+          });
+        });
+      }
+
+      document.querySelectorAll('.nav-item-dropdown, .mobile-dropdown').forEach(setupDropdown);
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.courses-dropdown.open, .mobile-courses-dropdown.open').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+        document.querySelectorAll('.dropdown-category.open').forEach(c => c.classList.remove('open'));
+      });
+
+      const hamburger = document.querySelector('.hamburger');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+      }
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
+  <script src="assets/auth.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById('loginForm');
+      var btn = document.getElementById('loginBtn');
+      var errBox = document.getElementById('loginError');
+      var warnBox = document.getElementById('setupWarning');
+
+      function showError(msg) {
+        errBox.textContent = msg;
+        errBox.hidden = false;
+      }
+
+      /* Where to go after a successful sign-in: back to whatever page
+         bounced us here, or the dashboard that matches the role. */
+      function destination() {
+        var next = new URLSearchParams(location.search).get('next');
+        if (next && /^[A-Za-z0-9_\-]+\.html(\?.*)?$/.test(next)) return next;
+        return null;
+      }
+
+      if (!TLA.isConfigured()) {
+        warnBox.textContent = TLA.notConfiguredMessage();
+        warnBox.hidden = false;
+        btn.disabled = true;
+        return;
+      }
+
+      /* Already signed in? Skip the form. */
+      TLA.getSession().then(function (session) {
+        if (!session) return;
+        TLA.getProfile().then(function (p) {
+          location.replace(destination() || (p && p.role === 'teacher' ? 'teacher.html' : 'portal.html'));
+        });
+      });
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        errBox.hidden = true;
+        btn.disabled = true;
+        btn.textContent = 'Влизане…';
+        try {
+          await TLA.signIn(document.getElementById('email').value,
+                           document.getElementById('password').value);
+          var profile = await TLA.getProfile();
+          if (profile && profile.active === false) {
+            await TLA.client.auth.signOut();
+            throw new Error('Профилът е деактивиран. Свържете се с преподавателя.');
+          }
+          location.replace(destination() || (profile && profile.role === 'teacher' ? 'teacher.html' : 'portal.html'));
+        } catch (err) {
+          var m = (err && err.message) || '';
+          showError(/invalid login/i.test(m)
+            ? 'Грешен имейл или парола.'
+            : (m || 'Входът не беше успешен.'));
+          btn.disabled = false;
+          btn.textContent = 'Вход';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
