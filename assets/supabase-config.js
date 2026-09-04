@@ -24,5 +24,5 @@ window.TLA_SUPABASE = {
   //   eyJ...              (the older "anon / public" key, still valid)
   // Both are safe in the browser. The `sb_secret_` / `service_role` key
   // is NOT -- it bypasses every policy and must never appear in this repo.
-  anonKey: 'PASTE_YOUR_PUBLISHABLE_KEY_HERE'
+  anonKey: 'sb_publishable_UrjN5A0Db3SrFqu_05saEg_M380Q0Pk'
 };
