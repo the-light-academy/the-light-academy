@@ -268,10 +268,52 @@
       color: rgba(255,255,255,0.7);
       font-size: 1.1rem;
       max-width: 580px;
-      margin: 0 auto 2rem;
+      margin: 0 auto 0.5rem;
       position: relative;
       z-index: 1;
     }
+    /* Hero checklist — replaces the old section pills. Three promises, each
+       one a thing the portal actually does, so the hero and the platform
+       section below it say the same thing. */
+    .hero-checks {
+      list-style: none;
+      margin: 1.4rem auto 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1.4rem;
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+    .hero-checks li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;                 /* the hero is dark navy, not cream */
+    }
+    .hero-checks li::before {
+      content: '✓';
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--sun);
+      color: #2D1F0E;              /* dark tick on the amber disc reads better */
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    @media (max-width: 600px) {
+      .hero-checks { flex-direction: column; align-items: flex-start; gap: 0.6rem; max-width: 320px; margin-top: 1.2rem; }
+      .hero-checks li { font-size: 0.95rem; }
+    }
+
     .hero-pills {
       display: flex;
       gap: 0.75rem;
@@ -619,41 +661,12 @@
     .step.flip .step-divider { margin-left: auto; }
     .step.flip .step-bullets li { flex-direction: row-reverse; text-align: right; }
     .step.flip .step-bullets li::before { margin-top: 2px; }
+    /* The practice cards keep reading left-to-right even in a flipped step:
+       their heading is an icon plus a title, so right-aligned body text under
+       a left-aligned head just looks broken. */
+    .step.flip .practice-card { text-align: left; }
 
     /* Геймификация — gamified hover effect (desktop) */
-    #section-geymifikatsia .step-image {
-      transition: box-shadow 0.4s ease;
-    }
-    #section-geymifikatsia .step-image:hover {
-      box-shadow: 0 14px 40px rgba(232,88,10,0.32), 0 0 0 4px rgba(26,140,133,0.22);
-    }
-    #section-geymifikatsia .step-image::before {
-      content: '\f091';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--orange), var(--sun));
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-      opacity: 0;
-      transform: scale(0.4) rotate(-20deg);
-      transition: opacity 0.35s ease, transform 0.4s cubic-bezier(.34,1.56,.64,1);
-      z-index: 3;
-      pointer-events: none;
-    }
-    #section-geymifikatsia .step-image:hover::before {
-      opacity: 1;
-      transform: scale(1) rotate(0deg);
-    }
 
     /* ── PRICING SECTION ── */
     .pricing-section {
@@ -1021,11 +1034,16 @@
       .course-info-block h2 { color: #fff; }
       .course-info-block > p { color: rgba(255,255,255,0.75); }
 
+      /* Outside the "При нас" panel now, so it brings its own dark card
+         rather than borrowing that one's background. */
       .teacher-intro {
         display: flex;
-        margin-bottom: 1.75rem;
-        padding-bottom: 1.75rem;
-        border-bottom: 1px solid rgba(255,255,255,0.14);
+        max-width: 760px;
+        margin: 0 auto 1.5rem;
+        padding: 1.5rem 1.75rem;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
       }
 
       .schedule-widget {
@@ -1595,7 +1613,7 @@
          (display:contents) course-info-block here). */
       .teacher-intro {
         display: flex;
-        order: 10;
+        order: 0;
         margin: 0;
         padding: 1.5rem;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
@@ -1728,53 +1746,6 @@
       #section-gen-alpha .ga-answer-text { color: rgba(255,255,255,0.88); }
 
       /* Step 2 (Ние знаем това) — same full-bleed photo + glass treatment, mobile only */
-      #section-osnovi {
-        position: relative;
-        overflow: hidden;
-        border-radius: 16px;
-        min-height: 560px;
-      }
-      #section-osnovi .step-image {
-        position: absolute !important;
-        inset: 0;
-        z-index: 0;
-        border-radius: 0;
-      }
-      #section-osnovi .step-image img {
-        position: absolute;
-        inset: 0;
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-      }
-      #section-osnovi .step-image::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
-      }
-      #section-osnovi .step-image-label { display: none; }
-      #section-osnovi .step-text {
-        position: relative;
-        z-index: 2;
-        padding: 1.75rem 1.25rem 2rem;
-      }
-      #section-osnovi .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
-      #section-osnovi .step-title { color: #fff; }
-      #section-osnovi .step-divider { background: #fff; }
-      #section-osnovi .step-body { color: rgba(255,255,255,0.9); }
-      #section-osnovi .ga-card {
-        background: rgba(255,255,255,0.14);
-        border-color: rgba(255,255,255,0.3);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-      }
-      #section-osnovi .ga-card.open { border-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-      #section-osnovi .ga-icon { background: rgba(255,255,255,0.25); }
-      #section-osnovi .ga-problem { color: #fff; }
-      #section-osnovi .ga-chevron { color: rgba(255,255,255,0.8); }
-      #section-osnovi .ga-card.open .ga-chevron { color: #fff; }
-      #section-osnovi .ga-answer-text { color: rgba(255,255,255,0.88); }
 
       /* Step 3 (Ето как изглежда на практика) — same full-bleed photo + glass treatment, mobile only */
       #section-nashiyat-podhod {
@@ -1823,43 +1794,6 @@
       #section-nashiyat-podhod .exam-timer { background: rgba(0,0,0,0.45); }
 
       /* Step 4 (Геймификация) — same full-bleed video + glass treatment, mobile only */
-      #section-geymifikatsia {
-        position: relative;
-        overflow: hidden;
-        border-radius: 16px;
-        min-height: 560px;
-      }
-      #section-geymifikatsia .step-image {
-        position: absolute !important;
-        inset: 0;
-        z-index: 0;
-        border-radius: 0;
-      }
-      #section-geymifikatsia .step-image video {
-        position: absolute;
-        inset: 0;
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-      }
-      #section-geymifikatsia .step-image::before { display: none; }
-      #section-geymifikatsia .step-image::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(20,14,10,0.60) 0%, rgba(20,14,10,0.80) 100%);
-        opacity: 1;
-      }
-      #section-geymifikatsia .step-image-label { display: none; }
-      #section-geymifikatsia .step-text {
-        position: relative;
-        z-index: 2;
-        padding: 1.75rem 1.25rem 2rem;
-      }
-      #section-geymifikatsia .step-eyebrow { background: rgba(255,255,255,0.2); color: #fff; }
-      #section-geymifikatsia .step-title { color: #fff; }
-      #section-geymifikatsia .step-divider { background: #fff; }
-      #section-geymifikatsia .step-body { color: rgba(255,255,255,0.9); }
     }
   
 
@@ -1911,6 +1845,36 @@
       color: var(--tlap-accent-deep); background: var(--tlap-accent-wash);
       padding: 0.4rem 0.9rem; border-radius: 999px; margin-bottom: 1.1rem;
     }
+    .tlap__eyebrow-row { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0 0 1.1rem; flex-wrap: wrap; }
+    .tlap__new {
+      display: inline-block; font-size: 0.74rem; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
+      background: #E8580A; padding: 0.4rem 0.8rem; border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(232,88,10,0.35);
+    }
+    .tlap__eyebrow-row .tlap__eyebrow { margin-bottom: 0; }
+
+    /* The invitation to touch the thing. It sits above the tabs, and the
+       "Пробни изпити" tab leans out once every few seconds until someone
+       clicks any tab -- after that the nudge has done its job and stops. */
+    .tlap__try {
+      display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;
+      font-size: 0.9rem; font-weight: 700; color: var(--tlap-accent-deep);
+      margin: 0 0 0.8rem;
+    }
+    @keyframes tlapNudge {
+      0%, 84%, 100% { transform: none; }
+      88% { transform: translateX(6px); }
+      92% { transform: translateX(-2px); }
+      96% { transform: translateX(4px); }
+    }
+    .tlap__tabs[data-nudge="on"] .tlap__tab[data-nudge] {
+      animation: tlapNudge 4.5s ease-in-out infinite;
+      border-color: rgba(192,122,10,0.45);
+      background: var(--tlap-accent-wash);
+      color: var(--tlap-accent-deep);
+    }
+
     .tlap__title {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: clamp(1.75rem, 4.2vw, 2.75rem);
@@ -2214,6 +2178,7 @@
     @media (prefers-reduced-motion: reduce) {
       .tlap__panel[data-open="true"] { animation: none; }
       .tlap__ring-fill, .tlap__col-b, .tlap__tile, .tlap__cta, .tlap__start { transition: none; }
+      .tlap__tabs[data-nudge="on"] .tlap__tab[data-nudge] { animation: none; }
     }
     /* ── COOKIE CONSENT (shared across the site; one choice applies everywhere via localStorage) ── */
     .cookie-banner {
@@ -2463,210 +2428,21 @@
       </svg>
     </div>
     <div class="hero-badge">📐 НВО · 7. клас · Математика</div>
-    <h1>Подготовка за <span>НВО</span><br>7 клас по математика</h1>
-    <p>Динамична, персонализирана и дигитална подготовка — от входящ тест до пробен изпит. 24/7 достъп до онлайн упражнения!</p>
-    <div class="hero-pills">
-      <a href="#section-gen-alpha" class="hero-pill">Gen Alpha учи различно →</a>
-      <a href="#section-nashiyat-podhod" class="hero-pill">Нашият подход →</a>
-      <a href="#section-nashiyat-podhod" class="hero-pill">Пробни матури →</a>
-      <a href="#section-geymifikatsia" class="hero-pill">Геймификация →</a>
-      <a href="#section-tseni" class="hero-pill">Цени →</a>
-    </div>
+    <h1><span>НВО</span> 7 клас<br>по математика</h1>
+    <p>Малки групи + личен ученически портал + проследяване на прогреса</p>
+    <ul class="hero-checks">
+      <li>Личен профил</li>
+      <li>Пробни изпити + таймер</li>
+      <li>AI анализ + проверка от учителя</li>
+    </ul>
 
     <div style="margin-top: 1.5rem; position: relative; z-index: 1;">
       <button onclick="scrollToRegForm()" class="btn-cta-yellow">
         <i class="fa-solid fa-pen-to-square"></i>
-        Запазете своето място
+        Запази място
       </button>
     </div>
   </section>
-
-  <!-- JOURNEY -->
-  <div class="journey">
-
-    <!-- Animated vertical line -->
-    <div class="timeline-track">
-      <div class="timeline-fill" id="timelineFill"></div>
-    </div>
-
-    <!-- 1: Gen Alpha — image LEFT -->
-    <div id="section-gen-alpha" class="step" data-step="1">
-      <div class="step-image">
-        <img src="photos/gen_alpha_teen.jpg" alt="Тийнейджър, отегчен по време на класическа лекция">
-        <div class="step-image-label">Скучна лекция = изключено внимание</div>
-      </div>
-      <div class="step-dot">01</div>
-      <div class="step-text">
-        <h2 class="step-title">Gen Alpha учи различно</h2>
-        <div class="step-divider"></div>
-        <p class="step-body">Родените след 2010 г. възприемат света по нов начин. Докоснете всяка карта, за да видите защо:</p>
-        <div class="ga-profile" id="gaProfile">
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">🎯</span>
-              <span class="ga-problem">Очакват адаптация в реално време</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Учебните системи трябва да реагират мигновено на техните нужди и темпо.</p>
-              </div>
-            </div>
-          </div>
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">⏱️</span>
-              <span class="ga-problem">Свръхкратък фокус</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Нужда от честа смяна на дейността, за да остане вниманието будно.</p>
-              </div>
-            </div>
-          </div>
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">📱</span>
-              <span class="ga-problem">Дигитална интуитивност</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Дигиталната среда им е естествена, не изключение.</p>
-              </div>
-            </div>
-          </div>
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">😶</span>
-              <span class="ga-problem">Риск от „тихо напускане“</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Физическо присъствие без ментално участие при чисто лекционен метод.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2: Ние знаем това — image RIGHT -->
-    <div id="section-osnovi" class="step flip" data-step="2">
-      <div class="step-text">
-        <h2 class="step-title">Ние знаем това!</h2>
-        <div class="step-divider"></div>
-        <div class="ga-profile ga-profile--solutions">
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">🎯</span>
-              <span class="ga-problem">Нужда от адаптация в реално време</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Винаги персонализираме задачите и уроците според конкретното дете — малки групи означава, че учителят вижда веднага кога нещо не работи и го променя на момента.</p>
-              </div>
-            </div>
-          </div>
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">⏱️</span>
-              <span class="ga-problem">Свръхкратък фокус</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Честа смяна на типа преподаване през часа — обяснение, практика, дискусия, игра — за да остане вниманието будно, не монотонен формат от началото до края.</p>
-              </div>
-            </div>
-          </div>
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">📱</span>
-              <span class="ga-problem">Дигитална интуитивност</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Дигитализираме учебните материали и работим с млади преподаватели, които говорят естествено на езика на дигиталното поколение — създаваме динамична, интересна среда за учене, не статичен учебник.</p>
-              </div>
-            </div>
-          </div>
-          <div class="ga-card">
-            <button type="button" class="ga-card-head" aria-expanded="false">
-              <span class="ga-icon">😶</span>
-              <span class="ga-problem">Риск от „тихо напускане“</span>
-              <span class="ga-chevron">⌄</span>
-            </button>
-            <div class="ga-answer-wrap">
-              <div class="ga-answer-inner">
-                <p class="ga-answer-text">Активно въвличаме всяко дете да участва — да решава, да отговаря, да е част от урока, не просто да седи и слуша.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="ga-closing">Затова подготовката за НВО при нас изглежда различно — методът е изграден точно за начина, по който детето Ви реално учи.</p>
-      </div>
-      <div class="step-dot">02</div>
-      <div class="step-image">
-        <img src="photos/gen_alpha_teacher.jpg" alt="Учител дигитализира урок по математика с ученик">
-        <div class="step-image-label">Дигитализираме преподаването</div>
-      </div>
-    </div>
-
-    <!-- 3: Малки групи — image LEFT -->
-    <div id="section-nashiyat-podhod" class="step" data-step="3">
-      <div class="step-image">
-        <img src="photos/teen-laptop.jpg" alt="Ученик практикува онлайн пробен изпит нощем на лаптоп">
-        <div class="step-image-label">Практика по всяко време</div>
-      </div>
-      <div class="step-dot">03</div>
-      <div class="step-text">
-        <h2 class="step-title">Ето как изглежда на практика</h2>
-        <div class="step-divider"></div>
-        <div class="practice-cards">
-          <div class="practice-card">
-            <div class="practice-card-head">
-              <span class="ga-icon">📝</span>
-              <h3 class="practice-card-title">5 пробни матури на живо</h3>
-            </div>
-            <p class="practice-card-text">Истински формат, истинско време, истинска зала. Детето изживява НВО преди НВО — без изненади в деня на истинския изпит.</p>
-          </div>
-          <div class="practice-card">
-            <div class="practice-card-head">
-              <span class="ga-icon">💻</span>
-              <h3 class="practice-card-title">Неограничен онлайн достъп</h3>
-            </div>
-            <p class="practice-card-text">Пробни матури с активен таймер — точно както на истинския изпит. Практика по всяко време, с реалния натиск на времето, не просто задачи без край.</p>
-            <div class="exam-timer" id="examTimer">
-              <span class="exam-timer-label">⏱ Пробен изпит</span>
-              <span class="exam-timer-display" id="examTimerDisplay">02:59:47</span>
-            </div>
-          </div>
-        </div>
-        <p class="ga-closing">Пет пъти на живо. Неограничено онлайн. Детето Ви идва на НВО с усещането „вече съм бил тук“.</p>
-      </div>
-    </div>
-
-    <!-- 4: Геймификация — image RIGHT -->
-    <div id="section-geymifikatsia" class="step flip" data-step="4">
-      <div class="step-text">
-        <h2 class="step-title">Геймификация на задачите</h2>
-        <div class="step-divider"></div>
-        <p class="step-body">Дигитализирани и геймифицирани упражнения, с които учениците се състезават помежду си, трупайки точки от всяка решена задача.</p>
-        <p class="ga-closing">Защото тях не ги мързи — просто поколението им изисква нов подход.</p>
-      </div>
-      <div class="step-dot">04</div>
-      <div class="step-image">
-        <video id="gamificationVideo" src="photos/gamification.mp4?v=4" width="1080" height="1920" muted loop playsinline preload="none" poster="photos/gamification-poster.jpg" aria-label="Видео с илюстрация на геймификация на упражненията"></video>
-        <div class="step-image-label">Учене през игра</div>
-      </div>
-    </div>
-
-  </div><!-- end .journey -->
 
   <!-- ══════════ УЧЕНИЧЕСКА WEB ПЛАТФОРМА ══════════
        A mock of the student portal. Every number in it is illustrative --
@@ -2677,7 +2453,10 @@
 
     <div class="tlap__inner">
       <header class="tlap__head">
-        <span class="tlap__eyebrow">Ученическа платформа</span>
+        <p class="tlap__eyebrow-row">
+          <span class="tlap__new">Ново!</span>
+          <span class="tlap__eyebrow">Ученическа web платформа</span>
+        </p>
         <h2 class="tlap__title" id="tlapTitle">Повече от курс. Лична web платформа за подготовка.</h2>
         <p class="tlap__sub">
           Всеки ученик получава собствен профил, в който вижда своята подготовка,
@@ -2731,9 +2510,13 @@
             </div>
           </div>
 
+          <p class="tlap__try" id="tlapTry">
+            <span aria-hidden="true">👆</span>
+            Пробвайте сами — отворете разделите и стартирайте пробния изпит
+          </p>
           <div class="tlap__tabs" role="tablist" aria-label="Раздели в профила">
             <button class="tlap__tab" role="tab" id="tlapTab1" aria-controls="tlapPanel1" aria-selected="true"  type="button">Домашни</button>
-            <button class="tlap__tab" role="tab" id="tlapTab2" aria-controls="tlapPanel2" aria-selected="false" type="button" tabindex="-1">Пробни изпити</button>
+            <button class="tlap__tab" role="tab" id="tlapTab2" aria-controls="tlapPanel2" aria-selected="false" type="button" tabindex="-1" data-nudge>Пробни изпити</button>
             <button class="tlap__tab" role="tab" id="tlapTab3" aria-controls="tlapPanel3" aria-selected="false" type="button" tabindex="-1">Резултати</button>
             <button class="tlap__tab" role="tab" id="tlapTab4" aria-controls="tlapPanel4" aria-selected="false" type="button" tabindex="-1">Обратна връзка</button>
             <button class="tlap__tab" role="tab" id="tlapTab5" aria-controls="tlapPanel5" aria-selected="false" type="button" tabindex="-1">AI анализ</button>
@@ -2935,7 +2718,129 @@
     </div>
   </section>
 
+  <!-- JOURNEY -->
+  <div class="journey">
+
+    <!-- Animated vertical line -->
+    <div class="timeline-track">
+      <div class="timeline-fill" id="timelineFill"></div>
+    </div>
+
+    <!-- 1: Gen Alpha — image LEFT -->
+    <div id="section-gen-alpha" class="step" data-step="1">
+      <div class="step-image">
+        <img src="photos/gen_alpha_teen.jpg" alt="Тийнейджър, отегчен по време на класическа лекция">
+        <div class="step-image-label">Скучна лекция = изключено внимание</div>
+      </div>
+      <div class="step-dot">01</div>
+      <div class="step-text">
+        <h2 class="step-title">Gen Alpha учи различно</h2>
+        <div class="step-divider"></div>
+        <p class="step-body">Родените след 2010 г. възприемат света по нов начин. Докоснете всяка карта, за да видите как отговаряме на това:</p>
+        <div class="ga-profile" id="gaProfile">
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">🎯</span>
+              <span class="ga-problem">Очакват адаптация в реално време</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Винаги персонализираме задачите и уроците според конкретното дете — малки групи означава, че учителят вижда веднага кога нещо не работи и го променя на момента.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">⏱️</span>
+              <span class="ga-problem">Свръхкратък фокус</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Честа смяна на типа преподаване през часа — обяснение, практика, дискусия, игра — за да остане вниманието будно, не монотонен формат от началото до края.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">📱</span>
+              <span class="ga-problem">Дигитална интуитивност</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Дигитализираме учебните материали и работим с млади преподаватели, които говорят естествено на езика на дигиталното поколение — създаваме динамична, интересна среда за учене, не статичен учебник.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ga-card">
+            <button type="button" class="ga-card-head" aria-expanded="false">
+              <span class="ga-icon">😶</span>
+              <span class="ga-problem">Риск от „тихо напускане“</span>
+              <span class="ga-chevron">⌄</span>
+            </button>
+            <div class="ga-answer-wrap">
+              <div class="ga-answer-inner">
+                <p class="ga-answer-text">Активно въвличаме всяко дете да участва — да решава, да отговаря, да е част от урока, не просто да седи и слуша.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ga-closing">Затова подготовката за НВО при нас изглежда различно — методът е изграден точно за начина, по който детето Ви реално учи.</p>
+      </div>
+    </div>
+
+    <!-- 2: Малки групи — image RIGHT -->
+    <div id="section-nashiyat-podhod" class="step flip" data-step="2">
+      <div class="step-image">
+        <img src="photos/teen-laptop.jpg" alt="Ученик практикува онлайн пробен изпит нощем на лаптоп">
+        <div class="step-image-label">Практика по всяко време</div>
+      </div>
+      <div class="step-dot">02</div>
+      <div class="step-text">
+        <h2 class="step-title">Ето как изглежда на практика</h2>
+        <div class="step-divider"></div>
+        <div class="practice-cards">
+          <div class="practice-card">
+            <div class="practice-card-head">
+              <span class="ga-icon">📝</span>
+              <h3 class="practice-card-title">5 пробни матури на живо</h3>
+            </div>
+            <p class="practice-card-text">Истински формат, истинско време, истинска зала. Детето изживява НВО преди НВО — без изненади в деня на истинския изпит.</p>
+          </div>
+          <div class="practice-card">
+            <div class="practice-card-head">
+              <span class="ga-icon">💻</span>
+              <h3 class="practice-card-title">Неограничен онлайн достъп</h3>
+            </div>
+            <p class="practice-card-text">Пробни матури с активен таймер — точно както на истинския изпит. Практика по всяко време, с реалния натиск на времето, не просто задачи без край.</p>
+            <div class="exam-timer" id="examTimer">
+              <span class="exam-timer-label">⏱ Пробен изпит</span>
+              <span class="exam-timer-display" id="examTimerDisplay">02:59:47</span>
+            </div>
+          </div>
+        </div>
+        <p class="ga-closing">Пет пъти на живо. Неограничено онлайн. Детето Ви идва на НВО с усещането „вече съм бил тук“.</p>
+      </div>
+    </div>
+
+  </div><!-- end .journey -->
+
+
   <div class="pricing-cta-flow">
+
+  <!-- Who teaches it, before what it costs: the answer to "who will my
+       child sit with" should land before the number does. -->
+  <div class="teacher-intro">
+    <div class="teacher-intro-photo"><img src="photos/ani_profile_photo.jpg" alt="Ани — учител по математика"></div>
+    <div class="teacher-intro-text">
+      <strong>Ани</strong>
+      <span class="teacher-intro-role">Учител по математика</span>
+      <p>Превръща трудните задачи в игри и предизвикателства — с грижа за всяко дете.</p>
+    </div>
+  </div>
+
   <section class="pricing-section">
     <div class="pricing-heading" id="section-tseni">
       <span class="eyebrow">Инвестиция в подготовката</span>
@@ -2983,14 +2888,6 @@
 
   <div class="post-pricing-group">
   <div class="course-info-block">
-    <div class="teacher-intro">
-      <div class="teacher-intro-photo"><img src="photos/ani_profile_photo.jpg" alt="Ани — учител по математика"></div>
-      <div class="teacher-intro-text">
-        <strong>Ани</strong>
-        <span class="teacher-intro-role">Учител по математика</span>
-        <p>Превръща трудните задачи в игри и предизвикателства — с грижа за всяко дете.</p>
-      </div>
-    </div>
     <h2>При нас...</h2>
     <p>учениците наистина разбират, защото преподаваме на техния език. Използваме нов подход в образованието – знаем как учат поколенията Z и Alpha и знаем как да постигнем резултати с тях.</p>
 
@@ -3446,8 +3343,19 @@
         if (i === 2) drawChart();
       }
 
+      /* The nudge is an invitation, not decoration: the moment someone
+         accepts it -- clicks any tab -- it stops for good. */
+      var tabsWrap = root.querySelector('.tlap__tabs');
+      var tryLine = document.getElementById('tlapTry');
+      if (tabsWrap && !reduce) tabsWrap.setAttribute('data-nudge', 'on');
+
+      function stopNudging() {
+        if (tabsWrap) tabsWrap.removeAttribute('data-nudge');
+        if (tryLine) tryLine.hidden = true;
+      }
+
       tabs.forEach(function (tab, i) {
-        tab.addEventListener('click', function () { select(i); });
+        tab.addEventListener('click', function () { stopNudging(); select(i); });
         tab.addEventListener('keydown', function (e) {
           var to = null;
           if (e.key === 'ArrowRight') to = (i + 1) % tabs.length;
@@ -3548,6 +3456,7 @@
 
       if (startBtn) {
         startBtn.addEventListener('click', function () {
+          stopNudging();
           if (timer) {                       /* running -> pause */
             clearInterval(timer);
             timer = null;
@@ -3715,27 +3624,6 @@
     // section actually scrolls into view; only then do we load() and
     // play() it, and it pauses again once scrolled out so it doesn't keep
     // decoding/playing off-screen.
-    (function () {
-      const video = document.getElementById('gamificationVideo');
-      if (!video || !('IntersectionObserver' in window)) return;
-
-      let loaded = false;
-      const videoObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (!loaded) {
-              loaded = true;
-              video.load();
-            }
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        });
-      }, { threshold: 0.3 });
-
-      videoObserver.observe(video);
-    })();
 
     // Timeline fill grows with scroll
     function updateTimeline() {
