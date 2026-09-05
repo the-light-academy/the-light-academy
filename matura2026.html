@@ -1729,7 +1729,8 @@ function buildPart2Records(){
   part2Steps.forEach((step, idx) => {
     step.subparts.forEach(sp => {
       const raw = p2Answers[idx] && typeof p2Answers[idx][sp.label] === 'string' ? p2Answers[idx][sp.label].trim() : '';
-      records.push({ id: step.id + sp.label, prompt: sp.prompt, studentAnswer: raw || '(няма отговор)', solution: sp.solution });
+      records.push({ id: step.id + sp.label, prompt: sp.prompt, studentAnswer: raw || '(няма отговор)', solution: sp.solution,
+                     taskId: step.id, taskPoints: step.points });
     });
   });
   return records;
