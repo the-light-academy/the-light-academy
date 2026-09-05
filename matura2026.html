@@ -1781,16 +1781,12 @@ async function saveAttemptToPortal(results){
       note.hidden = false;
     }
 
-    /* Part 2 can only be judged by reading what was written, so it used
-       to sit as "чака оценка" until the teacher got to it. Ask the
-       grader for a provisional mark now. It is best effort: if it is not
-       available the answers simply stay unmarked, exactly as before. */
-    if (saved && saved.id && note && typeof TLA.requestAiGrading === 'function') {
-      note.textContent = 'Резултатът е записан. Оценявам отговорите със свободен текст…';
-      const ai = await TLA.requestAiGrading(saved.id);
-      note.textContent = (ai && ai.ok && ai.graded)
-        ? 'Резултатът е записан. Отговорите със свободен текст са оценени от AI — вижте ги в профила си.'
-        : 'Резултатът е записан в профила ви. Отговорите със свободен текст ще бъдат прегледани от преподавател.';
+    /* Part 2 can only be judged by reading what was written, so it is not
+       marked here. It is marked from the teacher's dashboard, which is
+       where the AI grading happens -- nothing on this page pays for or
+       calls a model. Until then the profile shows it as being graded. */
+    if (saved && saved.id && note) {
+      note.textContent = 'Резултатът е записан в профила ви. Отговорите със свободен текст се оценяват.';
     }
   } catch (err) {
     if (note) {

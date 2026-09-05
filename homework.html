@@ -302,16 +302,12 @@
 
         document.getElementById('hwForm').hidden = true;
 
-        /* Free-text answers get a provisional mark from the AI grader
-           before the teacher sees them. Best effort -- if the grader is
-           not available they simply stay unmarked. */
-        var aiText = '';
-        if (saved && saved.id && manual.length && typeof TLA.requestAiGrading === 'function') {
-          var ai = await TLA.requestAiGrading(saved.id);
-          aiText = (ai && ai.ok && ai.graded)
-            ? 'Отговорите със свободен текст са оценени от AI — виж ги в „Преглед“.'
-            : 'Отговорите със свободен текст чакат оценка от преподавателя.';
-        }
+        /* Free-text answers are marked from the teacher's dashboard, which
+           is where the AI grading happens. Nothing on this page calls a
+           model, so submitting homework costs nothing. */
+        var aiText = manual.length
+          ? 'Отговорите със свободен текст се оценяват — точките ще се появят в „Преглед“.'
+          : '';
 
         var pct = TLA.percent(g.autoScore, g.autoMax);
         document.getElementById('hwResultBody').innerHTML =

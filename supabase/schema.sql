@@ -61,10 +61,11 @@ create table if not exists public.attempts (
   graded_at     timestamptz
 );
 
--- Added later, with the AI pre-marking of free-text answers. When this is
--- set, the manual_score currently on the row was produced by the grader in
--- supabase/functions/grade-free-text, not by a person. The teacher's own
--- marking clears it by setting status='graded'.
+-- Added with the AI marking of free-text answers. When this is set, the
+-- manual_score on the row came from Claude, not from a person: the teacher
+-- copies the answers out of teacher.html, pastes them into their own Claude,
+-- and pastes the marks back. Their own marking clears it, by setting
+-- status='graded'.
 alter table public.attempts add column if not exists ai_graded_at timestamptz;
 
 create index if not exists attempts_user_idx       on public.attempts(user_id);
@@ -239,9 +240,7 @@ on conflict (slug) do nothing;
 --    Check it worked -- this must return true while logged in as you:
 --       select public.is_teacher();
 --
---    c) Optional: automatic marking of the free-text answers.
---       supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
---       supabase functions deploy grade-free-text
---       Without this the free-text answers simply wait for you, exactly
---       as before. Each graded attempt is one paid Claude request.
+--    Marking the free-text answers needs no setup and costs nothing: it
+--    happens from teacher.html -> Резултати -> "Оценяване с Claude",
+--    through your own Claude account, by copy and paste.
 -- ---------------------------------------------------------------------

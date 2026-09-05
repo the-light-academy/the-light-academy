@@ -135,6 +135,16 @@ footer a { color: var(--sun); text-decoration: none; }
 .tla-badge--graded { background: #E9F7EF; color: #1D6B41; }
 .tla-badge--submitted { background: var(--sun-light); color: #7A5600; }
 .tla-badge--off { background: rgba(58,46,31,0.08); color: var(--mid); }
+/* ── CLAUDE GRADING (teacher only) ── */
+.tla-aiflow { display: grid; gap: 0.85rem; margin: 1rem 0 0.5rem; }
+.tla-aiflow textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85rem; }
+.tla-aiflow .tla-btn { justify-self: start; }
+.tla-help { margin-top: 1rem; border-top: 1px solid var(--line); padding-top: 0.9rem; }
+.tla-help summary { cursor: pointer; font-weight: 800; color: var(--mid); font-size: 0.9rem; }
+.tla-help ol { margin: 0.75rem 0 0.75rem 1.2rem; color: var(--mid); font-size: 0.92rem; }
+.tla-help li { margin-bottom: 0.3rem; }
+.tla-help p { color: var(--mid); font-size: 0.92rem; margin-top: 0.6rem; }
+
 /* A mark the AI grader gave: real points, but not the teacher's last word. */
 .tla-badge--ai { background: #EDE7FA; color: #4B2E83; }
 

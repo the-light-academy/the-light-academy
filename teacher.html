@@ -111,6 +111,43 @@
         </div>
       </div>
 
+      <div class="tla-card" id="aiCard">
+        <h2 class="tla-card__title">Оценяване с Claude</h2>
+        <p class="tla-muted" id="aiPendingCount">Зареждане…</p>
+
+        <div class="tla-aiflow">
+          <button type="button" class="tla-btn" id="copyAllBtn" disabled>
+            1. Копирай чакащите за Claude
+          </button>
+          <div class="tla-field" style="margin:0;">
+            <label for="aiPaste">2. Поставете тук отговора на Claude</label>
+            <textarea id="aiPaste" rows="4" placeholder='{"grades": [ … ]}'></textarea>
+          </div>
+          <button type="button" class="tla-btn" id="applyAiBtn">
+            3. Приложи оценките
+          </button>
+        </div>
+
+        <details class="tla-help">
+          <summary>Как се използва</summary>
+          <ol>
+            <li>Натиснете <strong>Копирай чакащите за Claude</strong> — текстът отива в клипборда.</li>
+            <li>Отворете Claude (приложението или claude.ai) и го поставете в нов разговор.</li>
+            <li>Claude отговаря с блок код. Копирайте целия блок.</li>
+            <li>Поставете го в полето отгоре и натиснете <strong>Приложи оценките</strong>.</li>
+          </ol>
+          <p>
+            Точките се записват веднага и ученикът ги вижда в профила си като
+            „оценка от AI“. Работата остава при вас за потвърждение — отваряте я,
+            променяте каквото не ви харесва и записвате.
+          </p>
+          <p>
+            В копирания текст няма имена на ученици — само номера на работите,
+            за да не изнасяме лични данни навън.
+          </p>
+        </details>
+      </div>
+
       <div class="tla-card" id="attemptDetail" hidden>
         <h2 class="tla-card__title" id="detailTitle">Преглед</h2>
         <div id="detailBody"></div>
@@ -223,6 +260,9 @@
     (function () {
       var esc = TLA.escapeHtml;
       var state = { attempts: [], profiles: {}, assignments: {}, roster: [] };
+      /* Set while the review panel is open. Lets you paste a reply that
+         carries no attempt id -- it belongs to the work on screen. */
+      var openAttemptId = null;
 
       document.getElementById('signOutBtn')
         .addEventListener('click', function () { TLA.signOut(); });
@@ -264,8 +304,285 @@
         return '<span class="tla-badge tla-badge--off">Незавършено</span>';
       }
 
+      /* ==================================================================
+         Grading the free-text answers with Claude, by hand
+         ------------------------------------------------------------------
+         The site has no API key and pays for nothing. Instead this builds
+         the whole marking request as text, you paste it into your own
+         Claude, and paste the answer back. Everything below is either
+         building that text or reading the reply.
+         ================================================================== */
+
+      /* The marking rules. Kept here, in one string, because they are the
+         thing worth editing if the marks come back too harsh or too kind. */
+      var AI_RULES = [
+        'Ти си опитен учител по математика, който проверява отговорите със свободен',
+        'текст от изпитна работа на ученик от 7. клас в България.',
+        '',
+        'За всяка подточка получаваш условието, отговора на ученика и ключа с верния',
+        'отговор. Дай точки според това КОЛКО ОТ КЛЮЧА се съдържа в отговора:',
+        '  • пълно съвпадение по същество (същият резултат и същият ход на',
+        '    разсъждение) — целият брой точки за подточката;',
+        '  • верен краен резултат без обосновка, или вярна обосновка с аритметична',
+        '    грешка накрая — частични точки;',
+        '  • само отделни верни стъпки — малка част от точките;',
+        '  • празен отговор, „не знам“, преписано условие или изцяло грешно — 0 точки.',
+        '',
+        'Гледай смисъла, не буквите: друга формулировка, друг ред на действията или',
+        'друг верен път до същия отговор се признават напълно. Не наказвай правописа',
+        'и записа (0,5 и 0.5 са едно и също).',
+        '',
+        'Всяка задача има бюджет точки ("budget_points"). Сборът на точките за',
+        'подточките на една задача НЕ може да го надхвърля. Точките са цели или на',
+        'половинки.',
+        '',
+        'За всяка подточка напиши и кратко обяснение на български (едно изречение) —',
+        'какво е признато и какво липсва. Пиши на ученика, на „ти“.',
+        '',
+        'Отговори САМО с блок код json, без никакъв друг текст, точно в този вид:',
+        '',
+        '```json',
+        '{"grades":[{"attempt":"<id-то на работата>","marks":[',
+        '  {"id":"<id-то на подточката>","points":6,"comment":"…"}',
+        ']}]}',
+        '```'
+      ].join('\n');
+
+      /* Sub-questions belong to a task with a shared budget (Part 2 of the
+         matura is three tasks worth 12 / 11 / 12). Homework questions carry
+         their own `points` and stand alone. Both end up as one group. */
+      function groupPart2(part2) {
+        var groups = [], byTask = {};
+        part2.forEach(function (r, idx) {
+          var task = String(r.taskId != null ? r.taskId : (r.id != null ? r.id : idx));
+          if (byTask[task] == null) {
+            byTask[task] = groups.length;
+            var b = (r.taskPoints != null) ? Number(r.taskPoints)
+                  : (r.points != null) ? Number(r.points) : null;
+            groups.push({ task: task, budget: isFinite(b) ? b : null, items: [] });
+          }
+          groups[byTask[task]].items.push({ idx: idx, r: r });
+        });
+        return groups;
+      }
+
+      /* An attempt still worth sending to Claude: it has free-text answers
+         and nobody -- not Claude, not you -- has marked them yet. */
+      function needsGrading(t) {
+        return t.status !== 'graded' && !t.ai_graded_at && t.manual_max != null;
+      }
+
+      /* No names go into the text: Claude only needs the answers, and these
+         are children's exam results. The attempt id is enough to put the
+         marks back on the right row. */
+      function payloadFor(t, part2, assignmentTitle) {
+        return {
+          attempt: t.id,
+          assignment: assignmentTitle || '',
+          tasks: groupPart2(part2).map(function (g) {
+            return {
+              task: g.task,
+              budget_points: g.budget,
+              subquestions: g.items.map(function (o) {
+                return {
+                  id: String(o.r.id != null ? o.r.id : o.idx),
+                  question: String(o.r.prompt || ''),
+                  student_answer: String(o.r.studentAnswer || '').trim() || '(няма отговор)',
+                  answer_key: String(o.r.solution || '').trim() || '(няма подаден ключ)'
+                };
+              })
+            };
+          })
+        };
+      }
+
+      function buildPrompt(attempts) {
+        return AI_RULES + '\n\nЕто работите за оценка:\n\n```json\n' +
+          JSON.stringify({ attempts: attempts }, null, 2) + '\n```';
+      }
+
+      /* navigator.clipboard needs a secure context, which a page opened
+         straight off disk does not have -- so fall back to the old trick
+         rather than failing silently. */
+      async function copyText(text) {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (e) { /* fall through */ }
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      /* Loads the full rows (the list query does not fetch part2) and turns
+         them into one prompt. */
+      async function collectForGrading(ids) {
+        var res = await TLA.client.from('attempts')
+          .select('id, assignment_id, part2, manual_max, status, ai_graded_at')
+          .in('id', ids);
+        if (res.error) throw res.error;
+
+        var out = [];
+        (res.data || []).forEach(function (t) {
+          var p2 = Array.isArray(t.part2) ? t.part2 : [];
+          if (!p2.length) return;
+          var a = state.assignments[t.assignment_id];
+          out.push(payloadFor(t, p2, a ? a.title : ''));
+        });
+        return out;
+      }
+
+      async function copyForGrading(ids, btn) {
+        clearMsgs();
+        var label = btn ? btn.textContent : '';
+        if (btn) { btn.disabled = true; btn.textContent = 'Подготвям…'; }
+        try {
+          var attempts = await collectForGrading(ids);
+          if (!attempts.length) { say('err', 'Няма отговори със свободен текст за оценка.'); return; }
+          var ok = await copyText(buildPrompt(attempts));
+          say(ok ? 'ok' : 'err', ok
+            ? 'Копирано — поставете го в Claude, после върнете отговора в полето отдолу.'
+            : 'Копирането не стана. Маркирайте текста от полето и го копирайте на ръка.');
+        } catch (err) {
+          say('err', 'Грешка: ' + (err.message || err));
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = label; }
+        }
+      }
+
+      /* Claude answers with a fenced code block and usually a sentence
+         around it; take the JSON and ignore the rest. */
+      function parseReply(text) {
+        var raw = String(text || '').trim();
+        if (!raw) throw new Error('Полето е празно.');
+        var fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (fence) raw = fence[1].trim();
+        else {
+          var a = raw.indexOf('{'), b = raw.lastIndexOf('}');
+          if (a !== -1 && b > a) raw = raw.slice(a, b + 1);
+        }
+        var data;
+        try { data = JSON.parse(raw); }
+        catch (e) { throw new Error('Това не е валиден JSON. Копирайте целия блок код от Claude.'); }
+
+        var grades = Array.isArray(data.grades) ? data.grades
+                   : Array.isArray(data.marks) ? [{ attempt: null, marks: data.marks }]
+                   : null;
+        if (!grades || !grades.length) throw new Error('В отговора няма оценки.');
+        return grades;
+      }
+
+      /* Writes one attempt's marks. Every number is clamped here rather than
+         trusted: nothing goes negative, and no task exceeds its budget --
+         Claude is the marker, not the authority on the point scale. */
+      async function applyMarks(attemptId, marks) {
+        var res = await TLA.client.from('attempts')
+          .select('id, part2, manual_max, status').eq('id', attemptId).maybeSingle();
+        if (res.error) throw res.error;
+        var t = res.data;
+        if (!t) throw new Error('Няма работа с номер ' + attemptId + '.');
+        if (t.status === 'graded') return { skipped: true };
+
+        var p2 = Array.isArray(t.part2) ? t.part2 : [];
+        if (!p2.length) throw new Error('Работа ' + attemptId + ' няма свободни отговори.');
+
+        var byId = {};
+        marks.forEach(function (m) {
+          if (!m || m.id == null) return;
+          var pts = Number(m.points);
+          byId[String(m.id)] = {
+            points: isFinite(pts) ? pts : 0,
+            comment: String(m.comment || '')
+          };
+        });
+
+        var out = p2.map(function (r) {
+          var c = {}; Object.keys(r).forEach(function (k) { c[k] = r[k]; }); return c;
+        });
+        var total = 0, max = 0, marked = 0;
+
+        groupPart2(p2).forEach(function (g) {
+          var used = 0;
+          if (g.budget != null) max += g.budget;
+          g.items.forEach(function (o) {
+            var m = byId[String(o.r.id != null ? o.r.id : o.idx)];
+            if (!m) return;
+            var pts = Math.max(0, Math.round(m.points * 2) / 2);
+            if (g.budget != null) pts = Math.min(pts, Math.max(0, g.budget - used));
+            used += pts;
+            out[o.idx].mark = pts;
+            out[o.idx].markSource = 'ai';
+            out[o.idx].aiComment = m.comment;
+            marked++;
+          });
+          total += used;
+        });
+
+        if (!marked) throw new Error('За работа ' + attemptId + ' не съвпадна нито една подточка.');
+
+        var upd = await TLA.client.from('attempts').update({
+          part2: out,
+          manual_score: total,
+          manual_max: (t.manual_max != null) ? t.manual_max : (max || null),
+          ai_graded_at: new Date().toISOString()
+        }).eq('id', attemptId);
+        if (upd.error) throw upd.error;
+        return { marked: marked, total: total };
+      }
+
+      document.getElementById('copyAllBtn').addEventListener('click', function () {
+        var ids = state.attempts.filter(needsGrading).map(function (t) { return t.id; });
+        copyForGrading(ids, this);
+      });
+
+      document.getElementById('applyAiBtn').addEventListener('click', async function () {
+        clearMsgs();
+        var btn = this, box = document.getElementById('aiPaste');
+        btn.disabled = true;
+        btn.textContent = 'Записвам…';
+        try {
+          var grades = parseReply(box.value);
+          var done = 0, skipped = 0, problems = [];
+          for (var i = 0; i < grades.length; i++) {
+            var g = grades[i];
+            var id = g.attempt || openAttemptId;
+            if (!id) { problems.push('липсва номер на работа'); continue; }
+            try {
+              var r = await applyMarks(id, g.marks || []);
+              if (r.skipped) skipped++; else done++;
+            } catch (e) { problems.push(e.message || String(e)); }
+          }
+          await loadResults();
+          if (done) box.value = '';
+          var msg = done + (done === 1 ? ' оценена работа' : ' оценени работи') +
+            (skipped ? ', ' + skipped + ' пропуснати (вече оценени от вас)' : '');
+          if (problems.length) say('err', msg + '. Проблеми: ' + problems.join('; '));
+          else say('ok', msg + '. Учениците вече ги виждат.');
+        } catch (err) {
+          say('err', err.message || String(err));
+        }
+        btn.disabled = false;
+        btn.textContent = '3. Приложи оценките';
+      });
+
       /* ---- results table ---- */
       function renderAttempts() {
+        var pending = state.attempts.filter(needsGrading).length;
+        document.getElementById('copyAllBtn').disabled = !pending;
+        document.getElementById('aiPendingCount').textContent = pending
+          ? pending + (pending === 1 ? ' работа чака' : ' работи чакат') +
+            ' оценка на свободните отговори.'
+          : 'Няма работи, които чакат оценка на свободните отговори.';
+
         var tb = document.querySelector('#attemptsTable tbody');
         if (!state.attempts.length) {
           tb.innerHTML = '<tr><td colspan="8" class="tla-empty">Още няма предадени задания.</td></tr>';
@@ -380,13 +697,24 @@
           '<div id="markTotal" style="font-weight:800;font-size:1.05rem;margin-bottom:0.75rem;"></div>' +
           '<div class="tla-field"><label for="tNote">Бележка към ученика</label>' +
             '<textarea id="tNote" rows="3">' + esc(t.teacher_note || '') + '</textarea></div>' +
-          '<button type="button" class="tla-btn" id="saveGrade">Запиши и се върни към резултатите</button>' +
+          '<div style="display:flex;gap:0.6rem;flex-wrap:wrap;">' +
+            '<button type="button" class="tla-btn" id="saveGrade">Запиши и се върни към резултатите</button>' +
+            (p2.length
+              ? '<button type="button" class="tla-btn tla-btn--ghost" id="copyOneBtn">Копирай тази работа за Claude</button>'
+              : '') +
+          '</div>' +
         '</div>';
 
+        openAttemptId = id;
         document.getElementById('detailTitle').textContent = 'Преглед на опит';
         document.getElementById('detailBody').innerHTML = html;
         document.getElementById('attemptDetail').hidden = false;
         document.getElementById('attemptDetail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        var copyOne = document.getElementById('copyOneBtn');
+        if (copyOne) {
+          copyOne.addEventListener('click', function () { copyForGrading([id], this); });
+        }
 
         function marks() {
           var vals = [], any = false, sum = 0;
@@ -447,6 +775,7 @@
           /* Go back to the list. Without this the panel just sat there and
              the confirmation was off-screen above, so saving looked broken. */
           document.getElementById('attemptDetail').hidden = true;
+          openAttemptId = null;
           await loadResults();
           say('ok', 'Оценката е записана' + (m.any ? ' — ' + m.sum + ' т.' : '.'));
           window.scrollTo({ top: 0, behavior: 'smooth' });

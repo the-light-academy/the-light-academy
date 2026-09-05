@@ -108,9 +108,9 @@
         </table>
       </div>
       <p class="tla-muted" style="margin-top:0.75rem;">
-        Задачите със свободен отговор получават точки от AI веднага след
-        предаването. Преподавателят ги преглежда след това и може да ги
-        промени — тогава статусът става „Оценено“.
+        Задачите със свободен отговор се оценяват от AI. Точките се появяват
+        тук, щом оценката е готова. Преподавателят ги преглежда след това и
+        може да ги промени — тогава статусът става „Оценено“.
       </p>
     </section>
 
@@ -185,12 +185,19 @@
         box.hidden = false;
       }
 
-      function statusBadge(status, aiGradedAt) {
-        if (status === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
-        if (status === 'submitted') {
-          return aiGradedAt
-            ? '<span class="tla-badge tla-badge--ai">Оценка от AI</span>'
-            : '<span class="tla-badge tla-badge--submitted">Предадено</span>';
+      /* Three states a student can be in after handing something in:
+           - the teacher has signed it off        -> Оценено
+           - the AI marks are in, teacher pending -> Оценка от AI
+           - free-text answers still unmarked     -> AI оценява
+         The last one is why an attempt can show a total that is not final. */
+      function statusBadge(t) {
+        if (t.status === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
+        if (t.status === 'submitted') {
+          if (t.ai_graded_at) return '<span class="tla-badge tla-badge--ai">Оценка от AI</span>';
+          if (t.manual_max != null && t.manual_score == null) {
+            return '<span class="tla-badge tla-badge--ai">AI оценява…</span>';
+          }
+          return '<span class="tla-badge tla-badge--submitted">Предадено</span>';
         }
         return '<span class="tla-badge tla-badge--off">Незавършено</span>';
       }
@@ -216,9 +223,11 @@
         var manualLabel = (t.status === 'graded') ? 'Оценено от преподавателя'
                         : byAi ? 'Оценка от AI'
                         : 'Свободните отговори';
+        var pendingAi = (t.status !== 'graded' && !t.ai_graded_at && t.manual_max != null);
+        if (pendingAi) manualLabel = 'Свободните отговори';
         var manualTxt = (t.manual_score != null)
           ? t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')
-          : 'чакат оценка от преподавателя';
+          : 'AI е в процес на оценка';
         html += '<div class="tla-item" style="display:block;">' +
           '<div><strong>Автоматично:</strong> ' +
             (t.auto_score != null ? esc(t.auto_score + ' / ' + t.auto_max) : '—') + '</div>' +
@@ -230,8 +239,12 @@
 
         if (byAi) {
           html += '<p class="tla-muted" style="margin-top:0.6rem;">' +
-            'Тези точки са дадени автоматично от AI веднага след предаването. ' +
-            'Преподавателят ще ги прегледа и може да ги промени.</p>';
+            'Тези точки са дадени от AI. Преподавателят ще ги прегледа и ' +
+            'може да ги промени.</p>';
+        } else if (pendingAi) {
+          html += '<p class="tla-muted" style="margin-top:0.6rem;">' +
+            'Отговорите ти със свободен текст се оценяват от AI. Точките ще ' +
+            'се появят тук — общият резултат отгоре още не е окончателен.</p>';
         }
 
         /* the teacher's note comes first -- it is the thing worth reading */
@@ -282,7 +295,7 @@
                 esc(tid) + (r.taskPoints != null ? ' — от ' + esc(r.taskPoints) + ' т.' : '') + '</div>';
             }
             var mark = (r.mark == null)
-              ? '<span class="tla-badge tla-badge--submitted">чака оценка</span>'
+              ? '<span class="tla-badge tla-badge--ai">AI оценява…</span>'
               : '<strong>' + esc(r.mark) + ' т.</strong>' +
                 (r.markSource === 'ai'
                   ? ' <span class="tla-badge tla-badge--ai">оценка от AI</span>'
@@ -398,7 +411,7 @@
               '<td class="tla-num">' + (t.manual_score != null ? esc(t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')) : '—') + '</td>' +
               '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') +
                 (pct != null ? ' <span class="tla-muted">(' + pct + '%)</span>' : '') + '</td>' +
-              '<td>' + statusBadge(t.status, t.ai_graded_at) + '</td>' +
+              '<td>' + statusBadge(t) + '</td>' +
               '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
                 esc(t.id) + '">Преглед</button></td>' +
             '</tr>';
