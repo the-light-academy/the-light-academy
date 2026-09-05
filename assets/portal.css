@@ -135,6 +135,8 @@ footer a { color: var(--sun); text-decoration: none; }
 .tla-badge--graded { background: #E9F7EF; color: #1D6B41; }
 .tla-badge--submitted { background: var(--sun-light); color: #7A5600; }
 .tla-badge--off { background: rgba(58,46,31,0.08); color: var(--mid); }
+/* A mark the AI grader gave: real points, but not the teacher's last word. */
+.tla-badge--ai { background: #EDE7FA; color: #4B2E83; }
 
 /* ── TABLES ── */
 .tla-tablewrap { overflow-x: auto; }

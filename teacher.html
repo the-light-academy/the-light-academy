@@ -250,9 +250,17 @@
         });
       });
 
-      function statusBadge(s) {
+      /* An attempt the AI grader has already been over still counts as
+         waiting for you -- the badge just says the points on the row are
+         its, not yours, so you know you are confirming rather than
+         starting from a blank form. */
+      function statusBadge(s, aiGradedAt) {
         if (s === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
-        if (s === 'submitted') return '<span class="tla-badge tla-badge--submitted">За оценка</span>';
+        if (s === 'submitted') {
+          return aiGradedAt
+            ? '<span class="tla-badge tla-badge--ai">AI · за потвърждение</span>'
+            : '<span class="tla-badge tla-badge--submitted">За оценка</span>';
+        }
         return '<span class="tla-badge tla-badge--off">Незавършено</span>';
       }
 
@@ -273,7 +281,7 @@
             '<td class="tla-num">' + (t.auto_score != null ? esc(t.auto_score + '/' + t.auto_max) : '—') + '</td>' +
             '<td class="tla-num">' + (t.manual_score != null ? esc(t.manual_score + '/' + (t.manual_max != null ? t.manual_max : '—')) : '—') + '</td>' +
             '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') + '</td>' +
-            '<td>' + statusBadge(t.status) + '</td>' +
+            '<td>' + statusBadge(t.status, t.ai_graded_at) + '</td>' +
             '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-open="' + esc(t.id) + '">Отвори</button></td>' +
           '</tr>';
         }).join('');
@@ -324,9 +332,15 @@
            attempts have no taskPoints stored, so the budget is simply
            omitted rather than guessed. */
         var p2 = Array.isArray(t.part2) ? t.part2 : [];
+        var aiGraded = (t.status !== 'graded' && !!t.ai_graded_at);
         var manualMax = 0, knowAllBudgets = true;
         if (p2.length) {
           html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">За ръчна оценка</h3>';
+          if (aiGraded) {
+            html += '<p class="tla-muted" style="margin-bottom:0.75rem;">' +
+              'Полетата вече са попълнени от AI грейдъра. Променете каквото не ви ' +
+              'харесва и запишете — вашите точки заместват неговите.</p>';
+          }
           var groups = {}, order = [];
           p2.forEach(function (r, i) {
             var tid = (r.taskId != null) ? r.taskId : (parseInt(r.id, 10) || 0);
@@ -344,8 +358,13 @@
                 '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.prompt || '')) + '</div>' +
                 '<div style="white-space:pre-wrap;">' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
                 (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Решение: ' + esc(r.solution) + '</div>' : '') +
+                (r.markSource === 'ai' && r.aiComment
+                  ? '<div class="tla-muted" style="margin-top:0.5rem;">' +
+                      '<span class="tla-badge tla-badge--ai">AI</span> ' + esc(r.aiComment) + '</div>'
+                  : '') +
                 '<div class="tla-field" style="margin:0.75rem 0 0;max-width:200px;">' +
-                  '<label for="mk' + o.i + '">Точки за тази подточка</label>' +
+                  '<label for="mk' + o.i + '">Точки за тази подточка' +
+                    (r.markSource === 'ai' ? ' (от AI)' : '') + '</label>' +
                   '<input type="number" step="0.5" min="0" id="mk' + o.i + '" class="tla-mark" ' +
                     'data-idx="' + o.i + '" value="' + (r.mark != null ? esc(r.mark) : '') + '" />' +
                 '</div>' +
@@ -404,6 +423,9 @@
             var copy = {};
             Object.keys(r).forEach(function (k) { copy[k] = r[k]; });
             copy.mark = (m.vals[i] == null || isNaN(m.vals[i])) ? null : m.vals[i];
+            /* Once you save, the number is yours -- the student stops
+               seeing an "оценка от AI" badge next to it. */
+            if (copy.mark != null) copy.markSource = 'teacher';
             return copy;
           });
 
@@ -413,7 +435,10 @@
             part2: p2.length ? part2 : null,
             teacher_note: document.getElementById('tNote').value || null,
             status: m.any ? 'graded' : 'submitted',
-            graded_at: m.any ? new Date().toISOString() : null
+            graded_at: m.any ? new Date().toISOString() : null,
+            /* Clearing this says the score on the row is no longer the
+               grader's provisional one. */
+            ai_graded_at: m.any ? null : t.ai_graded_at
           }).eq('id', id);
 
           btn.disabled = false;
@@ -591,7 +616,7 @@
 
       async function loadResults() {
         var res = await TLA.client.from('attempts')
-          .select('id, user_id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at')
+          .select('id, user_id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at, ai_graded_at')
           .order('submitted_at', { ascending: false });
         if (res.error) { say('err', res.error.message); return; }
         state.attempts = res.data || [];

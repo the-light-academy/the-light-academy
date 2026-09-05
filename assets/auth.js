@@ -144,7 +144,7 @@
       if (!session) return [];
       var res = await client
         .from('attempts')
-        .select('id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at')
+        .select('id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at, ai_graded_at')
         .eq('user_id', session.user.id)
         .order('submitted_at', { ascending: false });
       if (res.error) throw res.error;
@@ -181,6 +181,52 @@
       var res = await client.from('attempts').insert(row).select('id').maybeSingle();
       if (res.error) throw res.error;
       return res.data;
+    },
+
+    /* Ask the grade-free-text Edge Function to pre-mark the free-text
+       answers of an attempt that was just filed.
+
+       Everything about this is best effort. The function may not be
+       deployed, may have no ANTHROPIC_API_KEY, or may be having a bad
+       day; in every one of those cases the answers simply stay unmarked
+       and the teacher marks them by hand, which is how the site worked
+       before. So this never throws -- it returns a small report and the
+       caller decides what, if anything, to say on screen.
+
+       The function is also the only thing that can write these marks:
+       it checks the caller's session server-side and clamps every number
+       to the task's points budget. */
+    requestAiGrading: async function (attemptId) {
+      if (!client || !attemptId) return { ok: false, reason: 'not-configured' };
+      var session = await TLA.getSession();
+      if (!session) return { ok: false, reason: 'no-session' };
+
+      try {
+        var res = await fetch(cfg.url + '/functions/v1/grade-free-text', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + session.access_token,
+            'apikey': cfg.anonKey
+          },
+          body: JSON.stringify({ attempt_id: attemptId })
+        });
+        var data = null;
+        try { data = await res.json(); } catch (e) {}
+        if (!res.ok) {
+          return { ok: false, reason: 'error', status: res.status,
+                   message: (data && data.error) || ('HTTP ' + res.status) };
+        }
+        return {
+          ok: true,
+          graded: (data && data.graded) || 0,
+          score: data ? data.score : null,
+          max: data ? data.max : null,
+          reason: data ? data.reason : null
+        };
+      } catch (err) {
+        return { ok: false, reason: 'network', message: err.message || String(err) };
+      }
     },
 
     /* ---- small shared helpers ------------------------------------- */

@@ -102,14 +102,15 @@
       <div class="tla-tablewrap">
         <table class="tla-table" id="resultsTable">
           <thead>
-            <tr><th>Задание</th><th>Предадено</th><th>Автоматично</th><th>Ръчно</th><th>Общо</th><th>Статус</th><th></th></tr>
+            <tr><th>Задание</th><th>Предадено</th><th>Автоматично</th><th>Свободен текст</th><th>Общо</th><th>Статус</th><th></th></tr>
           </thead>
           <tbody><tr><td colspan="7" class="tla-empty">Зареждане…</td></tr></tbody>
         </table>
       </div>
       <p class="tla-muted" style="margin-top:0.75rem;">
-        „Ръчно“ са задачите със свободен отговор, които преподавателят
-        оценява сам — затова общият резултат може да се появи по-късно.
+        Задачите със свободен отговор получават точки от AI веднага след
+        предаването. Преподавателят ги преглежда след това и може да ги
+        промени — тогава статусът става „Оценено“.
       </p>
     </section>
 
@@ -184,9 +185,13 @@
         box.hidden = false;
       }
 
-      function statusBadge(status) {
+      function statusBadge(status, aiGradedAt) {
         if (status === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
-        if (status === 'submitted') return '<span class="tla-badge tla-badge--submitted">Предадено</span>';
+        if (status === 'submitted') {
+          return aiGradedAt
+            ? '<span class="tla-badge tla-badge--ai">Оценка от AI</span>'
+            : '<span class="tla-badge tla-badge--submitted">Предадено</span>';
+        }
         return '<span class="tla-badge tla-badge--off">Незавършено</span>';
       }
 
@@ -203,18 +208,31 @@
         var html = '<p class="tla-muted" style="margin-bottom:1rem;">' +
           esc((a ? a.title : '—') + ' · ' + TLA.formatDate(t.submitted_at)) + '</p>';
 
-        /* score summary */
+        /* Score summary. The free-text half is marked in two steps: the AI
+           grader gives a provisional mark straight after you submit, and
+           the teacher can change it afterwards. `ai_graded_at` says which
+           of the two the number on the row currently came from. */
+        var byAi = (t.status !== 'graded' && !!t.ai_graded_at);
+        var manualLabel = (t.status === 'graded') ? 'Оценено от преподавателя'
+                        : byAi ? 'Оценка от AI'
+                        : 'Свободните отговори';
         var manualTxt = (t.manual_score != null)
           ? t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')
-          : 'чака оценка от преподавателя';
+          : 'чакат оценка от преподавателя';
         html += '<div class="tla-item" style="display:block;">' +
           '<div><strong>Автоматично:</strong> ' +
             (t.auto_score != null ? esc(t.auto_score + ' / ' + t.auto_max) : '—') + '</div>' +
-          '<div><strong>Оценено от преподавателя:</strong> ' + esc(manualTxt) + '</div>' +
+          '<div><strong>' + esc(manualLabel) + ':</strong> ' + esc(manualTxt) + '</div>' +
           '<div style="font-size:1.15rem;font-weight:800;margin-top:0.4rem;"><strong>Общо:</strong> ' +
             (t.total_score != null ? esc(t.total_score) : '—') +
             (a && a.max_points ? ' / ' + esc(a.max_points) : '') + '</div>' +
         '</div>';
+
+        if (byAi) {
+          html += '<p class="tla-muted" style="margin-top:0.6rem;">' +
+            'Тези точки са дадени автоматично от AI веднага след предаването. ' +
+            'Преподавателят ще ги прегледа и може да ги промени.</p>';
+        }
 
         /* the teacher's note comes first -- it is the thing worth reading */
         if (t.teacher_note) {
@@ -251,7 +269,9 @@
         /* free-text sub-questions, with the teacher's mark on each */
         var p2 = Array.isArray(t.part2) ? t.part2 : [];
         if (p2.length) {
-          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">Оценени от преподавателя</h3>';
+          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">' +
+            (t.status === 'graded' ? 'Оценени от преподавателя' : 'Отговори със свободен текст') +
+            '</h3>';
           var lastTask = null;
           html += p2.map(function (r) {
             var out = '';
@@ -263,11 +283,16 @@
             }
             var mark = (r.mark == null)
               ? '<span class="tla-badge tla-badge--submitted">чака оценка</span>'
-              : '<strong>' + esc(r.mark) + ' т.</strong>';
+              : '<strong>' + esc(r.mark) + ' т.</strong>' +
+                (r.markSource === 'ai'
+                  ? ' <span class="tla-badge tla-badge--ai">оценка от AI</span>'
+                  : '');
             out += '<div class="tla-q">' +
               '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.prompt || '')) + '</div>' +
               '<div style="white-space:pre-wrap;">Твоят отговор: ' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
               '<div style="margin-top:0.5rem;">Точки: ' + mark + '</div>' +
+              (r.aiComment ? '<div class="tla-muted" style="margin-top:0.4rem;">' +
+                 esc(r.aiComment) + '</div>' : '') +
               (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Примерно решение: ' +
                  esc(r.solution) + '</div>' : '') +
             '</div>';
@@ -373,7 +398,7 @@
               '<td class="tla-num">' + (t.manual_score != null ? esc(t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')) : '—') + '</td>' +
               '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') +
                 (pct != null ? ' <span class="tla-muted">(' + pct + '%)</span>' : '') + '</td>' +
-              '<td>' + statusBadge(t.status) + '</td>' +
+              '<td>' + statusBadge(t.status, t.ai_graded_at) + '</td>' +
               '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
                 esc(t.id) + '">Преглед</button></td>' +
             '</tr>';

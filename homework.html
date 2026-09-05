@@ -63,8 +63,8 @@
       <a href="faq.html">FAQ</a>
       <a href="index.html#contact">Контакти</a>
       <a href="birthdays.html">Рождени дни</a>
-      <a href="portal.html">Моят профил</a>
-    <a href="portal.html">Моят профил</a>
+      <!-- TLA-PORTAL-LINK hidden while testing: <a href="portal.html">Моят профил</a> -->
+    <!-- TLA-PORTAL-LINK hidden while testing: <a href="portal.html">Моят профил</a> -->
       <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
     </div>
   </nav>
@@ -165,9 +165,15 @@
              { "id": 1, "kind": "mc",   "points": 1,
                "text": "…", "options": ["…"], "correct": 0 },
              { "id": 2, "kind": "free", "points": 2,
-               "prompt": "…", "answer": "42" }            // compared case-insensitively, trimmed
+               "prompt": "…", "answer": "42" },           // compared case-insensitively, trimmed
+             { "id": 3, "kind": "free", "points": 3,
+               "prompt": "…", "solution": "…" }           // marked by AI, then by the teacher
            ] }
-       A "free" question with no `answer` is left for the teacher to mark. */
+       A "free" question with an `answer` is checked exactly. One with a
+       `solution` instead gets a provisional mark from the AI grader --
+       `solution` is the model answer it compares against, so write it as
+       you would write it for a student. One with neither goes straight to
+       the teacher, unmarked. */
     (function () {
       var esc = TLA.escapeHtml;
       var assignment = null;
@@ -255,7 +261,7 @@
               id: String(q.id != null ? q.id : i + 1), kind: 'manual', points: pts,
               earned: null, correct: null, prompt: q.prompt || q.text || '',
               studentAnswer: (typeof given === 'string' ? given.trim() : '') || '(няма отговор)',
-              referenceAnswer: '', explanation: q.explanation || ''
+              referenceAnswer: String(q.solution || ''), explanation: q.explanation || ''
             });
           }
         });
@@ -270,14 +276,21 @@
 
         var g = grade();
         var manual = g.records.filter(function (r) { return r.kind === 'manual'; });
+        var saved = null;
         try {
-          await TLA.saveAttempt(assignment.slug, {
+          saved = await TLA.saveAttempt(assignment.slug, {
             autoScore: g.autoScore,
             autoMax: g.autoMax,
             manualMax: g.manualMax || null,
             records: g.records.filter(function (r) { return r.kind !== 'manual'; }),
+            /* `solution` is the answer key the AI grader marks against, and
+               `points` is that question's budget -- the grader will never
+               award more than it. */
             part2: manual.length ? manual.map(function (r) {
-              return { id: r.id, prompt: r.prompt, studentAnswer: r.studentAnswer, solution: '' };
+              return {
+                id: r.id, prompt: r.prompt, studentAnswer: r.studentAnswer,
+                solution: r.referenceAnswer || '', points: r.points
+              };
             }) : null
           });
         } catch (err) {
@@ -288,6 +301,18 @@
         }
 
         document.getElementById('hwForm').hidden = true;
+
+        /* Free-text answers get a provisional mark from the AI grader
+           before the teacher sees them. Best effort -- if the grader is
+           not available they simply stay unmarked. */
+        var aiText = '';
+        if (saved && saved.id && manual.length && typeof TLA.requestAiGrading === 'function') {
+          var ai = await TLA.requestAiGrading(saved.id);
+          aiText = (ai && ai.ok && ai.graded)
+            ? 'Отговорите със свободен текст са оценени от AI — виж ги в „Преглед“.'
+            : 'Отговорите със свободен текст чакат оценка от преподавателя.';
+        }
+
         var pct = TLA.percent(g.autoScore, g.autoMax);
         document.getElementById('hwResultBody').innerHTML =
           '<p style="font-size:1.3rem;font-weight:800;">' +
@@ -295,7 +320,7 @@
             (pct != null ? ' <span class="tla-muted">(' + pct + '%)</span>' : '') + '</p>' +
           (g.manualMax
             ? '<p class="tla-muted" style="margin-top:0.5rem;">Още ' + esc(g.manualMax) +
-              ' т. чакат оценка от преподавателя.</p>'
+              ' т. се оценяват отделно. ' + esc(aiText) + '</p>'
             : '');
         document.getElementById('hwResult').hidden = false;
         document.getElementById('hwResult').scrollIntoView({ behavior: 'smooth' });
