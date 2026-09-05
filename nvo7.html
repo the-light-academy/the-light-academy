@@ -927,6 +927,38 @@
 
     /* -- Interactive group schedule widget (compact) -- */
     .schedule-link-btn { display: none; }
+    /* Compact group times — phones only; see the note in the markup. */
+    .groups-mini { display: none; }
+    .groups-mini__head {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.5);
+      margin: 0 0 0.45rem;
+    }
+    .groups-mini__list {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;
+    }
+    /* Label and day on one line: two stacked rows per tile doubled the
+       height of a card that is meant to be a glance, not a section. */
+    .groups-mini__list li {
+      display: flex; align-items: baseline; gap: 0.35rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; padding: 0.4rem 0.6rem;
+    }
+    .groups-mini__list b {
+      font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
+      color: var(--sun); letter-spacing: 0.03em;
+    }
+    .groups-mini__list span { font-size: 0.88rem; font-weight: 700; color: #fff; }
+    .groups-mini__time {
+      font-size: 0.78rem; color: rgba(255,255,255,0.65);
+      margin: 0.5rem 0 0; text-align: center;
+    }
+    @media (max-width: 360px) {
+      .groups-mini__list li { flex-wrap: wrap; gap: 0 0.35rem; }
+    }
+
     .schedule-widget {
       background: var(--white);
       border: 1px solid var(--peach-light);
@@ -1554,6 +1586,15 @@
       }
       .schedule-widget {
         display: none;
+      }
+      .groups-mini {
+        display: block;
+        order: 3;                       /* price -> when -> registration form */
+        margin: 0;
+        padding: 0.85rem 1rem;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border-radius: 16px;
+        box-shadow: 0 16px 36px -18px rgba(9, 18, 38, 0.5);
       }
       .hero-pills { display: none; }
 
@@ -2891,6 +2932,20 @@
     <h2>При нас...</h2>
     <p>учениците наистина разбират, защото преподаваме на техния език. Използваме нов подход в образованието – знаем как учат поколенията Z и Alpha и знаем как да постигнем резултати с тях.</p>
 
+    <!-- Phones hide the full schedule widget (a three-card grid with a
+         group toggle is too much for the width). This is the same
+         information at a glance: both groups at once, no toggle. Its text
+         is written by renderGroupsMini() from SCHEDULE_DATA, so the days
+         here can never drift from the ones in the widget. -->
+    <div class="groups-mini" id="groupsMini" hidden>
+      <p class="groups-mini__head">Кога са групите</p>
+      <ul class="groups-mini__list">
+        <li><b>Група 1</b><span data-g="1"></span></li>
+        <li><b>Група 2</b><span data-g="2"></span></li>
+      </ul>
+      <p class="groups-mini__time" data-time></p>
+    </div>
+
     <div class="schedule-widget">
       <div class="schedule-group-toggle" id="scheduleGroupToggle">
         <button type="button" class="schedule-group-btn active" data-group="1">
@@ -3224,7 +3279,22 @@
       renderSchedule(btn.dataset.group);
     });
 
+    /* One source of truth for the days: the compact phone card reads the
+       same object the widget does. */
+    function renderGroupsMini() {
+      const mini = document.getElementById('groupsMini');
+      if (!mini) return;
+      mini.querySelectorAll('[data-g]').forEach(el => {
+        const d = SCHEDULE_DATA[el.dataset.g];
+        if (d) el.textContent = d.day;
+      });
+      const t = mini.querySelector('[data-time]');
+      if (t) t.textContent = SCHEDULE_DATA[1].time + ' · 3 учебни часа';
+      mini.hidden = false;
+    }
+
     renderSchedule('1');
+    renderGroupsMini();
 
     // Scroll to the always-open registration form and give it a brief pulse
     function scrollToRegForm() {
