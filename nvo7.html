@@ -1862,6 +1862,359 @@
       #section-geymifikatsia .step-body { color: rgba(255,255,255,0.9); }
     }
   
+
+    /* ══════════════════════════════════════════════════════════════
+       STUDENT WEB PLATFORM — premium section
+       Everything is namespaced under .tlap so it cannot reach the rest
+       of the page. Its own tokens too: the section deliberately uses the
+       navy/amber product palette rather than this page's warm browns,
+       because it is showing a piece of software, not the course story.
+       ══════════════════════════════════════════════════════════════ */
+    .tlap {
+      --tlap-cream: #FFFDF7;
+      --tlap-surface: #FFFFFF;
+      --tlap-navy: #0D1B36;
+      --tlap-ink: #16233F;
+      --tlap-ink-soft: #5B6B8C;
+      --tlap-accent: #F7AD19;
+      --tlap-accent-deep: #C07A0A;
+      --tlap-accent-wash: #FFF4DC;
+      --tlap-ctx: #7E8DAA;          /* context bars: 3.35:1 on white */
+      --tlap-line: rgba(13,27,54,0.10);
+      --tlap-r: 22px;
+      --tlap-r-sm: 14px;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: clamp(3.5rem, 8vw, 6.5rem) 1.25rem clamp(3rem, 7vw, 5.5rem);
+      background:
+        radial-gradient(80% 55% at 15% 0%, #FFF6E4 0%, rgba(255,246,228,0) 60%),
+        radial-gradient(70% 50% at 95% 25%, #EEF3FB 0%, rgba(238,243,251,0) 65%),
+        var(--tlap-cream);
+      color: var(--tlap-ink);
+      font-family: 'Nunito', sans-serif;
+    }
+    /* Soft shapes for the glass panels to have something to blur. */
+    .tlap__blob {
+      position: absolute; border-radius: 50%; filter: blur(60px);
+      pointer-events: none; z-index: 0;
+    }
+    .tlap__blob--a { width: 340px; height: 340px; top: 8%;  left: -110px; background: rgba(247,173,25,0.20); }
+    .tlap__blob--b { width: 420px; height: 420px; top: 42%; right: -150px; background: rgba(27,46,82,0.13); }
+    .tlap__inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+
+    /* ── heading ── */
+    .tlap__head { max-width: 720px; margin: 0 auto clamp(2rem, 4vw, 3rem); text-align: center; }
+    .tlap__eyebrow {
+      display: inline-block; font-size: 0.74rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--tlap-accent-deep); background: var(--tlap-accent-wash);
+      padding: 0.4rem 0.9rem; border-radius: 999px; margin-bottom: 1.1rem;
+    }
+    .tlap__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.75rem, 4.2vw, 2.75rem);
+      line-height: 1.18; color: var(--tlap-navy); margin: 0 0 0.9rem;
+    }
+    .tlap__sub {
+      font-size: clamp(1rem, 1.6vw, 1.13rem); line-height: 1.65;
+      color: var(--tlap-ink-soft); margin: 0;
+    }
+
+    /* ── the mock application ── */
+    .tlap__app {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid rgba(255,255,255,0.75);
+      border-radius: var(--tlap-r);
+      box-shadow: 0 26px 60px rgba(13,27,54,0.13), 0 3px 10px rgba(13,27,54,0.05);
+      overflow: hidden;
+    }
+    .tlap__chrome {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--tlap-line);
+      background: rgba(255,255,255,0.55);
+    }
+    .tlap__dots { display: flex; gap: 6px; flex-shrink: 0; }
+    .tlap__dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(13,27,54,0.14); }
+    .tlap__crumb {
+      font-size: 0.8rem; font-weight: 700; color: var(--tlap-ink-soft);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    /* Says plainly that the numbers below are an illustration, not a
+       screenshot of anyone's real account. */
+    .tlap__demo {
+      margin-left: auto; flex-shrink: 0;
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--tlap-accent-deep);
+      background: var(--tlap-accent-wash); border: 1px solid rgba(192,122,10,0.25);
+      padding: 0.25rem 0.6rem; border-radius: 999px;
+    }
+    .tlap__screen { padding: clamp(1.25rem, 3vw, 2rem); }
+
+    /* ── greeting + progress ring ── */
+    .tlap__top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .tlap__hello { font-size: clamp(1.2rem, 2.6vw, 1.6rem); font-weight: 800; color: var(--tlap-navy); margin: 0; }
+    .tlap__hello-sub { font-size: 0.92rem; color: var(--tlap-ink-soft); margin: 0.15rem 0 0; }
+    .tlap__ring { position: relative; width: 104px; height: 104px; flex-shrink: 0; }
+    .tlap__ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .tlap__ring-track { fill: none; stroke: rgba(13,27,54,0.09); stroke-width: 9; }
+    .tlap__ring-fill {
+      fill: none; stroke: var(--tlap-accent); stroke-width: 9; stroke-linecap: round;
+      stroke-dasharray: 264; stroke-dashoffset: 264;
+      transition: stroke-dashoffset 1.1s cubic-bezier(0.22,0.61,0.36,1);
+    }
+    .tlap__ring-num {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      font-size: 1.35rem; font-weight: 800; color: var(--tlap-navy);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── stat tiles ── */
+    .tlap__stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .tlap__stat {
+      background: var(--tlap-surface); border: 1px solid var(--tlap-line);
+      border-radius: var(--tlap-r-sm); padding: 0.9rem 1rem;
+    }
+    .tlap__stat-k {
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--tlap-ink-soft); margin: 0 0 0.35rem;
+    }
+    .tlap__stat-v {
+      font-size: clamp(1.05rem, 2vw, 1.3rem); font-weight: 800;
+      color: var(--tlap-navy); margin: 0; font-variant-numeric: tabular-nums;
+    }
+    .tlap__stat-n { font-size: 0.8rem; color: var(--tlap-ink-soft); margin: 0.2rem 0 0; }
+    .tlap__up { color: #1D6B41; font-weight: 800; }
+
+    /* ── tabs ── */
+    .tlap__tabs {
+      display: flex; gap: 0.4rem; margin-bottom: 1.25rem;
+      overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .tlap__tabs::-webkit-scrollbar { display: none; }
+    .tlap__tab {
+      flex: 0 0 auto; font: inherit; font-size: 0.88rem; font-weight: 800;
+      color: var(--tlap-ink-soft); background: transparent;
+      border: 1px solid var(--tlap-line); border-radius: 999px;
+      padding: 0.5rem 1rem; cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+    .tlap__tab:hover { background: rgba(13,27,54,0.04); color: var(--tlap-ink); }
+    .tlap__tab[aria-selected="true"] {
+      background: var(--tlap-navy); border-color: var(--tlap-navy); color: #fff;
+    }
+    .tlap__tab:focus-visible { outline: 2px solid var(--tlap-accent-deep); outline-offset: 2px; }
+
+    .tlap__panel { display: none; }
+    .tlap__panel[data-open="true"] { display: block; animation: tlapIn 0.26s cubic-bezier(0.22,0.61,0.36,1) both; }
+    @keyframes tlapIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ── cards inside the panels ── */
+    .tlap__card {
+      background: var(--tlap-surface); border: 1px solid var(--tlap-line);
+      border-radius: var(--tlap-r-sm); padding: 1.1rem 1.2rem;
+    }
+    .tlap__card + .tlap__card { margin-top: 0.75rem; }
+    .tlap__card-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 0.75rem; flex-wrap: wrap;
+    }
+    .tlap__card-t { font-size: 1rem; font-weight: 800; color: var(--tlap-navy); margin: 0; }
+    .tlap__card-m { font-size: 0.88rem; color: var(--tlap-ink-soft); margin: 0.3rem 0 0; }
+    .tlap__pct { font-size: 1.35rem; font-weight: 800; color: var(--tlap-accent-deep); font-variant-numeric: tabular-nums; }
+    .tlap__bar { height: 8px; border-radius: 999px; background: rgba(13,27,54,0.08); margin-top: 0.75rem; overflow: hidden; }
+    .tlap__bar > span { display: block; height: 100%; border-radius: 999px; background: var(--tlap-accent); }
+    .tlap__chip {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.78rem; font-weight: 800; padding: 0.28rem 0.65rem;
+      border-radius: 999px; background: #E9F7EF; color: #1D6B41;
+    }
+    .tlap__chip--next { background: rgba(13,27,54,0.06); color: var(--tlap-ink-soft); }
+    .tlap__note { font-size: 0.88rem; line-height: 1.6; color: var(--tlap-ink-soft); margin: 0.9rem 0 0; }
+
+    /* ── exam tab ── */
+    .tlap__exam { display: grid; gap: 1rem; }
+    .tlap__clock {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 60%, #0B1730 100%);
+      border-radius: var(--tlap-r-sm); padding: 1.15rem 1.3rem; color: #fff;
+    }
+    .tlap__clock-k { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin: 0 0 0.3rem; }
+    .tlap__clock-v {
+      font-size: clamp(1.9rem, 5vw, 2.6rem); font-weight: 800; line-height: 1;
+      font-variant-numeric: tabular-nums; letter-spacing: 0.02em; margin: 0;
+    }
+    .tlap__clock-v[data-running="true"] { color: var(--tlap-accent); }
+    .tlap__start {
+      font: inherit; font-size: 0.9rem; font-weight: 800; cursor: pointer;
+      background: var(--tlap-accent); color: #2D1F0E; border: none;
+      border-radius: 999px; padding: 0.65rem 1.2rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .tlap__start:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(247,173,25,0.4); }
+    .tlap__start:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .tlap__qline { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+    .tlap__qnum { font-size: 0.92rem; font-weight: 800; color: var(--tlap-navy); font-variant-numeric: tabular-nums; }
+    .tlap__pips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 0.6rem; }
+    .tlap__pips i {
+      width: 14px; height: 14px; border-radius: 4px;
+      background: rgba(13,27,54,0.10); transition: background 0.25s ease;
+    }
+    .tlap__pips i[data-s="done"] { background: var(--tlap-ctx); }
+    .tlap__pips i[data-s="now"] { background: var(--tlap-accent); box-shadow: 0 0 0 3px rgba(247,173,25,0.25); }
+
+    /* ── results chart: one series over time, latest highlighted ── */
+    /* Two rows, not one: the bars sit in their own band so the axis line
+       is the band's bottom edge -- i.e. the actual baseline the bars are
+       measured from -- and the labels hang below it. */
+    .tlap__results { display: grid; grid-template-columns: 1fr 190px; gap: clamp(1rem, 3vw, 2rem); align-items: center; }
+    .tlap__chart { margin-top: 0.75rem; }
+    /* Says in words what the bars say, and names the highlighted one -- so
+       the amber bar is never the only thing carrying that meaning. */
+    .tlap__readout { border-left: 1px solid var(--tlap-line); padding-left: clamp(1rem, 2vw, 1.5rem); }
+    .tlap__readout-v { font-size: 2rem; font-weight: 800; color: #1D6B41; line-height: 1; margin: 0; }
+    .tlap__readout-v span { font-size: 1rem; }
+    .tlap__readout-k { font-size: 0.85rem; line-height: 1.5; color: var(--tlap-ink-soft); margin: 0.45rem 0 0; }
+    .tlap__readout-n { font-size: 0.78rem; line-height: 1.5; color: var(--tlap-ink-soft); margin: 0.7rem 0 0; }
+    .tlap__readout-n b { color: var(--tlap-accent-deep); }
+    @media (max-width: 760px) {
+      .tlap__results { grid-template-columns: 1fr; }
+      .tlap__readout { border-left: none; border-top: 1px solid var(--tlap-line); padding: 0.9rem 0 0; }
+    }
+    .tlap__plot {
+      display: flex; align-items: flex-end; gap: clamp(0.75rem, 4vw, 2rem);
+      height: 150px; border-bottom: 1px solid rgba(13,27,54,0.18);
+    }
+    .tlap__keys { display: flex; gap: clamp(0.75rem, 4vw, 2rem); margin-top: 0.5rem; }
+    .tlap__keys > span, .tlap__col { flex: 1 1 0; min-width: 0; }
+    .tlap__col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+    .tlap__col-v { font-size: 0.85rem; font-weight: 800; color: var(--tlap-ink); margin-bottom: 0.35rem; font-variant-numeric: tabular-nums; }
+    .tlap__col-b {
+      width: 100%; max-width: 66px; border-radius: 4px 4px 0 0;
+      background: var(--tlap-ctx); height: 0;
+      transition: height 0.7s cubic-bezier(0.22,0.61,0.36,1);
+    }
+    .tlap__col--now .tlap__col-b { background: var(--tlap-accent-deep); }
+    .tlap__keys > span {
+      font-size: 0.72rem; font-weight: 700; color: var(--tlap-ink-soft);
+      text-align: center; line-height: 1.3;
+    }
+    .tlap__keys > span[data-now] { color: var(--tlap-accent-deep); }
+
+    /* ── feedback tab ── */
+    .tlap__quote {
+      font-size: 1rem; line-height: 1.65; color: var(--tlap-ink);
+      margin: 0.6rem 0 0; padding-left: 0.9rem;
+      border-left: 3px solid var(--tlap-accent);
+    }
+    .tlap__two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+    .tlap__list { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+    .tlap__list li { font-size: 0.9rem; color: var(--tlap-ink); padding: 0.25rem 0; }
+    .tlap__list li::before { content: attr(data-mark); margin-right: 0.45rem; font-weight: 800; }
+    .tlap__list--good li::before { color: #1D6B41; }
+    .tlap__list--work li::before { color: var(--tlap-accent-deep); }
+
+    /* ── AI tab ── */
+    .tlap__ai { display: grid; gap: 0.55rem; margin-top: 0.75rem; }
+    /* Wraps rather than pushing the label out of the card: the longest
+       tag ("повтарящ се тип грешка") plus its subject does not fit on one
+       line on a phone. */
+    .tlap__ai-row {
+      display: flex; align-items: center; gap: 0.5rem 0.7rem; flex-wrap: wrap;
+      background: var(--tlap-surface); border: 1px solid var(--tlap-line);
+      border-radius: 10px; padding: 0.7rem 0.9rem;
+    }
+    .tlap__ai-tag {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 0.22rem 0.55rem; border-radius: 999px;
+    }
+    .tlap__ai-tag--good { background: #E9F7EF; color: #1D6B41; }
+    .tlap__ai-tag--work { background: var(--tlap-accent-wash); color: var(--tlap-accent-deep); }
+    .tlap__ai-tag--err  { background: #FBEAE9; color: #93231F; }
+    .tlap__ai-txt { font-size: 0.92rem; font-weight: 700; color: var(--tlap-ink); }
+    .tlap__disclaim {
+      display: flex; gap: 0.55rem; align-items: flex-start;
+      font-size: 0.82rem; line-height: 1.55; color: var(--tlap-ink-soft);
+      background: rgba(13,27,54,0.04); border-radius: 10px;
+      padding: 0.7rem 0.85rem; margin-top: 0.85rem;
+    }
+
+    /* ── the message under the dashboard ── */
+    .tlap__msg { text-align: center; max-width: 640px; margin: clamp(2.5rem, 5vw, 3.5rem) auto 0; }
+    .tlap__msg-h {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.4rem, 3.2vw, 2rem); line-height: 1.25;
+      color: var(--tlap-navy); margin: 0 0 0.7rem;
+    }
+    .tlap__msg-p { font-size: 1rem; line-height: 1.65; color: var(--tlap-ink-soft); margin: 0; }
+
+    /* ── what the student gets ── */
+    .tlap__h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.3rem, 2.8vw, 1.7rem); color: var(--tlap-navy);
+      text-align: center; margin: clamp(2.5rem, 5vw, 3.5rem) 0 1.5rem;
+    }
+    .tlap__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; list-style: none; margin: 0; padding: 0; }
+    .tlap__tile {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.8); border-radius: var(--tlap-r-sm);
+      padding: 1.1rem 1rem; box-shadow: 0 8px 22px rgba(13,27,54,0.06);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .tlap__tile:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(13,27,54,0.10); }
+    .tlap__tile-i { font-size: 1.5rem; line-height: 1; display: block; margin-bottom: 0.6rem; }
+    .tlap__tile-t { font-size: 0.95rem; font-weight: 800; color: var(--tlap-navy); margin: 0 0 0.3rem; }
+    .tlap__tile-p { font-size: 0.85rem; line-height: 1.55; color: var(--tlap-ink-soft); margin: 0; }
+
+    /* ── closing ── */
+    .tlap__final { text-align: center; margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+    .tlap__final-h {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.35rem, 3vw, 1.9rem); color: var(--tlap-navy); margin: 0 0 0.6rem;
+    }
+    .tlap__final-p { font-size: 1rem; line-height: 1.65; color: var(--tlap-ink-soft); max-width: 560px; margin: 0 auto 1.6rem; }
+    .tlap__cta {
+      display: inline-block; font-size: 1rem; font-weight: 800;
+      background: var(--tlap-accent); color: #2D1F0E; text-decoration: none;
+      padding: 0.9rem 1.9rem; border-radius: 999px;
+      box-shadow: 0 10px 26px rgba(247,173,25,0.35);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .tlap__cta:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(247,173,25,0.45); }
+    .tlap__cta:focus-visible { outline: 2px solid var(--tlap-navy); outline-offset: 3px; }
+
+    /* ── responsive ── */
+    @media (max-width: 900px) {
+      .tlap__stats { grid-template-columns: repeat(2, 1fr); }
+      .tlap__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 620px) {
+      .tlap__grid { grid-template-columns: 1fr 1fr; }
+      .tlap__two { grid-template-columns: 1fr; }
+      .tlap__top { justify-content: center; text-align: center; }
+      .tlap__plot { height: 130px; }
+      .tlap__keys > span { font-size: 0.66rem; }
+    }
+    @media (max-width: 400px) {
+      .tlap__grid { grid-template-columns: 1fr; }
+    }
+
+    /* Motion is here to explain the product, so it is all optional. */
+    @media (prefers-reduced-motion: reduce) {
+      .tlap__panel[data-open="true"] { animation: none; }
+      .tlap__ring-fill, .tlap__col-b, .tlap__tile, .tlap__cta, .tlap__start { transition: none; }
+    }
     /* ── COOKIE CONSENT (shared across the site; one choice applies everywhere via localStorage) ── */
     .cookie-banner {
       position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2000;
@@ -2314,6 +2667,273 @@
     </div>
 
   </div><!-- end .journey -->
+
+  <!-- ══════════ УЧЕНИЧЕСКА WEB ПЛАТФОРМА ══════════
+       A mock of the student portal. Every number in it is illustrative --
+       the "примерен изглед" badge in the window bar says so on screen. -->
+  <section class="tlap" id="section-platforma" aria-labelledby="tlapTitle">
+    <div class="tlap__blob tlap__blob--a" aria-hidden="true"></div>
+    <div class="tlap__blob tlap__blob--b" aria-hidden="true"></div>
+
+    <div class="tlap__inner">
+      <header class="tlap__head">
+        <span class="tlap__eyebrow">Ученическа платформа</span>
+        <h2 class="tlap__title" id="tlapTitle">Повече от курс. Лична web платформа за подготовка.</h2>
+        <p class="tlap__sub">
+          Всеки ученик получава собствен профил, в който вижда своята подготовка,
+          задачи, резултати и развитие през цялата учебна година.
+        </p>
+      </header>
+
+      <!-- ── the mock application ── -->
+      <div class="tlap__app">
+        <div class="tlap__chrome">
+          <span class="tlap__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="tlap__crumb">The Light Academy · Моят профил</span>
+          <span class="tlap__demo">примерен изглед</span>
+        </div>
+
+        <div class="tlap__screen">
+          <div class="tlap__top">
+            <div>
+              <p class="tlap__hello">Здравей, Алекс 👋</p>
+              <p class="tlap__hello-sub">Твоят прогрес</p>
+            </div>
+            <div class="tlap__ring" id="tlapRing" role="img" aria-label="Прогрес 74 процента">
+              <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                <circle class="tlap__ring-track" cx="50" cy="50" r="42"></circle>
+                <circle class="tlap__ring-fill" id="tlapRingFill" cx="50" cy="50" r="42"></circle>
+              </svg>
+              <span class="tlap__ring-num" id="tlapRingNum" aria-hidden="true">0%</span>
+            </div>
+          </div>
+
+          <div class="tlap__stats">
+            <div class="tlap__stat">
+              <p class="tlap__stat-k">Домашни</p>
+              <p class="tlap__stat-v">8 / 9</p>
+              <p class="tlap__stat-n">изпълнени</p>
+            </div>
+            <div class="tlap__stat">
+              <p class="tlap__stat-k">Пробни изпити</p>
+              <p class="tlap__stat-v">3</p>
+              <p class="tlap__stat-n">завършени</p>
+            </div>
+            <div class="tlap__stat">
+              <p class="tlap__stat-k">Точки</p>
+              <p class="tlap__stat-v">1 280 ⭐</p>
+              <p class="tlap__stat-n">от упражнения</p>
+            </div>
+            <div class="tlap__stat">
+              <p class="tlap__stat-k">Среден резултат</p>
+              <p class="tlap__stat-v tlap__up">+12%</p>
+              <p class="tlap__stat-n">спрямо началния тест</p>
+            </div>
+          </div>
+
+          <div class="tlap__tabs" role="tablist" aria-label="Раздели в профила">
+            <button class="tlap__tab" role="tab" id="tlapTab1" aria-controls="tlapPanel1" aria-selected="true"  type="button">Домашни</button>
+            <button class="tlap__tab" role="tab" id="tlapTab2" aria-controls="tlapPanel2" aria-selected="false" type="button" tabindex="-1">Пробни изпити</button>
+            <button class="tlap__tab" role="tab" id="tlapTab3" aria-controls="tlapPanel3" aria-selected="false" type="button" tabindex="-1">Резултати</button>
+            <button class="tlap__tab" role="tab" id="tlapTab4" aria-controls="tlapPanel4" aria-selected="false" type="button" tabindex="-1">Обратна връзка</button>
+            <button class="tlap__tab" role="tab" id="tlapTab5" aria-controls="tlapPanel5" aria-selected="false" type="button" tabindex="-1">AI анализ</button>
+          </div>
+
+          <!-- Домашни -->
+          <div class="tlap__panel" role="tabpanel" id="tlapPanel1" aria-labelledby="tlapTab1" data-open="true" tabindex="0">
+            <div class="tlap__card">
+              <div class="tlap__card-row">
+                <p class="tlap__card-t">Домашно №8 — Уравнения</p>
+                <span class="tlap__pct">90%</span>
+              </div>
+              <p class="tlap__card-m">18 / 20 задачи</p>
+              <div class="tlap__bar" aria-hidden="true"><span style="width:90%"></span></div>
+              <p style="margin:0.75rem 0 0;"><span class="tlap__chip">Завършено ✓</span></p>
+            </div>
+            <div class="tlap__card">
+              <div class="tlap__card-row">
+                <p class="tlap__card-t">Геометрични задачи — упражнения</p>
+                <span class="tlap__chip tlap__chip--next">Следващо</span>
+              </div>
+              <p class="tlap__card-m">Отваря се след последния урок</p>
+            </div>
+            <p class="tlap__note">
+              Домашните не се губят между тетрадки и съобщения. Всичко е събрано
+              на едно място и ученикът вижда какво има да направи.
+            </p>
+          </div>
+
+          <!-- Пробни изпити -->
+          <div class="tlap__panel" role="tabpanel" id="tlapPanel2" aria-labelledby="tlapTab2" tabindex="0">
+            <div class="tlap__exam">
+              <div class="tlap__clock">
+                <div>
+                  <p class="tlap__clock-k">Пробен изпит №3 · оставащо време</p>
+                  <p class="tlap__clock-v" id="tlapClock" data-running="false">01:37:42</p>
+                </div>
+                <button type="button" class="tlap__start" id="tlapStart">▶ Стартирай пробен изпит</button>
+              </div>
+              <div class="tlap__card">
+                <div class="tlap__qline">
+                  <span class="tlap__qnum">Задача <span id="tlapQ">1</span> / 25</span>
+                  <span class="tlap__card-m" id="tlapQState">Демонстрация — натиснете бутона, за да тръгне таймерът</span>
+                </div>
+                <div class="tlap__pips" id="tlapPips" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p class="tlap__note">
+              Ученикът тренира в условия, близки до реалния изпит — с ограничено
+              време и проследяване на резултата.
+            </p>
+          </div>
+
+          <!-- Резултати -->
+          <div class="tlap__panel" role="tabpanel" id="tlapPanel3" aria-labelledby="tlapTab3" tabindex="0">
+            <div class="tlap__card">
+              <p class="tlap__card-t">Развитие през годината</p>
+              <p class="tlap__card-m">Резултат в проценти, от входящия тест до последния пробен изпит</p>
+              <div class="tlap__results">
+              <div class="tlap__chart" id="tlapChart">
+                <div class="tlap__plot">
+                  <div class="tlap__col"><span class="tlap__col-v">52%</span><span class="tlap__col-b" data-h="52"></span></div>
+                  <div class="tlap__col"><span class="tlap__col-v">58%</span><span class="tlap__col-b" data-h="58"></span></div>
+                  <div class="tlap__col"><span class="tlap__col-v">61%</span><span class="tlap__col-b" data-h="61"></span></div>
+                  <div class="tlap__col tlap__col--now"><span class="tlap__col-v">64%</span><span class="tlap__col-b" data-h="64"></span></div>
+                </div>
+                <div class="tlap__keys">
+                  <span>Входящ<br>тест</span>
+                  <span>Пробен<br>№1</span>
+                  <span>Пробен<br>№2</span>
+                  <span data-now>Пробен<br>№3</span>
+                </div>
+              </div>
+              <div class="tlap__readout">
+                <p class="tlap__readout-v">+12 <span>п.п.</span></p>
+                <p class="tlap__readout-k">от входящия тест до пробен изпит №3</p>
+                <p class="tlap__readout-n">Последният резултат е <b>оцветен в оранжево</b>.</p>
+              </div>
+              </div>
+            </div>
+            <p class="tlap__note">
+              Всеки резултат остава записан, така че напредъкът се вижда като
+              линия през годината, а не като отделни оценки.
+            </p>
+          </div>
+
+          <!-- Обратна връзка -->
+          <div class="tlap__panel" role="tabpanel" id="tlapPanel4" aria-labelledby="tlapTab4" tabindex="0">
+            <div class="tlap__card">
+              <p class="tlap__card-t">👩‍🏫 Обратна връзка от преподавателя</p>
+              <p class="tlap__quote">
+                „Работиш много по-уверено с уравненията. Следващата ни цел е да
+                обърнем повече внимание на текстовите задачи.“
+              </p>
+            </div>
+            <div class="tlap__two">
+              <div class="tlap__card">
+                <p class="tlap__card-t">Силни страни</p>
+                <ul class="tlap__list tlap__list--good">
+                  <li data-mark="✓">Уравнения</li>
+                  <li data-mark="✓">Числови изрази</li>
+                </ul>
+              </div>
+              <div class="tlap__card">
+                <p class="tlap__card-t">За упражнение</p>
+                <ul class="tlap__list tlap__list--work">
+                  <li data-mark="→">Текстови задачи</li>
+                  <li data-mark="→">Геометрия</li>
+                </ul>
+              </div>
+            </div>
+            <p class="tlap__note">
+              Резултатът не е просто число. Преподавателят проследява работата на
+              ученика и дава конкретна обратна връзка и насоки.
+            </p>
+          </div>
+
+          <!-- AI анализ -->
+          <div class="tlap__panel" role="tabpanel" id="tlapPanel5" aria-labelledby="tlapTab5" tabindex="0">
+            <div class="tlap__card">
+              <p class="tlap__card-t">🤖 AI анализ на резултатите</p>
+              <p class="tlap__card-m">Анализ на пробен изпит №3</p>
+              <div class="tlap__ai">
+                <div class="tlap__ai-row">
+                  <span class="tlap__ai-tag tlap__ai-tag--good">Силен резултат</span>
+                  <span class="tlap__ai-txt">Уравнения</span>
+                </div>
+                <div class="tlap__ai-row">
+                  <span class="tlap__ai-tag tlap__ai-tag--work">Нужда от упражнение</span>
+                  <span class="tlap__ai-txt">Геометрия</span>
+                </div>
+                <div class="tlap__ai-row">
+                  <span class="tlap__ai-tag tlap__ai-tag--err">Повтарящ се тип грешка</span>
+                  <span class="tlap__ai-txt">Текстови задачи</span>
+                </div>
+              </div>
+              <div class="tlap__disclaim">
+                <span aria-hidden="true">ℹ️</span>
+                <span>AI анализът е допълнителен инструмент за анализ и не замества
+                преценката и обратната връзка на преподавателя.</span>
+              </div>
+            </div>
+            <p class="tlap__note">
+              AI анализът помага да открием закономерности в резултатите и
+              областите, в които ученикът има нужда от допълнителна практика.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── the point of the whole section ── -->
+      <div class="tlap__msg">
+        <p class="tlap__msg-h">AI вижда данните. Учителят вижда ученика.</p>
+        <p class="tlap__msg-p">
+          Комбинираме технологиите с човешката обратна връзка, за да получим
+          по-пълна картина на развитието на всеки ученик.
+        </p>
+      </div>
+
+      <!-- ── what the student gets ── -->
+      <h3 class="tlap__h3">Какво получава ученикът?</h3>
+      <ul class="tlap__grid">
+        <li class="tlap__tile">
+          <span class="tlap__tile-i" aria-hidden="true">🎯</span>
+          <p class="tlap__tile-t">Личен профил</p>
+          <p class="tlap__tile-p">Всичко необходимо за подготовката на едно място.</p>
+        </li>
+        <li class="tlap__tile">
+          <span class="tlap__tile-i" aria-hidden="true">📚</span>
+          <p class="tlap__tile-t">Домашни</p>
+          <p class="tlap__tile-p">Задачи, упражнения и проследяване на изпълнението.</p>
+        </li>
+        <li class="tlap__tile">
+          <span class="tlap__tile-i" aria-hidden="true">⏱️</span>
+          <p class="tlap__tile-t">Пробни изпити</p>
+          <p class="tlap__tile-p">Решаване с реален таймер и проследяване на резултата.</p>
+        </li>
+        <li class="tlap__tile">
+          <span class="tlap__tile-i" aria-hidden="true">👩‍🏫</span>
+          <p class="tlap__tile-t">Учителска обратна връзка</p>
+          <p class="tlap__tile-p">Конкретни коментари и насоки от преподавателя на курса.</p>
+        </li>
+        <li class="tlap__tile">
+          <span class="tlap__tile-i" aria-hidden="true">🤖</span>
+          <p class="tlap__tile-t">AI анализ</p>
+          <p class="tlap__tile-p">Допълнителен анализ на резултатите и областите за развитие.</p>
+        </li>
+      </ul>
+
+      <!-- ── closing ── -->
+      <div class="tlap__final">
+        <p class="tlap__final-h">Подготовката за НВО не започва през май.</p>
+        <p class="tlap__final-p">
+          Затова проследяваме развитието на ученика през цялата година — от
+          първия входящ тест до финалната подготовка за изпита.
+        </p>
+        <a class="tlap__cta" href="#section-zapishete-se">Запази място за НВО 7 клас</a>
+      </div>
+    </div>
+  </section>
 
   <div class="pricing-cta-flow">
   <section class="pricing-section">
@@ -2794,6 +3414,188 @@
       });
     });
 
+
+    /* ── Student platform mock ────────────────────────────────────────
+       Three moving parts, all of them there to explain the product:
+       tabs, a progress ring that fills once when it comes into view, and
+       a demo exam timer that only ever runs because someone pressed the
+       button. Nothing here starts a clock on page load -- a countdown a
+       visitor did not ask for reads as a real deadline. */
+    (function () {
+      var root = document.getElementById('section-platforma');
+      if (!root) return;
+
+      var reduce = window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ---- tabs ---- */
+      var tabs = Array.prototype.slice.call(root.querySelectorAll('.tlap__tab'));
+      var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+
+      function select(i, focus) {
+        tabs.forEach(function (t, n) {
+          var on = (n === i);
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+          if (panels[n]) {
+            if (on) panels[n].setAttribute('data-open', 'true');
+            else panels[n].removeAttribute('data-open');
+          }
+        });
+        if (focus) tabs[i].focus();
+        if (i === 2) drawChart();
+      }
+
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () { select(i); });
+        tab.addEventListener('keydown', function (e) {
+          var to = null;
+          if (e.key === 'ArrowRight') to = (i + 1) % tabs.length;
+          else if (e.key === 'ArrowLeft') to = (i - 1 + tabs.length) % tabs.length;
+          else if (e.key === 'Home') to = 0;
+          else if (e.key === 'End') to = tabs.length - 1;
+          if (to !== null) { e.preventDefault(); select(to, true); }
+        });
+      });
+
+      /* ---- progress ring: fills once, when it is actually on screen ---- */
+      var ring = document.getElementById('tlapRing');
+      var fill = document.getElementById('tlapRingFill');
+      var num = document.getElementById('tlapRingNum');
+      var TARGET = 74, CIRC = 264;
+
+      function runRing() {
+        if (!fill) return;
+        fill.style.strokeDashoffset = String(CIRC * (1 - TARGET / 100));
+        if (!num) return;
+        if (reduce) { num.textContent = TARGET + '%'; return; }
+        var t0 = null;
+        (function step(ts) {
+          if (t0 === null) t0 = ts;
+          var p = Math.min((ts - t0) / 1100, 1);
+          num.textContent = Math.round(TARGET * (1 - Math.pow(1 - p, 3))) + '%';
+          if (p < 1) requestAnimationFrame(step);
+        })(performance.now());
+      }
+
+      /* ---- results chart: bars grow the first time the tab is opened ---- */
+      var chartDrawn = false;
+      function drawChart() {
+        if (chartDrawn) return;
+        var bars = root.querySelectorAll('.tlap__col-b');
+        if (!bars.length) return;
+        chartDrawn = true;
+        bars.forEach(function (b, i) {
+          var h = Number(b.getAttribute('data-h')) || 0;
+          setTimeout(function () { b.style.height = h + '%'; }, reduce ? 0 : i * 90);
+        });
+      }
+
+      /* ---- demo exam timer ---- */
+      var clock = document.getElementById('tlapClock');
+      var startBtn = document.getElementById('tlapStart');
+      var qEl = document.getElementById('tlapQ');
+      var qState = document.getElementById('tlapQState');
+      var pips = document.getElementById('tlapPips');
+      var TOTAL_Q = 25, START_SECONDS = 1 * 3600 + 37 * 60 + 42;
+      var seconds = START_SECONDS, current = 1, timer = null;
+
+      if (pips) {
+        for (var i = 0; i < TOTAL_Q; i++) pips.appendChild(document.createElement('i'));
+      }
+
+      function paintPips() {
+        if (!pips) return;
+        Array.prototype.forEach.call(pips.children, function (el, n) {
+          var q = n + 1;
+          if (q < current) el.setAttribute('data-s', 'done');
+          else if (q === current) el.setAttribute('data-s', 'now');
+          else el.removeAttribute('data-s');
+        });
+      }
+
+      function paintClock() {
+        if (!clock) return;
+        var h = Math.floor(seconds / 3600),
+            m = Math.floor((seconds % 3600) / 60),
+            s = seconds % 60,
+            pad = function (n) { return n < 10 ? '0' + n : String(n); };
+        clock.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+      }
+
+      function stop(msg) {
+        clearInterval(timer);
+        timer = null;
+        if (clock) clock.setAttribute('data-running', 'false');
+        if (startBtn) startBtn.textContent = '▶ Стартирай отново';
+        if (qState) qState.textContent = msg;
+      }
+
+      function tick() {
+        seconds--;
+        paintClock();
+        /* One question every six seconds -- fast enough to show that the
+           exam moves, slow enough not to flicker. */
+        if (seconds % 6 === 0 && current < TOTAL_Q) {
+          current++;
+          if (qEl) qEl.textContent = String(current);
+          paintPips();
+        }
+        if (seconds <= 0 || current >= TOTAL_Q) {
+          stop(current >= TOTAL_Q ? 'Демонстрацията свърши' : 'Времето изтече');
+        }
+      }
+
+      if (startBtn) {
+        startBtn.addEventListener('click', function () {
+          if (timer) {                       /* running -> pause */
+            clearInterval(timer);
+            timer = null;
+            clock.setAttribute('data-running', 'false');
+            startBtn.textContent = '▶ Продължи';
+            if (qState) qState.textContent = 'На пауза';
+            return;
+          }
+          if (seconds <= 0 || current >= TOTAL_Q) {   /* finished -> reset */
+            seconds = START_SECONDS;
+            current = 1;
+            if (qEl) qEl.textContent = '1';
+            paintClock();
+            paintPips();
+          }
+          timer = setInterval(tick, 1000);
+          clock.setAttribute('data-running', 'true');
+          startBtn.textContent = '⏸ Пауза';
+          if (qState) qState.textContent = 'Демонстрация — таймерът върви';
+        });
+      }
+
+      paintClock();
+      paintPips();
+
+      /* A demo clock must not keep ticking in a tab nobody is looking at. */
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden && timer) {
+          clearInterval(timer);
+          timer = null;
+          if (clock) clock.setAttribute('data-running', 'false');
+          if (startBtn) startBtn.textContent = '▶ Продължи';
+          if (qState) qState.textContent = 'На пауза';
+        }
+      });
+
+      /* ---- kick the ring off when the section scrolls into view ---- */
+      if ('IntersectionObserver' in window && ring) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { runRing(); io.disconnect(); }
+          });
+        }, { threshold: 0.35 });
+        io.observe(ring);
+      } else {
+        runRing();
+      }
+    })();
     // Exam timer widget — purely visual teaser, starts counting down on scroll into view
     (function () {
       const displayEl = document.getElementById('examTimerDisplay');
