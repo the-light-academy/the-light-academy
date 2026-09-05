@@ -63,8 +63,8 @@
       <a href="faq.html">FAQ</a>
       <a href="index.html#contact">Контакти</a>
       <a href="birthdays.html">Рождени дни</a>
-      <a href="portal.html">Моят профил</a>
-    <a href="portal.html">Моят профил</a>
+      <!-- TLA-PORTAL-LINK hidden while testing: <a href="portal.html">Моят профил</a> -->
+    <!-- TLA-PORTAL-LINK hidden while testing: <a href="portal.html">Моят профил</a> -->
       <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
     </div>
   </nav>
@@ -102,15 +102,23 @@
       <div class="tla-tablewrap">
         <table class="tla-table" id="resultsTable">
           <thead>
-            <tr><th>Задание</th><th>Предадено</th><th>Автоматично</th><th>Ръчно</th><th>Общо</th><th>Статус</th></tr>
+            <tr><th>Задание</th><th>Предадено</th><th>Автоматично</th><th>Ръчно</th><th>Общо</th><th>Статус</th><th></th></tr>
           </thead>
-          <tbody><tr><td colspan="6" class="tla-empty">Зареждане…</td></tr></tbody>
+          <tbody><tr><td colspan="7" class="tla-empty">Зареждане…</td></tr></tbody>
         </table>
       </div>
       <p class="tla-muted" style="margin-top:0.75rem;">
         „Ръчно“ са задачите със свободен отговор, които преподавателят
         оценява сам — затова общият резултат може да се появи по-късно.
       </p>
+    </section>
+
+    <section class="tla-card" id="reviewCard" hidden>
+      <h2 class="tla-card__title" id="reviewTitle">Преглед</h2>
+      <div id="reviewBody"></div>
+      <button type="button" class="tla-btn tla-btn--ghost" id="closeReview" style="margin-top:1rem;">
+        Затвори прегледа
+      </button>
     </section>
   </main>
 
@@ -165,6 +173,7 @@
   <script>
     (function () {
       var esc = TLA.escapeHtml;
+      var assignmentsById = {};
 
       document.getElementById('signOutBtn')
         .addEventListener('click', function () { TLA.signOut(); });
@@ -180,6 +189,112 @@
         if (status === 'submitted') return '<span class="tla-badge tla-badge--submitted">Предадено</span>';
         return '<span class="tla-badge tla-badge--off">Незавършено</span>';
       }
+
+      /* Read-only version of the teacher's panel: the student sees what they
+         answered, what was right, how many points the teacher gave each
+         free-text sub-question, and any note left for them. */
+      async function openReview(id) {
+        var res = await TLA.client.from('attempts').select('*').eq('id', id).maybeSingle();
+        if (res.error) { fail('Прегледът не се зареди: ' + res.error.message); return; }
+        var t = res.data;
+        if (!t) { fail('Този резултат не е намерен.'); return; }
+        var a = assignmentsById[t.assignment_id];
+
+        var html = '<p class="tla-muted" style="margin-bottom:1rem;">' +
+          esc((a ? a.title : '—') + ' · ' + TLA.formatDate(t.submitted_at)) + '</p>';
+
+        /* score summary */
+        var manualTxt = (t.manual_score != null)
+          ? t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')
+          : 'чака оценка от преподавателя';
+        html += '<div class="tla-item" style="display:block;">' +
+          '<div><strong>Автоматично:</strong> ' +
+            (t.auto_score != null ? esc(t.auto_score + ' / ' + t.auto_max) : '—') + '</div>' +
+          '<div><strong>Оценено от преподавателя:</strong> ' + esc(manualTxt) + '</div>' +
+          '<div style="font-size:1.15rem;font-weight:800;margin-top:0.4rem;"><strong>Общо:</strong> ' +
+            (t.total_score != null ? esc(t.total_score) : '—') +
+            (a && a.max_points ? ' / ' + esc(a.max_points) : '') + '</div>' +
+        '</div>';
+
+        /* the teacher's note comes first -- it is the thing worth reading */
+        if (t.teacher_note) {
+          html += '<div class="tla-msg tla-msg--warn" style="margin-top:1rem;white-space:pre-wrap;">' +
+            '<strong>Коментар от преподавателя:</strong><br>' + esc(t.teacher_note) + '</div>';
+        }
+
+        /* auto-graded questions */
+        var recs = Array.isArray(t.records) ? t.records : [];
+        if (recs.length) {
+          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">Автоматично оценени</h3>';
+          html += recs.map(function (r) {
+            var cls = r.correct ? 'tla-q tla-q--right' : 'tla-q tla-q--wrong';
+            var given, expected;
+            if (r.kind === 'mc') {
+              var opts = r.options || [];
+              given = (r.chosenIndex == null) ? '(без отговор)' : opts[r.chosenIndex];
+              expected = opts[r.correctIndex];
+            } else {
+              given = r.studentAnswer;
+              expected = r.referenceAnswer;
+            }
+            return '<div class="' + cls + '">' +
+              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.text || r.prompt || '')) + '</div>' +
+              '<div class="tla-muted">Твоят отговор: ' + esc(given) + '</div>' +
+              '<div class="tla-muted">Верен отговор: ' + esc(expected) + '</div>' +
+              '<div class="tla-muted">' + esc(r.earned + ' / ' + r.points) + ' т.</div>' +
+              (r.explanation ? '<div class="tla-muted" style="margin-top:0.4rem;">' +
+                 esc(r.explanation) + '</div>' : '') +
+            '</div>';
+          }).join('');
+        }
+
+        /* free-text sub-questions, with the teacher's mark on each */
+        var p2 = Array.isArray(t.part2) ? t.part2 : [];
+        if (p2.length) {
+          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">Оценени от преподавателя</h3>';
+          var lastTask = null;
+          html += p2.map(function (r) {
+            var out = '';
+            var tid = (r.taskId != null) ? r.taskId : (parseInt(r.id, 10) || null);
+            if (tid !== null && tid !== lastTask) {
+              lastTask = tid;
+              out += '<div style="margin-top:1rem;font-weight:800;color:var(--mid);">Задача ' +
+                esc(tid) + (r.taskPoints != null ? ' — от ' + esc(r.taskPoints) + ' т.' : '') + '</div>';
+            }
+            var mark = (r.mark == null)
+              ? '<span class="tla-badge tla-badge--submitted">чака оценка</span>'
+              : '<strong>' + esc(r.mark) + ' т.</strong>';
+            out += '<div class="tla-q">' +
+              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.prompt || '')) + '</div>' +
+              '<div style="white-space:pre-wrap;">Твоят отговор: ' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
+              '<div style="margin-top:0.5rem;">Точки: ' + mark + '</div>' +
+              (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Примерно решение: ' +
+                 esc(r.solution) + '</div>' : '') +
+            '</div>';
+            return out;
+          }).join('');
+        }
+
+        if (!recs.length && !p2.length) {
+          html += '<p class="tla-empty">Няма запазени подробности за този опит.</p>';
+        }
+
+        document.getElementById('reviewTitle').textContent =
+          'Преглед — ' + (a ? a.title : 'задание');
+        document.getElementById('reviewBody').innerHTML = html;
+        document.getElementById('reviewCard').hidden = false;
+        document.getElementById('reviewCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      document.getElementById('closeReview').addEventListener('click', function () {
+        document.getElementById('reviewCard').hidden = true;
+        document.getElementById('resultsTable').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+
+      document.getElementById('resultsTable').addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-review]');
+        if (btn) openReview(btn.getAttribute('data-review'));
+      });
 
       (async function () {
         if (!TLA.isConfigured()) { fail(TLA.notConfiguredMessage()); return; }
@@ -209,10 +324,9 @@
           return;
         }
 
-        /* ---- assignments ---- */
-        var byId = {};
-        assignments.forEach(function (a) { byId[a.id] = a; });
+        assignments.forEach(function (a) { assignmentsById[a.id] = a; });
 
+        /* ---- assignments ---- */
         var visible = assignments.filter(function (a) { return a.published; });
         var listEl = document.getElementById('assignmentList');
 
@@ -247,10 +361,10 @@
         /* ---- results ---- */
         var tbody = document.querySelector('#resultsTable tbody');
         if (!attempts.length) {
-          tbody.innerHTML = '<tr><td colspan="6" class="tla-empty">Още нямате предадени задания.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="tla-empty">Още нямате предадени задания.</td></tr>';
         } else {
           tbody.innerHTML = attempts.map(function (t) {
-            var a = byId[t.assignment_id];
+            var a = assignmentsById[t.assignment_id];
             var pct = TLA.percent(t.total_score, a && a.max_points);
             return '<tr>' +
               '<td>' + esc(a ? a.title : '—') + '</td>' +
@@ -260,6 +374,8 @@
               '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') +
                 (pct != null ? ' <span class="tla-muted">(' + pct + '%)</span>' : '') + '</td>' +
               '<td>' + statusBadge(t.status) + '</td>' +
+              '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
+                esc(t.id) + '">Преглед</button></td>' +
             '</tr>';
           }).join('');
         }
