@@ -2221,6 +2221,184 @@
       .tlap__ring-fill, .tlap__col-b, .tlap__tile, .tlap__cta, .tlap__start { transition: none; }
       .tlap__tabs[data-nudge="on"] .tlap__tab[data-nudge] { animation: none; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       КАК ВОДИМ УЧЕНИКА ДО НВО — методът като един цикъл
+       Namespaced under .tlm; own tokens, no global selector touched.
+       ══════════════════════════════════════════════════════════════ */
+    .tlm {
+      --tlm-ink: #2D1F0E;
+      --tlm-soft: #7A5C3A;
+      --tlm-navy: #0D1B36;
+      --tlm-accent: #F7AD19;
+      --tlm-accent-deep: #C07A0A;
+      --tlm-wash: #FFF4DC;
+      --tlm-line: rgba(45,31,14,0.10);
+      --tlm-r: 18px;
+      position: relative;
+      overflow: hidden;
+      padding: clamp(3rem, 7vw, 5.5rem) 1.25rem clamp(2.5rem, 6vw, 4.5rem);
+      background:
+        radial-gradient(70% 50% at 12% 0%, #FFF7E7 0%, rgba(255,247,231,0) 62%),
+        var(--cream);
+      font-family: 'Nunito', sans-serif;
+      color: var(--tlm-ink);
+    }
+    .tlm__inner { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* ── heading ── */
+    .tlm__head { max-width: 720px; margin: 0 auto clamp(2rem, 4vw, 3rem); text-align: center; }
+    .tlm__eyebrow {
+      display: inline-block; font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--tlm-accent-deep); background: var(--tlm-wash);
+      padding: 0.38rem 0.85rem; border-radius: 999px; margin-bottom: 1rem;
+    }
+    .tlm__title {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.6rem, 3.6vw, 2.35rem);
+      line-height: 1.25; color: var(--tlm-ink); margin: 0 0 0.75rem;
+    }
+    .tlm__sub { font-size: clamp(0.98rem, 1.5vw, 1.08rem); line-height: 1.65; color: var(--tlm-soft); margin: 0; }
+
+    /* ── the six steps ── */
+    .tlm__steps {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem 3.2rem;
+    }
+    .tlm__step { position: relative; display: flex; gap: 0.9rem; }
+
+    .tlm__num {
+      flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 0.92rem; font-weight: 800; font-variant-numeric: tabular-nums;
+      color: var(--tlm-accent-deep); background: var(--tlm-wash);
+      border: 2px solid rgba(247,173,25,0.45);
+      transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    /* The step nearest the middle of the screen leads — a quiet cue that
+       these are read in order, not picked from. */
+    .tlm__step.is-active .tlm__num {
+      background: var(--tlm-accent); color: #2D1F0E;
+      border-color: var(--tlm-accent);
+      box-shadow: 0 6px 18px rgba(247,173,25,0.4);
+    }
+
+    .tlm__body { min-width: 0; }
+    .tlm__icon { font-size: 1.05rem; line-height: 1; margin-right: 0.4rem; }
+    .tlm__step-t { font-size: 1.02rem; font-weight: 800; line-height: 1.35; color: var(--tlm-ink); margin: 0 0 0.25rem; }
+    .tlm__step-k {
+      font-size: 0.78rem; font-weight: 800; letter-spacing: 0.03em;
+      color: var(--tlm-accent-deep); margin: 0 0 0.5rem;
+    }
+    .tlm__step-b { font-size: 0.92rem; line-height: 1.6; color: var(--tlm-soft); margin: 0; }
+
+    /* Connector between cards inside a row. Hidden on the row-ends, where
+       the eye wraps to the next line on its own. */
+    .tlm__step::after {
+      content: '';
+      position: absolute; top: 20px; right: -2rem;
+      width: 1.1rem; height: 1.1rem;
+      border-top: 2px solid rgba(247,173,25,0.55);
+      border-right: 2px solid rgba(247,173,25,0.55);
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.5s ease 0.25s;
+    }
+    .tlm__step:nth-child(3n)::after { display: none; }
+    .tlm__step.is-in::after { opacity: 1; }
+
+    /* ── scroll reveal ── */
+    .tlm__step { opacity: 0; transform: translateY(14px); }
+    .tlm__step.is-in {
+      opacity: 1; transform: none;
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,0.61,0.36,1);
+      transition-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    /* ── the cycle: 06 goes back to 01 ── */
+    .tlm__loop {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.75rem; flex-wrap: wrap; text-align: center;
+      margin: clamp(2rem, 4vw, 2.75rem) auto 0; max-width: 720px;
+      padding: 1rem 1.25rem;
+      background: rgba(255,255,255,0.6);
+      border: 1px dashed rgba(247,173,25,0.6);
+      border-radius: var(--tlm-r);
+    }
+    .tlm__loop-chip {
+      display: inline-grid; place-items: center;
+      width: 38px; height: 38px; border-radius: 50%;
+      font-size: 0.85rem; font-weight: 800; font-variant-numeric: tabular-nums;
+      background: var(--tlm-accent); color: #2D1F0E; flex-shrink: 0;
+    }
+    .tlm__loop-arrow { font-size: 1.3rem; color: var(--tlm-accent-deep); line-height: 1; }
+    .tlm__loop-txt { font-size: 0.95rem; line-height: 1.55; color: var(--tlm-soft); }
+    .tlm__loop-txt b { color: var(--tlm-ink); }
+
+    /* ── the closing card ── */
+    .tlm__final {
+      margin: clamp(2.25rem, 5vw, 3.25rem) auto 0; max-width: 780px;
+      padding: clamp(1.5rem, 4vw, 2.25rem);
+      border-radius: 22px; text-align: center;
+      background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+      box-shadow: 0 24px 55px -22px rgba(9,18,38,0.55);
+      border-top: 3px solid var(--tlm-accent);
+    }
+    .tlm__final-h {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.3rem, 3vw, 1.85rem); line-height: 1.35;
+      color: #fff; margin: 0 0 0.75rem;
+    }
+    .tlm__final-p {
+      font-size: clamp(1rem, 1.8vw, 1.12rem); font-weight: 800;
+      color: var(--tlm-accent); margin: 0; letter-spacing: 0.01em;
+    }
+
+    .tlm__tagline {
+      margin: clamp(1.5rem, 3vw, 2rem) auto 0; max-width: 560px;
+      text-align: center; font-size: 0.92rem; color: var(--tlm-soft);
+      padding-top: 1.1rem; border-top: 1px solid var(--tlm-line);
+    }
+
+    /* ── tablet ── */
+    @media (max-width: 900px) {
+      .tlm__steps { grid-template-columns: repeat(2, 1fr); gap: 2.25rem 2.75rem; }
+      .tlm__step:nth-child(3n)::after { display: block; }
+      .tlm__step:nth-child(2n)::after { display: none; }
+      .tlm__step::after { right: -1.75rem; }
+    }
+
+    /* ── phones: one clean vertical timeline ── */
+    @media (max-width: 640px) {
+      .tlm__steps { grid-template-columns: 1fr; gap: 0; }
+      .tlm__step { padding: 0 0 1.6rem 0; }
+      .tlm__step::after { display: none !important; }
+      /* The connector is one line per step, running from under its own
+         number all the way to the next one — anchored to the step, not to
+         the 44px circle, so it stretches with however tall the text is. */
+      .tlm__num { position: relative; z-index: 1; background: var(--tlm-wash); }
+      .tlm__step:not(:last-child)::before {
+        content: '';
+        position: absolute; left: 21px; top: 44px; bottom: 0;
+        width: 2px; margin-left: -1px;
+        background: rgba(247,173,25,0.35);
+      }
+      .tlm__loop { flex-direction: column; gap: 0.5rem; }
+      .tlm__loop-arrow { transform: rotate(90deg); }
+    }
+
+    /* Motion is here to show the order, so it is all optional. */
+    @media (prefers-reduced-motion: reduce) {
+      /* .is-in is the more specific selector, so these have to match it or
+         the fade still runs for someone who asked for no motion. */
+      .tlm__step, .tlm__step.is-in {
+        opacity: 1; transform: none; transition: none; transition-delay: 0s;
+      }
+      .tlm__step::after, .tlm__step.is-in::after { opacity: 1; transition: none; }
+      .tlm__num, .tlm__step.is-active .tlm__num { transition: none; }
+    }
     /* ── COOKIE CONSENT (shared across the site; one choice applies everywhere via localStorage) ── */
     .cookie-banner {
       position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2000;
@@ -2756,6 +2934,117 @@
         </p>
         <a class="tlap__cta" href="#section-zapishete-se">Запази място за НВО 7 клас</a>
       </div>
+    </div>
+  </section>
+
+  <!-- ══════════ КАК ВОДИМ УЧЕНИКА ДО НВО ══════════
+       Sits right after the platform section on purpose: the portal, the
+       homework, the mock exams and the AI analysis have just been shown as
+       features, and this is what ties them into one process. -->
+  <section class="tlm" id="section-metod" aria-labelledby="tlmTitle">
+    <div class="tlm__inner">
+      <header class="tlm__head">
+        <span class="tlm__eyebrow">Нашият метод</span>
+        <h2 class="tlm__title" id="tlmTitle">Как всичко това води до по-добра подготовка за НВО?</h2>
+        <p class="tlm__sub">
+          Не просто решаваме задачи. Следим как се развива ученикът и
+          използваме резултатите, за да знаем какво да правим след това.
+        </p>
+      </header>
+
+      <ol class="tlm__steps" id="tlmSteps">
+        <li class="tlm__step" style="--i:0">
+          <div class="tlm__num"><span>01</span></div>
+          <div class="tlm__body">
+            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">🔍</span>Разбираме откъде започва детето</h3>
+            <p class="tlm__step-k">Входящ тест</p>
+            <p class="tlm__step-b">
+              В началото установяваме кои знания са усвоени и къде има пропуски.
+              Така подготовката започва от реалното ниво на ученика, а не от предположения.
+            </p>
+          </div>
+        </li>
+
+        <li class="tlm__step" style="--i:1">
+          <div class="tlm__num"><span>02</span></div>
+          <div class="tlm__body">
+            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📘</span>Учим и упражняваме</h3>
+            <p class="tlm__step-k">Часове + домашни + онлайн практика</p>
+            <p class="tlm__step-b">
+              Ученикът усвоява материала в малка група, а след това има възможност
+              да упражнява наученото и извън часа.
+            </p>
+          </div>
+        </li>
+
+        <li class="tlm__step" style="--i:2">
+          <div class="tlm__num"><span>03</span></div>
+          <div class="tlm__body">
+            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">⏱️</span>Проверяваме</h3>
+            <p class="tlm__step-k">Пробни изпити с реален таймер</p>
+            <p class="tlm__step-b">
+              Редовно проверяваме не само дали задачите са решени правилно, но и
+              как ученикът се справя с времето и формата на изпита.
+            </p>
+          </div>
+        </li>
+
+        <li class="tlm__step" style="--i:3">
+          <div class="tlm__num"><span>04</span></div>
+          <div class="tlm__body">
+            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📊</span>Анализираме</h3>
+            <p class="tlm__step-k">AI анализ + обратна връзка от преподавателя</p>
+            <p class="tlm__step-b">
+              Резултатите се анализират с помощта на AI, а преподавателят разглежда
+              представянето и дава професионална обратна връзка. AI подпомага анализа —
+              преценката остава на преподавателя.
+            </p>
+          </div>
+        </li>
+
+        <li class="tlm__step" style="--i:4">
+          <div class="tlm__num"><span>05</span></div>
+          <div class="tlm__body">
+            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">🎯</span>Коригираме</h3>
+            <p class="tlm__step-k">Следващи стъпки според нуждите</p>
+            <p class="tlm__step-b">
+              Откритите пропуски не остават просто като „грешки“. Те се превръщат в
+              конкретни теми и задачи, върху които ученикът трябва да работи.
+            </p>
+          </div>
+        </li>
+
+        <li class="tlm__step" style="--i:5">
+          <div class="tlm__num"><span>06</span></div>
+          <div class="tlm__body">
+            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📈</span>Повтаряме и проследяваме</h3>
+            <p class="tlm__step-k">Прогресът се вижда през цялата година</p>
+            <p class="tlm__step-b">
+              Следващият тест ни показва дали има развитие. Така постепенно изграждаме
+              история на представянето на ученика и можем да адаптираме подготовката
+              до самото НВО.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <!-- The point of the whole section: step 6 is not an ending. -->
+      <div class="tlm__loop">
+        <span class="tlm__loop-chip">06</span>
+        <span class="tlm__loop-arrow" aria-hidden="true">↻</span>
+        <span class="tlm__loop-chip">01</span>
+        <span class="tlm__loop-txt">
+          <b>И започваме отново — но вече от по-високо ниво.</b><br>
+          Всяка следваща проверка става новата отправна точка, чак до изпита.
+        </span>
+      </div>
+
+      <div class="tlm__final">
+        <p class="tlm__final-h">Не чакаме последния пробен изпит, за да разберем как се справя детето.</p>
+        <p class="tlm__final-p">Следим. Анализираме. Коригираме. И отново проверяваме.</p>
+      </div>
+
+      <p class="tlm__tagline">Всеки резултат ни казва какво да правим следващо.</p>
     </div>
   </section>
 
@@ -3381,6 +3670,64 @@
       });
     });
 
+
+
+    /* ── "Как водим ученика до НВО" ─────────────────────────────────
+       Two small behaviours, both there to show that the six steps are an
+       order rather than a menu: they arrive one after another on scroll,
+       and whichever one is nearest the middle of the screen leads. */
+    (function () {
+      var root = document.getElementById('tlmSteps');
+      if (!root) return;
+
+      var steps = Array.prototype.slice.call(root.querySelectorAll('.tlm__step'));
+      var reduce = window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce) {
+        steps.forEach(function (s) { s.classList.add('is-in'); });
+        return;
+      }
+
+      /* One measuring pass does both jobs. An IntersectionObserver looks
+         like the right tool here but quietly gets this wrong: jump the page
+         past a step -- an anchor link, a restored scroll position, a fast
+         flick -- and its ratio goes 0 -> 0 without crossing a threshold, so
+         no callback fires and the step stays invisible for good. Reading
+         positions on scroll has no such gap. */
+      var ticking = false;
+
+      function pass() {
+        var h = window.innerHeight, middle = h / 2;
+        var best = null, bestDist = Infinity;
+
+        steps.forEach(function (step) {
+          var r = step.getBoundingClientRect();
+
+          /* anything whose top has reached the fold, or is already above it */
+          if (r.top < h * 0.92) step.classList.add('is-in');
+
+          /* the one nearest the middle of the screen leads */
+          if (r.bottom > 0 && r.top < h) {
+            var d = Math.abs((r.top + r.bottom) / 2 - middle);
+            if (d < bestDist) { bestDist = d; best = step; }
+          }
+        });
+
+        steps.forEach(function (step) { step.classList.toggle('is-active', step === best); });
+        ticking = false;
+      }
+
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(pass);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      pass();
+    })();
 
     /* ── Student platform mock ────────────────────────────────────────
        Three moving parts, all of them there to explain the product:
