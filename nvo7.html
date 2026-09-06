@@ -2386,21 +2386,22 @@
     /* ── the cycle: 06 goes back to 01 ── */
     .tlm__loop {
       display: flex; align-items: center; justify-content: center;
-      gap: 0.75rem; flex-wrap: wrap; text-align: center;
-      margin: clamp(2rem, 4vw, 2.75rem) auto 0; max-width: 720px;
-      padding: 1rem 1.25rem;
+      gap: 0.7rem; flex-wrap: wrap;
+      margin: clamp(1.5rem, 3vw, 2rem) auto 0; max-width: 640px;
+      padding: 0.65rem 1rem;
       background: rgba(255,255,255,0.6);
       border: 1px dashed rgba(247,173,25,0.6);
-      border-radius: var(--tlm-r);
+      border-radius: 999px;
     }
+    .tlm__loop-cycle { display: inline-flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
     .tlm__loop-chip {
       display: inline-grid; place-items: center;
-      width: 38px; height: 38px; border-radius: 50%;
-      font-size: 0.85rem; font-weight: 800; font-variant-numeric: tabular-nums;
-      background: var(--tlm-accent); color: #2D1F0E; flex-shrink: 0;
+      width: 28px; height: 28px; border-radius: 50%;
+      font-size: 0.72rem; font-weight: 800; font-variant-numeric: tabular-nums;
+      background: var(--tlm-accent); color: #2D1F0E;
     }
-    .tlm__loop-arrow { font-size: 1.3rem; color: var(--tlm-accent-deep); line-height: 1; }
-    .tlm__loop-txt { font-size: 0.95rem; line-height: 1.55; color: var(--tlm-soft); }
+    .tlm__loop-arrow { font-size: 1.05rem; color: var(--tlm-accent-deep); line-height: 1; }
+    .tlm__loop-txt { font-size: 0.88rem; line-height: 1.5; color: var(--tlm-soft); }
     .tlm__loop-txt b { color: var(--tlm-ink); }
 
     /* ── the closing card ── */
@@ -2420,12 +2421,6 @@
     .tlm__final-p {
       font-size: clamp(1rem, 1.8vw, 1.12rem); font-weight: 800;
       color: var(--tlm-accent); margin: 0; letter-spacing: 0.01em;
-    }
-
-    .tlm__tagline {
-      margin: clamp(1.5rem, 3vw, 2rem) auto 0; max-width: 560px;
-      text-align: center; font-size: 0.92rem; color: var(--tlm-soft);
-      padding-top: 1.1rem; border-top: 1px solid var(--tlm-line);
     }
 
     /* ── tablet ── */
@@ -2451,8 +2446,7 @@
         width: 2px; margin-left: -1px;
         background: rgba(247,173,25,0.35);
       }
-      .tlm__loop { flex-direction: column; gap: 0.5rem; }
-      .tlm__loop-arrow { transform: rotate(90deg); }
+      .tlm__loop { flex-direction: column; gap: 0.45rem; text-align: center; border-radius: var(--tlm-r); }
     }
 
     /* Motion is here to show the order, so it is all optional. */
@@ -3198,13 +3192,12 @@
 
       <!-- The point of the whole section: step 6 is not an ending. -->
       <div class="tlm__loop">
-        <span class="tlm__loop-chip">06</span>
-        <span class="tlm__loop-arrow" aria-hidden="true">↻</span>
-        <span class="tlm__loop-chip">01</span>
-        <span class="tlm__loop-txt">
-          <b>И започваме отново — но вече от по-високо ниво.</b><br>
-          Всяка следваща проверка става новата отправна точка, чак до изпита.
+        <span class="tlm__loop-cycle">
+          <span class="tlm__loop-chip">06</span>
+          <span class="tlm__loop-arrow" aria-hidden="true">↻</span>
+          <span class="tlm__loop-chip">01</span>
         </span>
+        <span class="tlm__loop-txt"><b>И започваме отново — от по-високо ниво.</b></span>
       </div>
 
       <div class="tlm__final">
@@ -3212,12 +3205,12 @@
         <p class="tlm__final-p">Следим. Анализираме. Коригираме. И отново проверяваме.</p>
       </div>
 
-      <p class="tlm__tagline">Всеки резултат ни казва какво да правим следващо.</p>
     </div>
   </section>
 
-  <!-- JOURNEY -->
-  <div class="journey">
+  <!-- JOURNEY — скрита по заявка. За да се върне: махнете `hidden` по-долу.
+       Съдържанието е непокътнато, само не се показва. -->
+  <div class="journey" hidden>
 
     <!-- Animated vertical line -->
     <div class="timeline-track">
@@ -4216,15 +4209,11 @@
       carousel.addEventListener('click', pauseForReading);
     })();
 
-    // Gamification video (Геймификация section) — no autoplay on page load.
-    // preload="none" + poster keep it from fetching anything until the
-    // section actually scrolls into view; only then do we load() and
-    // play() it, and it pauses again once scrolled out so it doesn't keep
-    // decoding/playing off-screen.
-
     // Timeline fill grows with scroll
     function updateTimeline() {
-      if (!journey) return;
+      /* hidden -> offsetHeight 0, and dividing by it writes NaN into the
+         style; nothing to fill either way. */
+      if (!journey || !journey.offsetHeight) return;
       const journeyTop = journey.getBoundingClientRect().top + window.scrollY;
       const progress = Math.min(Math.max((window.scrollY + window.innerHeight * 0.6 - journeyTop) / journey.offsetHeight, 0), 1);
       timelineFill.style.height = (progress * 100) + '%';
