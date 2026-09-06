@@ -2169,7 +2169,12 @@
       font-size: clamp(1.3rem, 2.8vw, 1.7rem); color: var(--tlap-navy);
       text-align: center; margin: clamp(2.5rem, 5vw, 3.5rem) 0 1.5rem;
     }
-    .tlap__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; list-style: none; margin: 0; padding: 0; }
+    /* align-items:start so opening one card does not stretch the other four
+       to match it. */
+    .tlap__grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); align-items: start;
+      gap: 0.75rem; list-style: none; margin: 0; padding: 0;
+    }
     .tlap__tile {
       background: rgba(255,255,255,0.75);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -2178,9 +2183,38 @@
       transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
     .tlap__tile:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(13,27,54,0.10); }
-    .tlap__tile-i { font-size: 1.5rem; line-height: 1; display: block; margin-bottom: 0.6rem; }
-    .tlap__tile-t { font-size: 0.95rem; font-weight: 800; color: var(--tlap-navy); margin: 0 0 0.3rem; }
-    .tlap__tile-p { font-size: 0.85rem; line-height: 1.55; color: var(--tlap-ink-soft); margin: 0; }
+    .tlap__tile.is-open:hover { transform: none; }
+
+    /* Tap to open, like every other card on this page. */
+    .tlap__tile-head {
+      width: 100%; display: flex; align-items: center; gap: 0.6rem;
+      background: none; border: none; padding: 0; cursor: pointer;
+      font-family: 'Nunito', sans-serif; text-align: left;
+      border-radius: 10px;
+    }
+    .tlap__tile-head:focus-visible { outline: 2px solid var(--tlap-accent-deep); outline-offset: 4px; }
+    .tlap__tile-i { font-size: 1.35rem; line-height: 1; flex-shrink: 0; }
+    .tlap__tile-t { flex: 1; min-width: 0; font-size: 0.95rem; font-weight: 800; color: var(--tlap-navy); }
+    .tlap__chev {
+      flex-shrink: 0; display: grid; place-items: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: 0.9rem; font-weight: 800; line-height: 1;
+      color: var(--tlap-accent-deep); background: var(--tlap-accent-wash);
+      border: 1px solid rgba(192,122,10,0.28);
+      transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease;
+    }
+    .tlap__tile-head:hover .tlap__chev { background: var(--tlap-accent); color: #2D1F0E; }
+    .tlap__tile.is-open .tlap__chev { background: var(--tlap-accent); color: #2D1F0E; }
+    .tlap__tile.is-open .tlap__chev { transform: rotate(180deg); }
+    .tlap__tile-head:hover .tlap__tile-t { color: var(--tlap-accent-deep); }
+
+    .tlap__tile-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s ease; }
+    .tlap__tile.is-open .tlap__tile-wrap { grid-template-rows: 1fr; }
+    .tlap__tile-reveal { overflow: hidden; }
+    .tlap__tile-p {
+      font-size: 0.85rem; line-height: 1.55; color: var(--tlap-ink-soft);
+      margin: 0; padding-top: 0.5rem;
+    }
 
     /* ── closing ── */
     .tlap__final { text-align: center; margin-top: clamp(2.5rem, 5vw, 3.5rem); }
@@ -2285,14 +2319,46 @@
       box-shadow: 0 6px 18px rgba(247,173,25,0.4);
     }
 
-    .tlm__body { min-width: 0; }
-    .tlm__icon { font-size: 1.05rem; line-height: 1; margin-right: 0.4rem; }
-    .tlm__step-t { font-size: 1.02rem; font-weight: 800; line-height: 1.35; color: var(--tlm-ink); margin: 0 0 0.25rem; }
-    .tlm__step-k {
-      font-size: 0.78rem; font-weight: 800; letter-spacing: 0.03em;
-      color: var(--tlm-accent-deep); margin: 0 0 0.5rem;
+    .tlm__body { min-width: 0; flex: 1; }
+
+    /* The detail is behind a tap: collapsed, a step is a title and the one
+       line that names it, which is what a parent scans. Same open/close
+       mechanics as the Gen Alpha cards above, so the page has one gesture. */
+    .tlm__step-h { margin: 0; }
+    .tlm__toggle {
+      width: 100%; display: flex; align-items: flex-start; gap: 0.6rem;
+      padding: 0.1rem 0 0.3rem; background: none; border: none;
+      font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer;
+      border-radius: 10px;
     }
-    .tlm__step-b { font-size: 0.92rem; line-height: 1.6; color: var(--tlm-soft); margin: 0; }
+    .tlm__toggle:focus-visible { outline: 2px solid var(--tlm-accent-deep); outline-offset: 3px; }
+    .tlm__head-txt { flex: 1; min-width: 0; }
+    .tlm__icon { font-size: 1.05rem; line-height: 1; margin-right: 0.4rem; }
+    .tlm__step-t { display: block; font-size: 1.02rem; font-weight: 800; line-height: 1.35; color: var(--tlm-ink); }
+    .tlm__step-k {
+      display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.03em;
+      color: var(--tlm-accent-deep); margin-top: 0.25rem;
+    }
+    .tlm__chev {
+      flex-shrink: 0; display: grid; place-items: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      font-size: 0.95rem; font-weight: 800; line-height: 1;
+      color: var(--tlm-accent-deep); background: var(--tlm-wash);
+      border: 1px solid rgba(247,173,25,0.4);
+      transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease;
+    }
+    .tlm__toggle:hover .tlm__chev { background: var(--tlm-accent); color: #2D1F0E; }
+    .tlm__step.is-open .tlm__chev { background: var(--tlm-accent); color: #2D1F0E; }
+    .tlm__step.is-open .tlm__chev { transform: rotate(180deg); }
+    .tlm__toggle:hover .tlm__step-t { color: var(--tlm-accent-deep); }
+
+    .tlm__wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s ease; }
+    .tlm__step.is-open .tlm__wrap { grid-template-rows: 1fr; }
+    .tlm__reveal { overflow: hidden; }
+    .tlm__step-b {
+      font-size: 0.92rem; line-height: 1.6; color: var(--tlm-soft);
+      margin: 0; padding-top: 0.5rem;
+    }
 
     /* Connector between cards inside a row. Hidden on the row-ends, where
        the eye wraps to the next line on its own. */
@@ -2398,6 +2464,7 @@
       }
       .tlm__step::after, .tlm__step.is-in::after { opacity: 1; transition: none; }
       .tlm__num, .tlm__step.is-active .tlm__num { transition: none; }
+      .tlm__wrap, .tlm__chev, .tlap__tile-wrap, .tlap__chev { transition: none; }
     }
     /* ── COOKIE CONSENT (shared across the site; one choice applies everywhere via localStorage) ── */
     .cookie-banner {
@@ -2899,29 +2966,64 @@
       <h3 class="tlap__h3">Какво получава ученикът?</h3>
       <ul class="tlap__grid">
         <li class="tlap__tile">
-          <span class="tlap__tile-i" aria-hidden="true">🎯</span>
-          <p class="tlap__tile-t">Личен профил</p>
-          <p class="tlap__tile-p">Всичко необходимо за подготовката на едно място.</p>
+          <button type="button" class="tlap__tile-head" aria-expanded="false" aria-controls="tlapT1">
+            <span class="tlap__tile-i" aria-hidden="true">🎯</span>
+            <span class="tlap__tile-t">Личен профил</span>
+            <span class="tlap__chev" aria-hidden="true">⌄</span>
+          </button>
+          <div class="tlap__tile-wrap" id="tlapT1">
+            <div class="tlap__tile-reveal">
+              <p class="tlap__tile-p">Всичко необходимо за подготовката на едно място.</p>
+            </div>
+          </div>
         </li>
         <li class="tlap__tile">
-          <span class="tlap__tile-i" aria-hidden="true">📚</span>
-          <p class="tlap__tile-t">Домашни</p>
-          <p class="tlap__tile-p">Задачи, упражнения и проследяване на изпълнението.</p>
+          <button type="button" class="tlap__tile-head" aria-expanded="false" aria-controls="tlapT2">
+            <span class="tlap__tile-i" aria-hidden="true">📚</span>
+            <span class="tlap__tile-t">Домашни</span>
+            <span class="tlap__chev" aria-hidden="true">⌄</span>
+          </button>
+          <div class="tlap__tile-wrap" id="tlapT2">
+            <div class="tlap__tile-reveal">
+              <p class="tlap__tile-p">Задачи, упражнения и проследяване на изпълнението.</p>
+            </div>
+          </div>
         </li>
         <li class="tlap__tile">
-          <span class="tlap__tile-i" aria-hidden="true">⏱️</span>
-          <p class="tlap__tile-t">Пробни изпити</p>
-          <p class="tlap__tile-p">Решаване с реален таймер и проследяване на резултата.</p>
+          <button type="button" class="tlap__tile-head" aria-expanded="false" aria-controls="tlapT3">
+            <span class="tlap__tile-i" aria-hidden="true">⏱️</span>
+            <span class="tlap__tile-t">Пробни изпити</span>
+            <span class="tlap__chev" aria-hidden="true">⌄</span>
+          </button>
+          <div class="tlap__tile-wrap" id="tlapT3">
+            <div class="tlap__tile-reveal">
+              <p class="tlap__tile-p">Решаване с реален таймер и проследяване на резултата.</p>
+            </div>
+          </div>
         </li>
         <li class="tlap__tile">
-          <span class="tlap__tile-i" aria-hidden="true">👩‍🏫</span>
-          <p class="tlap__tile-t">Учителска обратна връзка</p>
-          <p class="tlap__tile-p">Конкретни коментари и насоки от преподавателя на курса.</p>
+          <button type="button" class="tlap__tile-head" aria-expanded="false" aria-controls="tlapT4">
+            <span class="tlap__tile-i" aria-hidden="true">👩‍🏫</span>
+            <span class="tlap__tile-t">Учителска обратна връзка</span>
+            <span class="tlap__chev" aria-hidden="true">⌄</span>
+          </button>
+          <div class="tlap__tile-wrap" id="tlapT4">
+            <div class="tlap__tile-reveal">
+              <p class="tlap__tile-p">Конкретни коментари и насоки от преподавателя на курса.</p>
+            </div>
+          </div>
         </li>
         <li class="tlap__tile">
-          <span class="tlap__tile-i" aria-hidden="true">🤖</span>
-          <p class="tlap__tile-t">AI анализ</p>
-          <p class="tlap__tile-p">Допълнителен анализ на резултатите и областите за развитие.</p>
+          <button type="button" class="tlap__tile-head" aria-expanded="false" aria-controls="tlapT5">
+            <span class="tlap__tile-i" aria-hidden="true">🤖</span>
+            <span class="tlap__tile-t">AI анализ</span>
+            <span class="tlap__chev" aria-hidden="true">⌄</span>
+          </button>
+          <div class="tlap__tile-wrap" id="tlapT5">
+            <div class="tlap__tile-reveal">
+              <p class="tlap__tile-p">Допълнителен анализ на резултатите и областите за развитие.</p>
+            </div>
+          </div>
         </li>
       </ul>
 
@@ -2956,74 +3058,140 @@
         <li class="tlm__step" style="--i:0">
           <div class="tlm__num"><span>01</span></div>
           <div class="tlm__body">
-            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">🔍</span>Разбираме откъде започва детето</h3>
-            <p class="tlm__step-k">Входящ тест</p>
-            <p class="tlm__step-b">
+            <h3 class="tlm__step-h">
+              <button type="button" class="tlm__toggle" aria-expanded="false" aria-controls="tlmR1">
+                <span class="tlm__head-txt">
+                  <span class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">🔍</span>Разбираме откъде започва детето</span>
+                  <span class="tlm__step-k">Входящ тест</span>
+                </span>
+                <span class="tlm__chev" aria-hidden="true">⌄</span>
+              </button>
+            </h3>
+            <div class="tlm__wrap" id="tlmR1">
+              <div class="tlm__reveal">
+                <p class="tlm__step-b">
               В началото установяваме кои знания са усвоени и къде има пропуски.
               Така подготовката започва от реалното ниво на ученика, а не от предположения.
-            </p>
+                </p>
+              </div>
+            </div>
           </div>
         </li>
 
         <li class="tlm__step" style="--i:1">
           <div class="tlm__num"><span>02</span></div>
           <div class="tlm__body">
-            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📘</span>Учим и упражняваме</h3>
-            <p class="tlm__step-k">Часове + домашни + онлайн практика</p>
-            <p class="tlm__step-b">
+            <h3 class="tlm__step-h">
+              <button type="button" class="tlm__toggle" aria-expanded="false" aria-controls="tlmR2">
+                <span class="tlm__head-txt">
+                  <span class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📘</span>Учим и упражняваме</span>
+                  <span class="tlm__step-k">Часове + домашни + онлайн практика</span>
+                </span>
+                <span class="tlm__chev" aria-hidden="true">⌄</span>
+              </button>
+            </h3>
+            <div class="tlm__wrap" id="tlmR2">
+              <div class="tlm__reveal">
+                <p class="tlm__step-b">
               Ученикът усвоява материала в малка група, а след това има възможност
               да упражнява наученото и извън часа.
-            </p>
+                </p>
+              </div>
+            </div>
           </div>
         </li>
 
         <li class="tlm__step" style="--i:2">
           <div class="tlm__num"><span>03</span></div>
           <div class="tlm__body">
-            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">⏱️</span>Проверяваме</h3>
-            <p class="tlm__step-k">Пробни изпити с реален таймер</p>
-            <p class="tlm__step-b">
+            <h3 class="tlm__step-h">
+              <button type="button" class="tlm__toggle" aria-expanded="false" aria-controls="tlmR3">
+                <span class="tlm__head-txt">
+                  <span class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">⏱️</span>Проверяваме</span>
+                  <span class="tlm__step-k">Пробни изпити с реален таймер</span>
+                </span>
+                <span class="tlm__chev" aria-hidden="true">⌄</span>
+              </button>
+            </h3>
+            <div class="tlm__wrap" id="tlmR3">
+              <div class="tlm__reveal">
+                <p class="tlm__step-b">
               Редовно проверяваме не само дали задачите са решени правилно, но и
               как ученикът се справя с времето и формата на изпита.
-            </p>
+                </p>
+              </div>
+            </div>
           </div>
         </li>
 
         <li class="tlm__step" style="--i:3">
           <div class="tlm__num"><span>04</span></div>
           <div class="tlm__body">
-            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📊</span>Анализираме</h3>
-            <p class="tlm__step-k">AI анализ + обратна връзка от преподавателя</p>
-            <p class="tlm__step-b">
+            <h3 class="tlm__step-h">
+              <button type="button" class="tlm__toggle" aria-expanded="false" aria-controls="tlmR4">
+                <span class="tlm__head-txt">
+                  <span class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📊</span>Анализираме</span>
+                  <span class="tlm__step-k">AI анализ + обратна връзка от преподавателя</span>
+                </span>
+                <span class="tlm__chev" aria-hidden="true">⌄</span>
+              </button>
+            </h3>
+            <div class="tlm__wrap" id="tlmR4">
+              <div class="tlm__reveal">
+                <p class="tlm__step-b">
               Резултатите се анализират с помощта на AI, а преподавателят разглежда
               представянето и дава професионална обратна връзка. AI подпомага анализа —
               преценката остава на преподавателя.
-            </p>
+                </p>
+              </div>
+            </div>
           </div>
         </li>
 
         <li class="tlm__step" style="--i:4">
           <div class="tlm__num"><span>05</span></div>
           <div class="tlm__body">
-            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">🎯</span>Коригираме</h3>
-            <p class="tlm__step-k">Следващи стъпки според нуждите</p>
-            <p class="tlm__step-b">
+            <h3 class="tlm__step-h">
+              <button type="button" class="tlm__toggle" aria-expanded="false" aria-controls="tlmR5">
+                <span class="tlm__head-txt">
+                  <span class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">🎯</span>Коригираме</span>
+                  <span class="tlm__step-k">Следващи стъпки според нуждите</span>
+                </span>
+                <span class="tlm__chev" aria-hidden="true">⌄</span>
+              </button>
+            </h3>
+            <div class="tlm__wrap" id="tlmR5">
+              <div class="tlm__reveal">
+                <p class="tlm__step-b">
               Откритите пропуски не остават просто като „грешки“. Те се превръщат в
               конкретни теми и задачи, върху които ученикът трябва да работи.
-            </p>
+                </p>
+              </div>
+            </div>
           </div>
         </li>
 
         <li class="tlm__step" style="--i:5">
           <div class="tlm__num"><span>06</span></div>
           <div class="tlm__body">
-            <h3 class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📈</span>Повтаряме и проследяваме</h3>
-            <p class="tlm__step-k">Прогресът се вижда през цялата година</p>
-            <p class="tlm__step-b">
+            <h3 class="tlm__step-h">
+              <button type="button" class="tlm__toggle" aria-expanded="false" aria-controls="tlmR6">
+                <span class="tlm__head-txt">
+                  <span class="tlm__step-t"><span class="tlm__icon" aria-hidden="true">📈</span>Повтаряме и проследяваме</span>
+                  <span class="tlm__step-k">Прогресът се вижда през цялата година</span>
+                </span>
+                <span class="tlm__chev" aria-hidden="true">⌄</span>
+              </button>
+            </h3>
+            <div class="tlm__wrap" id="tlmR6">
+              <div class="tlm__reveal">
+                <p class="tlm__step-b">
               Следващият тест ни показва дали има развитие. Така постепенно изграждаме
               история на представянето на ученика и можем да адаптираме подготовката
               до самото НВО.
-            </p>
+                </p>
+              </div>
+            </div>
           </div>
         </li>
       </ol>
@@ -3671,6 +3839,18 @@
     });
 
 
+
+    /* Tap-to-open cards — the six method steps and the five portal tiles.
+       Same behaviour as the Gen Alpha cards: each opens on its own, the
+       chevron turns over, and aria-expanded carries the state so the CSS
+       needs no extra class. */
+    document.querySelectorAll('.tlm__toggle, .tlap__tile-head').forEach(function (head) {
+      head.addEventListener('click', function () {
+        var card = head.closest('.tlm__step, .tlap__tile');
+        var open = card.classList.toggle('is-open');
+        head.setAttribute('aria-expanded', String(open));
+      });
+    });
 
     /* ── "Как водим ученика до НВО" ─────────────────────────────────
        Two small behaviours, both there to show that the six steps are an
