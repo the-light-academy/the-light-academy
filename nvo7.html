@@ -1570,16 +1570,34 @@
       /* Buttons + hint broken out of .cta-buttons so the hint can sit between
          the entrance-test button and the call button on mobile. */
       .cta-buttons { display: contents; }
-      .cta-buttons a[href="entrance_test.html"] { order: 6; }
-      .cta-buttons a[href^="tel:"] { order: 8; }
+      .cta-buttons a[href="entrance_test.html"] { order: 2; }
+      .cta-buttons a[href^="tel:"] { order: 4; }
       .btn-cta-outline {
         background: transparent;
         border-color: #1B2E52;
         color: #1B2E52;
       }
       .btn-cta-outline:hover { background: rgba(27,46,82,0.06); }
-      .btn-cta-outline::after { content: '\2192'; margin-left: 6px; }
-      .pricing-cta-flow .cta-buttons-hint { order: 7; margin-top: 0; color: var(--light-text); }
+      .btn-cta-outline::after { content: '\2192'; margin-left: auto; opacity: 0.55; }
+      /* Slimmer than the desktop pills: at this width two full-height pills
+         with a line of text between them is most of a screen. */
+      .pricing-cta-flow .btn-cta-outline {
+        width: 100%;
+        max-width: none;
+        justify-content: flex-start;
+        gap: 9px;
+        padding: 11px 16px;
+        font-size: 0.9rem;
+        border-width: 1.5px;
+      }
+      .pricing-cta-flow .btn-cta-outline i { width: 18px; text-align: center; }
+      .pricing-cta-flow .cta-buttons-hint {
+        order: 3;
+        margin: -0.15rem 0 0;
+        font-size: 0.78rem;
+        line-height: 1.45;
+        color: var(--light-text);
+      }
       .cta-section > h2, .cta-section > p,
       .course-info-block > h2, .course-info-block > p {
         display: none;
@@ -1598,18 +1616,50 @@
       }
       .hero-pills { display: none; }
 
-      /* Availability block, right after the registration form. */
+      /* The availability card, the two actions and their hint used to be four
+         loose items spaced 1.75rem apart in the page-wide column, which read
+         as scattered rather than as one offer. They are one panel now, on the
+         same cream ground as the platform section higher up the page, so
+         .cta-left-col stops dissolving here and becomes a real container. */
+      .pricing-cta-flow .cta-left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        order: 5;
+        padding: 1.1rem;
+        border-radius: 20px;
+        /* The platform section's warm-top-left / cool-right wash, pushed a
+           little further: the page is already #FFFDF7, so at panel size the
+           original stops leave nothing to see. */
+        background:
+          radial-gradient(90% 75% at 10% 0%, #FFF1D6 0%, rgba(255,241,214,0) 70%),
+          radial-gradient(85% 70% at 98% 35%, #E7EFFA 0%, rgba(231,239,250,0) 72%),
+          #FFFCF3;
+        border: 1px solid rgba(13,27,54,0.08);
+        box-shadow: 0 14px 34px -20px rgba(9,18,38,0.35);
+      }
+      /* the scroll target belongs at the top of the panel, not after it */
+      .pricing-cta-flow .cta-left-col > #section-zapishete-se { order: 0; }
+
       .cta-left-col .urgency-block {
         display: block;
-        order: 5;
+        order: 1;
         margin: 0;
         max-width: none;
+        padding: 1rem 1rem 0.9rem;
+        border-radius: 16px;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 20px 45px -20px rgba(9, 18, 38, 0.5);
+        box-shadow: 0 14px 30px -18px rgba(9, 18, 38, 0.5);
       }
+      .cta-left-col .urgency-text { font-size: 0.86rem; line-height: 1.5; margin-bottom: 0.8rem; }
+      .cta-left-col .urgency-timer { gap: 10px; }
+      .cta-left-col .urgency-timer-box { padding: 0.5rem 0.5rem; min-width: 0; border-radius: 12px; }
+      .cta-left-col .urgency-timer-num { font-size: 1.5rem; }
+      .cta-left-col .urgency-timer-total { font-size: 0.9rem; }
+      .cta-left-col .urgency-timer-label { font-size: 0.64rem; letter-spacing: 0.04em; }
+
       #section-pri-nas { order: 9; }
-      #section-zapishete-se { order: 5; }
       .schedule-link-btn {
         display: flex;
         align-items: center;
@@ -1617,12 +1667,12 @@
         gap: 10px;
         order: 9;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
-        border: 2px solid rgba(255,255,255,0.25);
+        border: 1.5px solid rgba(255,255,255,0.25);
         border-radius: 50px;
-        padding: 14px 20px;
+        padding: 11px 18px;
         color: #fff;
         font-weight: 800;
-        font-size: 0.95rem;
+        font-size: 0.88rem;
         text-decoration: none;
         transition: transform 0.2s ease, background 0.2s ease;
       }
