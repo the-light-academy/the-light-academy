@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/portal.css" />
 </head>
-<body>
+<body class="tlp-page">
   <div class="top-bar">
     <span><a href="tel:+359885501283">+359 885 501 283</a></span>
     <span><a href="tel:+359885416844">+359 885 416 844</a></span>
@@ -79,33 +79,38 @@
     <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
   </div>
 
-  <main class="tla-p tla-p--narrow">
-    <div class="tla-p__head">
-      <div>
-        <h1 class="tla-p__title">Вход за ученици</h1>
-        <p class="tla-p__sub">Влезте, за да отворите вашите изпити и домашни.</p>
+  <main class="tlp tlp--login">
+    <div class="tlp__blob tlp__blob--a" aria-hidden="true"></div>
+    <div class="tlp__blob tlp__blob--b" aria-hidden="true"></div>
+
+    <div class="tlp__inner tlp__login">
+      <div class="tlp__login-head">
+        <div class="tlp__lock" aria-hidden="true">🔐</div>
+        <p class="tlp__eyebrow">Ученическа платформа</p>
+        <h1 class="tlp__h1">Вход за ученици</h1>
+        <p class="tlp__hello-sub">Влезте, за да отворите вашите изпити и домашни.</p>
       </div>
-    </div>
 
-    <div class="tla-card">
-      <div class="tla-msg tla-msg--error" id="loginError" role="alert" hidden></div>
-      <div class="tla-msg tla-msg--warn" id="setupWarning" hidden></div>
+      <div class="tlp__login-card">
+        <div class="tla-msg tla-msg--error" id="loginError" role="alert" hidden></div>
+        <div class="tla-msg tla-msg--warn" id="setupWarning" hidden></div>
 
-      <form id="loginForm" novalidate>
-        <div class="tla-field">
-          <label for="email">Имейл</label>
-          <input type="email" id="email" name="email" autocomplete="username"
-                 required placeholder="ime@example.com" />
-        </div>
-        <div class="tla-field">
-          <label for="password">Парола</label>
-          <input type="password" id="password" name="password"
-                 autocomplete="current-password" required />
-        </div>
-        <button type="submit" class="tla-btn tla-btn--full" id="loginBtn">Вход</button>
-      </form>
+        <form id="loginForm" novalidate>
+          <div class="tlp__field">
+            <label for="email">Имейл</label>
+            <input type="email" id="email" name="email" autocomplete="username"
+                   required placeholder="ime@example.com" />
+          </div>
+          <div class="tlp__field">
+            <label for="password">Парола</label>
+            <input type="password" id="password" name="password"
+                   autocomplete="current-password" required />
+          </div>
+          <button type="submit" class="tla-btn tla-btn--full" id="loginBtn">Вход</button>
+        </form>
+      </div>
 
-      <p class="tla-muted" style="margin-top:1rem;">
+      <p class="tlp__login-note">
         Нямате достъп? Профилите се създават от преподавателя —
         пишете ни на <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a>.
       </p>

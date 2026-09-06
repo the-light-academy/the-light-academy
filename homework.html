@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/portal.css" />
 </head>
-<body>
+<body class="tlp-page">
   <div class="top-bar">
     <span><a href="tel:+359885501283">+359 885 501 283</a></span>
     <span><a href="tel:+359885416844">+359 885 416 844</a></span>
@@ -79,30 +79,44 @@
     <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
   </div>
 
-  <main class="tla-p">
-    <div class="tla-p__head">
-      <div>
-        <h1 class="tla-p__title" id="hwTitle">Домашно</h1>
-        <p class="tla-p__sub" id="hwSub">Зареждане…</p>
+  <main class="tlp">
+    <div class="tlp__blob tlp__blob--a" aria-hidden="true"></div>
+    <div class="tlp__blob tlp__blob--b" aria-hidden="true"></div>
+
+    <div class="tlp__inner">
+      <div class="tlp__pagehead">
+        <div>
+          <p class="tlp__eyebrow">Домашно</p>
+          <h1 class="tlp__h1" id="hwTitle">Домашно</h1>
+          <p class="tlp__hello-sub" id="hwSub">Зареждане…</p>
+        </div>
+        <div class="tlp__pagehead-actions">
+          <a class="tla-btn tla-btn--ghost tla-btn--sm" href="portal.html">Към профила</a>
+        </div>
       </div>
-      <a class="tla-btn tla-btn--ghost" href="portal.html">Към профила</a>
+
+      <div class="tla-msg tla-msg--error" id="hwError" role="alert" hidden></div>
+      <div class="tla-msg tla-msg--ok" id="hwOk" role="status" hidden></div>
+
+      <form id="hwForm">
+        <div id="hwQuestions"><p class="tlp__note">Зареждане…</p></div>
+
+        <!-- follows you down the page, so "how much is left" is always visible -->
+        <div class="tlp__sticky" id="hwBar" hidden>
+          <div>
+            <span class="tlp__sticky-k" id="hwCount">0 от 0 отговорени</span>
+            <div class="tlp__pips" id="hwPips" style="margin-top:0.45rem;" aria-hidden="true"></div>
+          </div>
+          <button type="submit" class="tla-btn" id="hwSubmit">Предай домашното</button>
+        </div>
+      </form>
+
+      <section id="hwResult" hidden>
+        <h2 class="tlp__h2">Резултат</h2>
+        <div id="hwResultBody"></div>
+        <a class="tla-btn" href="portal.html" style="margin-top:1rem;">Към профила</a>
+      </section>
     </div>
-
-    <div class="tla-msg tla-msg--error" id="hwError" role="alert" hidden></div>
-    <div class="tla-msg tla-msg--ok" id="hwOk" role="status" hidden></div>
-
-    <form id="hwForm">
-      <div id="hwQuestions"><p class="tla-empty">Зареждане…</p></div>
-      <button type="submit" class="tla-btn" id="hwSubmit" style="margin-top:1.25rem;" disabled>
-        Предай домашното
-      </button>
-    </form>
-
-    <section class="tla-card" id="hwResult" hidden>
-      <h2 class="tla-card__title">Резултат</h2>
-      <div id="hwResultBody"></div>
-      <a class="tla-btn" href="portal.html" style="margin-top:1rem;">Към профила</a>
-    </section>
   </main>
 
   <footer>
@@ -184,43 +198,69 @@
         var b = document.getElementById('hwError');
         b.textContent = msg; b.hidden = false;
         document.getElementById('hwQuestions').innerHTML = '';
+        document.getElementById('hwBar').hidden = true;
       }
 
       function slug() {
         return new URLSearchParams(location.search).get('slug') || '';
       }
 
+      /* One card per question, numbered the way the paper is numbered. */
       function render() {
         var wrap = document.getElementById('hwQuestions');
         wrap.innerHTML = questions.map(function (q, i) {
-          var head = '<div class="tla-q__prompt">' +
-            esc((q.id != null ? q.id : (i + 1)) + '. ' + (q.text || q.prompt || '')) +
-            ' <span class="tla-muted">(' + esc(q.points != null ? q.points : 1) + ' т.)</span></div>';
+          var n = (q.id != null ? q.id : (i + 1));
+          var head = '<div class="tlp__q-head">' +
+            '<span class="tlp__q-n">' + esc(n) + '</span>' +
+            '<span class="tlp__q-prompt">' + esc(q.text || q.prompt || '') + '</span>' +
+            '<span class="tlp__q-pts">' + esc(q.points != null ? q.points : 1) + ' т.</span>' +
+          '</div>';
 
           if (q.kind === 'mc' && Array.isArray(q.options)) {
             var opts = q.options.map(function (opt, oi) {
-              return '<label class="tla-opt">' +
+              return '<label class="tlp__opt">' +
                 '<input type="radio" name="q' + i + '" value="' + oi + '" />' +
                 '<span>' + esc(opt) + '</span></label>';
             }).join('');
-            return '<div class="tla-q">' + head + '<div class="tla-q__opts">' + opts + '</div></div>';
+            return '<div class="tlp__q">' + head +
+              '<div class="tlp__q-body"><div class="tlp__opts">' + opts + '</div></div></div>';
           }
-          return '<div class="tla-q">' + head +
-            '<div class="tla-field" style="margin:0;">' +
+          return '<div class="tlp__q">' + head +
+            '<div class="tlp__q-body tlp__field" style="margin:0;">' +
               '<textarea rows="3" data-free="' + i + '" placeholder="Вашият отговор"></textarea>' +
             '</div></div>';
         }).join('');
 
         wrap.addEventListener('change', function (e) {
           var r = e.target.closest('input[type=radio]');
-          if (r) answers[r.name.slice(1)] = Number(r.value);
+          if (r) { answers[r.name.slice(1)] = Number(r.value); progress(); }
         });
         wrap.addEventListener('input', function (e) {
           var t = e.target.closest('textarea[data-free]');
-          if (t) answers[t.getAttribute('data-free')] = t.value;
+          if (t) { answers[t.getAttribute('data-free')] = t.value; progress(); }
         });
 
-        document.getElementById('hwSubmit').disabled = false;
+        document.getElementById('hwBar').hidden = false;
+        progress();
+      }
+
+      /* The pips are the same device as on the marketing mock-up: a dot per
+         question, filled once it has an answer, so the shape of what is
+         left is visible without scrolling back up. */
+      function progress() {
+        var done = 0, firstOpen = -1;
+        var marks = questions.map(function (q, i) {
+          var v = answers[String(i)];
+          var has = (typeof v === 'string') ? v.trim() !== '' : v != null;
+          if (has) done++;
+          else if (firstOpen < 0) firstOpen = i;
+          return has;
+        });
+        document.getElementById('hwPips').innerHTML = marks.map(function (has, i) {
+          return '<i data-s="' + (has ? 'done' : (i === firstOpen ? 'now' : '')) + '"></i>';
+        }).join('');
+        document.getElementById('hwCount').textContent =
+          done + ' от ' + questions.length + ' отговорени';
       }
 
       function normalise(v) {
@@ -311,13 +351,23 @@
 
         var pct = TLA.percent(g.autoScore, g.autoMax);
         document.getElementById('hwResultBody').innerHTML =
-          '<p style="font-size:1.3rem;font-weight:800;">' +
-            esc(g.autoScore + ' / ' + g.autoMax) +
-            (pct != null ? ' <span class="tla-muted">(' + pct + '%)</span>' : '') + '</p>' +
-          (g.manualMax
-            ? '<p class="tla-muted" style="margin-top:0.5rem;">Още ' + esc(g.manualMax) +
-              ' т. се оценяват отделно. ' + esc(aiText) + '</p>'
-            : '');
+          '<div class="tlp__card">' +
+            '<div class="tlp__card-row">' +
+              '<p class="tlp__card-t">Проверено автоматично</p>' +
+              (pct != null ? '<span class="tlp__pct">' + pct + '%</span>' : '') +
+            '</div>' +
+            '<p class="tlp__card-m">' + esc(g.autoScore + ' / ' + g.autoMax) + ' т.</p>' +
+            (pct != null
+              ? '<div class="tlp__bar" aria-hidden="true"><span style="width:' + pct + '%"></span></div>'
+              : '') +
+            (g.manualMax
+              ? '<div class="tlp__card-foot">' +
+                  '<span class="tlp__chip tlp__chip--ai">AI оценява…</span>' +
+                  '<span class="tlp__card-m" style="margin:0;">Още ' + esc(g.manualMax) +
+                  ' т. се оценяват отделно.</span></div>' +
+                '<p class="tlp__note">' + esc(aiText) + '</p>'
+              : '') +
+          '</div>';
         document.getElementById('hwResult').hidden = false;
         document.getElementById('hwResult').scrollIntoView({ behavior: 'smooth' });
       });

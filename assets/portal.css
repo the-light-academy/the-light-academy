@@ -191,3 +191,386 @@ footer a { color: var(--sun); text-decoration: none; }
 /* in-card links should match the site, not the browser default blue */
 .tla-card a, .tla-item a:not(.tla-btn) { color: var(--sun-dark); font-weight: 700; }
 .tla-card a:hover { text-decoration: underline; }
+
+/* =====================================================================
+   .tlp — the student platform
+   ---------------------------------------------------------------------
+   The marketing page (nvo7.html, section "Ученическа web платформа")
+   shows a mock-up of this screen: a greeting, a progress ring, four
+   figures and five tabs. A parent reads that page and the student then
+   logs in here, so this layer exists to make the two the same product.
+
+   The palette is the site's: cream ground, white cards, navy and amber
+   as the only accents. The tokens below are deliberately the same
+   values as the mock's .tlap block in nvo7.html.
+
+   Why a second namespace rather than sharing .tlap: the mock is a
+   static illustration living inside a marketing page. If the two shared
+   one stylesheet, editing the advert could break the screen a student
+   depends on. The cost is that the two must be kept in step by hand --
+   there is a note in nvo7.html saying so.
+   ===================================================================== */
+
+.tlp {
+  --tlp-cream: #FFFDF7;
+  --tlp-surface: #FFFFFF;
+  --tlp-navy: #0D1B36;
+  --tlp-ink: #16233F;
+  --tlp-ink-soft: #55658A;       /* 5.9:1 on white */
+  --tlp-accent: #F7AD19;
+  --tlp-accent-deep: #925A08;    /* text amber: 5.7:1 on white, 5.6 on cream, 5.2 on the wash */
+  --tlp-accent-wash: #FFF4DC;
+  --tlp-ctx: #7E8DAA;            /* context bars, never text */
+  --tlp-line: rgba(13,27,54,0.10);
+  --tlp-good: #16603A;
+  --tlp-good-wash: #E9F7EF;
+  --tlp-bad: #93231F;
+  --tlp-bad-wash: #FBEAE9;
+  --tlp-r: 22px;
+  --tlp-r-sm: 14px;
+
+  position: relative;
+  overflow: hidden;               /* keeps the blobs from widening the page */
+  padding: clamp(1.75rem, 4vw, 3rem) 1.25rem clamp(3rem, 6vw, 4.5rem);
+  color: var(--tlp-ink);
+}
+body.tlp-page { background: #FFFDF7; }
+
+/* Soft ground. Radial gradients, not blurred discs: a blur() layer is a
+   full-size offscreen pass on every frame, which is what dropped the
+   marketing page from 60fps to 22 before it was rewritten this way. */
+.tlp__blob { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+.tlp__blob--a { width: 340px; height: 340px; top: 2%;  left: -110px;
+  background: radial-gradient(closest-side, rgba(247,173,25,0.22), rgba(247,173,25,0.07) 55%, transparent 78%); }
+.tlp__blob--b { width: 420px; height: 420px; top: 46%; right: -150px;
+  background: radial-gradient(closest-side, rgba(27,46,82,0.14), rgba(27,46,82,0.05) 55%, transparent 78%); }
+
+.tlp__inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+
+/* ── page head ── */
+.tlp__pagehead {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+}
+.tlp__eyebrow {
+  display: inline-block; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--tlp-accent-deep); background: var(--tlp-accent-wash);
+  padding: 0.25rem 0.7rem; border-radius: 999px; margin-bottom: 0.6rem;
+}
+.tlp__h1 {
+  font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.15;
+  color: var(--tlp-navy); margin: 0;
+}
+.tlp__pagehead-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* ── greeting band + ring ── */
+.tlp__band {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2rem); flex-wrap: wrap;
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r); padding: clamp(1.15rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 2rem);
+  box-shadow: 0 18px 44px rgba(13,27,54,0.06);
+}
+.tlp__hello { font-size: clamp(1.2rem, 2.6vw, 1.6rem); font-weight: 800; color: var(--tlp-navy); margin: 0; }
+.tlp__hello-sub { font-size: 0.95rem; color: var(--tlp-ink-soft); margin: 0.25rem 0 0; }
+
+.tlp__ring { position: relative; width: 104px; height: 104px; flex-shrink: 0; }
+.tlp__ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.tlp__ring-track { fill: none; stroke: rgba(13,27,54,0.09); stroke-width: 9; }
+.tlp__ring-fill {
+  fill: none; stroke: var(--tlp-accent); stroke-width: 9; stroke-linecap: round;
+  stroke-dasharray: 264; stroke-dashoffset: 264;
+  transition: stroke-dashoffset 1.1s cubic-bezier(0.22,0.61,0.36,1);
+}
+.tlp__ring-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem; font-weight: 800; color: var(--tlp-navy); font-variant-numeric: tabular-nums;
+}
+.tlp__ring-cap {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--tlp-ink-soft); text-align: center; margin: 0.4rem 0 0;
+}
+
+/* ── the four figures ── */
+.tlp__stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem; margin-top: 0.9rem;
+}
+.tlp__stat {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 0.9rem 1rem;
+}
+.tlp__stat-k {
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--tlp-ink-soft); margin: 0 0 0.35rem;
+}
+.tlp__stat-v {
+  font-size: clamp(1.15rem, 2.4vw, 1.4rem); font-weight: 800;
+  color: var(--tlp-navy); margin: 0; font-variant-numeric: tabular-nums;
+}
+.tlp__stat-n { font-size: 0.8rem; color: var(--tlp-ink-soft); margin: 0.2rem 0 0; }
+.tlp__up { color: var(--tlp-good); }
+.tlp__down { color: var(--tlp-bad); }
+
+/* ── tabs ── */
+.tlp__tabs {
+  display: flex; gap: 0.5rem; margin: clamp(1.25rem, 3vw, 1.75rem) 0 1rem;
+  overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+}
+.tlp__tabs::-webkit-scrollbar { display: none; }
+.tlp__tab {
+  flex-shrink: 0; font: inherit; font-size: 0.9rem; font-weight: 800;
+  padding: 0.5rem 1rem; color: var(--tlp-ink-soft); background: transparent;
+  border: 1px solid var(--tlp-line); border-radius: 999px; cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.tlp__tab:hover { background: rgba(13,27,54,0.04); color: var(--tlp-ink); }
+.tlp__tab[aria-selected="true"] {
+  background: var(--tlp-navy); border-color: var(--tlp-navy); color: #fff;
+}
+.tlp__tab:focus-visible { outline: 2px solid var(--tlp-accent-deep); outline-offset: 2px; }
+.tlp__tab-n { font-variant-numeric: tabular-nums; opacity: 0.75; margin-left: 0.3rem; }
+
+.tlp__panel[hidden] { display: none; }
+.tlp__panel { animation: tlpIn 0.26s cubic-bezier(0.22,0.61,0.36,1) both; }
+@keyframes tlpIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ── cards ── */
+.tlp__card {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 1.1rem 1.2rem;
+}
+.tlp__card + .tlp__card { margin-top: 0.75rem; }
+.tlp__card-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.75rem; flex-wrap: wrap;
+}
+.tlp__card-t { font-size: 1rem; font-weight: 800; color: var(--tlp-navy); margin: 0; }
+.tlp__card-m { font-size: 0.88rem; color: var(--tlp-ink-soft); margin: 0.3rem 0 0; }
+.tlp__pct { font-size: 1.35rem; font-weight: 800; color: var(--tlp-accent-deep); font-variant-numeric: tabular-nums; }
+.tlp__bar { height: 8px; border-radius: 999px; background: rgba(13,27,54,0.08); margin-top: 0.75rem; overflow: hidden; }
+.tlp__bar > span { display: block; height: 100%; border-radius: 999px; background: var(--tlp-accent); }
+.tlp__card-foot { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.85rem; }
+
+.tlp__chip {
+  display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+  padding: 0.24rem 0.65rem; border-radius: 999px;
+  background: var(--tlp-accent-wash); color: var(--tlp-accent-deep);
+}
+.tlp__chip--next { background: rgba(13,27,54,0.06); color: var(--tlp-ink-soft); }
+.tlp__chip--done { background: var(--tlp-good-wash); color: var(--tlp-good); }
+.tlp__chip--ai   { background: #EDE7FA; color: #422873; }
+.tlp__chip--late { background: var(--tlp-bad-wash); color: var(--tlp-bad); }
+
+.tlp__note { font-size: 0.88rem; line-height: 1.6; color: var(--tlp-ink-soft); margin: 0.9rem 0 0; }
+
+/* ── results: the chart the mock promises ── */
+.tlp__results { display: grid; grid-template-columns: 1fr 200px; gap: clamp(1rem, 3vw, 2rem); align-items: center; }
+.tlp__plot {
+  display: flex; align-items: flex-end; gap: clamp(0.75rem, 4vw, 2rem);
+  height: 160px; border-bottom: 1px solid var(--tlp-line); margin-top: 0.75rem;
+}
+.tlp__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end; height: 100%; }
+.tlp__col-v { font-size: 0.85rem; font-weight: 800; color: var(--tlp-ink); margin-bottom: 0.35rem; font-variant-numeric: tabular-nums; }
+.tlp__col-b {
+  width: 100%; max-width: 46px; border-radius: 8px 8px 0 0;
+  background: var(--tlp-ctx); height: 0; transition: height 0.9s cubic-bezier(0.22,0.61,0.36,1);
+}
+.tlp__col--now .tlp__col-b { background: var(--tlp-accent-deep); }
+.tlp__keys { display: flex; gap: clamp(0.75rem, 4vw, 2rem); margin-top: 0.5rem; }
+.tlp__keys > span {
+  flex: 1 1 0; min-width: 0; text-align: center;
+  font-size: 0.72rem; font-weight: 700; color: var(--tlp-ink-soft);
+}
+.tlp__keys > span[data-now] { color: var(--tlp-accent-deep); }
+.tlp__readout { border-left: 1px solid var(--tlp-line); padding-left: clamp(1rem, 2vw, 1.5rem); }
+.tlp__readout-v { font-size: 2rem; font-weight: 800; color: var(--tlp-good); line-height: 1; margin: 0; }
+.tlp__readout-v span { font-size: 1rem; }
+.tlp__readout-k { font-size: 0.85rem; line-height: 1.5; color: var(--tlp-ink-soft); margin: 0.45rem 0 0; }
+
+/* one attempt in the list under the chart */
+.tlp__res {
+  display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 0.85rem 1rem;
+}
+.tlp__res + .tlp__res { margin-top: 0.6rem; }
+.tlp__res-main { flex: 1 1 220px; min-width: 0; }
+.tlp__res-t { font-weight: 800; color: var(--tlp-navy); }
+.tlp__res-m { font-size: 0.82rem; color: var(--tlp-ink-soft); margin-top: 0.15rem; }
+.tlp__res-score { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--tlp-navy); white-space: nowrap; }
+
+/* ── teacher feedback ── */
+.tlp__quote {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-left: 3px solid var(--tlp-accent); border-radius: var(--tlp-r-sm);
+  padding: 1rem 1.2rem; font-size: 0.98rem; line-height: 1.65; color: var(--tlp-ink);
+  white-space: pre-wrap;
+}
+.tlp__quote + .tlp__quote { margin-top: 0.75rem; }
+.tlp__quote-who { display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--tlp-ink-soft); margin-bottom: 0.5rem; white-space: normal; }
+
+/* ── AI analysis rows ── */
+.tlp__ai { display: grid; gap: 0.55rem; }
+.tlp__ai-row {
+  display: flex; gap: 0.7rem; align-items: flex-start;
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 0.8rem 1rem;
+}
+.tlp__ai-tag {
+  flex-shrink: 0; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.04em;
+  padding: 0.22rem 0.6rem; border-radius: 999px; margin-top: 0.1rem;
+}
+.tlp__ai-tag--good { background: var(--tlp-good-wash); color: var(--tlp-good); }
+.tlp__ai-tag--work { background: var(--tlp-accent-wash); color: var(--tlp-accent-deep); }
+.tlp__ai-tag--err  { background: var(--tlp-bad-wash); color: var(--tlp-bad); }
+.tlp__ai-txt { font-size: 0.92rem; line-height: 1.55; color: var(--tlp-ink); }
+.tlp__ai-txt b { color: var(--tlp-navy); }
+.tlp__disclaim {
+  margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid var(--tlp-line);
+  font-size: 0.82rem; line-height: 1.55; color: var(--tlp-ink-soft);
+}
+
+/* ── empty states ──
+   A student on day one has nothing. Four dashes in a table reads like a
+   fault; this reads like a beginning. */
+.tlp__empty {
+  text-align: center; background: var(--tlp-surface); border: 1px dashed rgba(13,27,54,0.18);
+  border-radius: var(--tlp-r-sm); padding: clamp(1.5rem, 4vw, 2.25rem) 1.25rem;
+}
+.tlp__empty-i { font-size: 1.8rem; line-height: 1; }
+.tlp__empty-t { font-size: 1rem; font-weight: 800; color: var(--tlp-navy); margin: 0.6rem 0 0.3rem; }
+.tlp__empty-p { font-size: 0.9rem; line-height: 1.6; color: var(--tlp-ink-soft); margin: 0 auto; max-width: 42ch; }
+
+/* ── question cards (homework, and the review panel) ── */
+.tlp__q {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 1.1rem 1.2rem;
+}
+.tlp__q + .tlp__q { margin-top: 0.75rem; }
+.tlp__q--right { border-left: 4px solid var(--tlp-good); }
+.tlp__q--wrong { border-left: 4px solid var(--tlp-bad); }
+.tlp__q-head { display: flex; gap: 0.6rem; align-items: baseline; }
+.tlp__q-n {
+  flex-shrink: 0; min-width: 26px; height: 26px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px; background: var(--tlp-accent-wash); color: var(--tlp-accent-deep);
+  font-size: 0.8rem; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.tlp__q-prompt { font-weight: 700; color: var(--tlp-ink); }
+.tlp__q-pts { font-size: 0.8rem; font-weight: 700; color: var(--tlp-ink-soft); white-space: nowrap; }
+.tlp__q-body { margin-top: 0.8rem; }
+.tlp__q-line { font-size: 0.9rem; color: var(--tlp-ink-soft); margin-top: 0.3rem; white-space: pre-wrap; }
+.tlp__q-line b { color: var(--tlp-ink); }
+
+.tlp__opts { display: grid; gap: 0.45rem; }
+.tlp__opt {
+  display: flex; gap: 0.6rem; align-items: flex-start;
+  padding: 0.6rem 0.75rem; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--tlp-line); background: #fff;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.tlp__opt:hover { background: var(--tlp-accent-wash); border-color: rgba(192,122,10,0.3); }
+.tlp__opt input { margin-top: 0.25rem; accent-color: var(--tlp-accent-deep); }
+.tlp__opt:focus-within { border-color: var(--tlp-accent-deep); }
+
+/* progress pips, as on the mock's exam tab */
+.tlp__pips { display: flex; flex-wrap: wrap; gap: 4px; }
+.tlp__pips i {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: rgba(13,27,54,0.14);
+}
+.tlp__pips i[data-s="done"] { background: var(--tlp-ctx); }
+.tlp__pips i[data-s="now"]  { background: var(--tlp-accent); box-shadow: 0 0 0 3px rgba(247,173,25,0.25); }
+
+/* the bar that follows you down a homework */
+.tlp__sticky {
+  position: sticky; bottom: 0; z-index: 5; margin-top: 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  background: rgba(255,255,255,0.86); backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid var(--tlp-line); border-radius: var(--tlp-r-sm);
+  padding: 0.85rem 1.1rem; box-shadow: 0 -6px 24px rgba(13,27,54,0.07);
+}
+.tlp__sticky-k { font-size: 0.85rem; font-weight: 800; color: var(--tlp-ink-soft); }
+
+/* ── section heading inside a panel ── */
+.tlp__h2 {
+  font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: clamp(1.15rem, 2.6vw, 1.4rem); color: var(--tlp-navy);
+  margin: 1.5rem 0 0.75rem;
+}
+.tlp__h2:first-child { margin-top: 0; }
+
+/* ── responsive ── */
+@media (max-width: 880px) {
+  .tlp__stats { grid-template-columns: repeat(2, 1fr); }
+  .tlp__results { grid-template-columns: 1fr; }
+  .tlp__readout { border-left: none; border-top: 1px solid var(--tlp-line); padding: 0.9rem 0 0; }
+}
+@media (max-width: 560px) {
+  .tlp__band { justify-content: center; text-align: center; }
+  .tlp__plot { height: 130px; }
+  .tlp__keys > span { font-size: 0.66rem; }
+  .tlp__res-score { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tlp__panel { animation: none; }
+  .tlp__ring-fill, .tlp__col-b, .tlp__tab, .tlp__opt { transition: none; }
+}
+
+/* ── sign-in ──
+   Same ground and card as the portal, so signing in reads as the front
+   door of the platform rather than a separate utility page. */
+.tlp--login { display: flex; align-items: center; min-height: 68vh; }
+.tlp__login { width: 100%; max-width: 440px; margin: 0 auto; }
+.tlp__login-head { text-align: center; margin-bottom: 1.25rem; }
+.tlp__lock {
+  width: 52px; height: 52px; margin: 0 auto 0.9rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+  background: var(--tlp-navy); box-shadow: 0 10px 24px rgba(13,27,54,0.22);
+}
+.tlp__login-card {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r); padding: clamp(1.5rem, 4vw, 2rem);
+  box-shadow: 0 18px 44px rgba(13,27,54,0.07);
+}
+.tlp__field { margin-bottom: 1rem; }
+.tlp__field label {
+  display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--tlp-ink-soft); margin-bottom: 0.4rem;
+}
+.tlp__field input, .tlp__field textarea {
+  width: 100%; font: inherit; color: var(--tlp-ink); padding: 0.75rem 0.95rem;
+  border: 1px solid rgba(13,27,54,0.16); border-radius: 12px; background: #fff;
+}
+.tlp__field input:focus, .tlp__field textarea:focus {
+  outline: 3px solid rgba(13,27,54,0.16); outline-offset: 1px; border-color: var(--tlp-navy);
+}
+.tlp__login-note { text-align: center; font-size: 0.86rem; line-height: 1.6; color: var(--tlp-ink-soft); margin-top: 1.1rem; }
+
+/* Navy is the platform's second voice: quieter than amber, still a button. */
+.tla-btn--navy { background: var(--tlp-navy, #0D1B36); color: #fff; }
+.tla-btn--navy:hover { box-shadow: 0 8px 20px rgba(13,27,54,0.28); }
+
+/* A button or link carrying `hidden` must actually disappear: .tla-btn sets
+   display:inline-flex, which outranks the browser's own [hidden] rule. */
+[hidden] { display: none !important; }
+
+/* Links inside the platform take the amber that reads on white, never the
+   browser's default blue. */
+.tlp a:not(.tla-btn) { color: var(--tlp-accent-deep); font-weight: 700; }
+.tlp a:not(.tla-btn):hover { text-decoration: underline; }
+
+/* A chosen answer has to stay marked after the pointer leaves it. */
+.tlp__opt:has(input:checked) {
+  background: var(--tlp-accent-wash);
+  border-color: var(--tlp-accent-deep);
+  font-weight: 700;
+}

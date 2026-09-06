@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/portal.css" />
 </head>
-<body>
+<body class="tlp-page">
   <div class="top-bar">
     <span><a href="tel:+359885501283">+359 885 501 283</a></span>
     <span><a href="tel:+359885416844">+359 885 416 844</a></span>
@@ -79,48 +79,104 @@
     <a href="nvo7.html" class="cta-nvo">📐 НВО 7 клас</a>
   </div>
 
-  <main class="tla-p">
-    <div class="tla-p__head">
-      <div>
-        <h1 class="tla-p__title">Моят профил</h1>
-        <p class="tla-p__sub" id="whoami">Зареждане…</p>
+  <main class="tlp">
+    <div class="tlp__blob tlp__blob--a" aria-hidden="true"></div>
+    <div class="tlp__blob tlp__blob--b" aria-hidden="true"></div>
+
+    <div class="tlp__inner">
+      <div class="tlp__pagehead">
+        <div>
+          <p class="tlp__eyebrow">Ученическа платформа</p>
+          <h1 class="tlp__h1">Моят профил</h1>
+        </div>
+        <div class="tlp__pagehead-actions">
+          <a class="tla-btn tla-btn--navy tla-btn--sm" id="teacherLink" href="teacher.html" hidden>Табло на преподавателя</a>
+          <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="signOutBtn">Изход</button>
+        </div>
       </div>
-      <button type="button" class="tla-btn tla-btn--ghost" id="signOutBtn">Изход</button>
+
+      <div class="tla-msg tla-msg--error" id="portalError" role="alert" hidden></div>
+
+      <!-- greeting + progress ring -->
+      <section class="tlp__band">
+        <div>
+          <p class="tlp__hello" id="hello">Здравей 👋</p>
+          <p class="tlp__hello-sub" id="helloSub">Зареждане…</p>
+        </div>
+        <div>
+          <div class="tlp__ring" id="ring" role="img" aria-label="Прогрес">
+            <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+              <circle class="tlp__ring-track" cx="50" cy="50" r="42"></circle>
+              <circle class="tlp__ring-fill" id="ringFill" cx="50" cy="50" r="42"></circle>
+            </svg>
+            <span class="tlp__ring-num" id="ringNum" aria-hidden="true">—</span>
+          </div>
+          <p class="tlp__ring-cap">Завършени задания</p>
+        </div>
+      </section>
+
+      <!-- the four figures -->
+      <div class="tlp__stats">
+        <div class="tlp__stat">
+          <p class="tlp__stat-k">Домашни</p>
+          <p class="tlp__stat-v" id="statHw">—</p>
+          <p class="tlp__stat-n" id="statHwN">изпълнени</p>
+        </div>
+        <div class="tlp__stat">
+          <p class="tlp__stat-k">Пробни изпити</p>
+          <p class="tlp__stat-v" id="statEx">—</p>
+          <p class="tlp__stat-n" id="statExN">завършени</p>
+        </div>
+        <div class="tlp__stat">
+          <p class="tlp__stat-k">Среден резултат</p>
+          <p class="tlp__stat-v" id="statAvg">—</p>
+          <p class="tlp__stat-n" id="statAvgN">от оценените</p>
+        </div>
+        <div class="tlp__stat">
+          <p class="tlp__stat-k">Развитие</p>
+          <p class="tlp__stat-v" id="statTrend">—</p>
+          <p class="tlp__stat-n" id="statTrendN">между първия и последния</p>
+        </div>
+      </div>
+
+      <!-- tabs -->
+      <div class="tlp__tabs" role="tablist" aria-label="Раздели в профила">
+        <button class="tlp__tab" role="tab" type="button" id="tab-hw"   aria-controls="panel-hw"   aria-selected="true">Домашни</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-ex"   aria-controls="panel-ex"   aria-selected="false" tabindex="-1">Пробни изпити</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-res"  aria-controls="panel-res"  aria-selected="false" tabindex="-1">Резултати</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-fb"   aria-controls="panel-fb"   aria-selected="false" tabindex="-1">Обратна връзка</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-ai"   aria-controls="panel-ai"   aria-selected="false" tabindex="-1">AI анализ</button>
+      </div>
+
+      <div class="tlp__panel" role="tabpanel" id="panel-hw" aria-labelledby="tab-hw" tabindex="0">
+        <div id="hwList"><p class="tlp__note">Зареждане…</p></div>
+      </div>
+
+      <div class="tlp__panel" role="tabpanel" id="panel-ex" aria-labelledby="tab-ex" tabindex="0" hidden>
+        <div id="exList"></div>
+      </div>
+
+      <div class="tlp__panel" role="tabpanel" id="panel-res" aria-labelledby="tab-res" tabindex="0" hidden>
+        <div id="resBody"></div>
+      </div>
+
+      <div class="tlp__panel" role="tabpanel" id="panel-fb" aria-labelledby="tab-fb" tabindex="0" hidden>
+        <div id="fbBody"></div>
+      </div>
+
+      <div class="tlp__panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" tabindex="0" hidden>
+        <div id="aiBody"></div>
+      </div>
+
+      <!-- one attempt, opened from Резултати -->
+      <section id="reviewCard" hidden>
+        <h2 class="tlp__h2" id="reviewTitle">Преглед</h2>
+        <div id="reviewBody"></div>
+        <button type="button" class="tla-btn tla-btn--ghost" id="closeReview" style="margin-top:1rem;">
+          Затвори прегледа
+        </button>
+      </section>
     </div>
-
-    <div class="tla-msg tla-msg--error" id="portalError" role="alert" hidden></div>
-
-    <section class="tla-card">
-      <h2 class="tla-card__title">Изпити и домашни</h2>
-      <ul class="tla-list" id="assignmentList">
-        <li class="tla-empty">Зареждане…</li>
-      </ul>
-    </section>
-
-    <section class="tla-card">
-      <h2 class="tla-card__title">Моите резултати</h2>
-      <div class="tla-tablewrap">
-        <table class="tla-table" id="resultsTable">
-          <thead>
-            <tr><th>Задание</th><th>Предадено</th><th>Автоматично</th><th>Свободен текст</th><th>Общо</th><th>Статус</th><th></th></tr>
-          </thead>
-          <tbody><tr><td colspan="7" class="tla-empty">Зареждане…</td></tr></tbody>
-        </table>
-      </div>
-      <p class="tla-muted" style="margin-top:0.75rem;">
-        Задачите със свободен отговор се оценяват от AI. Точките се появяват
-        тук, щом оценката е готова. Преподавателят ги преглежда след това и
-        може да ги промени — тогава статусът става „Оценено“.
-      </p>
-    </section>
-
-    <section class="tla-card" id="reviewCard" hidden>
-      <h2 class="tla-card__title" id="reviewTitle">Преглед</h2>
-      <div id="reviewBody"></div>
-      <button type="button" class="tla-btn tla-btn--ghost" id="closeReview" style="margin-top:1rem;">
-        Затвори прегледа
-      </button>
-    </section>
   </main>
 
   <footer>
@@ -172,93 +228,427 @@
   <script src="assets/supabase-config.js"></script>
   <script src="assets/auth.js"></script>
   <script>
+    /* The student's screen. Everything here is read-only: the numbers are
+       derived in the browser from the two queries below, and nothing is
+       written back. What a student may read at all is decided by Row Level
+       Security in the database, not by this file.
+
+       The layout follows the mock-up on nvo7.html ("Ученическа web
+       платформа") on purpose — a parent sees that screen before their
+       child ever logs in, so the two have to be the same product. Where
+       the mock shows a figure we have no data for, this page shows one we
+       do rather than inventing it. */
     (function () {
       var esc = TLA.escapeHtml;
-      var assignmentsById = {};
+      var byId = {};                 /* assignment id -> assignment */
+      var attempts = [];
+      var aiLoaded = false;
 
-      document.getElementById('signOutBtn')
-        .addEventListener('click', function () { TLA.signOut(); });
+      function $(id) { return document.getElementById(id); }
+      function fail(msg) { var b = $('portalError'); b.textContent = msg; b.hidden = false; }
 
-      function fail(msg) {
-        var box = document.getElementById('portalError');
-        box.textContent = msg;
-        box.hidden = false;
+      /* ---- shared reading of an attempt ------------------------------ */
+
+      function pctOf(t) {
+        var a = byId[t.assignment_id];
+        return TLA.percent(t.total_score, a && a.max_points);
       }
 
-      /* Three states a student can be in after handing something in:
-           - the teacher has signed it off        -> Оценено
-           - the AI marks are in, teacher pending -> Оценка от AI
-           - free-text answers still unmarked     -> AI оценява
-         The last one is why an attempt can show a total that is not final. */
-      function statusBadge(t) {
-        if (t.status === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
+      /* An attempt whose free-text half is still unmarked carries a total
+         that is not yet the truth. It shows in the list, but it is kept
+         out of every average — otherwise the student's own progress would
+         appear to dip each time they hand something in. */
+      function settled(t) {
+        return t.total_score != null && !(t.manual_max != null && t.manual_score == null);
+      }
+
+      function shortDate(iso) {
+        try {
+          var d = new Date(iso);
+          return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2);
+        } catch (e) { return ''; }
+      }
+
+      function statusChip(t) {
+        if (t.status === 'graded') return '<span class="tlp__chip tlp__chip--done">Оценено</span>';
         if (t.status === 'submitted') {
-          if (t.ai_graded_at) return '<span class="tla-badge tla-badge--ai">Оценка от AI</span>';
+          if (t.ai_graded_at) return '<span class="tlp__chip tlp__chip--ai">Оценка от AI</span>';
           if (t.manual_max != null && t.manual_score == null) {
-            return '<span class="tla-badge tla-badge--ai">AI оценява…</span>';
+            return '<span class="tlp__chip tlp__chip--ai">AI оценява…</span>';
           }
-          return '<span class="tla-badge tla-badge--submitted">Предадено</span>';
+          return '<span class="tlp__chip tlp__chip--done">Завършено ✓</span>';
         }
-        return '<span class="tla-badge tla-badge--off">Незавършено</span>';
+        return '<span class="tlp__chip tlp__chip--next">Незавършено</span>';
       }
 
-      /* Read-only version of the teacher's panel: the student sees what they
-         answered, what was right, how many points the teacher gave each
-         free-text sub-question, and any note left for them. */
+      function empty(icon, title, text) {
+        return '<div class="tlp__empty">' +
+          '<div class="tlp__empty-i" aria-hidden="true">' + icon + '</div>' +
+          '<p class="tlp__empty-t">' + esc(title) + '</p>' +
+          '<p class="tlp__empty-p">' + esc(text) + '</p>' +
+        '</div>';
+      }
+
+      /* ---- tabs ------------------------------------------------------ */
+
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.tlp__tab'));
+
+      function selectTab(tab) {
+        tabs.forEach(function (t) {
+          var on = (t === tab);
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+          $(t.getAttribute('aria-controls')).hidden = !on;
+        });
+        if (tab.id === 'tab-ai') loadAi();
+      }
+
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () { selectTab(tab); });
+        tab.addEventListener('keydown', function (e) {
+          var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if (!d) return;
+          e.preventDefault();
+          var next = tabs[(i + d + tabs.length) % tabs.length];
+          next.focus();
+          selectTab(next);
+        });
+      });
+
+      /* ---- the four figures ------------------------------------------ */
+
+      function renderHeader(profile, session) {
+        var name = (profile && profile.full_name) || (session && session.user.email) || '';
+        var first = String(name).trim().split(/\s+/)[0] || name;
+        $('hello').textContent = first ? ('Здравей, ' + first + ' 👋') : 'Здравей 👋';
+      }
+
+      function renderStats(published) {
+        var doneIds = {};
+        attempts.forEach(function (t) { doneIds[t.assignment_id] = true; });
+
+        var hw = published.filter(function (a) { return a.kind === 'homework'; });
+        var ex = published.filter(function (a) { return a.kind === 'exam'; });
+        var hwDone = hw.filter(function (a) { return doneIds[a.id]; }).length;
+        var exDone = ex.filter(function (a) { return doneIds[a.id]; }).length;
+        var allDone = published.filter(function (a) { return doneIds[a.id]; }).length;
+
+        /* the ring: how much of what is open to you is behind you */
+        /* The line under the greeting says something true for the state the
+           student is actually in. On day one that matters more than a
+           dashboard: nothing here is broken, it simply has not started. */
+        $('helloSub').textContent =
+          !published.length ? 'Профилът ти е готов. Тук ще се появят задачите и резултатите ти.'
+          : !attempts.length ? 'Започни от „Домашни“ или „Пробни изпити“ — резултатите се записват тук.'
+          : 'Ето докъде стигна подготовката ти.';
+
+        var ringPct = published.length ? Math.round((allDone / published.length) * 100) : 0;
+        $('ringNum').textContent = published.length ? ringPct + '%' : '—';
+        $('ring').setAttribute('aria-label', published.length
+          ? ('Завършени задания: ' + ringPct + ' процента')
+          : 'Още няма публикувани задания');
+        var fill = $('ringFill');
+        var circumference = 2 * Math.PI * 42;
+        fill.style.strokeDasharray = circumference;
+        requestAnimationFrame(function () {
+          fill.style.strokeDashoffset = circumference * (1 - (published.length ? ringPct / 100 : 0));
+        });
+
+        $('statHw').textContent = hw.length ? (hwDone + ' / ' + hw.length) : '—';
+        $('statEx').textContent = ex.length ? String(exDone) : '—';
+        $('statExN').textContent = ex.length ? ('от ' + ex.length + ' налични') : 'няма публикувани';
+
+        /* Среден резултат — replaces the mock's "точки", which no part of
+           the database has ever kept. */
+        var scored = attempts.filter(function (t) { return settled(t) && pctOf(t) != null; });
+        if (scored.length) {
+          var avg = Math.round(scored.reduce(function (s, t) { return s + pctOf(t); }, 0) / scored.length);
+          $('statAvg').textContent = avg + '%';
+          $('statAvgN').textContent = 'от ' + scored.length + (scored.length === 1 ? ' оценен опит' : ' оценени опита');
+        } else {
+          $('statAvg').textContent = '—';
+          $('statAvgN').textContent = 'още няма оценени опити';
+        }
+
+        /* Развитие — the mock promised "+12% спрямо началния тест"; there
+           is no entrance test in the database, so this is the honest
+           version of the same idea: first graded attempt against the last. */
+        var chron = scored.slice().sort(function (a, b) {
+          return new Date(a.submitted_at) - new Date(b.submitted_at);
+        });
+        if (chron.length >= 2) {
+          var delta = pctOf(chron[chron.length - 1]) - pctOf(chron[0]);
+          var el = $('statTrend');
+          el.textContent = (delta > 0 ? '+' : '') + delta + '%';
+          el.className = 'tlp__stat-v ' + (delta > 0 ? 'tlp__up' : delta < 0 ? 'tlp__down' : '');
+          $('statTrendN').textContent = 'между първия и последния';
+        } else {
+          $('statTrend').textContent = '—';
+          $('statTrendN').textContent = 'нужни са поне два оценени опита';
+        }
+      }
+
+      /* ---- Домашни / Пробни изпити ----------------------------------- */
+
+      function assignmentCard(a) {
+        var mine = attempts.filter(function (t) { return t.assignment_id === a.id; });
+        var last = mine.length ? mine[0] : null;      /* attempts arrive newest first */
+        var href = a.kind === 'homework'
+          ? 'homework.html?slug=' + encodeURIComponent(a.slug)
+          : a.url;
+
+        var head = '<div class="tlp__card-row">' +
+          '<p class="tlp__card-t">' + esc(a.title) + '</p>';
+
+        if (last && settled(last) && pctOf(last) != null) {
+          head += '<span class="tlp__pct">' + pctOf(last) + '%</span>';
+        } else if (!last) {
+          var overdue = a.due_at && new Date(a.due_at) < new Date();
+          head += overdue
+            ? '<span class="tlp__chip tlp__chip--late">Просрочено</span>'
+            : '<span class="tlp__chip tlp__chip--next">Още не е правено</span>';
+        }
+        head += '</div>';
+
+        var meta = last
+          ? ('Последен опит: ' + TLA.formatDate(last.submitted_at) +
+             ' · ' + (last.total_score != null ? last.total_score : '—') +
+             ' / ' + (a.max_points != null ? a.max_points : '—') + ' т.')
+          : (a.due_at ? ('Срок: ' + TLA.formatDate(a.due_at)) : 'Отваря се, когато решиш.');
+
+        var bar = '';
+        if (last && settled(last) && pctOf(last) != null) {
+          bar = '<div class="tlp__bar" aria-hidden="true"><span style="width:' + pctOf(last) + '%"></span></div>';
+        }
+
+        var foot = '<div class="tlp__card-foot">' +
+          (last ? statusChip(last) : '') +
+          '<a class="tla-btn tla-btn--sm" href="' + esc(href) + '">' +
+            (last ? 'Направи отново' : 'Започни') + '</a>' +
+        '</div>';
+
+        return '<div class="tlp__card">' + head +
+          '<p class="tlp__card-m">' + esc(meta) + '</p>' + bar + foot + '</div>';
+      }
+
+      function renderAssignments(published) {
+        var hw = published.filter(function (a) { return a.kind === 'homework'; });
+        var ex = published.filter(function (a) { return a.kind === 'exam'; });
+
+        $('hwList').innerHTML = hw.length
+          ? hw.map(assignmentCard).join('') +
+            '<p class="tlp__note">Домашните не се губят между тетрадки и съобщения — ' +
+            'всичко е тук и виждаш какво ти остава.</p>'
+          : empty('📚', 'Още няма домашни',
+              'Преподавателят ще ги отвори тук, щом са готови. Ще ги видиш веднага след като влезеш.');
+
+        $('exList').innerHTML = ex.length
+          ? ex.map(assignmentCard).join('') +
+            '<p class="tlp__note">Всеки пробен изпит се отваря в собствена страница със свой ' +
+            'таймер, точно както на истинското НВО. Резултатът се връща тук.</p>'
+          : empty('⏱️', 'Още няма пробни изпити',
+              'Когато преподавателят публикува изпит, той се появява тук с бутон за стартиране.');
+      }
+
+      /* ---- Резултати -------------------------------------------------- */
+
+      function renderResults() {
+        if (!attempts.length) {
+          $('resBody').innerHTML = empty('📈', 'Още няма резултати',
+            'След първото предадено домашно или изпит тук се появява графика на развитието ти.');
+          return;
+        }
+
+        /* the chart: the last six settled attempts, oldest to newest */
+        var scored = attempts.filter(function (t) { return settled(t) && pctOf(t) != null; })
+          .slice().sort(function (a, b) { return new Date(a.submitted_at) - new Date(b.submitted_at); })
+          .slice(-6);
+
+        var html = '';
+        if (scored.length) {
+          var latest = scored[scored.length - 1];
+          html += '<div class="tlp__card"><div class="tlp__results"><div>' +
+            '<p class="tlp__card-t">Развитие във времето</p>' +
+            '<div class="tlp__plot">' +
+              scored.map(function (t, i) {
+                var last = (i === scored.length - 1);
+                return '<div class="tlp__col' + (last ? ' tlp__col--now' : '') + '">' +
+                  '<span class="tlp__col-v">' + pctOf(t) + '%</span>' +
+                  '<span class="tlp__col-b" data-h="' + pctOf(t) + '"></span>' +
+                '</div>';
+              }).join('') +
+            '</div>' +
+            '<div class="tlp__keys">' +
+              scored.map(function (t, i) {
+                return '<span' + (i === scored.length - 1 ? ' data-now' : '') + '>' +
+                  esc(shortDate(t.submitted_at)) + '</span>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<div class="tlp__readout">' +
+            '<p class="tlp__readout-v">' + pctOf(latest) + '<span>%</span></p>' +
+            '<p class="tlp__readout-k">последен резултат<br>' +
+              esc(byId[latest.assignment_id] ? byId[latest.assignment_id].title : '') + '</p>' +
+          '</div></div></div>';
+        }
+
+        html += '<h2 class="tlp__h2">Всички опити</h2>';
+        html += attempts.map(function (t) {
+          var a = byId[t.assignment_id];
+          var pct = pctOf(t);
+          return '<div class="tlp__res">' +
+            '<div class="tlp__res-main">' +
+              '<div class="tlp__res-t">' + esc(a ? a.title : 'Задание') + '</div>' +
+              '<div class="tlp__res-m">' + esc(TLA.formatDate(t.submitted_at)) + '</div>' +
+            '</div>' +
+            '<div class="tlp__res-score">' +
+              (t.total_score != null ? esc(t.total_score) : '—') +
+              (a && a.max_points ? ' / ' + esc(a.max_points) : '') +
+              (pct != null ? ' · ' + pct + '%' : '') +
+            '</div>' +
+            statusChip(t) +
+            '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
+              esc(t.id) + '">Преглед</button>' +
+          '</div>';
+        }).join('');
+
+        $('resBody').innerHTML = html;
+
+        /* bars grow once, after layout, so the movement is visible */
+        requestAnimationFrame(function () {
+          Array.prototype.forEach.call($('resBody').querySelectorAll('.tlp__col-b'), function (b) {
+            b.style.height = b.getAttribute('data-h') + '%';
+          });
+        });
+      }
+
+      /* ---- Обратна връзка --------------------------------------------- */
+
+      function renderFeedback() {
+        var withNote = attempts.filter(function (t) { return t.teacher_note; });
+        if (!withNote.length) {
+          $('fbBody').innerHTML = empty('💬', 'Още няма коментари',
+            'Когато преподавателят напише бележка към някой твой опит, тя се появява тук.');
+          return;
+        }
+        $('fbBody').innerHTML = withNote.map(function (t) {
+          var a = byId[t.assignment_id];
+          return '<div class="tlp__quote">' +
+            '<span class="tlp__quote-who">' +
+              esc((a ? a.title : 'Задание') + ' · ' + TLA.formatDate(t.submitted_at)) +
+            '</span>' + esc(t.teacher_note) +
+          '</div>';
+        }).join('');
+      }
+
+      /* ---- AI анализ ---------------------------------------------------
+         The rows come from the free-text answers of the most recent attempt
+         the AI has marked. Fetched only when the tab is opened, because
+         `part2` carries the full text of every answer. */
+
+      function aiTag(mark, points) {
+        if (points && mark >= points) return ['good', 'вярно'];
+        if (mark > 0) return ['work', 'частично'];
+        return ['err', 'за преговор'];
+      }
+
+      async function loadAi() {
+        if (aiLoaded) return;
+        aiLoaded = true;
+        var box = $('aiBody');
+
+        var marked = attempts.filter(function (t) { return t.ai_graded_at || t.status === 'graded'; });
+        if (!marked.length) {
+          box.innerHTML = empty('🤖', 'Още няма AI анализ',
+            'Отговорите ти със свободен текст се оценяват след предаване. Тогава тук се появява разбор задача по задача.');
+          return;
+        }
+
+        box.innerHTML = '<p class="tlp__note">Зареждане…</p>';
+        var res = await TLA.client.from('attempts')
+          .select('id, assignment_id, part2, submitted_at')
+          .eq('id', marked[0].id).maybeSingle();
+        if (res.error) {
+          box.innerHTML = '<p class="tlp__note">Анализът не се зареди: ' + esc(res.error.message) + '</p>';
+          aiLoaded = false;
+          return;
+        }
+
+        var t = res.data || {};
+        var rows = (Array.isArray(t.part2) ? t.part2 : []).filter(function (r) { return r.mark != null; });
+        if (!rows.length) {
+          box.innerHTML = empty('🤖', 'Още няма AI анализ',
+            'Последният ти опит няма оценени отговори със свободен текст.');
+          return;
+        }
+
+        var a = byId[t.assignment_id];
+        box.innerHTML =
+          '<h2 class="tlp__h2">' + esc(a ? a.title : 'Последен опит') + '</h2>' +
+          '<p class="tlp__note" style="margin-top:0;">' +
+            esc('Предадено на ' + TLA.formatDate(t.submitted_at)) + '</p>' +
+          '<div class="tlp__ai">' +
+            rows.map(function (r) {
+              var tag = aiTag(Number(r.mark), Number(r.points));
+              return '<div class="tlp__ai-row">' +
+                '<span class="tlp__ai-tag tlp__ai-tag--' + tag[0] + '">' + tag[1] + '</span>' +
+                '<span class="tlp__ai-txt"><b>' + esc(r.id) + '.</b> ' +
+                  esc(r.aiComment || r.prompt || '') +
+                  ' <b>' + esc(r.mark) + (r.points != null ? ' / ' + esc(r.points) : '') + ' т.</b>' +
+                '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+          '<p class="tlp__disclaim">Тези бележки са от AI и са предварителни. ' +
+            'Преподавателят ги преглежда и може да промени точките — тогава статусът става „Оценено“.</p>';
+      }
+
+      /* ---- one attempt in full ---------------------------------------- */
+
       async function openReview(id) {
         var res = await TLA.client.from('attempts').select('*').eq('id', id).maybeSingle();
         if (res.error) { fail('Прегледът не се зареди: ' + res.error.message); return; }
         var t = res.data;
         if (!t) { fail('Този резултат не е намерен.'); return; }
-        var a = assignmentsById[t.assignment_id];
+        var a = byId[t.assignment_id];
 
-        var html = '<p class="tla-muted" style="margin-bottom:1rem;">' +
-          esc((a ? a.title : '—') + ' · ' + TLA.formatDate(t.submitted_at)) + '</p>';
-
-        /* Score summary. The free-text half is marked in two steps: the AI
-           grader gives a provisional mark straight after you submit, and
-           the teacher can change it afterwards. `ai_graded_at` says which
-           of the two the number on the row currently came from. */
         var byAi = (t.status !== 'graded' && !!t.ai_graded_at);
-        var manualLabel = (t.status === 'graded') ? 'Оценено от преподавателя'
-                        : byAi ? 'Оценка от AI'
-                        : 'Свободните отговори';
         var pendingAi = (t.status !== 'graded' && !t.ai_graded_at && t.manual_max != null);
-        if (pendingAi) manualLabel = 'Свободните отговори';
+        var manualLabel = (t.status === 'graded') ? 'Оценено от преподавателя'
+                        : byAi ? 'Оценка от AI' : 'Свободните отговори';
         var manualTxt = (t.manual_score != null)
           ? t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')
           : 'AI е в процес на оценка';
-        html += '<div class="tla-item" style="display:block;">' +
-          '<div><strong>Автоматично:</strong> ' +
+
+        var html = '<div class="tlp__card">' +
+          '<p class="tlp__card-m" style="margin:0 0 0.6rem;">' +
+            esc((a ? a.title : '—') + ' · ' + TLA.formatDate(t.submitted_at)) + '</p>' +
+          '<div class="tlp__q-line"><b>Автоматично:</b> ' +
             (t.auto_score != null ? esc(t.auto_score + ' / ' + t.auto_max) : '—') + '</div>' +
-          '<div><strong>' + esc(manualLabel) + ':</strong> ' + esc(manualTxt) + '</div>' +
-          '<div style="font-size:1.15rem;font-weight:800;margin-top:0.4rem;"><strong>Общо:</strong> ' +
+          '<div class="tlp__q-line"><b>' + esc(manualLabel) + ':</b> ' + esc(manualTxt) + '</div>' +
+          '<p class="tlp__card-t" style="margin-top:0.6rem;">Общо: ' +
             (t.total_score != null ? esc(t.total_score) : '—') +
-            (a && a.max_points ? ' / ' + esc(a.max_points) : '') + '</div>' +
+            (a && a.max_points ? ' / ' + esc(a.max_points) : '') + '</p>' +
         '</div>';
 
         if (byAi) {
-          html += '<p class="tla-muted" style="margin-top:0.6rem;">' +
-            'Тези точки са дадени от AI. Преподавателят ще ги прегледа и ' +
-            'може да ги промени.</p>';
+          html += '<p class="tlp__note">Тези точки са дадени от AI. Преподавателят ще ги ' +
+            'прегледа и може да ги промени.</p>';
         } else if (pendingAi) {
-          html += '<p class="tla-muted" style="margin-top:0.6rem;">' +
-            'Отговорите ти със свободен текст се оценяват от AI. Точките ще ' +
-            'се появят тук — общият резултат отгоре още не е окончателен.</p>';
+          html += '<p class="tlp__note">Отговорите ти със свободен текст се оценяват. ' +
+            'Точките ще се появят тук — общият резултат отгоре още не е окончателен.</p>';
         }
 
-        /* the teacher's note comes first -- it is the thing worth reading */
         if (t.teacher_note) {
-          html += '<div class="tla-msg tla-msg--warn" style="margin-top:1rem;white-space:pre-wrap;">' +
-            '<strong>Коментар от преподавателя:</strong><br>' + esc(t.teacher_note) + '</div>';
+          html += '<div class="tlp__quote" style="margin-top:0.75rem;">' +
+            '<span class="tlp__quote-who">Коментар от преподавателя</span>' +
+            esc(t.teacher_note) + '</div>';
         }
 
-        /* auto-graded questions */
         var recs = Array.isArray(t.records) ? t.records : [];
         if (recs.length) {
-          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">Автоматично оценени</h3>';
+          html += '<h2 class="tlp__h2">Автоматично оценени</h2>';
           html += recs.map(function (r) {
-            var cls = r.correct ? 'tla-q tla-q--right' : 'tla-q tla-q--wrong';
             var given, expected;
             if (r.kind === 'mc') {
               var opts = r.options || [];
@@ -268,155 +658,120 @@
               given = r.studentAnswer;
               expected = r.referenceAnswer;
             }
-            return '<div class="' + cls + '">' +
-              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.text || r.prompt || '')) + '</div>' +
-              '<div class="tla-muted">Твоят отговор: ' + esc(given) + '</div>' +
-              '<div class="tla-muted">Верен отговор: ' + esc(expected) + '</div>' +
-              '<div class="tla-muted">' + esc(r.earned + ' / ' + r.points) + ' т.</div>' +
-              (r.explanation ? '<div class="tla-muted" style="margin-top:0.4rem;">' +
-                 esc(r.explanation) + '</div>' : '') +
+            return '<div class="tlp__q ' + (r.correct ? 'tlp__q--right' : 'tlp__q--wrong') + '">' +
+              '<div class="tlp__q-head">' +
+                '<span class="tlp__q-n">' + esc(r.id) + '</span>' +
+                '<span class="tlp__q-prompt">' + esc(r.text || r.prompt || '') + '</span>' +
+                '<span class="tlp__q-pts">' + esc(r.earned + ' / ' + r.points) + ' т.</span>' +
+              '</div>' +
+              '<div class="tlp__q-body">' +
+                '<div class="tlp__q-line"><b>Твоят отговор:</b> ' + esc(given) + '</div>' +
+                '<div class="tlp__q-line"><b>Верен отговор:</b> ' + esc(expected) + '</div>' +
+                (r.explanation ? '<div class="tlp__q-line">' + esc(r.explanation) + '</div>' : '') +
+              '</div>' +
             '</div>';
           }).join('');
         }
 
-        /* free-text sub-questions, with the teacher's mark on each */
         var p2 = Array.isArray(t.part2) ? t.part2 : [];
         if (p2.length) {
-          html += '<h3 class="tla-card__title" style="margin-top:1.5rem;">' +
+          html += '<h2 class="tlp__h2">' +
             (t.status === 'graded' ? 'Оценени от преподавателя' : 'Отговори със свободен текст') +
-            '</h3>';
+            '</h2>';
           var lastTask = null;
           html += p2.map(function (r) {
             var out = '';
             var tid = (r.taskId != null) ? r.taskId : (parseInt(r.id, 10) || null);
             if (tid !== null && tid !== lastTask) {
               lastTask = tid;
-              out += '<div style="margin-top:1rem;font-weight:800;color:var(--mid);">Задача ' +
-                esc(tid) + (r.taskPoints != null ? ' — от ' + esc(r.taskPoints) + ' т.' : '') + '</div>';
+              out += '<p class="tlp__card-m" style="margin-top:1rem;font-weight:800;">Задача ' +
+                esc(tid) + (r.taskPoints != null ? ' — от ' + esc(r.taskPoints) + ' т.' : '') + '</p>';
             }
             var mark = (r.mark == null)
-              ? '<span class="tla-badge tla-badge--ai">AI оценява…</span>'
-              : '<strong>' + esc(r.mark) + ' т.</strong>' +
-                (r.markSource === 'ai'
-                  ? ' <span class="tla-badge tla-badge--ai">оценка от AI</span>'
-                  : '');
-            out += '<div class="tla-q">' +
-              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.prompt || '')) + '</div>' +
-              '<div style="white-space:pre-wrap;">Твоят отговор: ' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
-              '<div style="margin-top:0.5rem;">Точки: ' + mark + '</div>' +
-              (r.aiComment ? '<div class="tla-muted" style="margin-top:0.4rem;">' +
-                 esc(r.aiComment) + '</div>' : '') +
-              (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Примерно решение: ' +
-                 esc(r.solution) + '</div>' : '') +
+              ? '<span class="tlp__chip tlp__chip--ai">AI оценява…</span>'
+              : '<b>' + esc(r.mark) + ' т.</b>' +
+                (r.markSource === 'ai' ? ' <span class="tlp__chip tlp__chip--ai">оценка от AI</span>' : '');
+            out += '<div class="tlp__q">' +
+              '<div class="tlp__q-head">' +
+                '<span class="tlp__q-n">' + esc(r.id) + '</span>' +
+                '<span class="tlp__q-prompt">' + esc(r.prompt || '') + '</span>' +
+              '</div>' +
+              '<div class="tlp__q-body">' +
+                '<div class="tlp__q-line"><b>Твоят отговор:</b> ' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
+                '<div class="tlp__q-line">Точки: ' + mark + '</div>' +
+                (r.aiComment ? '<div class="tlp__q-line">' + esc(r.aiComment) + '</div>' : '') +
+                (r.solution ? '<div class="tlp__q-line"><b>Примерно решение:</b> ' + esc(r.solution) + '</div>' : '') +
+              '</div>' +
             '</div>';
             return out;
           }).join('');
         }
 
         if (!recs.length && !p2.length) {
-          html += '<p class="tla-empty">Няма запазени подробности за този опит.</p>';
+          html += '<p class="tlp__note">Няма запазени подробности за този опит.</p>';
         }
 
-        document.getElementById('reviewTitle').textContent =
-          'Преглед — ' + (a ? a.title : 'задание');
-        document.getElementById('reviewBody').innerHTML = html;
-        document.getElementById('reviewCard').hidden = false;
-        document.getElementById('reviewCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        $('reviewTitle').textContent = 'Преглед — ' + (a ? a.title : 'задание');
+        $('reviewBody').innerHTML = html;
+        $('reviewCard').hidden = false;
+        $('reviewCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      document.getElementById('closeReview').addEventListener('click', function () {
-        document.getElementById('reviewCard').hidden = true;
-        document.getElementById('resultsTable').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      $('closeReview').addEventListener('click', function () {
+        $('reviewCard').hidden = true;
+        $('panel-res').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
-      document.getElementById('resultsTable').addEventListener('click', function (e) {
+      $('resBody').addEventListener('click', function (e) {
         var btn = e.target.closest('[data-review]');
         if (btn) openReview(btn.getAttribute('data-review'));
       });
 
+      $('signOutBtn').addEventListener('click', function () { TLA.signOut(); });
+
+      /* ---- go ---------------------------------------------------------- */
+
       (async function () {
-        if (!TLA.isConfigured()) { fail(TLA.notConfiguredMessage()); return; }
+        if (!TLA.isConfigured()) {
+          fail(TLA.notConfiguredMessage());
+          /* Nothing will arrive, so nothing should keep saying it is loading. */
+          $('helloSub').textContent = 'Данните не са достъпни в момента.';
+          $('hwList').innerHTML = '';
+          return;
+        }
 
         var auth = await TLA.requireAuth();
         if (!auth) return;                       /* requireAuth already redirected */
 
-        var name = (auth.profile && auth.profile.full_name) || auth.session.user.email;
-        document.getElementById('whoami').textContent = name;
+        renderHeader(auth.profile, auth.session);
+        if (auth.profile && auth.profile.role === 'teacher') $('teacherLink').hidden = false;
 
-        /* A teacher landing here gets a way back to their own dashboard. */
-        if (auth.profile && auth.profile.role === 'teacher') {
-          var head = document.querySelector('.tla-p__head');
-          var link = document.createElement('a');
-          link.className = 'tla-btn';
-          link.href = 'teacher.html';
-          link.textContent = 'Табло на преподавателя';
-          head.appendChild(link);
-        }
-
-        var assignments, attempts;
+        var assignments;
         try {
           assignments = await TLA.listAssignments();
           attempts = await TLA.myAttempts();
         } catch (e) {
           fail('Данните не се заредиха: ' + (e.message || e));
+          $('helloSub').textContent = 'Данните не се заредиха.';
+          $('hwList').innerHTML = '';
           return;
         }
 
-        assignments.forEach(function (a) { assignmentsById[a.id] = a; });
+        assignments.forEach(function (a) { byId[a.id] = a; });
+        var published = assignments.filter(function (a) { return a.published; });
 
-        /* ---- assignments ---- */
-        var visible = assignments.filter(function (a) { return a.published; });
-        var listEl = document.getElementById('assignmentList');
+        renderStats(published);
+        renderAssignments(published);
+        renderResults();
+        renderFeedback();
 
-        if (!visible.length) {
-          listEl.innerHTML = '<li class="tla-empty">Още няма публикувани задания. ' +
-            'Преподавателят ще ги отвори, когато са готови.</li>';
-        } else {
-          listEl.innerHTML = visible.map(function (a) {
-            var mine = attempts.filter(function (t) { return t.assignment_id === a.id; });
-            var best = mine.length ? mine[0] : null;
-            var kindLabel = a.kind === 'homework' ? 'Домашно' : 'Изпит';
-            var href = a.kind === 'homework'
-              ? 'homework.html?slug=' + encodeURIComponent(a.slug)
-              : a.url;
-            var meta = best
-              ? 'Последен опит: ' + TLA.formatDate(best.submitted_at) +
-                ' · ' + (best.total_score != null ? best.total_score : '—') +
-                ' / ' + (a.max_points != null ? a.max_points : '—')
-              : 'Още не сте го правили';
-            return '<li class="tla-item">' +
-              '<div class="tla-item__main">' +
-                '<span class="tla-badge tla-badge--' + a.kind + '">' + esc(kindLabel) + '</span> ' +
-                '<span class="tla-item__title">' + esc(a.title) + '</span>' +
-                '<div class="tla-item__meta">' + esc(meta) + '</div>' +
-              '</div>' +
-              '<a class="tla-btn" href="' + esc(href) + '">' +
-                (best ? 'Направи отново' : 'Започни') + '</a>' +
-            '</li>';
-          }).join('');
-        }
-
-        /* ---- results ---- */
-        var tbody = document.querySelector('#resultsTable tbody');
-        if (!attempts.length) {
-          tbody.innerHTML = '<tr><td colspan="7" class="tla-empty">Още нямате предадени задания.</td></tr>';
-        } else {
-          tbody.innerHTML = attempts.map(function (t) {
-            var a = assignmentsById[t.assignment_id];
-            var pct = TLA.percent(t.total_score, a && a.max_points);
-            return '<tr>' +
-              '<td>' + esc(a ? a.title : '—') + '</td>' +
-              '<td class="tla-num">' + esc(TLA.formatDate(t.submitted_at)) + '</td>' +
-              '<td class="tla-num">' + (t.auto_score != null ? esc(t.auto_score + ' / ' + t.auto_max) : '—') + '</td>' +
-              '<td class="tla-num">' + (t.manual_score != null ? esc(t.manual_score + ' / ' + (t.manual_max != null ? t.manual_max : '—')) : '—') + '</td>' +
-              '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') +
-                (pct != null ? ' <span class="tla-muted">(' + pct + '%)</span>' : '') + '</td>' +
-              '<td>' + statusBadge(t) + '</td>' +
-              '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
-                esc(t.id) + '">Преглед</button></td>' +
-            '</tr>';
-          }).join('');
-        }
+        /* tab labels carry the count, so the student can see where the
+           work is without opening each one */
+        var hwCount = published.filter(function (a) { return a.kind === 'homework'; }).length;
+        var exCount = published.filter(function (a) { return a.kind === 'exam'; }).length;
+        if (hwCount) $('tab-hw').innerHTML = 'Домашни <span class="tlp__tab-n">' + hwCount + '</span>';
+        if (exCount) $('tab-ex').innerHTML = 'Пробни изпити <span class="tlp__tab-n">' + exCount + '</span>';
+        if (attempts.length) $('tab-res').innerHTML = 'Резултати <span class="tlp__tab-n">' + attempts.length + '</span>';
       })();
     })();
   </script>

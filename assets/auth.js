@@ -144,7 +144,7 @@
       if (!session) return [];
       var res = await client
         .from('attempts')
-        .select('id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at, ai_graded_at')
+        .select('id, assignment_id, status, auto_score, auto_max, manual_score, manual_max, total_score, submitted_at, ai_graded_at, teacher_note')
         .eq('user_id', session.user.id)
         .order('submitted_at', { ascending: false });
       if (res.error) throw res.error;
