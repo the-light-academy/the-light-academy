@@ -54,6 +54,48 @@
       line-height: 1.7;
     }
 
+    /* ── PAGE WASH ────────────────────────────────────────────────
+       The platform section's cream with a warm corner and a cool one,
+       lifted to the whole page and set drifting so the colours move
+       through each other. Two fixed layers, each carrying two very soft
+       radial gradients and moved with transform ONLY — no filter:blur().
+       The nav above this has backdrop-filter, and a blurred moving layer
+       under a backdrop-filtered element is the thing that actually eats
+       frames; soft gradients cost nothing and look the same.
+       The hero is opaque, so it covers this and stays as it was. */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      inset: -25%;
+      z-index: -1;
+      pointer-events: none;
+      will-change: transform;
+    }
+    body::before {
+      background:
+        radial-gradient(45% 40% at 18% 14%, #FFEDC9 0%, rgba(255,237,201,0) 70%),
+        radial-gradient(40% 38% at 82% 80%, #FFE6D8 0%, rgba(255,230,216,0) 72%);
+      animation: pageWashWarm 54s ease-in-out infinite alternate;
+    }
+    body::after {
+      background:
+        radial-gradient(50% 44% at 86% 20%, #DCE8FA 0%, rgba(220,232,250,0) 70%),
+        radial-gradient(42% 40% at 10% 84%, #E3F0EE 0%, rgba(227,240,238,0) 72%);
+      animation: pageWashCool 72s ease-in-out infinite alternate;
+    }
+    @keyframes pageWashWarm {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(4%, -3%, 0) scale(1.08); }
+    }
+    @keyframes pageWashCool {
+      from { transform: translate3d(0, 0, 0) scale(1.06); }
+      to   { transform: translate3d(-5%, 4%, 0) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, body::after { animation: none; }
+    }
+
     /* ── TOP BAR ── */
     .top-bar {
       background: rgba(247,173,25,0.72);
@@ -1924,10 +1966,9 @@
       isolation: isolate;
       overflow: hidden;
       padding: clamp(3.5rem, 8vw, 6.5rem) 1.25rem clamp(3rem, 7vw, 5.5rem);
-      background:
-        radial-gradient(80% 55% at 15% 0%, #FFF6E4 0%, rgba(255,246,228,0) 60%),
-        radial-gradient(70% 50% at 95% 25%, #EEF3FB 0%, rgba(238,243,251,0) 65%),
-        var(--tlap-cream);
+      /* transparent: the page wash behind it is this same treatment, so
+         painting it again here would only draw a seam at the edges */
+      background: transparent;
       color: var(--tlap-ink);
       font-family: 'Nunito', sans-serif;
     }
@@ -2334,9 +2375,7 @@
       position: relative;
       overflow: hidden;
       padding: clamp(3rem, 7vw, 5.5rem) 1.25rem clamp(2.5rem, 6vw, 4.5rem);
-      background:
-        radial-gradient(70% 50% at 12% 0%, #FFF7E7 0%, rgba(255,247,231,0) 62%),
-        var(--cream);
+      background: transparent;
       font-family: 'Nunito', sans-serif;
       color: var(--tlm-ink);
     }
