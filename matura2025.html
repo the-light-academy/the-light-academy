@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пробна матура НВО 2025 по математика, 7. клас – The Light Academy</title>
+<meta name="description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 2 от 20 юни 2025 г., официален формат на изпита, таймирани модули от 75 и 90 минути и точки по официалната скала за оценяване." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="canonical" href="https://the-light-academy.github.io/the-light-academy/matura2025.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="The Light Academy" />
+<meta property="og:title" content="Пробна матура НВО по математика, 7. клас – The Light Academy" />
+<meta property="og:description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 2 от 20 юни 2025 г., официален формат на изпита, таймирани модули от 75 и 90 минути и точки по официалната скала за оценяване." />
+<meta property="og:url" content="https://the-light-academy.github.io/the-light-academy/matura2025.html" />
+<meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/theLightAcademyLogo.png" />
+<meta property="og:locale" content="bg_BG" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+
+<style>
+  :root{
+    --accent: #F7AD19;
+    --accent-dark: #d99206;
+    --accent-light: #fff3dc;
+    --bg: #fafafa;
+    --text: #2b2b2b;
+    --text-light: #6b6b6b;
+    --card-bg: #ffffff;
+    --border: #ececec;
+    --correct: #4caf50;
+    --radius: 18px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.06);
+    --shadow-hover: 0 10px 28px rgba(0,0,0,0.10);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+  }
+
+  .screen{
+    width: 100%;
+    max-width: 680px;
+    display: none;
+    animation: fadeIn .35s ease;
+  }
+  .screen.active{ display: block; }
+
+  @keyframes fadeIn{
+    from{ opacity: 0; transform: translateY(8px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- INTRO / INTERIM CARDS ---------- */
+  .intro-card{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 36px 24px;
+    text-align: center;
+  }
+
+  .intro-badge{
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  .intro-title{
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+
+  .intro-subtitle{
+    font-size: 16px;
+    color: var(--text-light);
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+
+  .intro-text{
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin: 0 0 28px;
+  }
+
+  .intro-stats{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill{
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 22px;
+    min-width: 110px;
+  }
+
+  .stat-pill .stat-number{
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-dark);
+  }
+
+  .stat-pill .stat-label{
+    display: block;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .btn{
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 14px;
+    padding: 16px 28px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:active{ transform: scale(0.97); }
+
+  .btn-primary{
+    background: var(--accent);
+    color: #ffffff;
+    width: 100%;
+    box-shadow: 0 6px 18px rgba(247,173,25,0.35);
+  }
+  .btn-primary:hover{ background: var(--accent-dark); box-shadow: var(--shadow-hover); }
+
+  .btn-secondary{
+    background: var(--card-bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+  .btn-secondary:hover{ border-color: var(--accent); color: var(--accent-dark); }
+
+  .btn-secondary:disabled{
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  /* ---------- TEST SCREEN ---------- */
+  .test-header{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+
+  .test-header-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .question-counter{
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .question-counter span{
+    color: var(--accent-dark);
+  }
+
+  .timer{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: var(--bg);
+    padding: 6px 12px;
+    border-radius: 999px;
+    transition: color .2s ease, background .2s ease;
+    white-space: nowrap;
+  }
+
+  .timer.timer-warning{
+    color: #b3261e;
+    background: #fdecea;
+    animation: pulseWarning 1.2s infinite;
+  }
+
+  @keyframes pulseWarning{
+    0%, 100%{ opacity: 1; }
+    50%{ opacity: .6; }
+  }
+
+  .progress-track{
+    width: 100%;
+    height: 10px;
+    background: var(--bg);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill{
+    height: 100%;
+    width: 5%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    border-radius: 999px;
+    transition: width .35s ease;
+  }
+
+  .question-card{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px 22px;
+    margin-bottom: 18px;
+  }
+
+  .question-category{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin: 0 8px 14px 0;
+  }
+
+  .question-category.review-pill{
+    color: var(--text-light);
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+
+  .points-pill{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin: 0 0 14px;
+  }
+
+  .question-text{
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin: 0 0 22px;
+    white-space: pre-line;
+  }
+
+  .task-intro{
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 0 0 20px;
+  }
+
+    .diagram-table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 13px;
+  }
+  .diagram-table th, .diagram-table td {
+    border: 1px solid #cfc3ad;
+    padding: 6px 10px;
+    text-align: center;
+  }
+  .diagram-table th { font-weight: 800; background: #fbf7ef; }
+.diagram-card{
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 0 0 20px;
+  }
+
+  .options-list{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ---------- СВОБОДЕН / ПЪЛЕН ОТГОВОР ---------- */
+  .free-text-block{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .free-text-input{
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  .free-text-input:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .free-text-note{
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  .subpart-block{
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    margin-top: 18px;
+  }
+  .subpart-block:first-of-type{
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .subpart-label{
+    display: inline-block;
+    font-weight: 800;
+    color: var(--accent-dark);
+    margin-right: 6px;
+  }
+
+  .subpart-prompt{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 0 10px;
+  }
+
+  .essay-textarea{
+    width: 100%;
+    min-height: 110px;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    margin-bottom: 8px;
+  }
+
+  .essay-textarea:focus{
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .option{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 16px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+
+  .option:hover{
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .option:active{ transform: scale(0.99); }
+
+  .option.selected{
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .option-letter{
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text-light);
+    transition: all .15s ease;
+  }
+
+  .option.selected .option-letter{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .option-text{
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .test-nav{
+    display: flex;
+    gap: 12px;
+  }
+
+  .test-nav .btn{ flex: 1; }
+
+  /* ---------- PART 1 INTERIM SCREEN ---------- */
+  .interim-icon{
+    font-size: 44px;
+    margin-bottom: 10px;
+  }
+
+  .interim-score-fraction{
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    margin: 6px 0 2px;
+  }
+
+  .interim-score-percentage{
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .interim-note{
+    text-align: left;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 22px 0 26px;
+  }
+
+  /* ---------- RESULT SCREEN ---------- */
+  .result-card{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .result-icon{
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .result-title{
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 10px;
+  }
+
+  .result-score-block{
+    margin: 6px 0 4px;
+  }
+
+  .result-score-label{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin: 0 0 6px;
+  }
+
+  .result-score-fraction{
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .result-score-percentage{
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .part2-note{
+    text-align: left;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 22px 0;
+  }
+
+  .final-actions{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  /* ---------- ПРЕГЛЕД НА ОТГОВОРИТЕ ---------- */
+  .review-part-title{
+    font-size: 19px;
+    font-weight: 800;
+    margin: 30px 0 14px;
+  }
+  .review-part-title:first-child{ margin-top: 0; }
+
+  .review-item{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 22px;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  .review-item-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .review-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 14px;
+    flex: 0 0 auto;
+  }
+  .review-badge.correct{ background: #eaf7ec; color: var(--correct); }
+  .review-badge.incorrect{ background: #fdecea; color: #c0392b; }
+
+  .review-question-text{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0 0 16px;
+  }
+
+  .review-option{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  .review-option.correct{ border-color: var(--correct); background: #eaf7ec; }
+  .review-option.incorrect{ border-color: #c0392b; background: #fdecea; }
+
+  .review-label{
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: var(--text-light);
+    margin: 12px 0 4px;
+  }
+  .review-label:first-of-type{ margin-top: 0; }
+
+  .review-answer-box{
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+  .review-answer-box.correct{ border-color: var(--correct); background: #eaf7ec; }
+  .review-answer-box.incorrect{ border-color: #c0392b; background: #fdecea; }
+
+  .review-explanation{
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+  .review-explanation strong{ color: var(--accent-dark); }
+
+  .result-disclaimer{
+    text-align: left;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (min-width: 480px){
+    .intro-title{ font-size: 30px; }
+    .question-text{ font-size: 21px; }
+  }
+
+  @media (min-width: 768px){
+    .app{ padding-top: 48px; }
+    .intro-card{ padding: 48px 40px; }
+    .question-card{ padding: 34px 36px; }
+    .option{ padding: 18px 20px; }
+  }
+
+    /* ── COOKIE CONSENT (shared across the site; one choice applies everywhere via localStorage) ── */
+    .cookie-banner {
+      position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2000;
+      background: rgba(45, 31, 14, 0.98); color: #fff;
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.25); padding: 18px 20px;
+    }
+    .cookie-banner[hidden] { display: none; }
+    .cookie-banner__content { display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .cookie-banner__text { flex: 1; min-width: 0; }
+    .cookie-banner__text h3 { font-size: 1.05rem; margin-bottom: 6px; color: #fff; }
+    .cookie-banner__text p { margin: 0; font-size: 0.96rem; line-height: 1.6; color: rgba(255,255,255,0.82); }
+    .cookie-banner__actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .cookie-banner button { appearance: none; border: none; border-radius: 999px; padding: 10px 18px; font: inherit; font-weight: 800; cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease; }
+    .cookie-banner button:hover { transform: translateY(-1px); }
+    .cookie-banner__reject { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+    .cookie-banner__accept { background: #F5A623; color: #2D1F0E; }
+    .cookie-settings {
+      position: fixed; right: 18px; bottom: 18px; z-index: 1500;
+      width: 44px; height: 44px; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.96); color: #2D1F0E;
+      border: 1px solid rgba(92, 74, 50, 0.12); border-radius: 50%;
+      font-size: 1.25rem; line-height: 1;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08); cursor: pointer;
+      opacity: 0.55;
+      transition: opacity 0.3s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .cookie-settings:hover, .cookie-settings:focus-visible {
+      opacity: 1; transform: translateY(-1px); box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+    }
+    @media (max-width: 720px) {
+      .cookie-banner { left: 10px; right: 10px; bottom: 10px; padding: 16px; }
+      .cookie-banner__content { flex-direction: column; align-items: flex-start; }
+      .cookie-banner__actions { width: 100%; justify-content: stretch; }
+      .cookie-banner__actions button { flex: 1; }
+    }
+    /* ── FOOTER ── */
+    footer { background: #1E1308; padding: 1.5rem 2rem; text-align: center; color: #6A4E2A; font-size: 13px; }
+    footer a { color: #F5A623; text-decoration: none; }
+  .portal-save-note{
+    margin-top:14px; padding:10px 14px; border-radius:12px;
+    background:rgba(247,173,25,0.14); color:#7A5600;
+    font-size:14px; font-weight:700;
+  }
+  .portal-save-note[hidden]{ display:none; }
+</style>
+  <!-- Student portal: session + result saving. Loaded before the exam
+       script so TLA exists by the time the exam finishes. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
+  <script src="assets/auth.js"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- 1. НАЧАЛЕН ЕКРАН -->
+  <section id="start-screen" class="screen active">
+    <div class="intro-card">
+      <span class="intro-badge">The Light Academy</span>
+      <h1 class="intro-title">Пробна матура — НВО по математика, 7. клас</h1>
+      <p class="intro-subtitle">Вариант 1 · Официален формат на изпита</p>
+      <p class="intro-text">
+        Два модула — 75 минути за Част 1 и 90 за Част 2, точно като истинския изпит. Резултатът включва
+        точки по официалната скала за оценяване.
+      </p>
+
+      <div class="intro-stats">
+        <div class="stat-pill">
+          <span class="stat-number">24</span>
+          <span class="stat-label">задачи</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-number">2×90</span>
+          <span class="stat-label">минути</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-number">100</span>
+          <span class="stat-label">точки макс.</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="start-btn">Започни Част 1</button>
+    </div>
+  </section>
+
+  <!-- 2. ЧАСТ 1 (задачи 1-21) -->
+  <section id="part1-screen" class="screen">
+    <div class="test-header">
+      <div class="test-header-top">
+        <div class="question-counter">
+          Въпрос <span id="p1-current-q">1</span> от <span id="p1-total-q">21</span>
+        </div>
+        <div class="timer" id="p1-timer">Оставащо време: 75:00</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="p1-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div>
+        <span class="question-category" id="p1-category">Задача 1</span>
+        <span class="points-pill" id="p1-points">2 точки</span>
+      </div>
+      <div class="diagram-card" id="p1-diagram" style="display:none;"></div>
+      <div id="p1-options-list"></div>
+    </div>
+
+    <div class="test-nav">
+      <button class="btn btn-secondary" id="p1-prev-btn">← Предишен</button>
+      <button class="btn btn-primary" id="p1-next-btn">Следващ →</button>
+      <button class="btn btn-primary" id="p1-finish-btn" style="display:none;">Предай Част 1</button>
+    </div>
+  </section>
+
+  <!-- 3. ЧАСТ 1 — МЕЖДИНЕН ЕКРАН -->
+  <section id="part1-interim-screen" class="screen">
+    <div class="intro-card">
+      <div class="interim-icon">✅</div>
+      <h2 class="intro-title" style="font-size:24px;">Част 1 е предадена</h2>
+      <p class="result-score-label">Автоматична оценка (задачи 1–20)</p>
+      <p class="interim-score-fraction" id="p1i-score-fraction">0 / 65</p>
+      <span class="interim-score-percentage" id="p1i-score-percentage">0%</span>
+
+      <div class="interim-note">
+        Всички отговори от Част 1, включително кратките свободни отговори, са проверени
+        автоматично спрямо ключа.
+        <br><br>
+        Когато сте готови, продължете към Част 2 — тя стартира собствен таймер от 90:00
+        и не наследява оставащото време от Част 1.
+      </div>
+
+      <button class="btn btn-primary" id="continue-to-part2-btn">Продължи към Част 2</button>
+    </div>
+  </section>
+
+  <!-- 4. ЧАСТ 2 — ВЪВЕДЕНИЕ -->
+  <section id="part2-intro-screen" class="screen">
+    <div class="intro-card">
+      <span class="intro-badge">Част 2</span>
+      <h2 class="intro-title" style="font-size:26px;">Задачи 22–24</h2>
+      <p class="intro-subtitle">90 минути · Задачи с пълно решение</p>
+      <p class="intro-text">
+        И трите задачи изискват пълно решение по подточки. Те не се оценяват
+        автоматично — в резултата накрая ще намериш примерно решение на всяка
+        подточка, с което да сравниш своя отговор. Таймерът е независим от този
+        на Част 1 и стартира от 90:00 в момента, в който натиснете бутона по-долу.
+      </p>
+      <button class="btn btn-primary" id="start-part2-btn">Започни Част 2</button>
+    </div>
+  </section>
+
+  <!-- 5. ЧАСТ 2 (задачи 22-24) -->
+  <section id="part2-screen" class="screen">
+    <div class="test-header">
+      <div class="test-header-top">
+        <div class="question-counter">
+          Задача <span id="p2-current-q">1</span> от <span id="p2-total-q">3</span>
+        </div>
+        <div class="timer" id="p2-timer">Оставащо време: 90:00</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="p2-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div>
+        <span class="question-category review-pill" id="p2-category">Задача 22</span>
+        <span class="points-pill" id="p2-points">12 точки</span>
+      </div>
+      <div id="p2-subparts"></div>
+    </div>
+
+    <div class="test-nav">
+      <button class="btn btn-secondary" id="p2-prev-btn">← Предишна</button>
+      <button class="btn btn-primary" id="p2-next-btn">Следваща →</button>
+      <button class="btn btn-primary" id="p2-finish-btn" style="display:none;">Предай Част 2</button>
+    </div>
+  </section>
+
+  <!-- 6. ФИНАЛЕН ЕКРАН -->
+  <section id="final-screen" class="screen">
+    <div class="result-card">
+
+      <div class="result-icon">🎓</div>
+      <h2 class="result-title">Резултат от пробната матура</h2>
+
+      <div class="result-score-block">
+        <p class="result-score-label">Част 1 (задачи 1–20) — автоматична оценка по ключ</p>
+        <p class="result-score-fraction" id="final-score-fraction">0 / 65</p>
+        <span class="result-score-percentage" id="final-score-percentage">0%</span>
+      </div>
+
+      <p class="portal-save-note" id="portal-save-note" hidden></p>
+
+      <div class="part2-note">
+        Част 2 (задачи 21–23, 35 точки) съдържа задачи с пълно решение, които не се
+        оценяват автоматично. В прегледа по-долу ще намериш примерно решение на всяка
+        подточка, с което да сравниш своя отговор.
+      </div>
+
+      <div class="final-actions">
+        <button class="btn btn-primary" id="open-review-btn">Прегледай отговорите</button>
+        <button class="btn btn-secondary" id="restart-btn">Направи теста отново</button>
+      </div>
+
+      <p class="result-disclaimer">
+        Тази пробна матура е дигитализация на официален изпитен вариант (НВО по
+        математика, VII клас, Вариант 2, 20 юни 2025 г.) и се използва като тренировъчен
+        инструмент. Тя не представлява официална оценка от НВО.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- 7. ПРЕГЛЕД НА ОТГОВОРИТЕ -->
+  <section id="review-screen" class="screen">
+    <div style="max-width:680px; margin:0 auto; width:100%;">
+      <button class="btn btn-secondary" id="back-to-result-btn" style="margin-bottom:18px;">← Обратно към резултата</button>
+      <div id="review-list"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   SVG ПОМОЩНИ ФУНКЦИИ ЗА ДИАГРАМИТЕ
+========================================================= */
+
+function vsub(a,b){ return [a[0]-b[0], a[1]-b[1]]; }
+function vadd(a,b){ return [a[0]+b[0], a[1]+b[1]]; }
+function vscale(a,k){ return [a[0]*k, a[1]*k]; }
+function vlen(a){ return Math.hypot(a[0], a[1]); }
+function vnorm(a){ const l = vlen(a) || 1; return [a[0]/l, a[1]/l]; }
+
+function svgLine(p1, p2, extra){
+  return `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="#2b2b2b" stroke-width="2" ${extra||''}/>`;
+}
+function svgDashLine(p1, p2){
+  return svgLine(p1, p2, 'stroke-dasharray="5,4" stroke="#b0b0b0"');
+}
+function svgDot(p, r, fill){
+  return `<circle cx="${p[0]}" cy="${p[1]}" r="${r||3.5}" fill="${fill||'#2b2b2b'}"/>`;
+}
+function svgLabel(p, text, dx, dy, opts){
+  opts = opts || {};
+  const size = opts.size || 14, weight = opts.weight || 800, color = opts.color || '#2b2b2b', anchor = opts.anchor || 'start';
+  return `<text x="${p[0]+(dx||0)}" y="${p[1]+(dy||0)}" font-size="${size}" font-weight="${weight}" fill="${color}" text-anchor="${anchor}">${text}</text>`;
+}
+function svgRightAngle(vertex, toward1, toward2, size){
+  const s = size || 12;
+  const d1 = vnorm(vsub(toward1, vertex));
+  const d2 = vnorm(vsub(toward2, vertex));
+  const a = vadd(vertex, vscale(d1, s));
+  const b = vadd(vertex, vscale(vadd(d1,d2), s));
+  const c = vadd(vertex, vscale(d2, s));
+  return `<polyline points="${a[0]},${a[1]} ${b[0]},${b[1]} ${c[0]},${c[1]}" fill="none" stroke="#9a9a9a" stroke-width="1.5"/>`;
+}
+function svgAngleArc(vertex, toward1, toward2, r, text, color){
+  color = color || '#d99206';
+  const d1 = vnorm(vsub(toward1, vertex));
+  const d2 = vnorm(vsub(toward2, vertex));
+  const a1 = vadd(vertex, vscale(d1, r));
+  const a2 = vadd(vertex, vscale(d2, r));
+  const cross = d1[0]*d2[1] - d1[1]*d2[0];
+  const sweep = cross > 0 ? 1 : 0;
+  const mid = vnorm(vadd(d1, d2));
+  const lp = vadd(vertex, vscale(mid, r + 16));
+  let s = `<path d="M ${a1[0]} ${a1[1]} A ${r} ${r} 0 0 ${sweep} ${a2[0]} ${a2[1]}" fill="none" stroke="${color}" stroke-width="2"/>`;
+  if(text){
+    s += `<text x="${lp[0]}" y="${lp[1]}" font-size="13" font-weight="700" fill="${color}" text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+  }
+  return s;
+}
+function svgTick(p1, p2){
+  const mid = vscale(vadd(p1, p2), 0.5);
+  const dir = vnorm(vsub(p2, p1));
+  const perp = [-dir[1], dir[0]];
+  const a = vadd(mid, vscale(perp, 5));
+  const b = vadd(mid, vscale(perp, -5));
+  return svgLine(a, b);
+}
+function wrapSvg(w, h, inner){
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:340px;display:block;margin:0 auto;">${inner}</svg>`;
+}
+
+function buildCoordGrid(cfg){
+  const scale = 26, pad = 26;
+  const w = pad*2 + (cfg.xmax - cfg.xmin) * scale;
+  const h = pad*2 + (cfg.ymax - cfg.ymin) * scale;
+  const px = x => pad + (x - cfg.xmin) * scale;
+  const py = y => pad + (cfg.ymax - y) * scale;
+  let s = '';
+  for(let x = cfg.xmin; x <= cfg.xmax; x++){
+    s += `<line x1="${px(x)}" y1="${py(cfg.ymin)}" x2="${px(x)}" y2="${py(cfg.ymax)}" stroke="#e8e8e8" stroke-width="1"/>`;
+  }
+  for(let y = cfg.ymin; y <= cfg.ymax; y++){
+    s += `<line x1="${px(cfg.xmin)}" y1="${py(y)}" x2="${px(cfg.xmax)}" y2="${py(y)}" stroke="#e8e8e8" stroke-width="1"/>`;
+  }
+  s += `<line x1="${px(cfg.xmin)}" y1="${py(0)}" x2="${px(cfg.xmax)}" y2="${py(0)}" stroke="#9a9a9a" stroke-width="2"/>`;
+  s += `<line x1="${px(0)}" y1="${py(cfg.ymin)}" x2="${px(0)}" y2="${py(cfg.ymax)}" stroke="#9a9a9a" stroke-width="2"/>`;
+  s += svgLabel([px(cfg.xmax), py(0)], 'x', -10, -8, {size:12, weight:700, color:'#9a9a9a'});
+  s += svgLabel([px(0), py(cfg.ymax)], 'y', 8, 12, {size:12, weight:700, color:'#9a9a9a'});
+  cfg.points.forEach(p => {
+    s += svgDot([px(p.x), py(p.y)], 4.5, '#F7AD19');
+    s += svgLabel([px(p.x), py(p.y)], p.label + '(' + p.x + ';' + p.y + ')', 8, -8, {size:13});
+  });
+  return wrapSvg(w, h, s);
+}
+
+function buildBarChart(data){
+  const w = 340, h = 220, padL = 34, padR = 16, padB = 30, padT = 20, gap = 16;
+  const maxV = Math.max.apply(null, data.map(d => d.value));
+  const barW = (w - padL - padR - gap * (data.length - 1)) / data.length;
+  const scaleY = (h - padT - padB) / (maxV * 1.15);
+  let s = '';
+  s += `<line x1="${padL}" y1="${h-padB}" x2="${w-padR}" y2="${h-padB}" stroke="#9a9a9a" stroke-width="2"/>`;
+  s += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${h-padB}" stroke="#9a9a9a" stroke-width="2"/>`;
+  data.forEach((d,i) => {
+    const barH = d.value * scaleY;
+    const x = padL + i*(barW+gap);
+    const y = h - padB - barH;
+    s += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="#F7AD19" rx="4"/>`;
+    s += `<text x="${x+barW/2}" y="${y-6}" font-size="12" font-weight="700" fill="#2b2b2b" text-anchor="middle">${d.value}</text>`;
+    s += `<text x="${x+barW/2}" y="${h-padB+16}" font-size="11" fill="#6b6b6b" text-anchor="middle">${d.label}</text>`;
+  });
+  return wrapSvg(w, h, s);
+}
+
+const DIAGRAMS = {
+  /* Задача 9 — c ∥ d, пресечени от a и b.
+     a е трансверзала на c и d, затова ∠(a,d) = ∠(a,c) = 83°;
+     в триъгълника, образуван от a, b и d, третият ъгъл е α. */
+  par9: function(){
+    function meet(p1, p2, p3, p4){
+      const a1 = p2[1]-p1[1], b1 = p1[0]-p2[0], c1 = a1*p1[0] + b1*p1[1];
+      const a2 = p4[1]-p3[1], b2 = p3[0]-p4[0], c2 = a2*p3[0] + b2*p3[1];
+      const det = a1*b2 - a2*b1;
+      return [(b2*c1 - b1*c2)/det, (a1*c2 - a2*c1)/det];
+    }
+    const c1=[225,18],  c2=[40,196];      // права c
+    const d1=[338,104], d2=[248,191];     // права d — успоредна на c
+    const a1=[130,10],  a2=[262,205];     // права a
+    const b1=[15,178],  b2=[330,116];     // права b
+    const Vac = meet(a1,a2,c1,c2);        // 83°
+    const Vab = meet(a1,a2,b1,b2);        // 62°
+    const Vbd = meet(b1,b2,d1,d2);        // α
+    let s = '';
+    s += svgLine(c1,c2); s += svgLine(d1,d2); s += svgLine(a1,a2); s += svgLine(b1,b2);
+    s += svgAngleArc(Vac, c1, a2, 24, '83°');
+    s += svgAngleArc(Vab, a1, b2, 22, '62°');
+    s += svgAngleArc(Vbd, b1, d2, 20, 'α');
+    s += svgLabel(a1, 'a', -14, 6);
+    s += svgLabel(c1, 'c', 6, 2);
+    s += svgLabel(b2, 'b', 4, 12);
+    s += svgLabel(d2, 'd', -2, 14);
+    return wrapSvg(350, 215, s);
+  },
+
+  /* Задача 10 — A(−3; −2) и B(2; 1); C е симетрична на A спрямо Oy. */
+  coord10: function(){
+    return buildCoordGrid({
+      xmin:-4, xmax:4, ymin:-4, ymax:3,
+      points: [ {x:-3,y:-2,label:'A'}, {x:2,y:1,label:'B'} ]
+    });
+  },
+
+  /* Задача 11 — AL е ъглополовяща на външния ъгъл при A и AL ∥ BC. */
+  tri11: function(){
+    const A=[120,175], B=[290,175], C=[248,42], L=[62,48];
+    let s = '';
+    s += svgLine([25,175], B);
+    s += svgLine(A,C); s += svgLine(B,C); s += svgLine(A,L);
+    s += svgAngleArc(A, L, [25,175], 30, '');
+    s += svgAngleArc(A, L, C, 20, '');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C);
+    s += svgLabel(A, 'A', 0, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 8, 18);
+    s += svgLabel(C, 'C', 6, -6);
+    s += svgLabel(L, 'L', -14, -2);
+    s += svgLabel([272,110], '6', 4, 0, {size:13, weight:700});
+    return wrapSvg(320, 205, s);
+  },
+
+  /* Задача 12 — O е пресечната точка на симетралите на AB и AC. */
+  tri12: function(){
+    const A=[52,178], B=[292,192], C=[212,26], O=[186,118];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C);
+    s += svgLine(C,O); s += svgLine(B,O); s += svgLine(A,O);
+    /* Всяка симетрала минава през средата на страната и през O — чертаем я
+       точно оттам, вместо да я поставяме на око. */
+    const midAC = [(A[0]+C[0])/2, (A[1]+C[1])/2];
+    const midAB = [(A[0]+B[0])/2, (A[1]+B[1])/2];
+    const beyond = (from, through, k) =>
+      [from[0] + (through[0]-from[0])*k, from[1] + (through[1]-from[1])*k];
+    s += svgDashLine(midAC, beyond(midAC, O, 1.7));
+    s += svgDashLine(midAB, beyond(midAB, O, 1.7));
+    s += svgAngleArc(C, A, O, 26, '42°');
+    s += svgAngleArc(B, O, A, 26, '35°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(O, 3);
+    s += svgLabel(A, 'A', -16, 6);
+    s += svgLabel(B, 'B', 8, 12);
+    s += svgLabel(C, 'C', 0, -8, {anchor:'middle'});
+    s += svgLabel(O, 'O', 9, -4);
+    s += svgLabel(midAC, 's', -16, -4, {size:12, weight:700, color:'#6b6b6b'});
+    s += svgLabel(midAB, 's', -4, 18, {size:12, weight:700, color:'#6b6b6b'});
+    return wrapSvg(320, 218, s);
+  },
+
+  /* Задача 13 — цветарник с форма на куб. */
+  cube13: function(){
+    const d = 36;
+    const A=[75,152], B=[205,152], C=[205,62], D=[75,62];
+    const B2=[B[0]+d,B[1]-d], C2=[C[0]+d,C[1]-d], D2=[D[0]+d,D[1]-d];
+    let s = '';
+    s += `<polygon points="${D[0]},${D[1]} ${C[0]},${C[1]} ${C2[0]},${C2[1]} ${D2[0]},${D2[1]}" fill="#efe6d6" stroke="#2b2b2b" stroke-width="2"/>`;
+    s += `<polygon points="${C[0]},${C[1]} ${B[0]},${B[1]} ${B2[0]},${B2[1]} ${C2[0]},${C2[1]}" fill="#e4d8c2" stroke="#2b2b2b" stroke-width="2"/>`;
+    s += `<polygon points="${A[0]},${A[1]} ${B[0]},${B[1]} ${C[0]},${C[1]} ${D[0]},${D[1]}" fill="#fbf7ef" stroke="#2b2b2b" stroke-width="2"/>`;
+    s += svgLine([A[0]+9,A[1]-22],[B[0]-9,B[1]-22], 'stroke="#cfc3ad" stroke-width="1.5"');
+    s += svgLine([A[0]+9,A[1]-52],[B[0]-9,B[1]-52], 'stroke="#cfc3ad" stroke-width="1.5"');
+    s += svgLabel([148,182], 'обиколка на основата 12 dm', 0, 0,
+                  {size:12, weight:700, color:'#6b6b6b', anchor:'middle'});
+    return wrapSvg(320, 200, s);
+  },
+
+  /* Задача 14 — равностранен △ABC, P ∈ AC, PM ⊥ AC, M ∈ AB. */
+  tri14: function(){
+    /* P е избрана по AC, а M е точката, в която перпендикулярът от P среща AB —
+       пресмятаме я, за да е правият ъгъл истински, а AM : MB ≈ 8 : 5 както в
+       условието. */
+    const A=[45,180], B=[300,180], C=[172,25], P=[108,102], M=[203,180];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C); s += svgLine(P,M);
+    s += svgRightAngle(P, A, M, 11);
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(P, 3); s += svgDot(M, 3);
+    s += svgLabel(A, 'A', -6, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 8, 18);
+    s += svgLabel(C, 'C', 0, -8, {anchor:'middle'});
+    s += svgLabel(P, 'P', -16, -4);
+    s += svgLabel(M, 'M', -4, 20, {anchor:'middle'});
+    s += svgLabel([70,148], '4', -8, 0, {size:13, weight:700});
+    s += svgLabel([252,180], '5', 0, 20, {size:13, weight:700, anchor:'middle'});
+    return wrapSvg(340, 205, s);
+  },
+
+  /* Задача 19 — таблица, а не чертеж. */
+  table19: function(){
+    return '<table class="diagram-table">' +
+      '<thead><tr>' +
+        '<th>фантастика</th><th>детска<br>литература</th>' +
+        '<th>техническа<br>литература</th><th>художествена<br>литература</th>' +
+      '</tr></thead>' +
+      '<tbody><tr>' +
+        '<td>75% от n</td><td>n : 2</td><td>n : 4</td><td>n</td>' +
+      '</tr></tbody></table>';
+  },
+
+  /* Задача 20 — стълб 3 m, укрепващо въже 5 m. */
+  pole20: function(){
+    const base=[55,168], foot=[252,168], top=[252,52];
+    let s = '';
+    s += svgLine(base, foot);
+    s += svgLine(foot, top, 'stroke-width="5"');
+    s += svgDashLine(base, top);
+    s += svgLabel([150,102], '5 m', 0, 0, {size:13, weight:800, anchor:'middle'});
+    s += svgLabel([262,112], '3 m', 0, 0, {size:13, weight:800});
+    s += svgRightAngle(foot, base, top, 13);
+    return wrapSvg(320, 195, s);
+  }
+};
+
+function diagramCardHTML(name){
+  const fn = DIAGRAMS[name];
+  return fn ? fn() : '';
+}
+
+/* =========================================================
+   ПРОВЕРКА НА СВОБОДНИ ОТГОВОРИ СПРЯМО КЛЮЧА
+========================================================= */
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function extractNumbers(str){
+  return (String(str).match(/\d+/g) || []).map(Number);
+}
+
+function hasNumber(str, n){
+  return extractNumbers(str).includes(n);
+}
+
+function hasWord(str, word){
+  return String(str).toLowerCase().includes(word.toLowerCase());
+}
+
+function hasFiveX(str){
+  const n = String(str).toLowerCase().replace(/,/g, '.');
+  return /(?<![0-9])5\s*[*·]?\s*x\b/.test(n);
+}
+
+/* =========================================================
+   ДАННИ — ЧАСТ 1 (задачи 1-21)
+   kind: "mc" (избираем отговор), "free" (кратък свободен отговор),
+   "free-multi" (свободен отговор с подточки)
+========================================================= */
+
+const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'];
+
+const part1Steps = [
+  { id:1, kind:'mc', points:2,
+    text:'Стойността на израза 2025 − 225·(−1/5) е:',
+    options:['−360', '360', '1980', '2070'], correct:3,
+    explanation:'225·(−1/5) = −45, затова 2025 − (−45) = 2025 + 45 = 2070.' },
+  { id:2, kind:'mc', points:2,
+    text:'Стойността на израза x³·(x³/x²)⁻⁶ при x = −3 е:',
+    options:['−9', '−1/27', '1/27', '9'], correct:1,
+    explanation:'x³/x² = x, значи изразът е x³·x⁻⁶ = x⁻³ = 1/x³. При x = −3: 1/(−27) = −1/27.' },
+  { id:3, kind:'mc', points:2,
+    text:'Изразът 49 − x² е тъждествено равен на:',
+    options:['(x + 7)(x − 7)', '(7 + x)(7 + x)', '(7 + x)(7 − x)', '(7 − x)(7 − x)'], correct:2,
+    explanation:'Разлика на квадрати: 49 − x² = 7² − x² = (7 + x)(7 − x).' },
+  { id:4, kind:'mc', points:3,
+    text:'Сборът от корените на уравнението |x − 6| − 7 = −4 е:',
+    options:['3', '6', '9', '12'], correct:3,
+    explanation:'|x − 6| = 3 ⇒ x − 6 = 3 или x − 6 = −3, откъдето x₁ = 9 и x₂ = 3. Сборът им е 12.' },
+  { id:5, kind:'mc', points:3,
+    text:'Най-голямото цяло число, което е решение на неравенството 8 − x > 6(x − 1), е:',
+    options:['−2', '−1', '1', '2'], correct:2,
+    explanation:'8 − x > 6x − 6 ⇒ 8 + 6 > 6x + x ⇒ 14 > 7x ⇒ x < 2. Най-голямото цяло число под 2 е 1.' },
+  { id:6, kind:'mc', points:3,
+    text:'Множителят, който НЕ участва в представянето на многочлена x⁴ + x³ − 4x² − 4x като произведение на множители, е:',
+    options:['x + 2', 'x + 1', 'x − 1', 'x − 2'], correct:2,
+    explanation:'x⁴ + x³ − 4x² − 4x = x(x³ + x² − 4x − 4) = x[x²(x + 1) − 4(x + 1)] = x(x + 1)(x² − 4) = x(x + 1)(x − 2)(x + 2). Множителят x − 1 не участва.' },
+  { id:7, kind:'mc', points:3,
+    text:'В тест по математика всяка задача има по четири възможни отговора, от които само един е правилен. Ученик избира по случаен начин един от отговорите на първата задача. Каква е вероятността той да е избрал правилния отговор?',
+    options:['3/4', '2/3', '1/3', '1/4'], correct:3,
+    explanation:'Един благоприятен изход от четири равновъзможни: P = 1/4.' },
+  { id:8, kind:'mc', points:3,
+    text:'Средният брой точки на ученик от четири контролни изпитвания е 23,75. Колко точки трябва да получи на следващото изпитване, така че средният брой точки от тези пет изпитвания да е 25?',
+    options:['25', '30', '35', '40'], correct:1,
+    explanation:'От четирите изпитвания има 4·23,75 = 95 точки. За среден резултат 25 от пет изпитвания трябват 5·25 = 125 точки, значи на петото са нужни 125 − 95 = 30 точки.' },
+  { id:9, kind:'mc', points:3, diagram:'par9',
+    text:'На чертежа правите c и d са успоредни. По данните от чертежа мярката на ъгъл α е:',
+    options:['35°', '45°', '62°', '83°'], correct:0,
+    explanation:'Правата a пресича успоредните c и d, затова ъгълът между a и d е равен на 83° (съответни ъгли). В триъгълника, образуван от a, b и d, другите два ъгъла са 83° и 62°, следователно α = 180° − 83° − 62° = 35°.' },
+  { id:10, kind:'mc', points:4, diagram:'coord10',
+    text:'На чертежа в координатна система Oxy с единична отсечка 1 cm са отбелязани точките A и B. Точката C е симетрична на точка A спрямо ординатната ос Oy. Лицето на △ABC е:',
+    options:['9 cm²', '10 cm²', '18 cm²', '20 cm²'], correct:0,
+    explanation:'A(−3; −2) и B(2; 1). Симетричната на A спрямо Oy е C(3; −2). Основата AC лежи на правата y = −2 и е дълга 3 − (−3) = 6 cm, а височината от B до нея е 1 − (−2) = 3 cm. Лицето е (6·3)/2 = 9 cm².' },
+  { id:11, kind:'mc', points:3, diagram:'tri11',
+    text:'Лъчът AL е ъглополовящата на външния ъгъл при върха A в △ABC и AL е успоредна на BC. Ако страната BC = 6 cm и периметърът на △ABC е 20 cm, то дължината на страната AB е:',
+    options:['6 cm', '7 cm', '8 cm', '9 cm'], correct:1,
+    explanation:'От AL ∥ BC следват равни ъгли, които заедно с равенството на двете половини на външния ъгъл дават ∠ABC = ∠ACB, тоест △ABC е равнобедрен с AB = AC. Тогава AB + AC = 20 − 6 = 14 и AB = 7 cm.' },
+  { id:12, kind:'mc', points:3, diagram:'tri12',
+    text:'Симетралите на страните AB и AC на △ABC се пресичат в точката O, така че ∠OCA = 42° и ∠OBA = 35°, както е показано на чертежа. Мярката на ∠BOC е:',
+    options:['120°', '145°', '154°', '167°'], correct:2,
+    explanation:'O е центърът на описаната окръжност, затова OA = OB = OC. От равнобедрените триъгълници: ∠OAC = ∠OCA = 42° и ∠OAB = ∠OBA = 35°, значи ∠BAC = 42° + 35° = 77°. Централният ъгъл е двойно по-голям от вписания: ∠BOC = 2·77° = 154°.' },
+  { id:13, kind:'mc', points:4, diagram:'cube13',
+    text:'Цветарник с форма на куб има обиколка на основата 12 dm. Колко литра почва са необходими за запълването на 2/3 от обема на цветарника?',
+    options:['9 L', '12 L', '15 L', '18 L'], correct:3,
+    explanation:'Основата е квадрат с обиколка 12 dm, значи ръбът е 12 : 4 = 3 dm. Обемът е 3³ = 27 dm³ = 27 L, а 2/3 от него са 18 L.' },
+  { id:14, kind:'mc', points:4, diagram:'tri14',
+    text:'В равностранния △ABC от точка P, която е от страната AC, е издигнат перпендикуляр PM (M ∈ AB). Ако AP = 4 cm и MB = 5 cm, то дължината на страната AB е:',
+    options:['13 cm', '14 cm', '15 cm', '18 cm'], correct:0,
+    explanation:'В правоъгълния △APM имаме ∠A = 60° и ∠APM = 90°, значи ∠AMP = 30°. Срещу ъгъл 30° лежи катет, равен на половината от хипотенузата, затова AM = 2·AP = 8 cm. Тогава AB = AM + MB = 8 + 5 = 13 cm.' },
+  { id:15, kind:'mc', points:4,
+    text:'Мерките на два от ъглите на успоредник се отнасят както 2 : 7. Разликата от мерките на двата ъгъла е:',
+    options:['40°', '100°', '140°', '150°'], correct:1,
+    explanation:'Ъглите не са равни, значи са прилежащи и сборът им е 180°. От 2k + 7k = 180° следва k = 20°, тоест ъглите са 40° и 140°, а разликата им е 100°.' },
+  { id:16, kind:'mc', points:4,
+    text:'Във фирма работят 30 жени, които са 2/5 от броя на мъжете. Общият брой на работещите мъже и жени във фирмата е:',
+    options:['42', '50', '75', '105'], correct:3,
+    explanation:'Ако мъжете са m, то 2/5·m = 30, откъдето m = 75. Общо: 75 + 30 = 105 души.' },
+  { id:17, kind:'mc', points:4,
+    text:'Първоначалната такса при ползване на такси е 2,50 лв. За всеки изминат километър се заплаща по 1,75 лв. Кой от изразите представя сумата в лева, която клиент трябва да заплати при изминаване на x километра?',
+    options:['2,5x + 1,75', '1,75x − 2,5', '2,5 + 1,75x', '1,75x'], correct:2,
+    explanation:'Началната такса 2,50 лв. се плаща веднъж, а за x километра се добавят по 1,75 лв. на километър: 2,5 + 1,75x.' },
+  { id:18, kind:'mc', points:4,
+    text:'В тренировка по ориентиране Ивет изминава 20% от определен маршрут за 1/6 часа. Какъв процент от този маршрут ще измине за 45 минути?',
+    options:['45%', '54%', '75%', '90%'], correct:3,
+    explanation:'1/6 часа са 10 минути, значи за 10 минути се изминават 20%. 45 минути са 4,5 пъти по 10 минути, затова процентът е 4,5·20% = 90%.' },
+  { id:19, kind:'mc', points:4, diagram:'table19',
+    text:'В книжарница за един месец са продадени общо 1200 книги от видовете: художествена литература, детска литература, техническа литература и фантастика. В таблицата е представено разпределението на броя продадени книги по видове. Колко броя книги художествена литература са продадени за този месец?',
+    options:['600', '480', '360', '120'], correct:1,
+    explanation:'Сборът е 0,75n + n/2 + n/4 + n = 2,5n. От 2,5n = 1200 следва n = 480, а художествената литература е точно n = 480 книги.' },
+  { id:20, kind:'mc', points:3, diagram:'pole20',
+    text:'За укрепването на стълб с височина 3 m се използва метално въже с дължина 5 m. На какво разстояние от основата на стълба трябва да се закрепи въжето?',
+    options:['3 m', '4 m', '5 m', '6 m'], correct:1,
+    explanation:'Стълбът, въжето и земята образуват правоъгълен триъгълник с хипотенуза 5 m и катет 3 m. По Питагоровата теорема другият катет е √(25 − 9) = √16 = 4 m.' }
+];
+
+const part2Steps = [
+  { id:21, points:12,
+    intro:'Даден е многочленът M = x⁴ + 2x³ − 2x − 1.',
+    subparts:[
+      { label:'А', prompt:'Представете многочлена M като произведение на множители от първа степен.',
+        solution:'M = (x⁴ − 1) + 2x(x² − 1) = (x² − 1)(x² + 1) + 2x(x² − 1) = (x² − 1)(x² + 2x + 1) = (x − 1)(x + 1)(x + 1)² = (x − 1)(x + 1)(x + 1)(x + 1).' },
+      { label:'Б', prompt:'Намерете всички стойности на x, за които многочленът M приема стойност 0.',
+        solution:'(x − 1)(x + 1)³ = 0 ⇒ x − 1 = 0 или x + 1 = 0, откъдето x₁ = 1 и x₂ = −1.' },
+      { label:'В', prompt:'Намерете най-малкото цяло отрицателно решение на неравенството (x + 4)² − (14x + 3)/2 − (2 − x)² > 2x.',
+        solution:'Умножаваме по 2: 2(x + 4)² − (14x + 3) − 2(2 − x)² > 4x ⇒ 2(x² + 8x + 16) − 14x − 3 − 2(4 − 4x + x²) > 4x ⇒ 2x² + 16x + 32 − 14x − 3 − 8 + 8x − 2x² > 4x ⇒ 10x + 21 > 4x ⇒ 6x > −21 ⇒ x > −3,5. Най-малкото цяло отрицателно решение е −3.' }
+    ] },
+  { id:22, points:11,
+    intro:'В 9 часа́ от град A към град B потегля автобус, който се движи с постоянна скорост. След 20 минути от град B към град A с пълен резервоар потегля автомобил. Той се движи с постоянна скорост, която е с 15 km/h по-голяма от скоростта на автобуса. В 11 часа́ превозните средства се срещат на бензиностанция по средата на пътя между град A и град B.',
+    subparts:[
+      { label:'А', prompt:'Намерете скоростта на автомобила и разстоянието между двата града.',
+        solution:'Нека скоростта на автобуса е x km/h. Автобусът пътува от 9:00 до 11:00, тоест 2 h, и изминава 2x km. Автомобилът пътува от 9:20 до 11:00, тоест 1 h 40 min = 5/3 h, и изминава (5/3)(x + 15) km. Срещат се по средата, значи двата пътя са равни: 2x = (5/3)(x + 15) ⇒ 6x = 5x + 75 ⇒ x = 75 km/h. Скоростта на автомобила е 75 + 15 = 90 km/h. Половината път е 2·75 = 150 km, значи AB = 300 km.' },
+      { label:'Б', prompt:'На бензиностанцията шофьорът на автомобила допълва резервоара със 7,8 литра гориво. Намерете разхода на гориво на автомобила за 100 km.',
+        solution:'Автомобилът е изминал 150 km и е изразходвал 7,8 литра. От пропорцията 150 : 100 = 7,8 : x следва 3x = 15,6, тоест x = 5,2. Разходът е 5,2 литра на 100 km.' }
+    ] },
+  { id:23, points:12,
+    intro:'В △ABC отношението на ъглите е, както следва ∠BAC : ∠ABC : ∠ACB = 1 : 9 : 2. Точка P лежи на лъча AB→, B е между A и P и BC = PC. Точка M лежи на лъча CB→, B е между C и M и AM = AB.',
+    subparts:[
+      { label:'А', prompt:'Намерете мерките на ъглите на △ABC, △BCP и △AMB.',
+        solution:'От ∠BAC + ∠ABC + ∠ACB = 180° и отношението 1 : 9 : 2 следва k + 9k + 2k = 180°, тоест k = 15°. Значи ∠BAC = 15°, ∠ABC = 135°, ∠ACB = 30°. В △BCP: ∠CBP = 45° (съседен на ∠ABC), а BC = PC прави триъгълника равнобедрен, откъдето ∠BPC = 45° и ∠BCP = 90°. В △AMB: ∠ABM = 45° (съседен на ∠ABC), а AM = AB прави △AMB равнобедрен, откъдето ∠AMB = 45° и ∠MAB = 90°.' },
+      { label:'Б', prompt:'През точка C е построена права c ∥ AB, а през точка A — права a ∥ BC и a ∩ c = D. Намерете мерките на ъглите на △MDP.',
+        solution:'От DC ∥ AB и AD ∥ BC следва, че ABCD е успоредник с ъгли 45° и 135°; при това ∠DCA = ∠CAB = 15° и ∠ACB = ∠CAD = 30°, значи ∠DAB = 45°. Разглеждаме △MDA и △DCP: AD = CP (защото AD = BC и BC = CP), AM = DC (защото AM = AB и AB = DC), а ∠DAM = ∠PCD = 135°. Следователно △MAD ≅ △DCP по I признак, откъдето MD = DP, ∠AMD = ∠PDC и ∠ADM = ∠DPC. От MD = DP триъгълникът MPD е равнобедрен. Освен това ∠AMD + ∠ADM = 180° − 135° = 45°, значи ∠ADM + ∠PDC = 45° и ∠MDP = ∠ADC − 45° = 135° − 45° = 90°. Следователно △MDP е равнобедрен правоъгълен с ъгли 90°, 45° и 45°.' }
+    ] }
+];
+
+/* =========================================================
+   СЪСТОЯНИЕ
+========================================================= */
+
+let p1Index = 0;
+let p1Answers = new Array(part1Steps.length).fill(null);
+let p2Index = 0;
+let p2Answers = new Array(part2Steps.length).fill(null);
+let lastPart1Records = null;
+
+/* =========================================================
+   DOM ЕЛЕМЕНТИ
+========================================================= */
+
+const startScreen = document.getElementById('start-screen');
+const part1Screen = document.getElementById('part1-screen');
+const part1InterimScreen = document.getElementById('part1-interim-screen');
+const part2IntroScreen = document.getElementById('part2-intro-screen');
+const part2Screen = document.getElementById('part2-screen');
+const finalScreen = document.getElementById('final-screen');
+const reviewScreen = document.getElementById('review-screen');
+const allScreens = [startScreen, part1Screen, part1InterimScreen, part2IntroScreen, part2Screen, finalScreen, reviewScreen];
+
+const startBtn = document.getElementById('start-btn');
+
+const p1CurrentQEl = document.getElementById('p1-current-q');
+const p1TotalQEl = document.getElementById('p1-total-q');
+const p1TimerEl = document.getElementById('p1-timer');
+const p1ProgressFillEl = document.getElementById('p1-progress-fill');
+const p1CategoryEl = document.getElementById('p1-category');
+const p1PointsEl = document.getElementById('p1-points');
+const p1DiagramEl = document.getElementById('p1-diagram');
+const p1OptionsListEl = document.getElementById('p1-options-list');
+const p1PrevBtn = document.getElementById('p1-prev-btn');
+const p1NextBtn = document.getElementById('p1-next-btn');
+const p1FinishBtn = document.getElementById('p1-finish-btn');
+
+const continueToPart2Btn = document.getElementById('continue-to-part2-btn');
+const startPart2Btn = document.getElementById('start-part2-btn');
+
+const p2CurrentQEl = document.getElementById('p2-current-q');
+const p2TotalQEl = document.getElementById('p2-total-q');
+const p2TimerEl = document.getElementById('p2-timer');
+const p2ProgressFillEl = document.getElementById('p2-progress-fill');
+const p2CategoryEl = document.getElementById('p2-category');
+const p2PointsEl = document.getElementById('p2-points');
+const p2SubpartsEl = document.getElementById('p2-subparts');
+const p2PrevBtn = document.getElementById('p2-prev-btn');
+const p2NextBtn = document.getElementById('p2-next-btn');
+const p2FinishBtn = document.getElementById('p2-finish-btn');
+
+/* =========================================================
+   GOOGLE ANALYTICS
+========================================================= */
+
+function trackEvent(name, params){
+  if(typeof window.gtag === 'function'){
+    window.gtag('event', name, params || {});
+  }
+}
+
+/* =========================================================
+   НАВИГАЦИЯ МЕЖДУ ЕКРАНИ
+========================================================= */
+
+function showScreen(screenEl){
+  allScreens.forEach(s => s.classList.remove('active'));
+  screenEl.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   ТАЙМЕР (обща фабрика — Част 1 и Част 2 имат независими инстанции)
+========================================================= */
+
+/* 2025: Част 1 е 75 минути, Част 2 е 90 — двата модула не са еднакви,
+   затова всеки таймер носи собствената си продължителност. */
+const PART1_DURATION_SECONDS = 75 * 60;
+const PART2_DURATION_SECONDS = 90 * 60;
+const WARNING_THRESHOLD_SECONDS = 10 * 60;
+
+function formatTime(totalSeconds){
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const paddedSeconds = seconds < 10 ? '0' + seconds : String(seconds);
+  return minutes + ':' + paddedSeconds;
+}
+
+function createTimer(timerEl, onTimeUp, durationSeconds){
+  let startTime = null;
+  let intervalId = null;
+  let ended = false;
+
+  function tick(){
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const remaining = Math.max(durationSeconds - elapsed, 0);
+    timerEl.textContent = 'Оставащо време: ' + formatTime(remaining);
+    timerEl.classList.toggle('timer-warning', remaining <= WARNING_THRESHOLD_SECONDS);
+    if(remaining <= 0 && !ended){
+      ended = true;
+      stop();
+      onTimeUp();
+    }
+  }
+
+  function start(){
+    if(intervalId !== null) return;
+    startTime = Date.now();
+    ended = false;
+    tick();
+    intervalId = setInterval(tick, 1000);
+  }
+
+  function stop(){
+    if(intervalId !== null){
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
+  return {
+    start: start,
+    stop: stop,
+    isEnded: function(){ return ended; }
+  };
+}
+
+const part1Timer = createTimer(p1TimerEl, handlePart1TimeUp, PART1_DURATION_SECONDS);
+const part2Timer = createTimer(p2TimerEl, handlePart2TimeUp, PART2_DURATION_SECONDS);
+
+/* =========================================================
+   ЧАСТ 1 — РЕНДИРАНЕ И НАВИГАЦИЯ
+========================================================= */
+
+function renderPart1Step(){
+  const step = part1Steps[p1Index];
+
+  p1CurrentQEl.textContent = p1Index + 1;
+  p1TotalQEl.textContent = part1Steps.length;
+  p1ProgressFillEl.style.width = ((p1Index + 1) / part1Steps.length * 100) + '%';
+
+  const isMC = step.kind === 'mc';
+  p1CategoryEl.textContent = 'Задача ' + step.id;
+  p1CategoryEl.className = 'question-category' + (isMC ? '' : ' review-pill');
+
+  const totalPts = step.kind === 'free-multi'
+    ? step.subparts.reduce((a,s) => a + s.points, 0)
+    : step.points;
+  p1PointsEl.textContent = totalPts + (totalPts === 1 ? ' точка' : ' точки');
+
+  if(step.diagram){
+    p1DiagramEl.innerHTML = diagramCardHTML(step.diagram);
+    p1DiagramEl.style.display = 'block';
+  } else {
+    p1DiagramEl.innerHTML = '';
+    p1DiagramEl.style.display = 'none';
+  }
+
+  p1OptionsListEl.innerHTML = '';
+
+  if(isMC){
+    const textEl = document.createElement('p');
+    textEl.className = 'question-text';
+    textEl.textContent = step.text;
+    p1OptionsListEl.appendChild(textEl);
+
+    const list = document.createElement('div');
+    list.className = 'options-list';
+    step.options.forEach((optionText, idx) => {
+      const optionEl = document.createElement('button');
+      optionEl.type = 'button';
+      optionEl.className = 'option' + (p1Answers[p1Index] === idx ? ' selected' : '');
+      optionEl.innerHTML = `<span class="option-letter">${OPTION_LETTERS[idx]}</span><span class="option-text">${optionText}</span>`;
+      optionEl.addEventListener('click', () => {
+        p1Answers[p1Index] = idx;
+        renderPart1Step();
+      });
+      list.appendChild(optionEl);
+    });
+    p1OptionsListEl.appendChild(list);
+
+  } else if(step.kind === 'free'){
+    if(step.intro){
+      const introEl = document.createElement('p');
+      introEl.className = 'task-intro';
+      introEl.textContent = step.intro;
+      p1OptionsListEl.appendChild(introEl);
+    }
+    const textEl = document.createElement('p');
+    textEl.className = 'question-text';
+    textEl.textContent = step.prompt;
+    p1OptionsListEl.appendChild(textEl);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'free-text-block';
+    const inputEl = document.createElement('input');
+    inputEl.type = 'text';
+    inputEl.className = 'free-text-input';
+    inputEl.placeholder = 'Твоят отговор...';
+    inputEl.autocomplete = 'off';
+    inputEl.value = typeof p1Answers[p1Index] === 'string' ? p1Answers[p1Index] : '';
+    inputEl.addEventListener('input', () => { p1Answers[p1Index] = inputEl.value; });
+    wrap.appendChild(inputEl);
+
+    const noteEl = document.createElement('p');
+    noteEl.className = 'free-text-note';
+    noteEl.textContent = 'Отговорът се проверява автоматично спрямо ключа.';
+    wrap.appendChild(noteEl);
+
+    p1OptionsListEl.appendChild(wrap);
+
+  } else if(step.kind === 'free-multi'){
+    if(step.intro){
+      const introEl = document.createElement('p');
+      introEl.className = 'task-intro';
+      introEl.textContent = step.intro;
+      p1OptionsListEl.appendChild(introEl);
+    }
+    if(!p1Answers[p1Index] || typeof p1Answers[p1Index] !== 'object'){
+      p1Answers[p1Index] = {};
+    }
+    step.subparts.forEach(sp => {
+      const block = document.createElement('div');
+      block.className = 'subpart-block';
+
+      const promptEl = document.createElement('p');
+      promptEl.className = 'subpart-prompt';
+      promptEl.innerHTML = `<span class="subpart-label">${sp.label})</span>${sp.prompt}`;
+      block.appendChild(promptEl);
+
+      const inputEl = document.createElement('input');
+      inputEl.type = 'text';
+      inputEl.className = 'free-text-input';
+      inputEl.placeholder = 'Твоят отговор...';
+      inputEl.autocomplete = 'off';
+      inputEl.value = p1Answers[p1Index][sp.label] || '';
+      inputEl.addEventListener('input', () => { p1Answers[p1Index][sp.label] = inputEl.value; });
+      block.appendChild(inputEl);
+
+      p1OptionsListEl.appendChild(block);
+    });
+
+    const noteEl = document.createElement('p');
+    noteEl.className = 'free-text-note';
+    noteEl.style.marginTop = '14px';
+    noteEl.textContent = 'Отговорите се проверяват автоматично спрямо ключа.';
+    p1OptionsListEl.appendChild(noteEl);
+  }
+
+  p1PrevBtn.disabled = p1Index === 0;
+  const isLast = p1Index === part1Steps.length - 1;
+  p1NextBtn.style.display = isLast ? 'none' : 'block';
+  p1FinishBtn.style.display = isLast ? 'block' : 'none';
+}
+
+startBtn.addEventListener('click', () => {
+  p1Index = 0;
+  showScreen(part1Screen);
+  renderPart1Step();
+  part1Timer.start();
+  trackEvent('matura2025_part1_started', { event_category: 'matura2025' });
+});
+
+p1PrevBtn.addEventListener('click', () => {
+  if(p1Index > 0){ p1Index--; renderPart1Step(); }
+});
+
+p1NextBtn.addEventListener('click', () => {
+  if(p1Index < part1Steps.length - 1){ p1Index++; renderPart1Step(); }
+});
+
+p1FinishBtn.addEventListener('click', () => {
+  if(part1Timer.isEnded()) return;
+  part1Timer.stop();
+  finishPart1('finished');
+});
+
+function handlePart1TimeUp(){
+  finishPart1('time_up');
+}
+
+function finishPart1(completionType){
+  const results = calculatePart1();
+  renderPart1Interim(results);
+  showScreen(part1InterimScreen);
+  trackEvent('matura2025_part1_completed', {
+    event_category: 'matura2025',
+    completion_type: completionType,
+    auto_score: results.autoScore,
+    auto_max: results.autoMax
+  });
+}
+
+function buildPart1Records(){
+  const records = [];
+
+  part1Steps.forEach((step, idx) => {
+    if(step.kind === 'mc'){
+      const chosen = p1Answers[idx];
+      const isCorrect = chosen === step.correct;
+      records.push({
+        id: String(step.id), kind: 'mc', points: step.points, earned: isCorrect ? step.points : 0,
+        correct: isCorrect, text: step.text, options: step.options,
+        correctIndex: step.correct, chosenIndex: (typeof chosen === 'number') ? chosen : null,
+        explanation: step.explanation
+      });
+    } else if(step.kind === 'free'){
+      const raw = typeof p1Answers[idx] === 'string' ? p1Answers[idx].trim() : '';
+      const isCorrect = raw !== '' && step.check(raw);
+      records.push({
+        id: String(step.id), kind: 'free', points: step.points, earned: isCorrect ? step.points : 0,
+        correct: isCorrect, prompt: step.prompt, studentAnswer: raw || '(няма отговор)',
+        referenceAnswer: step.correctAnswer, explanation: step.explanation
+      });
+    } else if(step.kind === 'free-multi'){
+      step.subparts.forEach(sp => {
+        const raw = (p1Answers[idx] && typeof p1Answers[idx][sp.label] === 'string') ? p1Answers[idx][sp.label].trim() : '';
+        const isCorrect = raw !== '' && sp.check(raw);
+        records.push({
+          id: step.id + sp.label, kind: 'free', points: sp.points, earned: isCorrect ? sp.points : 0,
+          correct: isCorrect, prompt: sp.prompt, studentAnswer: raw || '(няма отговор)',
+          referenceAnswer: sp.correctAnswer, explanation: sp.explanation
+        });
+      });
+    }
+  });
+
+  return records;
+}
+
+function calculatePart1(){
+  const records = buildPart1Records();
+  const autoScore = records.reduce((a, r) => a + r.earned, 0);
+  const autoMax = records.reduce((a, r) => a + r.points, 0);
+  return { autoScore: autoScore, autoMax: autoMax, records: records };
+}
+
+function renderPart1Interim(results){
+  lastPart1Results = results;
+  document.getElementById('p1i-score-fraction').textContent = results.autoScore + ' / ' + results.autoMax;
+  document.getElementById('p1i-score-percentage').textContent =
+    Math.round((results.autoScore / results.autoMax) * 100) + '%';
+}
+
+continueToPart2Btn.addEventListener('click', () => {
+  showScreen(part2IntroScreen);
+});
+
+/* =========================================================
+   ЧАСТ 2 — РЕНДИРАНЕ И НАВИГАЦИЯ
+========================================================= */
+
+function renderPart2Step(){
+  const step = part2Steps[p2Index];
+
+  p2CurrentQEl.textContent = p2Index + 1;
+  p2TotalQEl.textContent = part2Steps.length;
+  p2ProgressFillEl.style.width = ((p2Index + 1) / part2Steps.length * 100) + '%';
+
+  p2CategoryEl.textContent = 'Задача ' + step.id;
+  p2PointsEl.textContent = step.points + ' точки';
+
+  p2SubpartsEl.innerHTML = '';
+
+  const introEl = document.createElement('p');
+  introEl.className = 'task-intro';
+  introEl.textContent = step.intro;
+  p2SubpartsEl.appendChild(introEl);
+
+  if(!p2Answers[p2Index] || typeof p2Answers[p2Index] !== 'object'){
+    p2Answers[p2Index] = {};
+  }
+
+  step.subparts.forEach(sp => {
+    const block = document.createElement('div');
+    block.className = 'subpart-block';
+
+    const promptEl = document.createElement('p');
+    promptEl.className = 'subpart-prompt';
+    promptEl.innerHTML = `<span class="subpart-label">${sp.label})</span>${sp.prompt}`;
+    block.appendChild(promptEl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'essay-textarea';
+    ta.placeholder = 'Решение...';
+    ta.value = p2Answers[p2Index][sp.label] || '';
+    ta.addEventListener('input', () => { p2Answers[p2Index][sp.label] = ta.value; });
+    block.appendChild(ta);
+
+    const noteEl = document.createElement('p');
+    noteEl.className = 'free-text-note';
+    noteEl.textContent = 'Запиши пълното си решение — в резултата ще видиш примерно решение за сравнение.';
+    block.appendChild(noteEl);
+
+    p2SubpartsEl.appendChild(block);
+  });
+
+  p2PrevBtn.disabled = p2Index === 0;
+  const isLast = p2Index === part2Steps.length - 1;
+  p2NextBtn.style.display = isLast ? 'none' : 'block';
+  p2FinishBtn.style.display = isLast ? 'block' : 'none';
+}
+
+startPart2Btn.addEventListener('click', () => {
+  p2Index = 0;
+  showScreen(part2Screen);
+  renderPart2Step();
+  part2Timer.start();
+  trackEvent('matura2025_part2_started', { event_category: 'matura2025' });
+});
+
+p2PrevBtn.addEventListener('click', () => {
+  if(p2Index > 0){ p2Index--; renderPart2Step(); }
+});
+
+p2NextBtn.addEventListener('click', () => {
+  if(p2Index < part2Steps.length - 1){ p2Index++; renderPart2Step(); }
+});
+
+p2FinishBtn.addEventListener('click', () => {
+  if(part2Timer.isEnded()) return;
+  part2Timer.stop();
+  finishPart2('finished');
+});
+
+function handlePart2TimeUp(){
+  finishPart2('time_up');
+}
+
+function finishPart2(completionType){
+  showFinalScreen();
+  trackEvent('matura2025_part2_completed', { event_category: 'matura2025', completion_type: completionType });
+}
+
+function buildPart2Records(){
+  const records = [];
+  part2Steps.forEach((step, idx) => {
+    step.subparts.forEach(sp => {
+      const raw = p2Answers[idx] && typeof p2Answers[idx][sp.label] === 'string' ? p2Answers[idx][sp.label].trim() : '';
+      records.push({ id: step.id + sp.label, prompt: sp.prompt, studentAnswer: raw || '(няма отговор)', solution: sp.solution,
+                     taskId: step.id, taskPoints: step.points });
+    });
+  });
+  return records;
+}
+
+/* =========================================================
+   ФИНАЛЕН ЕКРАН
+========================================================= */
+
+function showFinalScreen(){
+  const results = calculatePart1();
+  lastPart1Records = results.records;
+
+  document.getElementById('final-score-fraction').textContent = results.autoScore + ' / ' + results.autoMax;
+  document.getElementById('final-score-percentage').textContent =
+    Math.round((results.autoScore / results.autoMax) * 100) + '%';
+
+  showScreen(finalScreen);
+  saveAttemptToPortal(results);
+}
+
+/* Hands the result to the student portal. Reuses what the exam already
+   built -- calculatePart1() for Part 1 and buildPart2Records() for the
+   essay tasks the teacher marks by hand -- so no result format changes
+   here. Failure is reported on screen but never blocks the result the
+   student is looking at. */
+async function saveAttemptToPortal(results){
+  const note = document.getElementById('portal-save-note');
+  if (typeof TLA === 'undefined' || !TLA.isConfigured()) return;
+  try {
+    const session = await TLA.getSession();
+    if (!session) {
+      if (note) {
+        note.textContent = 'Резултатът не е записан — не сте влезли в профила си.';
+        note.hidden = false;
+      }
+      return;
+    }
+    const saved = await TLA.saveAttempt('matura2025', {
+      autoScore: results.autoScore,
+      autoMax: results.autoMax,
+      manualMax: 35,
+      records: results.records,
+      part2: buildPart2Records()
+    });
+    if (note) {
+      note.textContent = 'Резултатът е записан в профила ви.';
+      note.hidden = false;
+    }
+
+    /* Part 2 can only be judged by reading what was written, so it is not
+       marked here. It is marked from the teacher's dashboard, which is
+       where the AI grading happens -- nothing on this page pays for or
+       calls a model. Until then the profile shows it as being graded. */
+    if (saved && saved.id && note) {
+      note.textContent = 'Резултатът е записан в профила ви. Отговорите със свободен текст се оценяват.';
+    }
+  } catch (err) {
+    /* This paper is not seeded in the database, so "няма такова задание"
+       is the normal case, not a fault worth showing. Anything else is. */
+    if (note && !/Липсва задание/.test(err.message || '')) {
+      note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
+      note.hidden = false;
+    }
+  }
+}
+
+document.getElementById('open-review-btn').addEventListener('click', () => {
+  renderReviewScreen();
+  showScreen(reviewScreen);
+  trackEvent('matura2025_review_opened', { event_category: 'matura2025' });
+});
+
+document.getElementById('back-to-result-btn').addEventListener('click', () => {
+  showScreen(finalScreen);
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  window.location.reload();
+});
+
+/* =========================================================
+   ПРЕГЛЕД НА ОТГОВОРИТЕ — верният отговор в зелено, грешният в
+   червено, с обяснение от ключа под всеки въпрос
+========================================================= */
+
+function renderMcReview(r){
+  const optionsHtml = r.options.map((opt, i) => {
+    let cls = 'review-option';
+    let marker = '';
+    if(i === r.correctIndex){ cls += ' correct'; marker = ' ✓'; }
+    else if(i === r.chosenIndex){ cls += ' incorrect'; marker = ' ✗'; }
+    return `<div class="${cls}"><span class="option-letter">${OPTION_LETTERS[i]}</span><span class="option-text">${escapeHtml(opt)}${marker}</span></div>`;
+  }).join('');
+
+  return `
+    <div class="review-item">
+      <div class="review-item-header">
+        <span class="question-category">Задача ${r.id}</span>
+        <span class="review-badge ${r.correct ? 'correct' : 'incorrect'}">${r.correct ? '✓' : '✗'}</span>
+      </div>
+      <p class="review-question-text">${escapeHtml(r.text)}</p>
+      ${optionsHtml}
+      <div class="review-explanation"><strong>Обяснение:</strong> ${escapeHtml(r.explanation)}</div>
+    </div>`;
+}
+
+function renderFreeReview(r){
+  return `
+    <div class="review-item">
+      <div class="review-item-header">
+        <span class="question-category review-pill">Задача ${r.id}</span>
+        <span class="review-badge ${r.correct ? 'correct' : 'incorrect'}">${r.correct ? '✓' : '✗'}</span>
+      </div>
+      <p class="review-question-text">${escapeHtml(r.prompt)}</p>
+      <p class="review-label">Твоят отговор</p>
+      <div class="review-answer-box ${r.correct ? 'correct' : 'incorrect'}">${escapeHtml(r.studentAnswer)}</div>
+      <p class="review-label">Верен отговор</p>
+      <div class="review-answer-box correct">${escapeHtml(r.referenceAnswer)}</div>
+      <div class="review-explanation"><strong>Обяснение:</strong> ${escapeHtml(r.explanation)}</div>
+    </div>`;
+}
+
+function renderPart2Review(r){
+  return `
+    <div class="review-item">
+      <div class="review-item-header">
+        <span class="question-category review-pill">Задача ${r.id}</span>
+      </div>
+      <p class="review-question-text">${escapeHtml(r.prompt)}</p>
+      <p class="review-label">Твоят отговор</p>
+      <div class="review-answer-box">${escapeHtml(r.studentAnswer)}</div>
+      <p class="review-label">Примерно решение</p>
+      <div class="review-explanation">${escapeHtml(r.solution)}</div>
+    </div>`;
+}
+
+function renderReviewScreen(){
+  const p1Records = lastPart1Records || calculatePart1().records;
+  const p2Records = buildPart2Records();
+
+  let html = '<h2 class="review-part-title">Част 1 — задачи 1–20</h2>';
+  html += p1Records.map(r => r.kind === 'mc' ? renderMcReview(r) : renderFreeReview(r)).join('');
+  html += '<h2 class="review-part-title">Част 2 — задачи 22–24</h2>';
+  html += p2Records.map(renderPart2Review).join('');
+
+  document.getElementById('review-list').innerHTML = html;
+}
+
+/* =========================================================
+   СТАРТ
+========================================================= */
+
+document.getElementById('p1-total-q').textContent = part1Steps.length;
+document.getElementById('p2-total-q').textContent = part2Steps.length;
+</script>
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Light Academy София · <a href="index.html">Начало</a> · <a href="nvo7.html">НВО 7 клас</a> · <a href="course_nvo_4_class.html">НВО 4 клас</a> · <a href="all_courses.html">Всички курсове</a> · <a href="cookie-policy.html">Cookies</a> · <a href="mailto:the.light.academy56@gmail.com">the.light.academy56@gmail.com</a></p>
+  </footer>
+
+
+  <div id="cookieBanner" class="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie notice" hidden>
+    <div class="cookie-banner__content">
+      <div class="cookie-banner__text">
+        <h3>Политика за бисквитките</h3>
+        <p>Този сайт използва бисквитки, за да осигури нормалното му функциониране и да събира анонимни данни за посещаемостта. Избирате между "Приемам всички", "Само основни" и "Отказвам". Вижте <a href="cookie-policy.html" style="color:#F5A623; text-decoration: underline;">Политиката за бисквитките</a>.</p>
+      </div>
+      <div class="cookie-banner__actions">
+        <button id="cookieReject" class="cookie-banner__reject" type="button">Само основни</button>
+        <button id="cookieAccept" class="cookie-banner__accept" type="button">Приемам всички</button>
+        <button id="cookieDecline" class="cookie-banner__reject" type="button">Отказвам</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="cookieSettingsBtn" class="cookie-settings" type="button" aria-label="Настройки на бисквитките" title="Настройки на бисквитките">🍪</button>
+
+  <script>
+    (function () {
+      var STORAGE_KEY = 'lightacademy_cookie_consent';
+      var banner = document.getElementById('cookieBanner');
+      var settingsBtn = document.getElementById('cookieSettingsBtn');
+      var acceptBtn = document.getElementById('cookieAccept');
+      var rejectBtn = document.getElementById('cookieReject');
+      var declineBtn = document.getElementById('cookieDecline');
+
+      function setBannerVisible(visible) {
+        if (!banner) return;
+        banner.hidden = !visible;
+      }
+
+      function loadMetaPixel() {
+        if (window.__lightAcademyPixelLoaded) return;
+        window.__lightAcademyPixelLoaded = true;
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1422253886488445');
+        fbq('track', 'PageView');
+      }
+
+      function loadAnalytics() {
+        if (window.__lightAcademyAnalyticsLoaded) return;
+        window.__lightAcademyAnalyticsLoaded = true;
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ window.dataLayer.push(arguments); }
+        window.gtag = gtag;
+
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-551MW59126';
+        script.async = true;
+        document.head.appendChild(script);
+
+        var inlineScript = document.createElement('script');
+        inlineScript.textContent = "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-551MW59126');";
+        document.head.appendChild(inlineScript);
+      }
+
+      function disableAnalytics() {
+        try {
+          if (window.dataLayer) {
+            window.dataLayer.push(['consent', 'default', { ad_storage: 'denied', analytics_storage: 'denied' }]);
+          }
+        } catch (error) {
+          console.warn('Could not apply denied analytics state.', error);
+        }
+      }
+
+      function saveConsent(choice) {
+        try {
+          localStorage.setItem(STORAGE_KEY, choice);
+        } catch (error) {
+          console.warn('Cookie consent could not be stored.', error);
+        }
+        setBannerVisible(false);
+
+        if (choice === 'accepted') {
+          loadAnalytics();
+          loadMetaPixel();
+        } else {
+          disableAnalytics();
+        }
+      }
+
+      var savedChoice = localStorage.getItem(STORAGE_KEY);
+      if (savedChoice === 'accepted') {
+        loadAnalytics();
+        loadMetaPixel();
+        setBannerVisible(false);
+      } else if (savedChoice === 'rejected' || savedChoice === 'basic') {
+        setBannerVisible(false);
+      } else {
+        setBannerVisible(true);
+      }
+
+      acceptBtn && acceptBtn.addEventListener('click', function () {
+        saveConsent('accepted');
+      });
+
+      rejectBtn && rejectBtn.addEventListener('click', function () {
+        saveConsent('basic');
+      });
+
+      declineBtn && declineBtn.addEventListener('click', function () {
+        saveConsent('rejected');
+      });
+
+      settingsBtn && settingsBtn.addEventListener('click', function () {
+        setBannerVisible(true);
+      });
+    })();
+  </script>
+
+</body>
+</html>
