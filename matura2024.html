@@ -4,15 +4,15 @@
   <meta charset="UTF-8" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Пробна матура НВО 2025 по математика, 7. клас – The Light Academy</title>
-<meta name="description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 2 от 20 юни 2025 г., официален формат на изпита, таймирани модули от 75 и 90 минути и точки по официалната скала за оценяване." />
+<title>Пробна матура НВО 2024 по математика, 7. клас – The Light Academy</title>
+<meta name="description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 1 от 21 юни 2024 г., официален формат на изпита, таймирани модули от 75 и 90 минути и точки по официалната скала за оценяване." />
 <meta name="robots" content="noindex, nofollow" />
-<link rel="canonical" href="https://the-light-academy.github.io/the-light-academy/matura2025.html" />
+<link rel="canonical" href="https://the-light-academy.github.io/the-light-academy/matura2024.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="The Light Academy" />
 <meta property="og:title" content="Пробна матура НВО по математика, 7. клас – The Light Academy" />
-<meta property="og:description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 2 от 20 юни 2025 г., официален формат на изпита, таймирани модули от 75 и 90 минути и точки по официалната скала за оценяване." />
-<meta property="og:url" content="https://the-light-academy.github.io/the-light-academy/matura2025.html" />
+<meta property="og:description" content="Дигитализирана пробна матура по НВО математика за 7. клас — Вариант 1 от 21 юни 2024 г., официален формат на изпита, таймирани модули от 75 и 90 минути и точки по официалната скала за оценяване." />
+<meta property="og:url" content="https://the-light-academy.github.io/the-light-academy/matura2024.html" />
 <meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/theLightAcademyLogo.png" />
 <meta property="og:locale" content="bg_BG" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -887,7 +887,7 @@
 
       <p class="result-disclaimer">
         Тази пробна матура е дигитализация на официален изпитен вариант (НВО по
-        математика, VII клас, Вариант 2, 20 юни 2025 г.) и се използва като тренировъчен
+        математика, VII клас, Вариант 1, 21 юни 2024 г.) и се използва като тренировъчен
         инструмент. Тя не представлява официална оценка от НВО.
       </p>
 
@@ -1010,145 +1010,157 @@ function buildBarChart(data){
 }
 
 const DIAGRAMS = {
-  /* Задача 9 — c ∥ d, пресечени от a и b.
-     a е трансверзала на c и d, затова ∠(a,d) = ∠(a,c) = 83°;
-     в триъгълника, образуван от a, b и d, третият ъгъл е α. */
-  par9: function(){
-    function meet(p1, p2, p3, p4){
-      const a1 = p2[1]-p1[1], b1 = p1[0]-p2[0], c1 = a1*p1[0] + b1*p1[1];
-      const a2 = p4[1]-p3[1], b2 = p3[0]-p4[0], c2 = a2*p3[0] + b2*p3[1];
-      const det = a1*b2 - a2*b1;
-      return [(b2*c1 - b1*c2)/det, (a1*c2 - a2*c1)/det];
+  /* Задача 8 — колело с 8 еднакви сектора. */
+  wheel8: function(){
+    const cx = 160, cy = 116, r = 92;
+    const words = ['успех','здраве','късмет','успех','късмет','здраве','успех','късмет'];
+    const pt = (deg, rad) => [cx + rad*Math.cos((deg-90)*Math.PI/180),
+                              cy + rad*Math.sin((deg-90)*Math.PI/180)];
+    let s = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="#2b2b2b" stroke-width="2"/>`;
+    for (let i = 0; i < 8; i++){
+      const p = pt(i*45, r);
+      s += svgLine([cx,cy], p, 'stroke-width="1.5"');
+      const mid = pt(i*45 + 22.5, r*0.68);
+      s += `<text x="${mid[0]}" y="${mid[1]}" font-size="9" font-weight="700" fill="#2b2b2b" text-anchor="middle" dominant-baseline="middle">${words[i]}</text>`;
     }
-    const c1=[225,18],  c2=[40,196];      // права c
-    const d1=[338,104], d2=[248,191];     // права d — успоредна на c
-    const a1=[130,10],  a2=[262,205];     // права a
-    const b1=[15,178],  b2=[330,116];     // права b
-    const Vac = meet(a1,a2,c1,c2);        // 83°
-    const Vab = meet(a1,a2,b1,b2);        // 62°
-    const Vbd = meet(b1,b2,d1,d2);        // α
+    s += `<polygon points="${cx-7},${cy-r-24} ${cx+7},${cy-r-24} ${cx+7},${cy-r-8} ${cx+13},${cy-r-8} ${cx},${cy-r+4} ${cx-13},${cy-r-8} ${cx-7},${cy-r-8}" fill="#9a9a9a"/>`;
+    return wrapSvg(320, 232, s);
+  },
+
+  /* Задача 10 — две пресичащи се прави. */
+  cross10: function(){
+    const O=[160,100];
+    const A=[30,140], B=[290,60], C=[70,175], D=[250,25];
     let s = '';
-    s += svgLine(c1,c2); s += svgLine(d1,d2); s += svgLine(a1,a2); s += svgLine(b1,b2);
-    s += svgAngleArc(Vac, c1, a2, 24, '83°');
-    s += svgAngleArc(Vab, a1, b2, 22, '62°');
-    s += svgAngleArc(Vbd, b1, d2, 20, 'α');
-    s += svgLabel(a1, 'a', -14, 6);
-    s += svgLabel(c1, 'c', 6, 2);
-    s += svgLabel(b2, 'b', 4, 12);
-    s += svgLabel(d2, 'd', -2, 14);
-    return wrapSvg(350, 215, s);
+    s += svgLine(A,B); s += svgLine(C,D);
+    s += svgAngleArc(O, B, D, 26, '');
+    return wrapSvg(320, 190, s);
   },
 
-  /* Задача 10 — A(−3; −2) и B(2; 1); C е симетрична на A спрямо Oy. */
-  coord10: function(){
-    return buildCoordGrid({
-      xmin:-4, xmax:4, ymin:-4, ymax:3,
-      points: [ {x:-3,y:-2,label:'A'}, {x:2,y:1,label:'B'} ]
-    });
-  },
-
-  /* Задача 11 — AL е ъглополовяща на външния ъгъл при A и AL ∥ BC. */
+  /* Задача 11 — △AOC и △OBD върху обща права AB. */
   tri11: function(){
-    const A=[120,175], B=[290,175], C=[248,42], L=[62,48];
+    const A=[30,165], O=[168,165], B=[292,165], C=[92,62], D=[214,50];
     let s = '';
-    s += svgLine([25,175], B);
-    s += svgLine(A,C); s += svgLine(B,C); s += svgLine(A,L);
-    s += svgAngleArc(A, L, [25,175], 30, '');
-    s += svgAngleArc(A, L, C, 20, '');
-    s += svgDot(A); s += svgDot(B); s += svgDot(C);
-    s += svgLabel(A, 'A', 0, 20, {anchor:'middle'});
-    s += svgLabel(B, 'B', 8, 18);
-    s += svgLabel(C, 'C', 6, -6);
-    s += svgLabel(L, 'L', -14, -2);
-    s += svgLabel([272,110], '6', 4, 0, {size:13, weight:700});
-    return wrapSvg(320, 205, s);
+    s += svgLine(A,B);
+    s += svgLine(A,C); s += svgLine(C,O);
+    s += svgLine(O,D); s += svgLine(D,B);
+    s += svgAngleArc(A, O, C, 20, '');
+    s += svgAngleArc(O, B, D, 18, '');
+    s += svgAngleArc(O, D, C, 26, '');
+    s += svgAngleArc(B, O, D, 20, '');
+    s += svgDot(A); s += svgDot(O); s += svgDot(B); s += svgDot(C); s += svgDot(D);
+    s += svgLabel(A, 'A', -4, 20, {anchor:'middle'});
+    s += svgLabel(O, 'O', 0, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 4, 20, {anchor:'middle'});
+    s += svgLabel(C, 'C', -6, -8, {anchor:'middle'});
+    s += svgLabel(D, 'D', 0, -8, {anchor:'middle'});
+    const mid = (p, q) => [(p[0]+q[0])/2, (p[1]+q[1])/2];
+    s += svgLabel(mid(A,C), '5 cm', -32, -2, {size:11, weight:700});
+    s += svgLabel(mid(C,O), '8 cm', -40, -2, {size:11, weight:700});
+    s += svgLabel(mid(O,D), '7 cm',   8, -6, {size:11, weight:700});
+    s += svgLabel(mid(D,B), '8 cm',   8, -2, {size:11, weight:700});
+    return wrapSvg(320, 195, s);
   },
 
-  /* Задача 12 — O е пресечната точка на симетралите на AB и AC. */
-  tri12: function(){
-    const A=[52,178], B=[292,192], C=[212,26], O=[186,118];
+  /* Задача 12 — ромб ABCD с ъглополовяща AL на ∠BAC. */
+  rhomb12: function(){
+    const A=[40,175], B=[180,175], C=[280,55], D=[140,55];
+    const L=[227,116];                       // L ∈ BC
     let s = '';
-    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C);
-    s += svgLine(C,O); s += svgLine(B,O); s += svgLine(A,O);
-    /* Всяка симетрала минава през средата на страната и през O — чертаем я
-       точно оттам, вместо да я поставяме на око. */
-    const midAC = [(A[0]+C[0])/2, (A[1]+C[1])/2];
-    const midAB = [(A[0]+B[0])/2, (A[1]+B[1])/2];
-    const beyond = (from, through, k) =>
-      [from[0] + (through[0]-from[0])*k, from[1] + (through[1]-from[1])*k];
-    s += svgDashLine(midAC, beyond(midAC, O, 1.7));
-    s += svgDashLine(midAB, beyond(midAB, O, 1.7));
-    s += svgAngleArc(C, A, O, 26, '42°');
-    s += svgAngleArc(B, O, A, 26, '35°');
-    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(O, 3);
-    s += svgLabel(A, 'A', -16, 6);
-    s += svgLabel(B, 'B', 8, 12);
-    s += svgLabel(C, 'C', 0, -8, {anchor:'middle'});
-    s += svgLabel(O, 'O', 9, -4);
-    s += svgLabel(midAC, 's', -16, -4, {size:12, weight:700, color:'#6b6b6b'});
-    s += svgLabel(midAB, 's', -4, 18, {size:12, weight:700, color:'#6b6b6b'});
-    return wrapSvg(320, 218, s);
-  },
-
-  /* Задача 13 — цветарник с форма на куб. */
-  cube13: function(){
-    const d = 36;
-    const A=[75,152], B=[205,152], C=[205,62], D=[75,62];
-    const B2=[B[0]+d,B[1]-d], C2=[C[0]+d,C[1]-d], D2=[D[0]+d,D[1]-d];
-    let s = '';
-    s += `<polygon points="${D[0]},${D[1]} ${C[0]},${C[1]} ${C2[0]},${C2[1]} ${D2[0]},${D2[1]}" fill="#efe6d6" stroke="#2b2b2b" stroke-width="2"/>`;
-    s += `<polygon points="${C[0]},${C[1]} ${B[0]},${B[1]} ${B2[0]},${B2[1]} ${C2[0]},${C2[1]}" fill="#e4d8c2" stroke="#2b2b2b" stroke-width="2"/>`;
-    s += `<polygon points="${A[0]},${A[1]} ${B[0]},${B[1]} ${C[0]},${C[1]} ${D[0]},${D[1]}" fill="#fbf7ef" stroke="#2b2b2b" stroke-width="2"/>`;
-    s += svgLine([A[0]+9,A[1]-22],[B[0]-9,B[1]-22], 'stroke="#cfc3ad" stroke-width="1.5"');
-    s += svgLine([A[0]+9,A[1]-52],[B[0]-9,B[1]-52], 'stroke="#cfc3ad" stroke-width="1.5"');
-    s += svgLabel([148,182], 'обиколка на основата 12 dm', 0, 0,
-                  {size:12, weight:700, color:'#6b6b6b', anchor:'middle'});
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(C,D); s += svgLine(D,A);
+    s += svgLine(A,C);
+    s += svgLine(A,L, 'stroke="#8a8a8a"');
+    s += svgAngleArc(A, B, D, 30, '52°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(D); s += svgDot(L, 3);
+    s += svgLabel(A, 'A', -6, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 0, 20, {anchor:'middle'});
+    s += svgLabel(C, 'C', 8, -6);
+    s += svgLabel(D, 'D', -4, -8, {anchor:'middle'});
+    s += svgLabel(L, 'L', 8, 0);
     return wrapSvg(320, 200, s);
   },
 
-  /* Задача 14 — равностранен △ABC, P ∈ AC, PM ⊥ AC, M ∈ AB. */
-  tri14: function(){
-    /* P е избрана по AC, а M е точката, в която перпендикулярът от P среща AB —
-       пресмятаме я, за да е правият ъгъл истински, а AM : MB ≈ 8 : 5 както в
-       условието. */
-    const A=[45,180], B=[300,180], C=[172,25], P=[108,102], M=[203,180];
+  /* Задача 13 — равнобедрен △ABC (AC = BC), симетралата на AC среща BC в F. */
+  tri13: function(){
+    const A=[110,180], B=[190,180], C=[152,25], F=[172,110];
+    const midAC = [(A[0]+C[0])/2, (A[1]+C[1])/2];
+    const dir = [C[0]-A[0], C[1]-A[1]];
+    const perp = [-dir[1], dir[0]];
+    const len = Math.hypot(perp[0], perp[1]);
+    const u = [perp[0]/len, perp[1]/len];
     let s = '';
-    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C); s += svgLine(P,M);
-    s += svgRightAngle(P, A, M, 11);
-    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(P, 3); s += svgDot(M, 3);
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C); s += svgLine(A,F);
+    s += svgDashLine([midAC[0]-u[0]*55, midAC[1]-u[1]*55],
+                     [midAC[0]+u[0]*80, midAC[1]+u[1]*80]);
+    s += svgAngleArc(C, A, B, 24, '20°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(F, 3);
     s += svgLabel(A, 'A', -6, 20, {anchor:'middle'});
-    s += svgLabel(B, 'B', 8, 18);
+    s += svgLabel(B, 'B', 4, 20, {anchor:'middle'});
     s += svgLabel(C, 'C', 0, -8, {anchor:'middle'});
-    s += svgLabel(P, 'P', -16, -4);
-    s += svgLabel(M, 'M', -4, 20, {anchor:'middle'});
-    s += svgLabel([70,148], '4', -8, 0, {size:13, weight:700});
-    s += svgLabel([252,180], '5', 0, 20, {size:13, weight:700, anchor:'middle'});
-    return wrapSvg(340, 205, s);
+    s += svgLabel(F, 'F', 9, 4);
+    s += svgLabel([midAC[0]-u[0]*58, midAC[1]-u[1]*58], 's', -16, 2,
+                  {size:12, weight:700, color:'#6b6b6b'});
+    return wrapSvg(320, 200, s);
   },
 
-  /* Задача 19 — таблица, а не чертеж. */
-  table19: function(){
-    return '<table class="diagram-table">' +
-      '<thead><tr>' +
-        '<th>фантастика</th><th>детска<br>литература</th>' +
-        '<th>техническа<br>литература</th><th>художествена<br>литература</th>' +
-      '</tr></thead>' +
-      '<tbody><tr>' +
-        '<td>75% от n</td><td>n : 2</td><td>n : 4</td><td>n</td>' +
-      '</tr></tbody></table>';
-  },
-
-  /* Задача 20 — стълб 3 m, укрепващо въже 5 m. */
-  pole20: function(){
-    const base=[55,168], foot=[252,168], top=[252,52];
+  /* Задача 14 — F ∈ AB и AC = CF = BF. */
+  tri14: function(){
+    const A=[35,165], B=[292,165], C=[160,45], F=[196,165];
     let s = '';
-    s += svgLine(base, foot);
-    s += svgLine(foot, top, 'stroke-width="5"');
-    s += svgDashLine(base, top);
-    s += svgLabel([150,102], '5 m', 0, 0, {size:13, weight:800, anchor:'middle'});
-    s += svgLabel([262,112], '3 m', 0, 0, {size:13, weight:800});
-    s += svgRightAngle(foot, base, top, 13);
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C); s += svgLine(C,F);
+    s += svgTick(A, C); s += svgTick(C, F); s += svgTick(F, B);
+    s += svgAngleArc(A, B, C, 26, 'x + 25°');
+    s += svgAngleArc(B, C, A, 24, 'x');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C); s += svgDot(F, 3);
+    s += svgLabel(A, 'A', -6, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 6, 20, {anchor:'middle'});
+    s += svgLabel(C, 'C', 0, -8, {anchor:'middle'});
+    s += svgLabel(F, 'F', 0, 20, {anchor:'middle'});
+    return wrapSvg(320, 190, s);
+  },
+
+  /* Задача 15 — △ABC с ∠ABC = 40°. */
+  tri15: function(){
+    const A=[40,170], B=[288,170], C=[190,35];
+    let s = '';
+    s += svgLine(A,B); s += svgLine(B,C); s += svgLine(A,C);
+    s += svgAngleArc(B, C, A, 30, '40°');
+    s += svgDot(A); s += svgDot(B); s += svgDot(C);
+    s += svgLabel(A, 'A', -6, 20, {anchor:'middle'});
+    s += svgLabel(B, 'B', 6, 20, {anchor:'middle'});
+    s += svgLabel(C, 'C', 0, -8, {anchor:'middle'});
     return wrapSvg(320, 195, s);
+  },
+
+  /* Задача 19 — кръгова диаграма на видовете изпълнения. */
+  pie19: function(){
+    const cx=185, cy=112, r=78;
+    /* театрални 80°, спортни 40°, танцови 90° (правият ъгъл на чертежа),
+       музикални 150° — сборът е 360°. */
+    const parts = [
+      { label:'театрални', deg:80,  fill:'#e8e2d6' },
+      { label:'спортни',   deg:40,  fill:'#fff' },
+      { label:'танцови',   deg:90,  fill:'#d8d2c6' },
+      { label:'музикални', deg:150, fill:'#efe9dd' }
+    ];
+    const pt = (deg, rad) => [cx + rad*Math.cos((deg-90)*Math.PI/180),
+                              cy + rad*Math.sin((deg-90)*Math.PI/180)];
+    let start = 0, s = '';
+    parts.forEach(part => {
+      const end = start + part.deg;
+      const p1 = pt(start, r), p2 = pt(end, r);
+      const large = part.deg > 180 ? 1 : 0;
+      s += `<path d="M ${cx} ${cy} L ${p1[0]} ${p1[1]} A ${r} ${r} 0 ${large} 1 ${p2[0]} ${p2[1]} Z" fill="${part.fill}" stroke="#2b2b2b" stroke-width="1.6"/>`;
+      start = end;
+    });
+    s += svgLabel(pt(40, r+6),  'театрални', 4, 0,  {size:11, weight:700});
+    s += svgLabel(pt(90, r+8),  'спортни',   4, 4,  {size:11, weight:700});
+    s += svgLabel(pt(155, r+6), 'танцови',   0, 14, {size:11, weight:700, anchor:'middle'});
+    s += svgLabel(pt(275, r+8), 'музикални', -6, 0, {size:11, weight:700, anchor:'end'});
+    s += svgLabel(pt(40, 42),  '80°',  0, 0, {size:12, weight:800, anchor:'middle'});
+    s += svgLabel(pt(275, 46), '150°', 0, 0, {size:12, weight:800, anchor:'middle'});
+    s += svgRightAngle([cx,cy], pt(130, r), pt(220, r), 13);
+    return wrapSvg(340, 232, s);
   }
 };
 
@@ -1192,113 +1204,117 @@ const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'];
 
 const part1Steps = [
   { id:1, kind:'mc', points:2,
-    text:'Стойността на израза 2025 − 225·(−1/5) е:',
-    options:['−360', '360', '1980', '2070'], correct:3,
-    explanation:'225·(−1/5) = −45, затова 2025 − (−45) = 2025 + 45 = 2070.' },
+    text:'Числената стойност на израза 2,25 + 0,75·(−4/3) е:',
+    options:['−4', '−1,25', '1,25', '2,25'], correct:2,
+    explanation:'0,75·(−4/3) = −1, затова 2,25 + (−1) = 1,25.' },
   { id:2, kind:'mc', points:2,
-    text:'Стойността на израза x³·(x³/x²)⁻⁶ при x = −3 е:',
-    options:['−9', '−1/27', '1/27', '9'], correct:1,
-    explanation:'x³/x² = x, значи изразът е x³·x⁻⁶ = x⁻³ = 1/x³. При x = −3: 1/(−27) = −1/27.' },
+    text:'Стойността на израза 5 − 5x при x = −1/5 е:',
+    options:['0', '4', '6', '10'], correct:2,
+    explanation:'5 − 5·(−1/5) = 5 + 1 = 6.' },
   { id:3, kind:'mc', points:2,
-    text:'Изразът 49 − x² е тъждествено равен на:',
-    options:['(x + 7)(x − 7)', '(7 + x)(7 + x)', '(7 + x)(7 − x)', '(7 − x)(7 − x)'], correct:2,
-    explanation:'Разлика на квадрати: 49 − x² = 7² − x² = (7 + x)(7 − x).' },
+    text:'Изразът (2 − 3x)² е тъждествено равен на израза:',
+    options:['4 − 12x − 9x²', '4 − 12x + 9x²', '4 + 12x + 9x²', '4 + 12x − 9x²'], correct:1,
+    explanation:'(2 − 3x)² = 2² − 2·2·3x + (3x)² = 4 − 12x + 9x².' },
   { id:4, kind:'mc', points:3,
-    text:'Сборът от корените на уравнението |x − 6| − 7 = −4 е:',
-    options:['3', '6', '9', '12'], correct:3,
-    explanation:'|x − 6| = 3 ⇒ x − 6 = 3 или x − 6 = −3, откъдето x₁ = 9 и x₂ = 3. Сборът им е 12.' },
+    text:'Коренът на уравнението 2 − (x − 3) = −3x − 5 е:',
+    options:['3', '1', '−2', '−5'], correct:3,
+    explanation:'2 − x + 3 = −3x − 5 ⇒ 5 − x = −3x − 5 ⇒ 2x = −10 ⇒ x = −5.' },
   { id:5, kind:'mc', points:3,
-    text:'Най-голямото цяло число, което е решение на неравенството 8 − x > 6(x − 1), е:',
-    options:['−2', '−1', '1', '2'], correct:2,
-    explanation:'8 − x > 6x − 6 ⇒ 8 + 6 > 6x + x ⇒ 14 > 7x ⇒ x < 2. Най-голямото цяло число под 2 е 1.' },
+    text:'Най-малкото цяло число, което е решение на неравенството 5x + 1 ≥ 3x + 16, е:',
+    options:['1', '2', '7', '8'], correct:3,
+    explanation:'5x − 3x ≥ 16 − 1 ⇒ 2x ≥ 15 ⇒ x ≥ 7,5. Най-малкото цяло число над 7,5 е 8.' },
   { id:6, kind:'mc', points:3,
-    text:'Множителят, който НЕ участва в представянето на многочлена x⁴ + x³ − 4x² − 4x като произведение на множители, е:',
-    options:['x + 2', 'x + 1', 'x − 1', 'x − 2'], correct:2,
-    explanation:'x⁴ + x³ − 4x² − 4x = x(x³ + x² − 4x − 4) = x[x²(x + 1) − 4(x + 1)] = x(x + 1)(x² − 4) = x(x + 1)(x − 2)(x + 2). Множителят x − 1 не участва.' },
+    text:'Сборът от корените на уравнението 5 − |x − 4| = 1 е:',
+    options:['−8', '−4', '0', '8'], correct:3,
+    explanation:'|x − 4| = 4 ⇒ x − 4 = 4 или x − 4 = −4, откъдето x₁ = 8 и x₂ = 0. Сборът е 8.' },
   { id:7, kind:'mc', points:3,
-    text:'В тест по математика всяка задача има по четири възможни отговора, от които само един е правилен. Ученик избира по случаен начин един от отговорите на първата задача. Каква е вероятността той да е избрал правилния отговор?',
-    options:['3/4', '2/3', '1/3', '1/4'], correct:3,
-    explanation:'Един благоприятен изход от четири равновъзможни: P = 1/4.' },
-  { id:8, kind:'mc', points:3,
-    text:'Средният брой точки на ученик от четири контролни изпитвания е 23,75. Колко точки трябва да получи на следващото изпитване, така че средният брой точки от тези пет изпитвания да е 25?',
-    options:['25', '30', '35', '40'], correct:1,
-    explanation:'От четирите изпитвания има 4·23,75 = 95 точки. За среден резултат 25 от пет изпитвания трябват 5·25 = 125 точки, значи на петото са нужни 125 − 95 = 30 точки.' },
-  { id:9, kind:'mc', points:3, diagram:'par9',
-    text:'На чертежа правите c и d са успоредни. По данните от чертежа мярката на ъгъл α е:',
-    options:['35°', '45°', '62°', '83°'], correct:0,
-    explanation:'Правата a пресича успоредните c и d, затова ъгълът между a и d е равен на 83° (съответни ъгли). В триъгълника, образуван от a, b и d, другите два ъгъла са 83° и 62°, следователно α = 180° − 83° − 62° = 35°.' },
-  { id:10, kind:'mc', points:4, diagram:'coord10',
-    text:'На чертежа в координатна система Oxy с единична отсечка 1 cm са отбелязани точките A и B. Точката C е симетрична на точка A спрямо ординатната ос Oy. Лицето на △ABC е:',
-    options:['9 cm²', '10 cm²', '18 cm²', '20 cm²'], correct:0,
-    explanation:'A(−3; −2) и B(2; 1). Симетричната на A спрямо Oy е C(3; −2). Основата AC лежи на правата y = −2 и е дълга 3 − (−3) = 6 cm, а височината от B до нея е 1 − (−2) = 3 cm. Лицето е (6·3)/2 = 9 cm².' },
-  { id:11, kind:'mc', points:3, diagram:'tri11',
-    text:'Лъчът AL е ъглополовящата на външния ъгъл при върха A в △ABC и AL е успоредна на BC. Ако страната BC = 6 cm и периметърът на △ABC е 20 cm, то дължината на страната AB е:',
-    options:['6 cm', '7 cm', '8 cm', '9 cm'], correct:1,
-    explanation:'От AL ∥ BC следват равни ъгли, които заедно с равенството на двете половини на външния ъгъл дават ∠ABC = ∠ACB, тоест △ABC е равнобедрен с AB = AC. Тогава AB + AC = 20 − 6 = 14 и AB = 7 cm.' },
-  { id:12, kind:'mc', points:3, diagram:'tri12',
-    text:'Симетралите на страните AB и AC на △ABC се пресичат в точката O, така че ∠OCA = 42° и ∠OBA = 35°, както е показано на чертежа. Мярката на ∠BOC е:',
-    options:['120°', '145°', '154°', '167°'], correct:2,
-    explanation:'O е центърът на описаната окръжност, затова OA = OB = OC. От равнобедрените триъгълници: ∠OAC = ∠OCA = 42° и ∠OAB = ∠OBA = 35°, значи ∠BAC = 42° + 35° = 77°. Централният ъгъл е двойно по-голям от вписания: ∠BOC = 2·77° = 154°.' },
-  { id:13, kind:'mc', points:4, diagram:'cube13',
-    text:'Цветарник с форма на куб има обиколка на основата 12 dm. Колко литра почва са необходими за запълването на 2/3 от обема на цветарника?',
-    options:['9 L', '12 L', '15 L', '18 L'], correct:3,
-    explanation:'Основата е квадрат с обиколка 12 dm, значи ръбът е 12 : 4 = 3 dm. Обемът е 3³ = 27 dm³ = 27 L, а 2/3 от него са 18 L.' },
+    text:'Стойността на израза 1012² − 2000·1012 + 1000² е:',
+    options:['0', '12', '12²', '2012²'], correct:2,
+    explanation:'2000·1012 = 2·1000·1012, затова изразът е (1012 − 1000)² = 12².' },
+  { id:8, kind:'mc', points:3, diagram:'wheel8',
+    text:'Колело е разделено на 8 еднакви сектора, във всеки от които е написана по една от следните думи: успех, късмет и здраве. Колелото е завъртяно и след спирането стрелката сочи точно един сектор. Каква е вероятността това да е сектор с думата успех?',
+    options:['1/8', '1/4', '3/8', '3/4'], correct:2,
+    explanation:'Секторите са 8 и са еднакви, а думата „успех“ е написана в 3 от тях. Вероятността е 3/8.' },
+  { id:9, kind:'mc', points:3,
+    text:'За боядисване на 1 m² стена се използват 200 грама боя. Колко килограма боя е необходима за боядисване на правоъгълна стена с размери 5 m и 6 m?',
+    options:['0,06', '0,6', '6', '60'], correct:2,
+    explanation:'Лицето на стената е 5·6 = 30 m². Боята е 30·200 = 6000 g = 6 kg.' },
+  { id:10, kind:'mc', points:3, diagram:'cross10',
+    text:'При пресичането на две прави мярката на един от получените ъгли е равна на сбора от мерките на двата му съседни ъгъла. Мярката на по-големия от ъглите е:',
+    options:['150°', '120°', '90°', '60°'], correct:1,
+    explanation:'Нека ъгълът е α. Всеки от двата съседни е 180° − α, значи α = 2(180° − α) ⇒ 3α = 360° ⇒ α = 120°. Съседните са по 60°, така че по-големият ъгъл е 120°.' },
+  { id:11, kind:'mc', points:4, diagram:'tri11',
+    text:'На чертежа △AOC и △OBD са построени върху обща права AB, така че ∠CAO = ∠DOB и ∠DBO = ∠COD. По данните от чертежа дължината на отсечката AB е:',
+    options:['12 cm', '13 cm', '15 cm', '16 cm'], correct:0,
+    explanation:'Ъглите при O върху правата AB дават ∠AOC = 180° − ∠COD − ∠DOB = 180° − ∠DBO − ∠CAO, а от сбора на ъглите в △AOC следва ∠ACO = ∠DBO. Заедно с ∠CAO = ∠DOB получаваме △ACO ≅ △OBD, защото CO = BD = 8 cm. Тогава OB = AC = 5 cm и AO = OD = 7 cm, значи AB = 7 + 5 = 12 cm.' },
+  { id:12, kind:'mc', points:3, diagram:'rhomb12',
+    text:'В ромба ABCD ∠BAD = 52°, а AL (L ∈ BC) е ъглополовящата на ∠BAC. Мярката на ∠ALB е:',
+    options:['52°', '39°', '26°', '13°'], correct:1,
+    explanation:'В ромба диагоналът AC разполовява ∠BAD, значи ∠BAC = 26°, а AL го разполовява отново: ∠BAL = 13°. Прилежащите ъгли на ромба се допълват до 180°, затова ∠ABL = 180° − 52° = 128°. В △ABL: ∠ALB = 180° − 128° − 13° = 39°.' },
+  { id:13, kind:'mc', points:3, diagram:'tri13',
+    text:'В равнобедрения △ABC (AC = BC) ъгълът между бедрата е 20° и симетралата на бедрото AC пресича BC в точка F. Мерките на ъглите на △ABF са:',
+    options:['140°, 20°, 20°', '80°, 80°, 20°', '70°, 90°, 20°', '60°, 80°, 40°'], correct:3,
+    explanation:'От ∠ACB = 20° следва ∠BAC = ∠ABC = 80°. Точка F е на симетралата на AC, затова FA = FC и △AFC е равнобедрен: ∠FAC = ∠FCA = 20°. Тогава ∠FAB = 80° − 20° = 60°, ∠ABF = 80° и ∠AFB = 180° − 60° − 80° = 40°.' },
   { id:14, kind:'mc', points:4, diagram:'tri14',
-    text:'В равностранния △ABC от точка P, която е от страната AC, е издигнат перпендикуляр PM (M ∈ AB). Ако AP = 4 cm и MB = 5 cm, то дължината на страната AB е:',
-    options:['13 cm', '14 cm', '15 cm', '18 cm'], correct:0,
-    explanation:'В правоъгълния △APM имаме ∠A = 60° и ∠APM = 90°, значи ∠AMP = 30°. Срещу ъгъл 30° лежи катет, равен на половината от хипотенузата, затова AM = 2·AP = 8 cm. Тогава AB = AM + MB = 8 + 5 = 13 cm.' },
-  { id:15, kind:'mc', points:4,
-    text:'Мерките на два от ъглите на успоредник се отнасят както 2 : 7. Разликата от мерките на двата ъгъла е:',
-    options:['40°', '100°', '140°', '150°'], correct:1,
-    explanation:'Ъглите не са равни, значи са прилежащи и сборът им е 180°. От 2k + 7k = 180° следва k = 20°, тоест ъглите са 40° и 140°, а разликата им е 100°.' },
+    text:'В △ABC върху страната AB е взета точка F така, че AC = CF = BF. По данните от чертежа мярката на ∠ACB е:',
+    options:['130°', '105°', '90°', '80°'], correct:1,
+    explanation:'От CF = BF следва ∠FCB = ∠B = x, затова външният ъгъл ∠CFA на △BCF е 2x. От AC = CF следва ∠CAF = ∠CFA, тоест x + 25° = 2x ⇒ x = 25°. Тогава ∠A = 50°, ∠B = 25° и ∠ACB = 180° − 50° − 25° = 105°.' },
+  { id:15, kind:'mc', points:4, diagram:'tri15',
+    text:'В △ABC ∠ABC = 40° и ∠BAC : ∠ACB = 3 : 4. Вярното неравенство за страните на триъгълника е:',
+    options:['AC < BC < AB', 'AC < AB < BC', 'BC < AB < AC', 'BC < AC < AB'], correct:0,
+    explanation:'Останалите два ъгъла са 180° − 40° = 140°, а 3k + 4k = 140° дава k = 20°, значи ∠BAC = 60° и ∠ACB = 80°. Срещу по-голям ъгъл лежи по-голяма страна: ∠B(40°) < ∠A(60°) < ∠C(80°), затова AC < BC < AB.' },
   { id:16, kind:'mc', points:4,
-    text:'Във фирма работят 30 жени, които са 2/5 от броя на мъжете. Общият брой на работещите мъже и жени във фирмата е:',
-    options:['42', '50', '75', '105'], correct:3,
-    explanation:'Ако мъжете са m, то 2/5·m = 30, откъдето m = 75. Общо: 75 + 30 = 105 души.' },
+    text:'Ива купила x на брой бели балона и 3 пъти повече сини. Един балон струва 1,50 лева. Общата стойност на покупката, изразена чрез x, е:',
+    options:['3x + 4,5', '4x + 4,5', '4,5x', '6x'], correct:3,
+    explanation:'Сините балони са 3x, значи всички са x + 3x = 4x. Стойността е 4x·1,50 = 6x лева.' },
   { id:17, kind:'mc', points:4,
-    text:'Първоначалната такса при ползване на такси е 2,50 лв. За всеки изминат километър се заплаща по 1,75 лв. Кой от изразите представя сумата в лева, която клиент трябва да заплати при изминаване на x километра?',
-    options:['2,5x + 1,75', '1,75x − 2,5', '2,5 + 1,75x', '1,75x'], correct:2,
-    explanation:'Началната такса 2,50 лв. се плаща веднъж, а за x километра се добавят по 1,75 лв. на километър: 2,5 + 1,75x.' },
+    text:'Колко процента е маслеността на прясно мляко, ако при смесването му с 3 литра прясно мляко с масленост 3% се получават 5 литра прясно мляко с масленост 3,6%?',
+    options:['4%', '4,5%', '6%', '6,4%'], correct:1,
+    explanation:'Добавените са 5 − 3 = 2 литра с масленост p%. Балансът на мазнините дава 3·3 + 2·p = 5·3,6 ⇒ 9 + 2p = 18 ⇒ p = 4,5%.' },
   { id:18, kind:'mc', points:4,
-    text:'В тренировка по ориентиране Ивет изминава 20% от определен маршрут за 1/6 часа. Какъв процент от този маршрут ще измине за 45 минути?',
-    options:['45%', '54%', '75%', '90%'], correct:3,
-    explanation:'1/6 часа са 10 минути, значи за 10 минути се изминават 20%. 45 минути са 4,5 пъти по 10 минути, затова процентът е 4,5·20% = 90%.' },
-  { id:19, kind:'mc', points:4, diagram:'table19',
-    text:'В книжарница за един месец са продадени общо 1200 книги от видовете: художествена литература, детска литература, техническа литература и фантастика. В таблицата е представено разпределението на броя продадени книги по видове. Колко броя книги художествена литература са продадени за този месец?',
-    options:['600', '480', '360', '120'], correct:1,
-    explanation:'Сборът е 0,75n + n/2 + n/4 + n = 2,5n. От 2,5n = 1200 следва n = 480, а художествената литература е точно n = 480 книги.' },
-  { id:20, kind:'mc', points:3, diagram:'pole20',
-    text:'За укрепването на стълб с височина 3 m се използва метално въже с дължина 5 m. На какво разстояние от основата на стълба трябва да се закрепи въжето?',
-    options:['3 m', '4 m', '5 m', '6 m'], correct:1,
-    explanation:'Стълбът, въжето и земята образуват правоъгълен триъгълник с хипотенуза 5 m и катет 3 m. По Питагоровата теорема другият катет е √(25 − 9) = √16 = 4 m.' }
+    text:'При производството на козметично изделие се смесват три течни съставки X, Y и Z, съответно в отношение 1 : 2 : 5. Колко милилитра е съдържанието на съставката Y в 100 ml от козметичното изделие?',
+    options:['12,5', '20', '25', '50'], correct:2,
+    explanation:'Частите са 1 + 2 + 5 = 8, значи една част е 100 : 8 = 12,5 ml. Съставката Y е 2 части: 2·12,5 = 25 ml.' },
+  { id:19, kind:'mc', points:4, diagram:'pie19',
+    text:'Училищно тържество е с продължителност 90 минути. По данните от диаграмата продължителността на спортните изпълнения в минути е:',
+    options:['10', '15', '20', '40'], correct:0,
+    explanation:'Танцовите заемат прав ъгъл, тоест 90°. Тогава спортните са 360° − 80° − 150° − 90° = 40°. Търсената част е 90·40/360 = 10 минути.' },
+  { id:20, kind:'mc', points:4,
+    text:'В кутия има n молива, от които 10 са червени, а останалите са черни. Вероятността случайно изваден молив да е черен се пресмята с израза:',
+    options:['(n − 10)/n', 'n/10', '10/n', 'n/(n − 10)'], correct:0,
+    explanation:'Черните моливи са n − 10, а всички възможни изходи са n, затова вероятността е (n − 10)/n.' }
 ];
 
 const part2Steps = [
   { id:21, points:12,
-    intro:'Даден е многочленът M = x⁴ + 2x³ − 2x − 1.',
+    intro:'Задача върху неравенство и квадратно уравнение.',
     subparts:[
-      { label:'А', prompt:'Представете многочлена M като произведение на множители от първа степен.',
-        solution:'M = (x⁴ − 1) + 2x(x² − 1) = (x² − 1)(x² + 1) + 2x(x² − 1) = (x² − 1)(x² + 2x + 1) = (x − 1)(x + 1)(x + 1)² = (x − 1)(x + 1)(x + 1)(x + 1).' },
-      { label:'Б', prompt:'Намерете всички стойности на x, за които многочленът M приема стойност 0.',
-        solution:'(x − 1)(x + 1)³ = 0 ⇒ x − 1 = 0 или x + 1 = 0, откъдето x₁ = 1 и x₂ = −1.' },
-      { label:'В', prompt:'Намерете най-малкото цяло отрицателно решение на неравенството (x + 4)² − (14x + 3)/2 − (2 − x)² > 2x.',
-        solution:'Умножаваме по 2: 2(x + 4)² − (14x + 3) − 2(2 − x)² > 4x ⇒ 2(x² + 8x + 16) − 14x − 3 − 2(4 − 4x + x²) > 4x ⇒ 2x² + 16x + 32 − 14x − 3 − 8 + 8x − 2x² > 4x ⇒ 10x + 21 > 4x ⇒ 6x > −21 ⇒ x > −3,5. Най-малкото цяло отрицателно решение е −3.' }
+      { label:'А', prompt:'Решете неравенството (x + 2)(2 − x) − (x − 1)/6 < (3/2)(x − 1/3) − (x − 4)² и представете решението върху числовата ос.',
+        solution:'4 − x² − (x−1)/6 < 3x/2 − 1/2 − (x² − 8x + 16) ⇒ 4 − x² − (x−1)/6 < 3x/2 − 1/2 − x² + 8x − 16. Съкращаваме −x² от двете страни: 4 − (x−1)/6 < 3x/2 − 1/2 + 8x − 16. Умножаваме по 6: 24 − (x − 1) < 9x − 3 + 48x ⇒ 24 − x + 1 < 57x − 3 ⇒ 25 − x < 57x − 3 ⇒ 28 < 58x ⇒ x > 62/29 = 2 4/29. Решението е интервалът (2 4/29; +∞) — на числовата ос е отворен лъч надясно от 2 4/29.' },
+      { label:'Б', prompt:'Решете уравнението x² − x − 6 = 0.',
+        solution:'x² − 3x + 2x − 6 = 0 ⇒ x(x − 3) + 2(x − 3) = 0 ⇒ (x + 2)(x − 3) = 0, откъдето x₁ = −2 и x₂ = 3.' },
+      { label:'В', prompt:'Определете дали корените на уравнението са решения и на неравенството.',
+        solution:'Границата е 2 4/29. За x₁ = −2: −2 < 2 4/29, значи −2 НЕ е решение на неравенството. За x₂ = 3: 3 > 2 4/29, значи 3 Е решение.' }
     ] },
   { id:22, points:11,
-    intro:'В 9 часа́ от град A към град B потегля автобус, който се движи с постоянна скорост. След 20 минути от град B към град A с пълен резервоар потегля автомобил. Той се движи с постоянна скорост, която е с 15 km/h по-голяма от скоростта на автобуса. В 11 часа́ превозните средства се срещат на бензиностанция по средата на пътя между град A и град B.',
+    intro:'Бригада дърводобивачи планира да добива дървен материал от планински масив по 75 m³ на ден. В действителност бригадата добива по 84 m³ на ден и завършва работата 3 дни по-рано от предвиденото време. Оказва се, че добитият материал е със 180 m³ повече от планираното.',
     subparts:[
-      { label:'А', prompt:'Намерете скоростта на автомобила и разстоянието между двата града.',
-        solution:'Нека скоростта на автобуса е x km/h. Автобусът пътува от 9:00 до 11:00, тоест 2 h, и изминава 2x km. Автомобилът пътува от 9:20 до 11:00, тоест 1 h 40 min = 5/3 h, и изминава (5/3)(x + 15) km. Срещат се по средата, значи двата пътя са равни: 2x = (5/3)(x + 15) ⇒ 6x = 5x + 75 ⇒ x = 75 km/h. Скоростта на автомобила е 75 + 15 = 90 km/h. Половината път е 2·75 = 150 km, значи AB = 300 km.' },
-      { label:'Б', prompt:'На бензиностанцията шофьорът на автомобила допълва резервоара със 7,8 литра гориво. Намерете разхода на гориво на автомобила за 100 km.',
-        solution:'Автомобилът е изминал 150 km и е изразходвал 7,8 литра. От пропорцията 150 : 100 = 7,8 : x следва 3x = 15,6, тоест x = 5,2. Разходът е 5,2 литра на 100 km.' }
+      { label:'А', prompt:'За колко време бригадата е планирала да добие дървения материал?',
+        solution:'Нека планираните дни са x (x > 3). Планираното количество е 75x, а реално добитото за (x − 3) дни е 84(x − 3). От условието 75x + 180 = 84(x − 3) ⇒ 75x + 180 = 84x − 252 ⇒ 9x = 432 ⇒ x = 48. Бригадата е планирала да добие материала за 48 дни.' },
+      { label:'Б', prompt:'Колко кубически метра дървен материал бригадата е планирала да добие и колко е добит реално?',
+        solution:'Планираният добив е 48·75 = 3600 m³, а реалният е 45·84 = 3780 m³.' },
+      { label:'В', prompt:'С колко процента е увеличен планираният добив?',
+        solution:'Преизпълнението е 180 m³. От (x/100)·3600 = 180 следва 36x = 180, тоест x = 5. Предвиденият добив е увеличен с 5%.' }
     ] },
   { id:23, points:12,
-    intro:'В △ABC отношението на ъглите е, както следва ∠BAC : ∠ABC : ∠ACB = 1 : 9 : 2. Точка P лежи на лъча AB→, B е между A и P и BC = PC. Точка M лежи на лъча CB→, B е между C и M и AM = AB.',
+    intro:'В успоредника ABCD (AB > AD) ∠BAD = 45° и височината DK (K ∈ AB) към страната AB пресича диагонала AC в точка F. През върха D е построена права, перпендикулярна на AC, която пресича диагонала AC и страната AB съответно в точки H и L.',
     subparts:[
-      { label:'А', prompt:'Намерете мерките на ъглите на △ABC, △BCP и △AMB.',
-        solution:'От ∠BAC + ∠ABC + ∠ACB = 180° и отношението 1 : 9 : 2 следва k + 9k + 2k = 180°, тоест k = 15°. Значи ∠BAC = 15°, ∠ABC = 135°, ∠ACB = 30°. В △BCP: ∠CBP = 45° (съседен на ∠ABC), а BC = PC прави триъгълника равнобедрен, откъдето ∠BPC = 45° и ∠BCP = 90°. В △AMB: ∠ABM = 45° (съседен на ∠ABC), а AM = AB прави △AMB равнобедрен, откъдето ∠AMB = 45° и ∠MAB = 90°.' },
-      { label:'Б', prompt:'През точка C е построена права c ∥ AB, а през точка A — права a ∥ BC и a ∩ c = D. Намерете мерките на ъглите на △MDP.',
-        solution:'От DC ∥ AB и AD ∥ BC следва, че ABCD е успоредник с ъгли 45° и 135°; при това ∠DCA = ∠CAB = 15° и ∠ACB = ∠CAD = 30°, значи ∠DAB = 45°. Разглеждаме △MDA и △DCP: AD = CP (защото AD = BC и BC = CP), AM = DC (защото AM = AB и AB = DC), а ∠DAM = ∠PCD = 135°. Следователно △MAD ≅ △DCP по I признак, откъдето MD = DP, ∠AMD = ∠PDC и ∠ADM = ∠DPC. От MD = DP триъгълникът MPD е равнобедрен. Освен това ∠AMD + ∠ADM = 180° − 135° = 45°, значи ∠ADM + ∠PDC = 45° и ∠MDP = ∠ADC − 45° = 135° − 45° = 90°. Следователно △MDP е равнобедрен правоъгълен с ъгли 90°, 45° и 45°.' }
+      { label:'А', prompt:'Ако ∠DAC : ∠BAC = 2 : 1, намерете ъглите на △ADL и определете отношението BC : DH.',
+        solution:'Означаваме ∠DAC = 2x и ∠BAC = x. От 2x + x = 45° следва x = 15°, значи ∠BAC = 15° и ∠DAC = 30°. В правоъгълния △ADH (∠AHD = 90°) сборът на ъглите дава ∠ADH = 60°. В △ALH: ∠ALH = 180° − 90° − 15° = 75°. Значи ъглите на △ADL са 45°, 60° и 75°. В правоъгълния △ADH срещу ъгъла 30° лежи катетът DH, затова AD = 2·DH, а AD = BC, откъдето BC : DH = 2 : 1.' },
+      { label:'Б', prompt:'Докажете, че △AFK ≅ △DLK.',
+        solution:'Нека ∠FAK = α. Тогава ∠AFK = ∠DFH = 90° − α като остри ъгли в правоъгълни триъгълници, откъдето ∠FDH = α. От ∠DAK = 45° и ∠AKD = 90° следва ∠ADK = 45°, значи △ADK е равнобедрен и AK = DK. Разглеждаме △AFK и △DLK: 1) AK = DK; 2) ∠FAK = ∠KDL (и двата са α); 3) ∠FKA = ∠DKL = 90°. По втори признак (ЪСЪ) триъгълниците са еднакви.' },
+      { label:'В', prompt:'Ако AF = m и CH = n, изразете лицата на △DLC и на успоредника ABCD чрез m и n.',
+        solution:'От △AFK ≅ △DLK следва AF = DL като съответни елементи, значи DL = m. За △DLC вземаме основата DL и височината CH = n: S(DLC) = DL·CH/2 = mn/2. Същото лице може да се пресметне и с основа DC и височина DK: S(DLC) = DC·DK/2 = mn/2, откъдето DC·DK = mn. Но DC·DK е точно лицето на успоредника, затова S(ABCD) = mn.' }
     ] }
 ];
 
@@ -1562,7 +1578,7 @@ startBtn.addEventListener('click', () => {
   showScreen(part1Screen);
   renderPart1Step();
   part1Timer.start();
-  trackEvent('matura2025_part1_started', { event_category: 'matura2025' });
+  trackEvent('matura2024_part1_started', { event_category: 'matura2024' });
 });
 
 p1PrevBtn.addEventListener('click', () => {
@@ -1587,8 +1603,8 @@ function finishPart1(completionType){
   const results = calculatePart1();
   renderPart1Interim(results);
   showScreen(part1InterimScreen);
-  trackEvent('matura2025_part1_completed', {
-    event_category: 'matura2025',
+  trackEvent('matura2024_part1_completed', {
+    event_category: 'matura2024',
     completion_type: completionType,
     auto_score: results.autoScore,
     auto_max: results.autoMax
@@ -1710,7 +1726,7 @@ startPart2Btn.addEventListener('click', () => {
   showScreen(part2Screen);
   renderPart2Step();
   part2Timer.start();
-  trackEvent('matura2025_part2_started', { event_category: 'matura2025' });
+  trackEvent('matura2024_part2_started', { event_category: 'matura2024' });
 });
 
 p2PrevBtn.addEventListener('click', () => {
@@ -1733,7 +1749,7 @@ function handlePart2TimeUp(){
 
 function finishPart2(completionType){
   showFinalScreen();
-  trackEvent('matura2025_part2_completed', { event_category: 'matura2025', completion_type: completionType });
+  trackEvent('matura2024_part2_completed', { event_category: 'matura2024', completion_type: completionType });
 }
 
 function buildPart2Records(){
@@ -1781,7 +1797,7 @@ async function saveAttemptToPortal(results){
       }
       return;
     }
-    const saved = await TLA.saveAttempt('matura2025', {
+    const saved = await TLA.saveAttempt('matura2024', {
       autoScore: results.autoScore,
       autoMax: results.autoMax,
       manualMax: 35,
@@ -1813,7 +1829,7 @@ async function saveAttemptToPortal(results){
 document.getElementById('open-review-btn').addEventListener('click', () => {
   renderReviewScreen();
   showScreen(reviewScreen);
-  trackEvent('matura2025_review_opened', { event_category: 'matura2025' });
+  trackEvent('matura2024_review_opened', { event_category: 'matura2024' });
 });
 
 document.getElementById('back-to-result-btn').addEventListener('click', () => {
