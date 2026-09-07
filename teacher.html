@@ -199,7 +199,9 @@
       <div class="tla-card">
         <h2 class="tla-card__title">Задания</h2>
         <p class="tla-muted" style="margin-bottom:1rem;">
-          Учениците виждат само публикуваните задания.
+          Учениците виждат само публикуваните задания. Адресът е страницата,
+          която се отваря с бутона „Започни“ — сменя се тук, ако файлът е
+          преименуван или е заменен с друг.
         </p>
         <ul class="tla-list" id="assignAdmin">
           <li class="tla-empty">Зареждане…</li>
@@ -902,7 +904,22 @@
                 (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span> ' +
               '<span class="tla-item__title">' + esc(a.title) + '</span>' +
               '<div class="tla-item__meta">' + esc(a.slug) + ' · ' +
+                esc(a.url || 'без адрес') + ' · ' +
                 (a.published ? 'публикувано' : 'скрито') + '</div>' +
+              /* The address lives in the database, so renaming a file in the
+                 repository leaves the old one behind. Editing it here beats
+                 an SQL statement in the Supabase console. */
+              '<details class="tla-help" style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
+                '<summary>Промени адреса</summary>' +
+                '<div class="tla-field--inline" style="margin-top:0.6rem;">' +
+                  '<div class="tla-field" style="margin:0;">' +
+                    '<input type="text" value="' + esc(a.url || '') + '" ' +
+                      'data-url-input="' + esc(a.id) + '" placeholder="ime-na-fail.html" />' +
+                  '</div>' +
+                  '<button type="button" class="tla-btn tla-btn--sm" data-url-save="' +
+                    esc(a.id) + '">Запази адреса</button>' +
+                '</div>' +
+              '</details>' +
             '</div>' +
             '<button type="button" class="tla-btn ' + (a.published ? 'tla-btn--ghost' : '') +
               '" data-pub="' + esc(a.id) + '">' +
@@ -912,6 +929,22 @@
       }
 
       document.getElementById('assignAdmin').addEventListener('click', async function (e) {
+        var saveBtn = e.target.closest('[data-url-save]');
+        if (saveBtn) {
+          clearMsgs();
+          var sid = saveBtn.getAttribute('data-url-save');
+          var input = document.querySelector('[data-url-input="' + sid + '"]');
+          var url = (input.value || '').trim();
+          if (!url) { say('err', 'Адресът не може да е празен.'); input.focus(); return; }
+          saveBtn.disabled = true;
+          var res = await TLA.client.from('assignments').update({ url: url }).eq('id', sid);
+          saveBtn.disabled = false;
+          if (res.error) { say('err', res.error.message); return; }
+          say('ok', 'Адресът е записан.');
+          await loadAssignments();
+          return;
+        }
+
         var btn = e.target.closest('[data-pub]');
         if (!btn) return;
         clearMsgs();
