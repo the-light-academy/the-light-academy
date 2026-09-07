@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Входно ниво 2 — 7. клас · The Light Academy</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Входно ниво по математика, група 1 — за ученици с профил в платформата." />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&family=Pacifico&display=swap');
+
+/* The academy's palette, the same split as the homework sheet: amber is a
+   fill colour (1.9:1 on white), so anything written in amber uses the
+   darker --accent-ink instead. */
+:root{
+  --ink:#16233F;
+  --ink-soft:#55658A;
+  --paper:#FFFDF7;
+  --paper-raised:#FFFFFF;
+  --grid:#EFE3CC;
+  --accent:#F7AD19;
+  --accent-ink:#925A08;
+  --accent-soft:#FFF4DC;
+  --pencil:#1B2E52;
+  --pencil-soft:#E7EDFA;
+  --success:#16603A;
+  --success-soft:#E9F7EF;
+  --error:#93231F;
+  --error-soft:#FBEAE9;
+  --shadow: 220 45% 20%;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 42px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/42px 100%,
+    var(--paper);
+  color:var(--ink);
+  font-family:'Nunito', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── the platform bar, written here so this page keeps its own stylesheet ── */
+.tlp-bar{
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; height:64px; padding:0 clamp(14px,4vw,28px);
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 8px 32px hsl(var(--shadow) / 0.07);
+}
+.tlp-bar__left{ display:flex; align-items:center; gap:12px; min-width:0; }
+.tlp-bar__logo{
+  display:flex; align-items:center; gap:10px; flex:none;
+  font-family:'Pacifico', cursive; font-size:1.3rem; line-height:1;
+  color:#8C641B; text-decoration:none; white-space:nowrap;
+}
+.tlp-bar__logo img{ width:34px; height:34px; border-radius:50%; object-fit:cover; display:block; }
+.tlp-bar__sep{ width:1px; height:24px; background:rgba(13,27,54,0.14); flex:none; }
+.tlp-bar__where{
+  font-size:11.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid rgba(146,90,8,0.16);
+  padding:5px 12px; border-radius:999px; white-space:nowrap;
+}
+.tlp-bar__out{
+  font-family:'Nunito', sans-serif; font-weight:800; font-size:14px;
+  min-height:36px; padding:6px 16px; border-radius:999px; cursor:pointer;
+  color:var(--ink-soft); background:transparent; border:1px solid rgba(13,27,54,0.18);
+}
+.tlp-bar__out:hover{ background:var(--accent-soft); color:var(--accent-ink); }
+.tlp-bar__short{ display:none; }
+/* Three widths of the same bar. Between roughly 430 and 480 the wordmark and
+   the full label together were wider than the screen, so the label shortens
+   first and the wordmark goes next -- the round mark never does. */
+@media (max-width:700px){
+  .tlp-bar__long{ display:none; }
+  .tlp-bar__short{ display:inline; }
+}
+@media (max-width:560px){
+  .tlp-bar{ height:58px; }
+  .tlp-bar__name, .tlp-bar__sep{ display:none; }
+}
+
+.wrap{ max-width:760px; margin:0 auto; padding:32px 20px 150px; }
+.screen{ display:none; }
+.screen.active{ display:block; }
+
+/* ── before the clock starts ── */
+.intro{
+  background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:18px; padding:clamp(24px,5vw,38px); text-align:center;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--pencil);
+}
+.eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+h1{
+  font-family:'Fredoka', ui-sans-serif, sans-serif; font-weight:700;
+  font-size:clamp(28px,5vw,40px); line-height:1.08; margin:12px 0 6px; text-wrap:balance;
+}
+h1 em{ font-style:normal; color:var(--accent-ink); }
+.subhead{ color:var(--ink-soft); font-size:15.5px; line-height:1.6; margin:0 auto; max-width:52ch; }
+.facts{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin:22px 0 4px; }
+.fact{
+  background:var(--pencil-soft); border-radius:12px; padding:10px 16px; min-width:96px;
+}
+.fact b{ display:block; font-family:'Fredoka'; font-size:22px; color:var(--pencil); line-height:1.1; }
+.fact span{ font-size:12.5px; color:var(--ink-soft); }
+.rules{
+  text-align:left; max-width:44ch; margin:22px auto 0; padding:0; list-style:none;
+  color:var(--ink-soft); font-size:14.5px; line-height:1.7;
+}
+.rules li::before{ content:'·'; color:var(--accent-ink); font-weight:800; margin-right:8px; }
+.btn{
+  font-family:'Fredoka'; font-weight:600; font-size:15.5px; border:none;
+  border-radius:11px; padding:12px 26px; cursor:pointer;
+  color:#2D1F0E; background:var(--accent);
+  transition:transform .1s ease, opacity .15s ease;
+}
+.btn:hover{ opacity:.92; }
+.btn:active{ transform:scale(.97); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+.btn--ghost{ background:transparent; color:var(--ink-soft); border:1.5px solid var(--grid); }
+.btn--big{ margin-top:24px; padding:14px 34px; font-size:17px; }
+
+/* ── the paper ── */
+header.ex{ display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+.qcard{
+  background:var(--paper-raised); border:1px solid var(--grid); border-radius:16px;
+  padding:20px 22px 18px; box-shadow:0 1px 0 hsl(var(--shadow) / 0.04);
+}
+.qcard + .qcard{ margin-top:16px; }
+.qcard.correct{ border-color:var(--success); box-shadow:0 0 0 3px var(--success-soft); }
+.qcard.wrong{ border-color:var(--error); box-shadow:0 0 0 3px var(--error-soft); }
+.qtop{ display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+.qnum{
+  font-family:'Fredoka'; font-weight:600; font-size:14px;
+  color:var(--pencil); background:var(--pencil-soft); border-radius:999px;
+  width:26px; height:26px; display:flex; align-items:center; justify-content:center; flex:none;
+}
+.qtag{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px; font-weight:700;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft);
+}
+.qpts{ margin-left:auto; font-size:12.5px; font-weight:700; color:var(--ink-soft); white-space:nowrap; }
+.qexpr{
+  font-family:'JetBrains Mono', monospace; font-weight:700;
+  font-size:clamp(16px,3vw,19px); line-height:1.7; font-variant-numeric:tabular-nums;
+  margin:2px 0 16px; color:var(--ink);
+}
+.qexpr.prose{ font-family:'Nunito', sans-serif; font-weight:700; font-size:clamp(15.5px,2.8vw,17px); }
+
+/* a proper stacked fraction, for questions 4 and 5 */
+.frac{
+  display:inline-flex; flex-direction:column; align-items:center;
+  vertical-align:middle; margin:0 4px; line-height:1.25;
+}
+.frac .num{ padding:0 6px 2px; }
+.frac .den{ padding:2px 6px 0; border-top:2px solid currentColor; }
+
+.choices{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+@media (max-width:460px){ .choices{ grid-template-columns:1fr; } }
+.choice{
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-radius:11px; border:1.5px solid var(--grid); background:transparent;
+  color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px;
+  cursor:pointer; text-align:left;
+  transition:border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.choice:hover{ border-color:var(--pencil); background:var(--pencil-soft); }
+.choice:active{ transform:scale(.98); }
+.choice .lab{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13px;
+  color:var(--pencil); background:var(--pencil-soft); border-radius:7px;
+  width:22px; height:22px; flex:none; display:flex; align-items:center; justify-content:center;
+}
+.choice.selected{ border-color:var(--pencil); background:var(--pencil-soft); }
+.choice.selected .lab{ background:var(--pencil); color:var(--paper-raised); }
+.qcard.graded .choice{ cursor:default; pointer-events:none; }
+.qcard.graded .choice.is-correct{ border-color:var(--success); background:var(--success-soft); }
+.qcard.graded .choice.is-correct .lab{ background:var(--success); color:#fff; }
+.qcard.graded .choice.is-wrong-pick{ border-color:var(--error); background:var(--error-soft); }
+.qcard.graded .choice.is-wrong-pick .lab{ background:var(--error); color:#fff; }
+
+.fields{ display:grid; gap:10px; }
+.field{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.field label{
+  font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+  color:var(--pencil); min-width:34px;
+}
+/* The proportion in question 7 is the question, not a hint about what to
+   type, so it sits beside the field rather than inside it as a placeholder. */
+.fexpr{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:15px;
+  color:var(--ink); white-space:nowrap;
+}
+.field input{
+  flex:1 1 140px; font:inherit; font-family:'JetBrains Mono', monospace; font-weight:700;
+  font-size:15px; color:var(--ink); padding:10px 14px;
+  border:1.5px solid var(--grid); border-radius:11px; background:var(--paper-raised);
+}
+.field input:focus{ outline:3px solid rgba(27,46,82,0.16); outline-offset:1px; border-color:var(--pencil); }
+.qcard.graded .field input{ pointer-events:none; }
+.hint{ font-size:12.5px; color:var(--ink-soft); margin:8px 0 0; }
+
+.verdict{ margin-top:10px; font-size:13.5px; font-weight:700; display:none; }
+.qcard.graded .verdict{ display:block; }
+.verdict.ok{ color:var(--success); }
+.verdict.no{ color:var(--error); }
+
+/* ── the dock: clock, progress, hand-in ── */
+/* `hidden` alone does not hide a flex element -- display:flex outranks the
+   browser's own [hidden] rule -- and the clock kept sitting on the result. */
+.dock[hidden]{ display:none; }
+.dock{
+  position:fixed; left:0; right:0; bottom:0; display:flex; justify-content:center;
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top, var(--paper) 55%, transparent);
+  pointer-events:none; z-index:40;
+}
+.dock-inner{
+  pointer-events:auto; width:100%; max-width:760px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:16px; padding:12px 16px;
+  box-shadow:0 8px 30px hsl(var(--shadow) / 0.18);
+}
+.clock{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:20px;
+  font-variant-numeric:tabular-nums; color:var(--pencil);
+  background:var(--pencil-soft); border-radius:11px; padding:6px 14px;
+}
+.clock.warn{ color:var(--error); background:var(--error-soft); }
+.dock-score{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13.5px;
+  color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+.dock-fill{ flex:1; }
+
+/* ── after the hand-in ── */
+.result-panel{
+  border-radius:18px; padding:26px 24px; background:var(--paper-raised);
+  border:1px solid var(--grid); text-align:center; position:relative; overflow:hidden;
+  margin-bottom:22px;
+}
+#confetti{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.result-title{ font-family:'Fredoka'; font-weight:700; font-size:24px; margin:6px 0 4px; position:relative; }
+.result-sub{ color:var(--ink-soft); font-size:14.5px; position:relative; margin:0 0 4px; }
+.mark{
+  display:inline-block; margin-top:14px; padding:8px 20px; border-radius:999px;
+  font-family:'Fredoka'; font-weight:600; font-size:17px;
+  background:var(--accent-soft); color:var(--accent-ink); position:relative;
+}
+canvas.gauge{ position:relative; }
+.saved-note{
+  margin:18px 0 0; padding:10px 14px; border-radius:11px;
+  background:var(--accent-soft); color:var(--accent-ink);
+  font-size:14px; font-weight:700; position:relative;
+}
+.saved-note[hidden]{ display:none; }
+.result-back{
+  display:inline-flex; align-items:center; justify-content:center; margin-top:16px;
+  padding:12px 24px; border-radius:11px; font-family:'Fredoka'; font-weight:600;
+  font-size:15.5px; background:var(--accent); color:#2D1F0E; text-decoration:none;
+  position:relative;
+}
+.scale{
+  margin-top:22px; border-top:1px dashed var(--grid); padding-top:16px;
+  font-size:13px; color:var(--ink-soft); text-align:left;
+}
+.scale table{ width:100%; border-collapse:collapse; margin-top:8px; font-family:'JetBrains Mono', monospace; }
+.scale td{ padding:5px 6px; border-bottom:1px solid var(--grid); }
+.scale tr.is-yours td{ background:var(--accent-soft); color:var(--accent-ink); font-weight:700; }
+
+.gate{
+  max-width:520px; margin:80px auto; padding:22px 24px;
+  background:var(--paper-raised); border:1px solid var(--grid); border-radius:16px;
+  text-align:center; color:var(--ink-soft); font-size:15px; line-height:1.6;
+}
+.gate[hidden]{ display:none; }
+
+@media (prefers-reduced-motion: reduce){
+  .btn, .choice{ transition:none; }
+}
+</style>
+</head>
+<body>
+
+<header class="tlp-bar">
+  <div class="tlp-bar__left">
+    <a href="index.html" class="tlp-bar__logo">
+      <img src="theLightAcademyLogo.png" alt="" />
+      <span class="tlp-bar__name">The Light Academy</span>
+    </a>
+    <span class="tlp-bar__sep" aria-hidden="true"></span>
+    <span class="tlp-bar__where">
+      <span class="tlp-bar__long">Входно ниво · група 1</span>
+      <span class="tlp-bar__short">Входно ниво</span>
+    </span>
+  </div>
+  <button type="button" class="tlp-bar__out" id="signOutBtn">Изход</button>
+</header>
+
+<p class="gate" id="gate" hidden></p>
+
+<div class="wrap" id="app" hidden>
+
+  <!-- 1. преди часовника -->
+  <section class="screen active" id="introScreen">
+    <div class="intro">
+      <div class="eyebrow"><span class="dot"></span>Входно ниво · 7. клас · Група 1</div>
+      <h1>Входно ниво <em>2</em></h1>
+      <p class="subhead">
+        Десет задачи от материала на 5. и 6. клас. Изпитът показва откъде тръгваме —
+        не влиза в оценките в училище.
+      </p>
+      <div class="facts">
+        <div class="fact"><b>10</b><span>задачи</span></div>
+        <div class="fact"><b>24</b><span>точки</span></div>
+        <div class="fact"><b>25</b><span>минути</span></div>
+      </div>
+      <ul class="rules">
+        <li>Часовникът тръгва с бутона и не спира.</li>
+        <li>Щом времето свърши, изпитът се предава сам с това, което е попълнено.</li>
+        <li>Задачи 7, 9 и 10 се пишат с отговор — само числото.</li>
+        <li>Десетичните дроби се пишат със запетая: −3,8.</li>
+      </ul>
+      <button type="button" class="btn btn--big" id="startBtn">Започни изпита</button>
+    </div>
+  </section>
+
+  <!-- 2. изпитът -->
+  <section class="screen" id="examScreen">
+    <header class="ex">
+      <div class="eyebrow"><span class="dot"></span>Входно ниво · 7. клас · Група 1</div>
+    </header>
+    <div id="questions"></div>
+  </section>
+
+  <!-- 3. резултатът -->
+  <section class="screen" id="resultScreen">
+    <div class="result-panel">
+      <canvas id="confetti"></canvas>
+      <canvas class="gauge" id="gauge" width="140" height="140"></canvas>
+      <div class="result-title" id="resultTitle"></div>
+      <p class="result-sub" id="resultSub"></p>
+      <div class="mark" id="resultMark"></div>
+      <p class="saved-note" id="savedNote" hidden></p>
+      <a class="result-back" href="portal.html">Към моя профил</a>
+      <div class="scale">
+        Скалата на изпита:
+        <table id="scaleTable"></table>
+      </div>
+    </div>
+    <div id="review"></div>
+  </section>
+</div>
+
+<div class="dock" id="dock" hidden>
+  <div class="dock-inner">
+    <span class="clock" id="clock">25:00</span>
+    <span class="dock-score" id="answered">0 / 10 решени</span>
+    <span class="dock-fill"></span>
+    <button type="button" class="btn" id="submitBtn">Предай</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+/* =========================================================
+   ВХОДНО НИВО 2 — ГРУПА 1
+
+   Задачите са от хартиената бланка. Верните отговори са
+   пресметнати и проверени един по един:
+
+     1 в)  −0,0129 е с най-малка абсолютна стойност
+     2 г)  9 − 11,6 = −2,6
+     3 а)  −4,4 + 3,52 = −0,88
+     4 в)  (64 − 16) : 16 = 3
+     5 а)  (−3⁹·16) : (3³·16) = −3⁶
+     6 а)  −4 − 4x = −0,6 → x = −0,85
+     7     x:2 = 3:5 → x = 1,2 ; 1/7 : 3/7 = 5:x → x = 15
+     8 Г)  2 части = 8 см → 1 част = 4 см → 11·4 = 44 см
+     9     −9x − 2 = 17 − 4x → x = −19/5 = −3,8
+    10     (75 + v)·4/3 = 220 → v = 90 km/h
+
+   Всичко се оценява автоматично. Задачите с писан отговор
+   приемат няколко записа на едно и също число — 1,2 и 1.2 и
+   6/5 са един отговор — защото се проверява числото, а не
+   как е напечатано.
+========================================================= */
+
+const DURATION = 25 * 60;          /* 25 минути, както е на бланката */
+const LABELS = ["а", "б", "в", "г"];
+
+const QUESTIONS = [
+  { points:1, tag:'Сравняване', type:'mc',
+    text:'Най-голямото от числата −0,2019; −0,0219; −0,0129 и −0,2109 е:',
+    choices:['−0,2019','−0,0219','−0,0129','−0,2109'], correct:2 },
+
+  { points:1, tag:'Числени изрази', type:'mc',
+    text:'Стойността на израза 9 − (15 − 3,4) е равна на:',
+    choices:['−9,4','−3,6','−3,4','−2,6'], correct:3 },
+
+  { points:2, tag:'Числени изрази', type:'mc',
+    text:'Стойността на израза −4,4 + 4,4 · 0,8 е равна на:',
+    choices:['−0,88','−0,44','0','0,88'], correct:0 },
+
+  { points:2, tag:'Степени', type:'mc',
+    html:'Изразът <span class="frac"><span class="num">2⁶ − 2⁴</span><span class="den">2⁴</span></span> е равен на:',
+    plain:'Изразът (2⁶ − 2⁴) : 2⁴ е равен на:',
+    choices:['1/4','1/2','3','63'], correct:2 },
+
+  { points:3, tag:'Степени', type:'mc',
+    html:'Изразът <span class="frac"><span class="num">(−3)⁹ · 2⁴</span><span class="den">3³ · (−4)²</span></span> е равен на:',
+    plain:'Изразът ((−3)⁹ · 2⁴) : (3³ · (−4)²) е равен на:',
+    choices:['−3⁶','−3³','3³','3⁶'], correct:0 },
+
+  { points:2, tag:'Уравнения', type:'mc',
+    text:'Ако −4 − 4 · x = 0,7 − 1,3, то x е равно на:',
+    choices:['−0,85','0,85','−0,6','0,6'], correct:0 },
+
+  { points:3, tag:'Пропорции', type:'text', prose:true,
+    text:'Намерете неизвестния член на пропорцията:',
+    fields:[
+      { label:'А)', expr:'x : 2 = 3 : 5', answer:'1,2', accepts:['1,2','6/5','12/10'] },
+      { label:'Б)', expr:'1/7 : 3/7 = 5 : x', answer:'15', accepts:['15'] }
+    ] },
+
+  { points:3, tag:'Пропорции', type:'mc', prose:true,
+    text:'Страните на триъгълник се отнасят както 4 : 2 : 5 и най-малката страна има дължина 8 см. Периметърът на триъгълника е равен на:',
+    choices:['4 см','20 см','28 см','44 см'], correct:3 },
+
+  { points:3, tag:'Уравнения', type:'text',
+    text:'Решете уравнението:  3 · (2 − 3 · x) − 8 = 3 − 2 · (2 · x − 7)',
+    fields:[ { label:'x =', prompt:'', answer:'−3,8', accepts:['-3,8','-19/5','-3.8'] } ] },
+
+  { points:4, tag:'Текстова задача', type:'text', prose:true,
+    text:'Два автомобила тръгват от А и В един срещу друг в 8 ч. сутринта и се срещат в 9 ч. и 20 мин. Разстоянието между А и В е 220 км, а скоростта на автомобила, който тръгва от А, е 75 km/h. Намерете скоростта на другия автомобил.',
+    fields:[ { label:'v =', prompt:'в km/h', answer:'90', accepts:['90','90km/h','90км/ч','90кмч'] } ] }
+];
+
+const TOTAL = QUESTIONS.reduce((s, q) => s + q.points, 0);
+
+/* Половин точка се пише 1,5 — както се пишат числата навсякъде другаде тук. */
+const num = v => String(v).replace('.', ',');
+
+/* Скалата от бланката. Границите там се застъпват (4, и 15), затова
+   тук са разделени: 4 е още слаб, 15 е още добър. */
+const SCALE = [
+  { min:22, mark:'Отличен 6', range:'над 21' },
+  { min:16, mark:'Мн. добър 5', range:'от 16 до 21' },
+  { min:10, mark:'Добър 4', range:'от 10 до 15' },
+  { min:5,  mark:'Среден 3', range:'от 5 до 9' },
+  { min:0,  mark:'Слаб 2', range:'до 4' }
+];
+
+const state = QUESTIONS.map(q => q.type === 'mc' ? null : q.fields.map(() => ''));
+let graded = false, saved = false, remaining = DURATION, ticker = null;
+
+const $ = id => document.getElementById(id);
+
+/* ---- рисуване на задачите ---- */
+function render(){
+  $('questions').innerHTML = QUESTIONS.map((q, qi) => {
+    const body = q.type === 'mc'
+      ? `<div class="choices">${q.choices.map((c, ci) => `
+          <button type="button" class="choice" data-q="${qi}" data-c="${ci}">
+            <span class="lab">${LABELS[ci]}</span><span>${c}</span>
+          </button>`).join('')}</div>`
+      : `<div class="fields">${q.fields.map((f, fi) => `
+          <div class="field">
+            <label for="f-${qi}-${fi}">${f.label}</label>
+            ${f.expr ? `<span class="fexpr">${f.expr}</span>` : ''}
+            <input id="f-${qi}-${fi}" type="text" inputmode="text"
+                   data-q="${qi}" data-f="${fi}"
+                   placeholder="${f.prompt || 'отговор'}" autocomplete="off" />
+          </div>`).join('')}</div>
+         <p class="hint">Пиши само числото, с запетая за десетичните дроби.</p>`;
+
+    return `<div class="qcard" id="card-${qi}">
+      <div class="qtop">
+        <span class="qnum">${qi + 1}</span>
+        <span class="qtag">${q.tag}</span>
+        <span class="qpts">${q.points} т.</span>
+      </div>
+      <div class="qexpr${q.prose ? ' prose' : ''}">${q.html || q.text}</div>
+      ${body}
+      <div class="verdict" id="verdict-${qi}"></div>
+    </div>`;
+  }).join('');
+
+  $('questions').addEventListener('click', e => {
+    const btn = e.target.closest('.choice');
+    if (!btn || graded) return;
+    const qi = +btn.dataset.q;
+    state[qi] = +btn.dataset.c;
+    document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updateProgress();
+  });
+  $('questions').addEventListener('input', e => {
+    const inp = e.target.closest('input[data-q]');
+    if (!inp || graded) return;
+    state[+inp.dataset.q][+inp.dataset.f] = inp.value;
+    updateProgress();
+  });
+}
+
+function isAnswered(qi){
+  const s = state[qi];
+  return QUESTIONS[qi].type === 'mc'
+    ? s !== null
+    : s.some(v => String(v).trim() !== '');
+}
+
+function updateProgress(){
+  const n = QUESTIONS.filter((q, i) => isAnswered(i)).length;
+  $('answered').textContent = `${n} / ${QUESTIONS.length} решени`;
+}
+
+/* ---- часовникът ---- */
+function startClock(){
+  tick();
+  ticker = setInterval(tick, 1000);
+}
+function tick(){
+  const m = Math.floor(remaining / 60), s = remaining % 60;
+  $('clock').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  $('clock').classList.toggle('warn', remaining <= 300);
+  if (remaining <= 0){ clearInterval(ticker); grade(true); return; }
+  remaining--;
+}
+
+/* ---- проверка ----
+   Числото се сравнява, не изписването му: махат се интервалите,
+   точката става запетая, а "x =" отпред се пренебрегва. */
+function norm(v){
+  return String(v == null ? '' : v)
+    .trim().toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[−–—]/g, '-')
+    .replace(/^[xх]=/, '')
+    .replace(/^v=/, '')
+    .replace(/^=/, '')
+    .replace(/\./g, ',')
+    .replace(/,$/, '');
+}
+
+function grade(byClock){
+  if (graded) return;
+  graded = true;
+  clearInterval(ticker);
+  $('dock').hidden = true;
+
+  let score = 0;
+  const records = [];
+
+  QUESTIONS.forEach((q, qi) => {
+    const card = $(`card-${qi}`);
+    card.classList.add('graded');
+    const verdict = $(`verdict-${qi}`);
+
+    if (q.type === 'mc'){
+      const pick = state[qi];
+      const right = pick === q.correct;
+      if (right) score += q.points;
+      card.classList.add(right ? 'correct' : 'wrong');
+      document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b => {
+        const ci = +b.dataset.c;
+        if (ci === q.correct) b.classList.add('is-correct');
+        if (ci === pick && !right) b.classList.add('is-wrong-pick');
+      });
+      verdict.className = 'verdict ' + (right ? 'ok' : 'no');
+      verdict.textContent = right
+        ? `Вярно — ${num(q.points)} т.`
+        : (pick === null
+            ? `Без отговор — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`
+            : `Грешно — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`);
+
+      records.push({
+        id: String(qi + 1), kind:'mc', points:q.points, earned: right ? q.points : 0,
+        correct: right, text: q.plain || q.text, options: q.choices,
+        correctIndex: q.correct, chosenIndex: (pick == null ? null : pick),
+        explanation: 'Тема: ' + q.tag
+      });
+    } else {
+      /* всяко поле носи равен дял от точките на задачата */
+      const per = q.points / q.fields.length;
+      let got = 0;
+      const given = [], expected = [];
+      q.fields.forEach((f, fi) => {
+        const raw = String(state[qi][fi] || '').trim();
+        const right = raw !== '' && f.accepts.map(norm).indexOf(norm(raw)) !== -1;
+        if (right) got += per;
+        given.push(`${f.label} ${raw || '(без отговор)'}`);
+        expected.push(`${f.label} ${f.answer}`);
+        const inp = document.querySelector(`input[data-q="${qi}"][data-f="${fi}"]`);
+        if (inp) inp.style.borderColor = right ? 'var(--success)' : 'var(--error)';
+      });
+      score += got;
+      const all = got === q.points;
+      card.classList.add(all ? 'correct' : 'wrong');
+      verdict.className = 'verdict ' + (all ? 'ok' : 'no');
+      verdict.textContent = all
+        ? `Вярно — ${num(q.points)} т.`
+        : `${num(got)} от ${num(q.points)} т. — верният отговор е ${expected.join('; ')}`;
+
+      records.push({
+        id: String(qi + 1), kind:'free', points:q.points, earned: got, correct: all,
+        prompt: q.text, studentAnswer: given.join('; '), referenceAnswer: expected.join('; '),
+        explanation: 'Тема: ' + q.tag
+      });
+    }
+  });
+
+  showResult(score, byClock);
+  saveToPortal(score, records);
+}
+
+function markFor(score){
+  return SCALE.find(s => score >= s.min);
+}
+
+function showResult(score, byClock){
+  $('examScreen').classList.remove('active');
+  $('resultScreen').classList.add('active');
+
+  const pct = score / TOTAL;
+  const m = markFor(score);
+  $('resultTitle').textContent = `${num(score)} / ${TOTAL} точки`;
+  $('resultSub').textContent = byClock
+    ? 'Времето свърши — изпитът е предаден с това, което беше попълнено.'
+    : 'Изпитът е предаден.';
+  $('resultMark').textContent = m.mark;
+
+  $('scaleTable').innerHTML = SCALE.slice().reverse().map(s => `
+    <tr class="${s === m ? 'is-yours' : ''}"><td>${s.range} т.</td><td>${s.mark}</td></tr>
+  `).join('');
+
+  /* прегледът е самите задачи, вече оценени */
+  $('review').appendChild($('questions'));
+
+  drawGauge(pct);
+  if (pct >= 0.6) burstConfetti();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ---- стрелката с процента ---- */
+function drawGauge(pct){
+  const canvas = $('gauge'), ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1, size = 140;
+  canvas.width = size * dpr; canvas.height = size * dpr;
+  canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+  ctx.scale(dpr, dpr);
+  const cx = size / 2, cy = size / 2, r = 54;
+  const styles = getComputedStyle(document.documentElement);
+  const track = styles.getPropertyValue('--pencil-soft').trim();
+  const ink = styles.getPropertyValue('--ink').trim();
+  /* дъгата е за четене, не украса — жълтото е 1,9:1 на бяло */
+  const arc = pct >= 0.6 ? styles.getPropertyValue('--success').trim()
+                         : styles.getPropertyValue('--accent-ink').trim();
+  const t0 = performance.now(), duration = 700;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function frame(now){
+    const e = reduce ? 1 : Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - e, 3);
+    ctx.clearRect(0, 0, size, size);
+    ctx.lineWidth = 12; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = track; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct * eased);
+    ctx.strokeStyle = arc; ctx.stroke();
+    ctx.fillStyle = ink; ctx.font = "700 22px 'Fredoka', sans-serif";
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(pct * 100 * eased) + '%', cx, cy);
+    if (e < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function burstConfetti(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const canvas = $('confetti'), panel = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const w = panel.clientWidth, h = panel.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  const colors = ['#F7AD19','#1B2E52','#16603A','#FFD98A','#6E86B5'];
+  const parts = Array.from({ length:70 }, () => ({
+    x: w / 2 + (Math.random() - 0.5) * 40, y: h * 0.35,
+    vx: (Math.random() - 0.5) * 6, vy: -Math.random() * 6 - 3,
+    g: 0.18 + Math.random() * 0.08, size: 4 + Math.random() * 4,
+    rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.3,
+    color: colors[Math.floor(Math.random() * colors.length)], life: 0
+  }));
+  const start = performance.now();
+  function frame(now){
+    ctx.clearRect(0, 0, w, h);
+    let alive = false;
+    parts.forEach(p => {
+      p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      if (p.y < h + 20) alive = true;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - p.life / 140);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    if (alive && now - start < 3000) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, w, h);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---- записване в платформата ---- */
+async function saveToPortal(score, records){
+  const note = $('savedNote');
+  if (typeof TLA === 'undefined' || !TLA.isConfigured() || saved) return;
+  saved = true;
+  try{
+    await TLA.saveAttempt('entrance_test_2', {
+      autoScore: score, autoMax: TOTAL, manualMax: null,
+      records: records, part2: null
+    });
+    note.textContent = '✓ Резултатът е записан в профила ти.';
+    note.hidden = false;
+  } catch (err) {
+    saved = false;
+    note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
+    note.hidden = false;
+  }
+}
+
+/* ---- начало ---- */
+$('startBtn').addEventListener('click', () => {
+  $('introScreen').classList.remove('active');
+  $('examScreen').classList.add('active');
+  $('dock').hidden = false;
+  updateProgress();
+  startClock();
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+$('submitBtn').addEventListener('click', () => grade(false));
+$('signOutBtn').addEventListener('click', () => TLA.signOut());
+
+/* Изпитът е за влезли ученици: без сесия requireAuth() праща към
+   екрана за вход и се връща тук след това. */
+(async function(){
+  const gate = $('gate');
+  if (typeof TLA === 'undefined' || !TLA.isConfigured()){
+    gate.textContent = 'Няма връзка с платформата, затова изпитът не може да запише резултат. Опитайте по-късно.';
+    gate.hidden = false;
+    return;
+  }
+  const auth = await TLA.requireAuth();
+  if (!auth) return;
+  $('app').hidden = false;
+  render();
+})();
+</script>
+</body>
+</html>

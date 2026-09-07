@@ -248,6 +248,15 @@ values
    'homework', 'homework_w01.html', 10, false, 100, 1)
 on conflict (slug) do nothing;
 
+-- The second entrance test, week 2 in the calendar ("Входно равнище").
+-- 24 points, 25 minutes, marked entirely by the page.
+insert into public.assignments (slug, title, kind, url, max_points, published, sort_order, week)
+values
+  ('entrance_test_2',
+   'Входно ниво 2 — 7. клас',
+   'exam', 'entrance_test_2.html', 24, false, 30, 2)
+on conflict (slug) do nothing;
+
 -- ---------------------------------------------------------------------
 -- 6. After running this file
 --    a) Authentication -> Providers -> Email -> turn OFF "Enable sign ups"

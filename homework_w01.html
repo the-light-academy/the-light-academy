@@ -85,7 +85,15 @@ body{
   color:var(--ink-soft); background:transparent; border:1px solid rgba(13,27,54,0.18);
 }
 .tlp-bar__out:hover{ background:var(--accent-soft); color:var(--accent-ink); }
-@media (max-width:430px){
+.tlp-bar__short{ display:none; }
+/* Three widths of the same bar. Between roughly 430 and 480 the wordmark and
+   the full label together were wider than the screen, so the label shortens
+   first and the wordmark goes next -- the round mark never does. */
+@media (max-width:700px){
+  .tlp-bar__long{ display:none; }
+  .tlp-bar__short{ display:inline; }
+}
+@media (max-width:560px){
   .tlp-bar{ height:58px; }
   .tlp-bar__name, .tlp-bar__sep{ display:none; }
 }
@@ -390,7 +398,10 @@ canvas.gauge{ position:relative; }
       <span class="tlp-bar__name">The Light Academy</span>
     </a>
     <span class="tlp-bar__sep" aria-hidden="true"></span>
-    <span class="tlp-bar__where">Домашно · седмица 1</span>
+    <span class="tlp-bar__where">
+      <span class="tlp-bar__long">Домашно · седмица 1</span>
+      <span class="tlp-bar__short">Домашно</span>
+    </span>
   </div>
   <button type="button" class="tlp-bar__out" id="signOutBtn">Изход</button>
 </header>
