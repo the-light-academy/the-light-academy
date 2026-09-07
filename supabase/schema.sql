@@ -68,6 +68,13 @@ create table if not exists public.attempts (
 -- status='graded'.
 alter table public.attempts add column if not exists ai_graded_at timestamptz;
 
+-- Added with the teacher's calendar. A homework or exam can be pinned to one
+-- of the 36 teaching weeks, so the week that says what is being taught can
+-- also carry what is set for it. Null means "not pinned to a week", which is
+-- what everything created before this was.
+alter table public.assignments add column if not exists week int
+  check (week is null or (week between 1 and 36));
+
 create index if not exists attempts_user_idx       on public.attempts(user_id);
 create index if not exists attempts_assignment_idx on public.attempts(assignment_id);
 create index if not exists attempts_submitted_idx  on public.attempts(submitted_at desc);

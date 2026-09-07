@@ -93,6 +93,7 @@
 
     <div class="tla-tabs" role="tablist">
       <button class="tla-tab" role="tab" aria-selected="true"  data-panel="panelResults">Резултати</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelCalendar">Календар</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
     </div>
@@ -151,6 +152,20 @@
       <div class="tla-card" id="attemptDetail" hidden>
         <h2 class="tla-card__title" id="detailTitle">Преглед</h2>
         <div id="detailBody"></div>
+      </div>
+    </section>
+
+    <!-- ── CALENDAR ───────────────────────────────────────────── -->
+    <section class="tla-panel" id="panelCalendar" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Календар на годината</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;">
+          36 учебни седмици, като седмица 1 е 28 септември – 2 октомври и всяка
+          следваща върви подред. Ваканциите не са извадени — седмиците са учебни
+          и са номерирани както в програмата. Отворете тема, за да видите
+          седмиците ѝ.
+        </p>
+        <div id="calendar"><p class="tla-empty">Зареждане…</p></div>
       </div>
     </section>
 
@@ -891,6 +906,261 @@
         btn.disabled = false;
       });
 
+      /* ---- calendar ---------------------------------------------------
+         The teaching year, as it is actually worked: week 1 is the week of
+         28 September, and every week after it follows on. Holidays are not
+         skipped -- the weeks are teaching weeks, numbered the way the
+         syllabus numbers them, so week 19 opening the second term on 1
+         February is a consequence, not a coincidence.
+
+         The material is data, not markup, so a change to the syllabus is a
+         change to this list. */
+
+      var YEAR_START = new Date(2026, 8, 28);      /* понеделник, 28.09.2026 */
+      var MONTHS_SHORT = ['ян.','фев.','март','апр.','май','юни',
+                          'юли','авг.','сеп.','окт.','ноем.','дек.'];
+
+      var CURRICULUM = [
+        { term: 1, no: 1, title: 'Начален преговор', from: 1, weeks: [
+          'Рационални числа — събиране, изваждане, умножение и деление. Сравняване на числа.',
+          'Степени с естествен показател. Входно равнище (диагностика на знанията от 6. клас).'
+        ]},
+        { term: 1, no: 2, title: 'Цели изрази', from: 3, weeks: [
+          'Рационални изрази. Променливи и постоянни величини. Числена стойност на израз.',
+          'Едночлен. Нормален вид на едночлен. Действия с едночлени.',
+          'Многочлен. Нормален вид и степен на многочлен. Събиране и изваждане на многочлени.',
+          'Умножение на многочлен с едночлен и многочлен с многочлен.',
+          'Формули за съкратено умножение: (a ± b)², (a − b)(a + b).',
+          'Формули за съкратено умножение: (a ± b)³ и a³ ± b³.',
+          'Разлагане на многочлени на множители (изнасяне на общ множител, формули, групиране). Контролна работа върху цели изрази.'
+        ]},
+        { term: 1, no: 3, title: 'Уравнения', from: 10, weeks: [
+          'Числово равенство. Уравнение с едно неизвестно. Еквивалентни уравнения.',
+          'Линейни уравнения от вида ax + b = 0 и уравнения, свеждащи се до тях.',
+          'Уравнения от вида (ax + b)(cx + d) = 0 и |ax + b| = c.',
+          'Моделиране с линейни уравнения. Текстови задачи от движение и работа.',
+          'Текстови задачи от капитал, смеси, сплави и проценти. Контролна работа.'
+        ]},
+        { term: 1, no: 4, title: 'Основни геометрични фигури', from: 15, weeks: [
+          'Въведение в геометрията — точка, права, отсечка, полуправа, равнина.',
+          'Ъгъл. Видове ъгли. Съседни и връхни ъгли.',
+          'Перпендикулярни прави. Успоредни прави — признаци и свойства.',
+          'Триъгълник — сборове на ъгли, външен ъгъл на триъгълник. Обобщение на първия срок.'
+        ]},
+        { term: 2, no: 5, title: 'Еднакви триъгълници', from: 19, weeks: [
+          'Понятие за еднакви триъгълници. Първи признак за еднаквост.',
+          'Втори признак за еднаквост на триъгълници. Упражнения.',
+          'Равнобедрен и равностранен триъгълник — свойства и признаци.',
+          'Симетрала на отсечка. Построения с линия и пергел (симетрала, перпендикуляр).',
+          'Трети признак за еднаквост. Правоъгълен триъгълник с ъгъл 30°.',
+          'Медиана към хипотенуза в правоъгълен триъгълник. Ъглополовяща на ъгъл. Контролна работа.'
+        ]},
+        { term: 2, no: 6, title: 'Неравенства', from: 25, weeks: [
+          'Числови неравенства — свойства. Линейно неравенство с едно неизвестно.',
+          'Неравенства, свеждащи се до линейни. Представяне на решенията върху числова ос.',
+          'Неравенства между страни и ъгли в триъгълника.',
+          'Неравенство на триъгълника (сбор от две страни спрямо третата).'
+        ]},
+        { term: 2, no: 7, title: 'Успоредник', from: 29, weeks: [
+          'Понятие за четириъгълник. Успоредник — определение, свойства на страни и ъгли.',
+          'Признаци за успоредник. Правоъгълник — свойства и признаци.',
+          'Ромб и квадрат — дефиниции, специфични свойства и признаци.',
+          'Обобщение на четириъгълници. Контролна работа.'
+        ]},
+        { term: 2, no: 8, title: 'Елементи от вероятности и статистика', from: 33, weeks: [
+          'Организиране и представяне на данни (таблици, диаграми). Случайно събитие и вероятност.'
+        ]},
+        { term: 2, no: 9, title: 'Годишен преговор и подготовка за НВО', from: 34, weeks: [
+          'Преговор на Алгебра (Изрази, Уравнения, Неравенства). Решаване на тестове по формата на МОН.',
+          'Преговор на Геометрия (Ъгли, Еднакви триъгълници, Успоредници).',
+          'Изпитни симулации за НВО, финален анализ на резултатите и Изходно равнище.'
+        ]}
+      ];
+
+      /* Monday of week n, and the Friday that closes it. */
+      function weekDates(n) {
+        var from = new Date(YEAR_START.getTime());
+        from.setDate(from.getDate() + (n - 1) * 7);
+        var to = new Date(from.getTime());
+        to.setDate(to.getDate() + 4);
+        return { from: from, to: to };
+      }
+
+      function weekLabel(n) {
+        var d = weekDates(n);
+        var same = d.from.getMonth() === d.to.getMonth();
+        return d.from.getDate() + (same ? '' : ' ' + MONTHS_SHORT[d.from.getMonth()]) +
+               ' – ' + d.to.getDate() + ' ' + MONTHS_SHORT[d.to.getMonth()] + ' ' + d.to.getFullYear();
+      }
+
+      /* Which teaching week today falls in, or null outside the year. */
+      function currentWeek() {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var diff = Math.floor((today - YEAR_START) / 86400000);
+        if (diff < 0) return null;
+        var n = Math.floor(diff / 7) + 1;
+        return (n >= 1 && n <= 36) ? n : null;
+      }
+
+      /* Homework hangs off a week through assignments.week. The column is
+         added by supabase/schema.sql; if it is not there yet the query
+         fails and the slot says so rather than taking the panel down. */
+      var calByWeek = {}, calSpare = [], calWeekColumn = true;
+
+      async function loadCalendar() {
+        var res = await TLA.client.from('assignments')
+          .select('id, slug, title, kind, published, week')
+          .order('sort_order', { ascending: true });
+        if (res.error) { calWeekColumn = false; renderCalendar(); return; }
+        calByWeek = {}; calSpare = [];
+        (res.data || []).forEach(function (a) {
+          if (a.week) { (calByWeek[a.week] = calByWeek[a.week] || []).push(a); }
+          else { calSpare.push(a); }
+        });
+        renderCalendar();
+      }
+
+      function calHwSlot(n) {
+        if (!calWeekColumn) {
+          return '<div class="tlc__hw"><p class="tlc__hw-k">Домашно за седмицата</p>' +
+            '<p class="tlc__hw-none">За да закачате домашни към седмици, добавете ' +
+            'колоната <code>week</code> в таблица <code>assignments</code> — редът е ' +
+            'готов в supabase/schema.sql.</p></div>';
+        }
+
+        var pick = calSpare.length
+          ? '<select data-cal-pick="' + n + '" aria-label="Задание за седмица ' + n + '">' +
+              '<option value="">Закачи задание…</option>' +
+              calSpare.map(function (a) {
+                return '<option value="' + esc(a.id) + '">' + esc(a.title) + '</option>';
+              }).join('') +
+            '</select>' +
+            '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+              'data-cal-add="' + n + '">Закачи</button>'
+          : '';
+
+        var mine = calByWeek[n] || [];
+
+        /* A week with nothing set is the normal case for 35 of the 36, so it
+           gets one quiet line rather than a heading and an empty box. */
+        if (!mine.length) {
+          return '<div class="tlc__hw tlc__hw--empty">' +
+            '<span class="tlc__hw-k">Домашно</span>' +
+            '<span class="tlc__hw-none">още няма</span>' +
+            pick +
+          '</div>';
+        }
+
+        return '<div class="tlc__hw"><p class="tlc__hw-k">Домашно за седмицата</p>' +
+          mine.map(function (a) {
+            return '<div class="tlc__hw-row">' +
+              '<span class="tla-badge tla-badge--' + a.kind + '">' +
+                (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' +
+              '<span class="tlc__hw-t">' + esc(a.title) + '</span>' +
+              '<button type="button" class="tla-btn tla-btn--sm' +
+                (a.published ? ' tla-btn--ghost' : '') + '" data-cal-pub="' + esc(a.id) + '">' +
+                (a.published ? 'Скрий' : 'Публикувай') + '</button>' +
+              '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                'data-cal-off="' + esc(a.id) + '">Откачи</button>' +
+            '</div>';
+          }).join('') +
+          (pick ? '<div class="tlc__hw-add">' + pick + '</div>' : '') +
+        '</div>';
+      }
+
+      function renderCalendar() {
+        var el = document.getElementById('calendar');
+        var now = currentWeek();
+        var lastTerm = null, html = '';
+
+        CURRICULUM.forEach(function (theme) {
+          if (theme.term !== lastTerm) {
+            lastTerm = theme.term;
+            html += '<h3 class="tlc__term">' +
+              (theme.term === 1 ? 'Първи срок' : 'Втори срок') + '</h3>';
+          }
+          var to = theme.from + theme.weeks.length - 1;
+          /* open the theme you are actually in; before the year starts, the first */
+          var open = (now != null) ? (now >= theme.from && now <= to) : (theme.no === 1);
+
+          html += '<div class="tlc__theme' + (open ? ' is-open' : '') + '">' +
+            '<button type="button" class="tlc__head" aria-expanded="' + open + '">' +
+              '<span class="tlc__no">Тема ' + theme.no + '</span>' +
+              '<span class="tlc__t">' + esc(theme.title) + '</span>' +
+              '<span class="tlc__range">' +
+                (theme.from === to ? ('Седмица ' + theme.from)
+                                   : ('Седмици ' + theme.from + ' – ' + to)) + '</span>' +
+              '<span class="tlc__chev" aria-hidden="true">▾</span>' +
+            '</button>' +
+            '<div class="tlc__wrap"><div class="tlc__reveal"><div class="tlc__weeks">' +
+              theme.weeks.map(function (what, i) {
+                var n = theme.from + i;
+                return '<div class="tlc__week' + (n === now ? ' is-now' : '') + '">' +
+                  '<div class="tlc__week-top">' +
+                    '<span class="tlc__week-n">Седмица ' + n + '</span>' +
+                    '<span class="tlc__week-d">' + esc(weekLabel(n)) + '</span>' +
+                    (n === now ? '<span class="tlc__now">тази седмица</span>' : '') +
+                  '</div>' +
+                  '<p class="tlc__what">' + esc(what) + '</p>' +
+                  calHwSlot(n) +
+                '</div>';
+              }).join('') +
+            '</div></div></div>' +
+          '</div>';
+        });
+
+        el.innerHTML = html;
+      }
+
+      document.getElementById('calendar').addEventListener('click', async function (e) {
+        var head = e.target.closest('.tlc__head');
+        if (head) {
+          var card = head.closest('.tlc__theme');
+          var open = card.classList.toggle('is-open');
+          head.setAttribute('aria-expanded', String(open));
+          return;
+        }
+
+        var pub = e.target.closest('[data-cal-pub]');
+        if (pub) {
+          clearMsgs();
+          var pid = pub.getAttribute('data-cal-pub');
+          var row = calSpare.concat.apply([], Object.keys(calByWeek).map(function (k) { return calByWeek[k]; }))
+            .filter(function (a) { return a.id === pid; })[0];
+          if (!row) return;
+          var r1 = await TLA.client.from('assignments')
+            .update({ published: !row.published }).eq('id', pid);
+          if (r1.error) { say('err', r1.error.message); return; }
+          await loadCalendar();
+          await loadAssignments();
+          return;
+        }
+
+        var off = e.target.closest('[data-cal-off]');
+        if (off) {
+          clearMsgs();
+          var r2 = await TLA.client.from('assignments')
+            .update({ week: null }).eq('id', off.getAttribute('data-cal-off'));
+          if (r2.error) { say('err', r2.error.message); return; }
+          await loadCalendar();
+          return;
+        }
+
+        var add = e.target.closest('[data-cal-add]');
+        if (add) {
+          clearMsgs();
+          var wk = Number(add.getAttribute('data-cal-add'));
+          var pick = document.querySelector('[data-cal-pick="' + wk + '"]');
+          if (!pick || !pick.value) { say('err', 'Изберете задание от списъка.'); return; }
+          var r3 = await TLA.client.from('assignments')
+            .update({ week: wk }).eq('id', pick.value);
+          if (r3.error) { say('err', r3.error.message); return; }
+          say('ok', 'Заданието е закачено за седмица ' + wk + '.');
+          await loadCalendar();
+        }
+      });
+
       /* ---- assignments ---- */
       function renderAssignAdmin() {
         var el = document.getElementById('assignAdmin');
@@ -992,6 +1262,7 @@
         document.getElementById('whoami').textContent =
           (auth.profile && auth.profile.full_name) || auth.session.user.email;
         await loadAssignments();
+        await loadCalendar();
         await loadRoster();
         await loadResults();
       })();

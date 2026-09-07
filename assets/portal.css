@@ -627,3 +627,101 @@ body.tlp-page { background: #FFFDF7; }
   border-color: var(--tlp-accent-deep);
   font-weight: 700;
 }
+
+/* =====================================================================
+   .tlc — the teacher's calendar
+   ---------------------------------------------------------------------
+   Thirty-six teaching weeks laid out as they are actually worked: two
+   terms, nine themes, one card per week with the material and a place to
+   hang that week's homework.
+   ===================================================================== */
+
+.tlc__term {
+  font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: clamp(1.15rem, 2.6vw, 1.45rem); color: var(--tlp-navy);
+  margin: 1.75rem 0 0.85rem;
+}
+.tlc__term:first-child { margin-top: 0; }
+
+.tlc__theme {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); overflow: hidden;
+}
+.tlc__theme + .tlc__theme { margin-top: 0.6rem; }
+
+.tlc__head {
+  width: 100%; display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.9rem 1.05rem; background: none; border: none; cursor: pointer;
+  font: inherit; text-align: left;
+}
+.tlc__head:hover { background: #FFFBF2; }
+.tlc__head:focus-visible { outline: 2px solid var(--tlp-accent-deep); outline-offset: -2px; }
+.tlc__no {
+  flex-shrink: 0; min-width: 30px; height: 30px; padding: 0 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9px; background: var(--tlp-accent-wash); color: var(--tlp-accent-deep);
+  font-size: 0.78rem; font-weight: 800;
+}
+.tlc__t { flex: 1; min-width: 0; font-weight: 800; color: var(--tlp-navy); }
+.tlc__range { font-size: 0.82rem; color: var(--tlp-ink-soft); white-space: nowrap; }
+.tlc__chev {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--tlp-accent-wash); color: var(--tlp-accent-deep);
+  font-size: 0.7rem; transition: transform 0.25s ease;
+}
+.tlc__theme.is-open .tlc__chev { transform: rotate(180deg); background: var(--tlp-accent); color: #2D1F0E; }
+
+.tlc__wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.tlc__theme.is-open .tlc__wrap { grid-template-rows: 1fr; }
+.tlc__reveal { overflow: hidden; }
+.tlc__weeks { padding: 0 1.05rem 1.05rem; }
+
+.tlc__week { border-top: 1px solid var(--tlp-line); padding: 0.95rem 0 0.2rem; }
+.tlc__week-top {
+  display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.35rem;
+}
+.tlc__week-n { font-weight: 800; color: var(--tlp-navy); font-variant-numeric: tabular-nums; }
+.tlc__week-d { font-size: 0.85rem; color: var(--tlp-ink-soft); font-variant-numeric: tabular-nums; }
+.tlc__now {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--tlp-accent); color: #2D1F0E; padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+.tlc__week.is-now { background: #FFFBF2; margin: 0 -1.05rem; padding-left: 1.05rem; padding-right: 1.05rem; }
+.tlc__what { font-size: 0.93rem; line-height: 1.6; color: var(--tlp-ink); margin: 0; }
+
+/* The homework slot. Empty today on purpose — a place to hang next
+   year's work without inventing a mechanism for it now. */
+.tlc__hw { margin-top: 0.7rem; padding-top: 0.65rem; border-top: 1px dashed rgba(13,27,54,0.14); }
+.tlc__hw-k {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--tlp-ink-soft); margin: 0 0 0.45rem;
+}
+.tlc__hw-row {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  background: #FFFDF7; border: 1px solid var(--tlp-line);
+  border-radius: 10px; padding: 0.5rem 0.7rem;
+}
+.tlc__hw-row + .tlc__hw-row { margin-top: 0.4rem; }
+.tlc__hw-t { flex: 1 1 180px; min-width: 0; font-weight: 700; font-size: 0.9rem; color: var(--tlp-navy); }
+.tlc__hw-none { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0; }
+
+/* 35 of the 36 weeks have nothing set yet, so an empty week is one line. */
+.tlc__hw--empty {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+}
+.tlc__hw--empty .tlc__hw-k { margin: 0; }
+.tlc__hw--empty select { flex: 0 1 240px; }
+.tlc__hw-add { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.5rem; }
+.tlc__hw select {
+  font: inherit; font-size: 0.88rem; color: var(--tlp-ink); padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(13,27,54,0.16); border-radius: 10px; background: #fff;
+  max-width: 100%; flex: 1 1 220px;
+}
+
+@media (max-width: 560px) {
+  .tlc__range { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tlc__wrap, .tlc__chev { transition: none; }
+}
