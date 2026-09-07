@@ -657,8 +657,12 @@
               given = (r.chosenIndex == null) ? '(без отговор)' : opts[r.chosenIndex];
               expected = opts[r.correctIndex];
             } else {
-              given = r.studentAnswer;
-              expected = r.referenceAnswer;
+              /* Written answers arrive under one of two pairs of names.
+                 The matura and the entrance test call them studentAnswer /
+                 referenceAnswer; a homework sheet writes chosenAnswer /
+                 correctAnswer, which reads better next to chosenIndex. */
+              given = (r.studentAnswer != null) ? r.studentAnswer : r.chosenAnswer;
+              expected = (r.referenceAnswer != null) ? r.referenceAnswer : r.correctAnswer;
             }
             return '<div class="' + cls + '">' +
               '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.text || r.prompt || '')) + '</div>' +
