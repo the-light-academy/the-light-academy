@@ -244,7 +244,7 @@ on conflict (slug) do nothing;
 insert into public.assignments (slug, title, kind, url, max_points, published, sort_order, week)
 values
   ('hw-w01',
-   'Домашно 1 — Рационални числа',
+   'Домашно 1 — Рационални числа — седмица 1',
    'homework', 'homework_w01.html', 10, false, 100, 1)
 on conflict (slug) do nothing;
 

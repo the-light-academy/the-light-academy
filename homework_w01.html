@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Домашно 1 — Рационални числа · The Light Academy</title>
+<title>Домашно 1 — Рационални числа — седмица 1 · The Light Academy</title>
 <meta name="robots" content="noindex, nofollow" />
 <meta name="description" content="Домашно за седмица 1 — рационални числа. За ученици с профил в платформата." />
 <link rel="icon" href="favicon.ico" sizes="any" />
@@ -381,37 +381,6 @@ h1 em{
 }
 canvas.gauge{ position:relative; }
 
-.keybox{
-  margin-top:26px;
-  border-top:1px dashed var(--grid);
-  padding-top:16px;
-}
-.keybox summary{
-  cursor:pointer;
-  font-family:'JetBrains Mono', monospace;
-  font-weight:700;
-  font-size:13px;
-  letter-spacing:.05em;
-  text-transform:uppercase;
-  color:var(--pencil);
-  padding:6px 0;
-}
-.keygrid{
-  margin-top:12px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-}
-@media (max-width:480px){ .keygrid{grid-template-columns:repeat(2,1fr);} }
-.keyitem{
-  background:var(--pencil-soft);
-  border-radius:9px;
-  padding:8px 4px;
-  text-align:center;
-  font-family:'JetBrains Mono', monospace;
-}
-.keyitem .kn{ font-size:11px; color:var(--ink-soft); }
-.keyitem .kv{ font-size:16px; font-weight:700; color:var(--pencil); }
 </style>
 
 <header class="tlp-bar">
@@ -430,7 +399,7 @@ canvas.gauge{ position:relative; }
 
 <div class="wrap" id="sheet" hidden>
   <header class="hw">
-    <div class="eyebrow"><span class="dot"></span>Начален преговор · 7. клас · Седмица 1</div>
+    <div class="eyebrow"><span class="dot"></span>Домашно 1 · Начален преговор · Седмица 1</div>
     <h1>Рационални <em>числа</em></h1>
     <div class="subhead">Събиране, изваждане, умножение и деление на рационални числа. Сравняване на числа. Избери верния отговор от А, Б, В или Г за всяка задача.</div>
     <div class="progress-row">
@@ -450,10 +419,6 @@ canvas.gauge{ position:relative; }
     <a class="result-back" href="portal.html">Към моя профил</a>
   </div>
 
-  <details class="keybox">
-    <summary>Ключ с верните отговори</summary>
-    <div class="keygrid" id="keyGrid"></div>
-  </details>
 </div>
 
 <div class="dock">
@@ -469,17 +434,20 @@ canvas.gauge{ position:relative; }
 <script src="assets/supabase-config.js"></script>
 <script src="assets/auth.js"></script>
 <script>
+/* Десетичните дроби се пишат със запетая — така се пише в България, и
+   така ще ги видят и на изпита. Дробите като 5/6 си остават с наклонена
+   черта. */
 const QUESTIONS = [
-  { tag:"Събиране", expr:"−3.5 + 2.1 =", choices:["−1.4","1.4","−5.6","5.6"], correct:0 },
+  { tag:"Събиране", expr:"−3,5 + 2,1 =", choices:["−1,4","1,4","−5,6","5,6"], correct:0 },
   { tag:"Изваждане", expr:"5/6 − 1/3 =", choices:["1/2","1/3","2/3","1/6"], correct:0 },
   { tag:"Умножение", expr:"(−2/3) · (3/4) =", choices:["−1/2","1/2","−2/3","2/3"], correct:0 },
   { tag:"Деление", expr:"−8 ÷ (−2/5) =", choices:["−20","20","−4","4"], correct:1 },
   { tag:"Сравняване", expr:"Кое число е по-малко: −7 или −3 ?", choices:["−7","−3","Равни са","Не може да се сравнят"], correct:0 },
   { tag:"Събиране", expr:"−4/5 + (−1/5) =", choices:["−1","0","1","−2/5"], correct:0 },
-  { tag:"Изваждане", expr:"−2.3 − (−5.8) =", choices:["3.5","−3.5","8.1","−8.1"], correct:0 },
-  { tag:"Умножение", expr:"(−1.5) · (−4) =", choices:["−6","6","−5.5","5.5"], correct:1 },
+  { tag:"Изваждане", expr:"−2,3 − (−5,8) =", choices:["3,5","−3,5","8,1","−8,1"], correct:0 },
+  { tag:"Умножение", expr:"(−1,5) · (−4) =", choices:["−6","6","−5,5","5,5"], correct:1 },
   { tag:"Деление", expr:"3/7 ÷ (−3/14) =", choices:["−2","2","−1/2","1/2"], correct:0 },
-  { tag:"Сравняване", expr:"Кое от числата −2/3, −0.5, −1 е най-голямото?", choices:["−2/3","−0.5","−1","Всички са равни"], correct:1 },
+  { tag:"Сравняване", expr:"Кое от числата −2/3, −0,5, −1 е най-голямото?", choices:["−2/3","−0,5","−1","Всички са равни"], correct:1 },
 ];
 const LABELS = ["А","Б","В","Г"];
 
@@ -748,13 +716,6 @@ async function saveToPortal(score){
     note.hidden = false;
   }
 }
-
-document.getElementById('keyGrid').innerHTML = QUESTIONS.map((q,qi)=>`
-  <div class="keyitem">
-    <div class="kn">Зад. ${qi+1}</div>
-    <div class="kv">${LABELS[q.correct]}</div>
-  </div>
-`).join('');
 
 /* Домашното е за влезли ученици: без сесия requireAuth() праща към
    екрана за вход и се връща тук след това. */
