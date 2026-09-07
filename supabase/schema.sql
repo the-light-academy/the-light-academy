@@ -223,9 +223,12 @@ values
   ('matura2026',
    'Пробна матура — НВО по математика, 7. клас',
    'exam', 'matura2026.html', 100, false, 10),
+  -- the internal copy, not the public page: entrance_test.html unlocks its
+  -- result against a parent's email and saves nothing, while
+  -- entrance_test_internal.html is behind the login and writes the attempt.
   ('entrance_test',
    'Входящ тест за 7. клас',
-   'exam', 'entrance_test.html', 12, false, 20)
+   'exam', 'entrance_test_internal.html', 12, false, 20)
 on conflict (slug) do nothing;
 
 -- ---------------------------------------------------------------------

@@ -631,7 +631,13 @@
             esc((a ? a.title : '—') + ' · ' + TLA.formatDate(t.submitted_at)) + '</p>' +
           '<div class="tlp__q-line"><b>Автоматично:</b> ' +
             (t.auto_score != null ? esc(t.auto_score + ' / ' + t.auto_max) : '—') + '</div>' +
-          '<div class="tlp__q-line"><b>' + esc(manualLabel) + ':</b> ' + esc(manualTxt) + '</div>' +
+          /* Only say something about free-text marks when the attempt has
+             any. A fully auto-marked paper — the entrance test, homework
+             with no essay — was reading "AI е в процес на оценка" for
+             answers that never existed. */
+          ((t.manual_max != null || t.manual_score != null)
+            ? '<div class="tlp__q-line"><b>' + esc(manualLabel) + ':</b> ' + esc(manualTxt) + '</div>'
+            : '') +
           '<p class="tlp__card-t" style="margin-top:0.6rem;">Общо: ' +
             (t.total_score != null ? esc(t.total_score) : '—') +
             (a && a.max_points ? ' / ' + esc(a.max_points) : '') + '</p>' +
