@@ -306,9 +306,14 @@
       function assignmentCard(a) {
         var mine = attempts.filter(function (t) { return t.assignment_id === a.id; });
         var last = mine.length ? mine[0] : null;      /* attempts arrive newest first */
-        var href = a.kind === 'homework'
-          ? 'homework.html?slug=' + encodeURIComponent(a.slug)
-          : a.url;
+        /* An assignment either has a page of its own -- the matura files, the
+           internal entrance test, a homework sheet written as its own page --
+           or it lives in the database and homework.html renders it. The url
+           column is what decides, which is also what the teacher's dashboard
+           says it is: the page the "Започни" button opens. */
+        var href = a.url
+          ? a.url
+          : 'homework.html?slug=' + encodeURIComponent(a.slug);
 
         var head = '<div class="tlp__card-row">' +
           '<p class="tlp__card-t">' + esc(a.title) + '</p>';

@@ -303,6 +303,17 @@
 
         document.getElementById('hwTitle').textContent = assignment.title;
         questions = (assignment.content && assignment.content.questions) || [];
+
+        /* Some homework is a page of its own rather than questions in the
+           database. If this assignment names such a page, send the student
+           there instead of telling them it is empty -- which is what an old
+           link used to do. */
+        var own = (assignment.url || '').trim();
+        if (!questions.length && own && own.split('?')[0] !== 'homework.html') {
+          location.replace(own);
+          return;
+        }
+
         if (!questions.length) { fail('В това домашно още няма въпроси.'); return; }
 
         var total = questions.reduce(function (a, q) { return a + (q.points != null ? q.points : 1); }, 0);
