@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашно 1 — Рационални числа · The Light Academy</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Домашно за седмица 1 — рационални числа. За ученици с профил в платформата." />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&family=Pacifico&display=swap');
+
+/* The academy's palette. The roles are the ones this sheet already had --
+   "pencil" is the second voice next to the accent -- but the values are the
+   site's: cream ground, white cards, navy and amber and nothing else.
+
+   Two of them are split on purpose. Amber at #F7AD19 is a fill colour; on
+   white it reads at 1.9:1, which is fine behind a button and unreadable as
+   text. Anything written in amber uses --accent-ink instead. */
+:root{
+  --ink:#16233F;
+  --ink-soft:#55658A;
+  --paper:#FFFDF7;
+  --paper-raised:#FFFFFF;
+  --grid:#EFE3CC;
+  --accent:#F7AD19;
+  --accent-ink:#925A08;
+  --accent-soft:#FFF4DC;
+  --pencil:#1B2E52;
+  --pencil-soft:#E7EDFA;
+  --success:#16603A;
+  --success-soft:#E9F7EF;
+  --error:#93231F;
+  --error-soft:#FBEAE9;
+  --shadow: 220 45% 20%;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 42px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/42px 100%,
+    var(--paper);
+  color:var(--ink);
+  font-family:'Nunito', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* The platform's bar, hand-written here: this sheet is self-contained and
+   loading portal.css would fight it over body, fonts and the ground. Same
+   shape as portal.html — who this is, where they are, the way out. */
+.tlp-bar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; height:64px; padding:0 clamp(14px,4vw,28px);
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 8px 32px hsl(var(--shadow) / 0.07);
+}
+.tlp-bar__left{ display:flex; align-items:center; gap:12px; min-width:0; }
+.tlp-bar__logo{
+  display:flex; align-items:center; gap:10px; flex:none;
+  font-family:'Pacifico', cursive; font-size:1.3rem; line-height:1;
+  color:#8C641B; text-decoration:none; white-space:nowrap;
+}
+.tlp-bar__logo img{ width:34px; height:34px; border-radius:50%; object-fit:cover; display:block; }
+.tlp-bar__sep{ width:1px; height:24px; background:rgba(13,27,54,0.14); flex:none; }
+.tlp-bar__where{
+  font-size:11.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid rgba(146,90,8,0.16);
+  padding:5px 12px; border-radius:999px; white-space:nowrap;
+}
+.tlp-bar__out{
+  font-family:'Nunito', sans-serif; font-weight:800; font-size:14px;
+  min-height:36px; padding:6px 16px; border-radius:999px; cursor:pointer;
+  color:var(--ink-soft); background:transparent; border:1px solid rgba(13,27,54,0.18);
+}
+.tlp-bar__out:hover{ background:var(--accent-soft); color:var(--accent-ink); }
+@media (max-width:430px){
+  .tlp-bar{ height:58px; }
+  .tlp-bar__name, .tlp-bar__sep{ display:none; }
+}
+
+/* Said once the attempt has reached the profile, or explains why it has not. */
+.saved-note{
+  margin:18px 0 0; padding:10px 14px; border-radius:11px;
+  background:var(--accent-soft); color:var(--accent-ink);
+  font-size:14px; font-weight:700; text-align:center;
+}
+.saved-note[hidden]{ display:none; }
+.saved-note a{ color:var(--accent-ink); }
+.result-back{
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-top:16px; padding:11px 22px; border-radius:11px;
+  font-family:'Fredoka', sans-serif; font-weight:600; font-size:15.5px;
+  background:var(--accent); color:#2D1F0E; text-decoration:none;
+  position:relative;
+}
+
+/* Shown instead of the sheet when the platform cannot be reached. */
+.gate{
+  max-width:520px; margin:80px auto; padding:22px 24px;
+  background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:16px; text-align:center; color:var(--ink-soft);
+  font-size:15px; line-height:1.6;
+}
+.gate[hidden]{ display:none; }
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:32px 20px 140px;
+}
+
+header.hw{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:28px;
+}
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--pencil);
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+h1{
+  font-family:'Fredoka', ui-sans-serif, sans-serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,40px);
+  line-height:1.08;
+  margin:0;
+  text-wrap:balance;
+}
+h1 em{
+  font-style:normal;
+  color:var(--accent-ink);
+}
+.subhead{
+  color:var(--ink-soft);
+  font-size:15.5px;
+  max-width:60ch;
+  line-height:1.5;
+}
+
+.progress-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:6px;
+}
+.progress-track{
+  flex:1;
+  height:10px;
+  border-radius:999px;
+  background:var(--pencil-soft);
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--pencil), var(--accent));
+  transition:width .35s ease;
+}
+.progress-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size:13px;
+  font-weight:700;
+  color:var(--ink-soft);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+
+.questions{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.qcard{
+  background:var(--paper-raised);
+  border:1px solid var(--grid);
+  border-radius:16px;
+  padding:20px 22px 18px;
+  box-shadow:0 1px 0 hsl(var(--shadow) / 0.04);
+  transition:box-shadow .2s ease, border-color .2s ease;
+}
+.qcard.correct{ border-color:var(--success); box-shadow:0 0 0 3px var(--success-soft); }
+.qcard.wrong{ border-color:var(--error); box-shadow:0 0 0 3px var(--error-soft); }
+
+.qtop{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:12px;
+}
+.qnum{
+  font-family:'Fredoka';
+  font-weight:600;
+  font-size:14px;
+  color:var(--pencil);
+  background:var(--pencil-soft);
+  border-radius:999px;
+  width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;
+  flex:none;
+}
+.qtag{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.qexpr{
+  font-family:'JetBrains Mono', monospace;
+  font-weight:700;
+  font-size:clamp(19px,3.4vw,23px);
+  font-variant-numeric:tabular-nums;
+  margin:2px 0 16px;
+  color:var(--ink);
+}
+.qexpr .op{ color:var(--accent-ink); padding:0 2px;}
+
+.choices{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+@media (max-width:420px){ .choices{grid-template-columns:1fr;} }
+
+.choice{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:11px;
+  border:1.5px solid var(--grid);
+  background:transparent;
+  color:var(--ink);
+  font-family:'Nunito';
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+  text-align:left;
+  transition:border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.choice:hover{ border-color:var(--pencil); background:var(--pencil-soft); }
+.choice:active{ transform:scale(.98); }
+.choice .lab{
+  font-family:'JetBrains Mono', monospace;
+  font-weight:700;
+  font-size:13px;
+  color:var(--pencil);
+  background:var(--pencil-soft);
+  border-radius:7px;
+  width:22px;height:22px;
+  flex:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.choice.selected{ border-color:var(--pencil); background:var(--pencil-soft); }
+.choice.selected .lab{ background:var(--pencil); color:var(--paper-raised); }
+
+.qcard.graded .choice{ cursor:default; pointer-events:none; }
+.qcard.graded .choice.is-correct{ border-color:var(--success); background:var(--success-soft); }
+.qcard.graded .choice.is-correct .lab{ background:var(--success); color:#fff; }
+.qcard.graded .choice.is-wrong-pick{ border-color:var(--error); background:var(--error-soft); }
+.qcard.graded .choice.is-wrong-pick .lab{ background:var(--error); color:#fff; }
+
+.verdict{
+  margin-top:10px;
+  font-size:13.5px;
+  font-weight:700;
+  display:none;
+  align-items:center;
+  gap:6px;
+}
+.qcard.graded .verdict{ display:flex; }
+.verdict.ok{ color:var(--success); }
+.verdict.no{ color:var(--error); }
+
+.dock{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  display:flex;
+  justify-content:center;
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top, var(--paper) 55%, transparent);
+  pointer-events:none;
+}
+.dock-inner{
+  pointer-events:auto;
+  width:100%;
+  max-width:760px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:var(--paper-raised);
+  border:1px solid var(--grid);
+  border-radius:16px;
+  padding:12px 16px;
+  box-shadow:0 8px 30px hsl(var(--shadow) / 0.18);
+}
+.dock-score{
+  font-family:'JetBrains Mono', monospace;
+  font-weight:700;
+  font-size:14px;
+  color:var(--ink-soft);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.dock-score b{ color:var(--ink); font-size:16px; }
+.dock button{
+  font-family:'Fredoka';
+  font-weight:600;
+  font-size:15.5px;
+  border:none;
+  border-radius:11px;
+  padding:11px 20px;
+  cursor:pointer;
+  color:#2D1F0E;
+  background:var(--accent);
+  transition:transform .1s ease, opacity .15s ease;
+}
+.dock button:hover{ opacity:.92; }
+.dock button:active{ transform:scale(.97); }
+.dock button.secondary{
+  background:transparent;
+  color:var(--ink-soft);
+  border:1.5px solid var(--grid);
+}
+.dock button:disabled{ opacity:.5; cursor:not-allowed; }
+.dock-fill{ flex:1; }
+
+.result-panel{
+  display:none;
+  margin-top:22px;
+  border-radius:18px;
+  padding:26px 24px;
+  background:var(--paper-raised);
+  border:1px solid var(--grid);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.result-panel.show{ display:block; }
+#confetti{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none;
+}
+.result-title{
+  font-family:'Fredoka';
+  font-weight:700;
+  font-size:22px;
+  margin:0 0 4px;
+  position:relative;
+}
+.result-sub{
+  color:var(--ink-soft);
+  font-size:14.5px;
+  margin-bottom:18px;
+  position:relative;
+}
+canvas.gauge{ position:relative; }
+
+.keybox{
+  margin-top:26px;
+  border-top:1px dashed var(--grid);
+  padding-top:16px;
+}
+.keybox summary{
+  cursor:pointer;
+  font-family:'JetBrains Mono', monospace;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:var(--pencil);
+  padding:6px 0;
+}
+.keygrid{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+@media (max-width:480px){ .keygrid{grid-template-columns:repeat(2,1fr);} }
+.keyitem{
+  background:var(--pencil-soft);
+  border-radius:9px;
+  padding:8px 4px;
+  text-align:center;
+  font-family:'JetBrains Mono', monospace;
+}
+.keyitem .kn{ font-size:11px; color:var(--ink-soft); }
+.keyitem .kv{ font-size:16px; font-weight:700; color:var(--pencil); }
+</style>
+
+<header class="tlp-bar">
+  <div class="tlp-bar__left">
+    <a href="index.html" class="tlp-bar__logo">
+      <img src="theLightAcademyLogo.png" alt="" />
+      <span class="tlp-bar__name">The Light Academy</span>
+    </a>
+    <span class="tlp-bar__sep" aria-hidden="true"></span>
+    <span class="tlp-bar__where">Домашно · седмица 1</span>
+  </div>
+  <button type="button" class="tlp-bar__out" id="signOutBtn">Изход</button>
+</header>
+
+<p class="gate" id="gate" hidden></p>
+
+<div class="wrap" id="sheet" hidden>
+  <header class="hw">
+    <div class="eyebrow"><span class="dot"></span>Начален преговор · 7. клас · Седмица 1</div>
+    <h1>Рационални <em>числа</em></h1>
+    <div class="subhead">Събиране, изваждане, умножение и деление на рационални числа. Сравняване на числа. Избери верния отговор от А, Б, В или Г за всяка задача.</div>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 10 отговорени</div>
+    </div>
+  </header>
+
+  <div class="questions" id="questions"></div>
+
+  <div class="result-panel" id="resultPanel">
+    <canvas id="confetti"></canvas>
+    <canvas class="gauge" id="gauge" width="140" height="140"></canvas>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-sub" id="resultSub"></div>
+    <p class="saved-note" id="savedNote" hidden></p>
+    <a class="result-back" href="portal.html">Към моя профил</a>
+  </div>
+
+  <details class="keybox">
+    <summary>Ключ с верните отговори</summary>
+    <div class="keygrid" id="keyGrid"></div>
+  </details>
+</div>
+
+<div class="dock">
+  <div class="dock-inner">
+    <div class="dock-score"><b id="scoreNow">0</b>/10 верни</div>
+    <div class="dock-fill"></div>
+    <button class="secondary" id="resetBtn">Отначало</button>
+    <button id="checkBtn">Провери</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+const QUESTIONS = [
+  { tag:"Събиране", expr:"−3.5 + 2.1 =", choices:["−1.4","1.4","−5.6","5.6"], correct:0 },
+  { tag:"Изваждане", expr:"5/6 − 1/3 =", choices:["1/2","1/3","2/3","1/6"], correct:0 },
+  { tag:"Умножение", expr:"(−2/3) · (3/4) =", choices:["−1/2","1/2","−2/3","2/3"], correct:0 },
+  { tag:"Деление", expr:"−8 ÷ (−2/5) =", choices:["−20","20","−4","4"], correct:1 },
+  { tag:"Сравняване", expr:"Кое число е по-малко: −7 или −3 ?", choices:["−7","−3","Равни са","Не може да се сравнят"], correct:0 },
+  { tag:"Събиране", expr:"−4/5 + (−1/5) =", choices:["−1","0","1","−2/5"], correct:0 },
+  { tag:"Изваждане", expr:"−2.3 − (−5.8) =", choices:["3.5","−3.5","8.1","−8.1"], correct:0 },
+  { tag:"Умножение", expr:"(−1.5) · (−4) =", choices:["−6","6","−5.5","5.5"], correct:1 },
+  { tag:"Деление", expr:"3/7 ÷ (−3/14) =", choices:["−2","2","−1/2","1/2"], correct:0 },
+  { tag:"Сравняване", expr:"Кое от числата −2/3, −0.5, −1 е най-голямото?", choices:["−2/3","−0.5","−1","Всички са равни"], correct:1 },
+];
+const LABELS = ["А","Б","В","Г"];
+
+const qWrap = document.getElementById('questions');
+const state = new Array(QUESTIONS.length).fill(null);
+let graded = false;
+
+function render(){
+  qWrap.innerHTML = QUESTIONS.map((q,qi)=>`
+    <div class="qcard" id="card-${qi}">
+      <div class="qtop">
+        <div class="qnum">${qi+1}</div>
+        <div class="qtag">${q.tag}</div>
+      </div>
+      <div class="qexpr">${q.expr}</div>
+      <div class="choices">
+        ${q.choices.map((c,ci)=>`
+          <button type="button" class="choice" data-q="${qi}" data-c="${ci}">
+            <span class="lab">${LABELS[ci]}</span><span>${c}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="verdict" id="verdict-${qi}"></div>
+    </div>
+  `).join('');
+
+  qWrap.querySelectorAll('.choice').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(graded) return;
+      const qi = +btn.dataset.q, ci = +btn.dataset.c;
+      state[qi] = ci;
+      document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateProgress();
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = state.filter(s=>s!==null).length;
+  document.getElementById('progressFill').style.width = (answered/QUESTIONS.length*100)+'%';
+  document.getElementById('progressLabel').textContent = `${answered} / ${QUESTIONS.length} отговорени`;
+  document.getElementById('checkBtn').disabled = answered === 0;
+}
+
+function grade(){
+  graded = true;
+  let score = 0;
+  QUESTIONS.forEach((q,qi)=>{
+    const card = document.getElementById(`card-${qi}`);
+    card.classList.add('graded');
+    const pick = state[qi];
+    const isRight = pick === q.correct;
+    if(isRight) score++;
+    card.classList.add(isRight ? 'correct' : 'wrong');
+    document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b=>{
+      const ci = +b.dataset.c;
+      if(ci === q.correct) b.classList.add('is-correct');
+      if(ci === pick && !isRight) b.classList.add('is-wrong-pick');
+    });
+    const v = document.getElementById(`verdict-${qi}`);
+    if(pick === null){
+      v.textContent = `Без отговор — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`;
+      v.classList.add('no');
+    } else if(isRight){
+      v.textContent = 'Вярно!';
+      v.classList.add('ok');
+    } else {
+      v.textContent = `Грешно — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`;
+      v.classList.add('no');
+    }
+  });
+  document.getElementById('scoreNow').textContent = score;
+  document.getElementById('checkBtn').disabled = true;
+  showResult(score);
+  saveToPortal(score);
+}
+
+function showResult(score){
+  const panel = document.getElementById('resultPanel');
+  panel.classList.add('show');
+  const pct = score / QUESTIONS.length;
+  const messages = [
+    [0.9, "Отлично! 🎉", "Пълно овладяване на рационалните числа тази седмица."],
+    [0.7, "Много добре!", "Малко упражнения върху пропуснатите и си перфектен."],
+    [0.4, "Добро начало.", "Прегледай отново правилата за знаци при действията."],
+    [0,   "Продължавай да тренираш.", "Прочети внимателно верните отговори в ключа по-долу."],
+  ];
+  const msg = messages.find(m => pct >= m[0]);
+  document.getElementById('resultTitle').textContent = `${score} / ${QUESTIONS.length} — ${msg[1]}`;
+  document.getElementById('resultSub').textContent = msg[2];
+  drawGauge(pct);
+  if(pct >= 0.6) burstConfetti();
+  panel.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function drawGauge(pct){
+  const canvas = document.getElementById('gauge');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const size = 140;
+  canvas.width = size*dpr; canvas.height = size*dpr;
+  canvas.style.width = size+'px'; canvas.style.height = size+'px';
+  ctx.scale(dpr,dpr);
+  const cx = size/2, cy = size/2, r = 54;
+  const styles = getComputedStyle(document.documentElement);
+  const trackColor = styles.getPropertyValue('--pencil-soft').trim();
+  const inkColor = styles.getPropertyValue('--ink').trim();
+  /* the arc is read, not decoration -- amber at #F7AD19 is 1.9:1 on white */
+  const accent = pct >= 0.6 ? styles.getPropertyValue('--success').trim() : styles.getPropertyValue('--accent-ink').trim();
+
+  let start = -Math.PI/2;
+  let t = 0;
+  const duration = 700;
+  const t0 = performance.now();
+
+  function frame(now){
+    const elapsed = Math.min(1, (now - t0)/duration);
+    const eased = 1 - Math.pow(1-elapsed, 3);
+    ctx.clearRect(0,0,size,size);
+    ctx.lineWidth = 12;
+    ctx.lineCap = 'round';
+
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle = trackColor;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx,cy,r, start, start + Math.PI*2*pct*eased);
+    ctx.strokeStyle = accent;
+    ctx.stroke();
+
+    ctx.fillStyle = inkColor;
+    ctx.font = "700 22px 'Fredoka', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(pct*100*eased)+'%', cx, cy);
+
+    if(elapsed < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function burstConfetti(){
+  const canvas = document.getElementById('confetti');
+  const panel = document.getElementById('resultPanel');
+  const dpr = window.devicePixelRatio || 1;
+  const w = panel.clientWidth, h = panel.clientHeight;
+  canvas.width = w*dpr; canvas.height = h*dpr;
+  canvas.style.width = w+'px'; canvas.style.height = h+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const colors = ['#F7AD19','#1B2E52','#16603A','#FFD98A','#6E86B5'];
+  const N = 70;
+  const parts = Array.from({length:N}, ()=>({
+    x: w/2 + (Math.random()-0.5)*40,
+    y: h*0.35,
+    vx: (Math.random()-0.5)*6,
+    vy: -Math.random()*6 - 3,
+    g: 0.18 + Math.random()*0.08,
+    size: 4 + Math.random()*4,
+    rot: Math.random()*Math.PI*2,
+    vr: (Math.random()-0.5)*0.3,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    life: 0,
+  }));
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion) return;
+
+  const start = performance.now();
+  function frame(now){
+    const dt = 1;
+    ctx.clearRect(0,0,w,h);
+    let alive = false;
+    parts.forEach(p=>{
+      p.vy += p.g*dt;
+      p.x += p.vx*dt;
+      p.y += p.vy*dt;
+      p.rot += p.vr*dt;
+      p.life += 1;
+      if(p.y < h+20) alive = true;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - p.life/140);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      ctx.restore();
+    });
+    if(alive && now-start < 3000) requestAnimationFrame(frame);
+    else ctx.clearRect(0,0,w,h);
+  }
+  requestAnimationFrame(frame);
+}
+
+function reset(){
+  graded = false;
+  saved = false;
+  state.fill(null);
+  document.getElementById('savedNote').hidden = true;
+  document.getElementById('resultPanel').classList.remove('show');
+  document.getElementById('scoreNow').textContent = '0';
+  render();
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('checkBtn').addEventListener('click', grade);
+document.getElementById('resetBtn').addEventListener('click', reset);
+document.getElementById('signOutBtn').addEventListener('click', () => TLA.signOut());
+
+/* ---------------------------------------------------------------
+   Записване в платформата
+
+   Един опит на всяко "Провери". "Отначало" разрешава нов опит, точно
+   както пробната матура записва по един опит на завършване — старите
+   не се трият, за да се вижда развитието.
+
+   Записът е в същата форма, която профилът очаква: по един ред на
+   задача, с избрания и с верния отговор, за да се показва в "Преглед"
+   без специален случай. Всички десет задачи са с избираем отговор,
+   така че резултатът е автоматичен докрай.
+--------------------------------------------------------------- */
+let saved = false;
+
+async function saveToPortal(score){
+  const note = document.getElementById('savedNote');
+  if(typeof TLA === 'undefined' || !TLA.isConfigured() || saved) return;
+  saved = true;
+
+  const records = QUESTIONS.map((q, qi) => {
+    const pick = state[qi];
+    const correct = (pick === q.correct);
+    return {
+      id: String(qi + 1),
+      kind: 'mc',
+      points: 1,
+      earned: correct ? 1 : 0,
+      correct: correct,
+      text: q.expr,
+      options: q.choices,
+      correctIndex: q.correct,
+      chosenIndex: (pick == null ? null : pick),
+      explanation: q.tag ? ('Тема: ' + q.tag) : ''
+    };
+  });
+
+  try{
+    await TLA.saveAttempt('hw-w01', {
+      autoScore: score,
+      autoMax: QUESTIONS.length,
+      manualMax: null,
+      records: records,
+      part2: null
+    });
+    note.textContent = '✓ Резултатът е записан в профила ти.';
+    note.hidden = false;
+  } catch (err) {
+    /* The result on screen is the student's either way -- say what went
+       wrong, do not take it away. */
+    saved = false;
+    note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
+    note.hidden = false;
+  }
+}
+
+document.getElementById('keyGrid').innerHTML = QUESTIONS.map((q,qi)=>`
+  <div class="keyitem">
+    <div class="kn">Зад. ${qi+1}</div>
+    <div class="kv">${LABELS[q.correct]}</div>
+  </div>
+`).join('');
+
+/* Домашното е за влезли ученици: без сесия requireAuth() праща към
+   екрана за вход и се връща тук след това. */
+(async function(){
+  const gate = document.getElementById('gate');
+  const sheet = document.getElementById('sheet');
+
+  if(typeof TLA === 'undefined' || !TLA.isConfigured()){
+    gate.textContent = 'Няма връзка с платформата. Отворете домашното отново по-късно.';
+    gate.hidden = false;
+    return;
+  }
+
+  const auth = await TLA.requireAuth();
+  if(!auth) return;                       /* requireAuth вече пренасочи */
+
+  sheet.hidden = false;
+  render();
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>

@@ -238,6 +238,16 @@ values
    'exam', 'entrance_test_internal.html', 12, false, 20)
 on conflict (slug) do nothing;
 
+-- Homework lives one row per sheet. hw-w01 is a page of its own rather than
+-- questions in `content`, because it came with its own layout; homework.html
+-- stays the generic renderer for the ones that do live in the database.
+insert into public.assignments (slug, title, kind, url, max_points, published, sort_order, week)
+values
+  ('hw-w01',
+   'Домашно 1 — Рационални числа',
+   'homework', 'homework_w01.html', 10, false, 100, 1)
+on conflict (slug) do nothing;
+
 -- ---------------------------------------------------------------------
 -- 6. After running this file
 --    a) Authentication -> Providers -> Email -> turn OFF "Enable sign ups"
