@@ -75,6 +75,13 @@
           <p class="tlp__stat-n" id="statExN">завършени</p>
         </div>
         <div class="tlp__stat">
+          <p class="tlp__stat-k">Точки</p>
+          <p class="tlp__stat-v" id="statStars">
+            <span class="tlp__star" aria-hidden="true">★</span><span id="statStarsN">—</span>
+          </p>
+          <p class="tlp__stat-n" id="statStarsX">от решени задачи</p>
+        </div>
+        <div class="tlp__stat">
           <p class="tlp__stat-k">Среден резултат</p>
           <p class="tlp__stat-v" id="statAvg">—</p>
           <p class="tlp__stat-n" id="statAvgN">от оценените</p>
@@ -174,6 +181,66 @@
           var d = new Date(iso);
           return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2);
         } catch (e) { return ''; }
+      }
+
+      /* ---- звезди ----------------------------------------------------
+         10 звезди за вярно решена задача, 30 за задача със свободен
+         отговор — те искат писане, не избор. Частично призната задача
+         носи своя дял: 3 от 6 точки са половината звезди, иначе ученик,
+         който е стигнал почти докрай, не получава нищо.
+
+         Смята се по записите на всеки опит. myAttempts() нарочно не ги
+         носи -- те са най-обемното нещо в един опит -- затова се четат
+         с отделна заявка, само колоните, които трябват. */
+      var STAR_MC = 10, STAR_FREE = 30;
+
+      function attemptStars(records, part2) {
+        var total = 0;
+
+        function add(r, base) {
+          var share;
+          if (r.points != null && Number(r.points) > 0 && r.earned != null) {
+            share = Number(r.earned) / Number(r.points);
+          } else if (r.points != null && Number(r.points) > 0 && r.mark != null) {
+            share = Number(r.mark) / Number(r.points);
+          } else {
+            share = r.correct ? 1 : 0;
+          }
+          if (isNaN(share)) share = 0;
+          total += Math.round(base * Math.max(0, Math.min(1, share)));
+        }
+
+        (Array.isArray(records) ? records : []).forEach(function (r) {
+          add(r, r.kind === 'mc' ? STAR_MC : STAR_FREE);
+        });
+        /* Свободните отговори броят чак когато някой ги е оценил. */
+        (Array.isArray(part2) ? part2 : []).forEach(function (r) {
+          if (r.mark != null) add(r, STAR_FREE);
+        });
+
+        return total;
+      }
+
+      /* 1 280, не 1280 — както се пишат хилядите на български. */
+      function grouped(n) {
+        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+      }
+
+      async function renderStars(userId) {
+        var numEl = $('statStarsN'), noteEl = $('statStarsX');
+        var res = await TLA.client.from('attempts')
+          .select('id, records, part2').eq('user_id', userId);
+        if (res.error) { noteEl.textContent = 'не се заредиха'; return; }
+
+        var rows = res.data || [];
+        var total = rows.reduce(function (sum, a) {
+          return sum + attemptStars(a.records, a.part2);
+        }, 0);
+
+        numEl.textContent = grouped(total);
+        noteEl.textContent = rows.length
+          ? 'от решени задачи'
+          : 'реши първата си задача';
       }
 
       function statusChip(t) {
@@ -692,6 +759,7 @@
         var published = assignments.filter(function (a) { return a.published; });
 
         renderStats(published);
+        renderStars(auth.session.user.id);
         renderAssignments(published);
         renderResults();
         renderFeedback();

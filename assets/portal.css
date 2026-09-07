@@ -348,7 +348,7 @@ body.tlp-page { background: #FFFDF7; }
 
 /* ── the four figures ── */
 .tlp__stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
   gap: 0.75rem; margin-top: 0.9rem;
 }
 .tlp__stat {
@@ -365,6 +365,9 @@ body.tlp-page { background: #FFFDF7; }
 }
 .tlp__stat-n { font-size: 0.8rem; color: var(--tlp-ink-soft); margin: 0.2rem 0 0; }
 .tlp__up { color: var(--tlp-good); }
+/* The star is the figure's mark, not decoration next to it, so it sits on
+   the same baseline and takes the amber that reads on white. */
+.tlp__star { color: var(--tlp-accent-deep); margin-right: 0.28em; }
 .tlp__down { color: var(--tlp-bad); }
 
 /* ── tabs ── */
@@ -561,6 +564,9 @@ body.tlp-page { background: #FFFDF7; }
 .tlp__h2:first-child { margin-top: 0; }
 
 /* ── responsive ── */
+@media (max-width: 1060px) {
+  .tlp__stats { grid-template-columns: repeat(3, 1fr); }
+}
 @media (max-width: 880px) {
   .tlp__stats { grid-template-columns: repeat(2, 1fr); }
   .tlp__results { grid-template-columns: 1fr; }
