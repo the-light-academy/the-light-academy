@@ -307,14 +307,22 @@
         });
       });
 
-      /* An attempt the AI grader has already been over still counts as
-         waiting for you -- the badge just says the points on the row are
-         its, not yours, so you know you are confirming rather than
-         starting from a blank form. */
-      function statusBadge(s, aiGradedAt) {
-        if (s === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
-        if (s === 'submitted') {
-          return aiGradedAt
+      /* manual_max is the budget of points that only a person can give. It is
+         null when the paper had no free-text answers at all -- every homework
+         and exam marked entirely by the page -- and such an attempt is
+         finished the moment it is handed in. Saying "За оценка" on it asked
+         for work that does not exist.
+
+         An attempt the AI grader has been over still counts as waiting for
+         you: the badge says the points on the row are its, not yours, so you
+         know you are confirming rather than starting from a blank form. */
+      function statusBadge(t) {
+        if (t.status === 'graded') return '<span class="tla-badge tla-badge--graded">Оценено</span>';
+        if (t.status === 'submitted') {
+          if (t.manual_max == null) {
+            return '<span class="tla-badge tla-badge--graded">Завършено</span>';
+          }
+          return t.ai_graded_at
             ? '<span class="tla-badge tla-badge--ai">AI · за потвърждение</span>'
             : '<span class="tla-badge tla-badge--submitted">За оценка</span>';
         }
@@ -615,7 +623,7 @@
             '<td class="tla-num">' + (t.auto_score != null ? esc(t.auto_score + '/' + t.auto_max) : '—') + '</td>' +
             '<td class="tla-num">' + (t.manual_score != null ? esc(t.manual_score + '/' + (t.manual_max != null ? t.manual_max : '—')) : '—') + '</td>' +
             '<td class="tla-num">' + (t.total_score != null ? esc(t.total_score) : '—') + '</td>' +
-            '<td>' + statusBadge(t.status, t.ai_graded_at) + '</td>' +
+            '<td>' + statusBadge(t) + '</td>' +
             '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-open="' + esc(t.id) + '">Отвори</button></td>' +
           '</tr>';
         }).join('');
@@ -712,10 +720,12 @@
 
         html += '<div class="tla-card" style="margin-top:1.5rem;background:#FFFBF2;">' +
           '<div id="markTotal" style="font-weight:800;font-size:1.05rem;margin-bottom:0.75rem;"></div>' +
-          '<div class="tla-field"><label for="tNote">Бележка към ученика</label>' +
+          '<div class="tla-field"><label for="tNote">Обратна връзка към ученика</label>' +
             '<textarea id="tNote" rows="3">' + esc(t.teacher_note || '') + '</textarea></div>' +
           '<div style="display:flex;gap:0.6rem;flex-wrap:wrap;">' +
-            '<button type="button" class="tla-btn" id="saveGrade">Запиши и се върни към резултатите</button>' +
+            '<button type="button" class="tla-btn" id="saveGrade">' +
+              (p2.length ? 'Запиши и се върни към резултатите'
+                         : 'Запиши обратната връзка') + '</button>' +
             (p2.length
               ? '<button type="button" class="tla-btn tla-btn--ghost" id="copyOneBtn">Копирай тази работа за Claude</button>'
               : '') +
@@ -747,10 +757,14 @@
         function refreshTotal() {
           var m = marks();
           var auto = (t.auto_score != null) ? Number(t.auto_score) : 0;
-          document.getElementById('markTotal').textContent =
-            'Ръчно: ' + m.sum + ' / ' + manualMax +
-            '   ·   Общо с автоматичните: ' + (auto + m.sum) +
-            ' / ' + ((t.auto_max != null ? Number(t.auto_max) : 0) + manualMax);
+          var autoMax = (t.auto_max != null) ? Number(t.auto_max) : 0;
+          /* With no free-text answers there is no manual half to report, and
+             the old line read "Ръчно: 0 / 0" on a finished paper. */
+          document.getElementById('markTotal').textContent = p2.length
+            ? 'Ръчно: ' + m.sum + ' / ' + manualMax +
+              '   ·   Общо с автоматичните: ' + (auto + m.sum) +
+              ' / ' + (autoMax + manualMax)
+            : 'Резултат: ' + auto + ' / ' + autoMax + ' — работата е оценена изцяло автоматично.';
         }
         Array.prototype.forEach.call(document.querySelectorAll('.tla-mark'), function (el) {
           el.addEventListener('input', refreshTotal);
@@ -794,7 +808,9 @@
           document.getElementById('attemptDetail').hidden = true;
           openAttemptId = null;
           await loadResults();
-          say('ok', 'Оценката е записана' + (m.any ? ' — ' + m.sum + ' т.' : '.'));
+          say('ok', p2.length
+            ? ('Оценката е записана' + (m.any ? ' — ' + m.sum + ' т.' : '.'))
+            : 'Обратната връзка е записана.');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       }

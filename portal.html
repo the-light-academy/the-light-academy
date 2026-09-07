@@ -477,8 +477,15 @@
 
         var marked = attempts.filter(function (t) { return t.ai_graded_at || t.status === 'graded'; });
         if (!marked.length) {
-          box.innerHTML = empty('🤖', 'Още няма AI анализ',
-            'Отговорите ти със свободен текст се оценяват след предаване. Тогава тук се появява разбор задача по задача.');
+          /* Nothing here is waiting when nothing was ever handed in for a
+             person to mark: an attempt with no manual_max had no free-text
+             answers at all, and the page marked the whole of it. */
+          var anyFreeText = attempts.some(function (t) { return t.manual_max != null; });
+          box.innerHTML = anyFreeText
+            ? empty('🤖', 'Още няма AI анализ',
+                'Отговорите ти със свободен текст се оценяват след предаване. Тогава тук се появява разбор задача по задача.')
+            : empty('🤖', 'Няма какво да се анализира',
+                'Досегашните ти задания се проверяват автоматично и нямат отговори със свободен текст. Разборът се появява тук след изпит, в който има такива задачи.');
           return;
         }
 
