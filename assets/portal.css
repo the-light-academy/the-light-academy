@@ -364,6 +364,25 @@ body.tlp-page { background: #FFFDF7; }
   color: var(--tlp-navy); margin: 0; font-variant-numeric: tabular-nums;
 }
 .tlp__stat-n { font-size: 0.8rem; color: var(--tlp-ink-soft); margin: 0.2rem 0 0; }
+
+/* Посочена, плочката се стопля до жълтото на академията и се повдига.
+   Само за устройства, които наистина посочват: на тъч екран :hover
+   залепва след докосване и плочката щеше да свети без причина.
+
+   Най-наситеният край на градиента е #FFE9C4 — проверено е, че всеки
+   текст върху него остава над 4,5:1, включително сивото на етикета. */
+@media (hover: hover) {
+  .tlp__stat {
+    transition: background 0.2s ease, border-color 0.2s ease,
+                transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .tlp__stat:hover {
+    background: linear-gradient(160deg, #FFF8EC 0%, #FFE9C4 100%);
+    border-color: rgba(247,173,25,0.55);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(146,90,8,0.16);
+  }
+}
 .tlp__up { color: var(--tlp-good); }
 /* The star is the site's yellow, not the darker amber the text uses -- it is
    a mark beside the number, not the number itself, and the figure carries the
@@ -601,6 +620,8 @@ body.tlp-page { background: #FFFDF7; }
 @media (prefers-reduced-motion: reduce) {
   .tlp__panel, .tlp__star { animation: none; }
   .tlp__star { transform: none; }
+  .tlp__stat { transition: none; }
+  .tlp__stat:hover { transform: none; }
   .tlp__ring-fill, .tlp__col-b, .tlp__tab, .tlp__opt { transition: none; }
 }
 
