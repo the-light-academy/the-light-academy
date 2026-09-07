@@ -293,6 +293,7 @@
             <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="dropdown-submenu">
               <a href="course_english.html">Английски език</a>
+              <a href="course_theatre_english.html">Театър на английски</a>
               <a href="course_spanish.html">Испански език</a>
             </div>
           </div>
@@ -343,6 +344,7 @@
           <div class="dropdown-category-row"><span>Чужди езици</span><svg class="chevron" width="7" height="10" viewBox="0 0 8 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="dropdown-submenu">
             <a href="course_english.html">Английски език</a>
+            <a href="course_theatre_english.html">Театър на английски</a>
             <a href="course_spanish.html">Испански език</a>
           </div>
         </div>
@@ -651,6 +653,19 @@
           description: 'Втора седмична група по английски език за деца от 1. до 4. клас — сутрешен слот, удобен за уикенд програма.'
         },
         {
+          id: 'theatre-en-5-9', type: 'group',
+          title: 'Театър на английски',
+          subjects: ['Английски'], grades: [1, 2, 3], gradeLabel: '5–9 години',
+          day: 'Сутрин или следобед', time: '1 час седмично',
+          startLabel: 'Дните и часовете се уговарят при записване',
+          priceRows: [
+            { tier: 'До 6 деца', amount: '99 € / месец' }
+          ],
+          tags: ['lang'],
+          infoLink: 'course_theatre_english.html',
+          description: 'Театрален курс на английски за деца от 5 до 9 години — роли, сценки и импровизации, в които английският се използва, а не се зубри.'
+        },
+        {
           id: 'bel-math-nvo-4-sat', type: 'group',
           title: 'БЕЛ и Математика – подготовка за НВО',
           subjects: ['БЕЛ', 'Математика'], grades: [4],
@@ -706,7 +721,10 @@
       const ALL_COURSES = [...GROUP_COURSES, ...INDIVIDUAL_COURSES];
 
       ALL_COURSES.forEach(c => {
-        c.gradeLabel = gradesToLabel(c.grades);
+        /* Повечето курсове се описват с класове; театралният е за 5–9
+           години, а на 5 детето още не е в клас. Затова курс може да си
+           носи собствен етикет, а класовете остават само за филтъра. */
+        c.gradeLabel = c.gradeLabel || gradesToLabel(c.grades);
         const gradeWords = c.grades.map(g => `${g} клас`).join(' ');
         const typeWords = c.type === 'individual' ? 'индивидуален урок индивидуални уроци' : 'групов курс';
         const parts = [
