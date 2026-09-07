@@ -17,7 +17,11 @@
   --navy-grad: linear-gradient(135deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-3) 100%);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { overflow-x: hidden; }
+/* `overflow-x: hidden` on the root makes a scroll container, and a sticky
+   header then sticks to that instead of the viewport -- it scrolls away.
+   `clip` guards against sideways overflow without creating one; the hidden
+   line stays first as the fallback for browsers that lack clip. */
+html, body { overflow-x: hidden; overflow-x: clip; }
 body { position: relative; font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.7; }
 a { text-decoration: none; }
 
@@ -211,7 +215,7 @@ footer a { color: var(--sun); text-decoration: none; }
    there is a note in nvo7.html saying so.
    ===================================================================== */
 
-.tlp {
+:root {
   --tlp-cream: #FFFDF7;
   --tlp-surface: #FFFFFF;
   --tlp-navy: #0D1B36;
@@ -228,13 +232,62 @@ footer a { color: var(--sun); text-decoration: none; }
   --tlp-bad-wash: #FBEAE9;
   --tlp-r: 22px;
   --tlp-r-sm: 14px;
+}
 
+.tlp {
   position: relative;
   overflow: hidden;               /* keeps the blobs from widening the page */
   padding: clamp(1.75rem, 4vw, 3rem) 1.25rem clamp(3rem, 6vw, 4.5rem);
   color: var(--tlp-ink);
 }
 body.tlp-page { background: #FFFDF7; }
+
+/* ── the platform's own header ──
+   Inside the platform the site's menu is noise: whoever is here is signed
+   in and everything they need is on the page. What is left is who this
+   is, where they are, and the way out. The glass is the site's -- the same
+   blur and border as the public nav, so it still reads as one place. */
+.tlp-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; height: 64px; padding: 0 clamp(0.9rem, 4vw, 2rem);
+  background: rgba(255,255,255,0.66);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 8px 32px rgba(13,27,54,0.07);
+}
+.tlp-nav__left { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
+.tlp-nav__logo {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  font-family: 'Pacifico', cursive; font-size: 1.35rem; line-height: 1;
+  /* A shade below the site's --sun-dark (#A17522), which lands at 4.1:1 on
+     this glass -- the same colour to the eye, 5.2:1 to a contrast checker. */
+  color: #8C641B; text-decoration: none; white-space: nowrap;
+}
+.tlp-nav__logo img {
+  width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block;
+}
+.tlp-nav__sep { width: 1px; height: 26px; background: rgba(13,27,54,0.14); flex-shrink: 0; }
+.tlp-nav__where {
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--tlp-accent-deep); background: var(--tlp-accent-wash);
+  border: 1px solid rgba(146,90,8,0.16);
+  padding: 0.3rem 0.75rem; border-radius: 999px; white-space: nowrap;
+}
+.tlp-nav__where-short { display: none; }
+
+/* Three widths of the same bar: full wording, then a short label, then the
+   round mark alone -- the identity is never the thing that goes. */
+@media (max-width: 700px) {
+  .tlp-nav__where-long { display: none; }
+  .tlp-nav__where-short { display: inline; }
+}
+@media (max-width: 430px) {
+  .tlp-nav { height: 58px; }
+  .tlp-nav__name { display: none; }
+  .tlp-nav__sep { display: none; }
+}
 
 /* Soft ground. Radial gradients, not blurred discs: a blur() layer is a
    full-size offscreen pass on every frame, which is what dropped the
