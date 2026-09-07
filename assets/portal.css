@@ -365,9 +365,28 @@ body.tlp-page { background: #FFFDF7; }
 }
 .tlp__stat-n { font-size: 0.8rem; color: var(--tlp-ink-soft); margin: 0.2rem 0 0; }
 .tlp__up { color: var(--tlp-good); }
-/* The star is the figure's mark, not decoration next to it, so it sits on
-   the same baseline and takes the amber that reads on white. */
-.tlp__star { color: var(--tlp-accent-deep); margin-right: 0.28em; }
+/* The star is the site's yellow, not the darker amber the text uses -- it is
+   a mark beside the number, not the number itself, and the figure carries the
+   meaning on its own. A thin darker edge keeps it from dissolving into white
+   at that brightness, since the yellow alone is 1.9:1 there.
+
+   It wobbles because a points counter should feel like a reward. Small,
+   slow, transform-only: nothing repaints, and it stops for anyone who has
+   asked the system for less movement. */
+.tlp__star {
+  display: inline-block;
+  color: var(--tlp-accent);
+  margin-right: 0.28em;
+  transform-origin: 50% 60%;
+  text-shadow: 0 1px 0 rgba(146,90,8,0.35), 0 0 1px rgba(146,90,8,0.55);
+  animation: tlpStarWobble 3s ease-in-out infinite;
+}
+@keyframes tlpStarWobble {
+  0%, 100% { transform: rotate(-9deg) scale(1); }
+  30%      { transform: rotate(10deg) scale(1.14); }
+  55%      { transform: rotate(-3deg) scale(0.97); }
+  78%      { transform: rotate(5deg) scale(1.05); }
+}
 .tlp__down { color: var(--tlp-bad); }
 
 /* ── tabs ── */
@@ -580,7 +599,8 @@ body.tlp-page { background: #FFFDF7; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tlp__panel { animation: none; }
+  .tlp__panel, .tlp__star { animation: none; }
+  .tlp__star { transform: none; }
   .tlp__ring-fill, .tlp__col-b, .tlp__tab, .tlp__opt { transition: none; }
 }
 
