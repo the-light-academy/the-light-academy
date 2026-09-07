@@ -111,7 +111,7 @@
             </svg>
             <span class="tlp__ring-num" id="ringNum" aria-hidden="true">—</span>
           </div>
-          <p class="tlp__ring-cap">Завършени задания</p>
+          <p class="tlp__ring-cap" id="ringCap">Завършени задания</p>
         </div>
       </section>
 
@@ -344,8 +344,14 @@
 
         var ringPct = published.length ? Math.round((allDone / published.length) * 100) : 0;
         $('ringNum').textContent = published.length ? ringPct + '%' : '—';
+        /* The percentage alone hides what moved it: finishing the only
+           homework there is reads as 100%, and a second one published the
+           next day drops it to 50 with nothing lost. The count says so. */
+        $('ringCap').textContent = published.length
+          ? (allDone + ' от ' + published.length + ' завършени')
+          : 'Завършени задания';
         $('ring').setAttribute('aria-label', published.length
-          ? ('Завършени задания: ' + ringPct + ' процента')
+          ? ('Завършени ' + allDone + ' от ' + published.length + ' задания, ' + ringPct + ' процента')
           : 'Още няма публикувани задания');
         var fill = $('ringFill');
         var circumference = 2 * Math.PI * 42;
