@@ -93,6 +93,19 @@
 
     .course-content { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; margin-top: 1.5rem; position: relative; }
 
+    /* Цената и графикът вече стоят най-горе, а формата — най-долу, затова
+       формата има нужда от собствена карта, а не от долния край на друга. */
+    .enroll-section {
+      margin-top: 1.75rem; background: var(--white); border: 1px solid var(--line);
+      border-radius: 28px; padding: 2.4rem 2.2rem;
+      box-shadow: 0 10px 24px rgba(30, 18, 12, 0.04);
+    }
+    .enroll-section .enroll-form-section {
+      max-width: 620px; margin: 0 auto; padding-top: 0; border-top: none;
+    }
+    .enroll-section .enroll-form-section h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+    .enroll-section .enroll-form-section > p { font-size: 1rem; }
+
     .content-blob { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.4; pointer-events: none; z-index: 0; }
     .content-blob-1 { width: 260px; height: 260px; background: var(--sun); top: -50px; left: -70px; }
     .content-blob-2 { width: 220px; height: 220px; background: var(--orange); top: 40%; left: 40px; }
@@ -229,6 +242,25 @@
     .fun-course-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--sun-light); color: var(--sun-dark); font-weight: 800; font-size: 0.85rem; padding: 8px 18px; border-radius: 999px; margin-bottom: 1.1rem; }
     .fun-title { font-family: 'Bad Script', cursive; font-weight: 400; font-size: clamp(1.7rem, 4vw, 2.4rem); color: var(--orange); line-height: 1.3; margin-bottom: 1rem; }
     .fun-lead { color: var(--mid); font-size: 1rem; max-width: 760px; margin-bottom: 0.9rem; }
+
+    /* Дългият текст е разделен на две: разказът за курса вляво, това, което
+       театърът прави с увереността — вдясно. Под 900px колоните се нареждат
+       една под друга, в същия ред, в който се четат. */
+    .fun-columns {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0 2.6rem; align-items: start; margin: 0.4rem 0 1.8rem;
+    }
+    .fun-col { position: relative; }
+    .fun-col + .fun-col::before {
+      content: ""; position: absolute; left: -1.3rem; top: 4px; bottom: 4px;
+      width: 1px; background: var(--line);
+    }
+    .fun-col .fun-lead:last-child { margin-bottom: 0; }
+    @media (max-width: 900px) {
+      .fun-columns { grid-template-columns: 1fr; gap: 1.4rem 0; }
+      .fun-col + .fun-col::before { display: none; }
+      .fun-col + .fun-col { border-top: 1px solid var(--line); padding-top: 1.4rem; }
+    }
     .fun-kicker { font-weight: 800; color: var(--orange); margin-bottom: 0.7rem; }
 
     .fun-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; margin: 0.4rem 0 1.8rem; }
@@ -492,21 +524,91 @@
       <p>Театър + английски + игри + емоции + общуване = едно голямо приключение, в което всяко дете има своята роля.</p>
     </section>
 
+    <section class="course-content">
+      <div class="content-blob content-blob-1"></div>
+      <div class="content-blob content-blob-2"></div>
+      <aside class="price-box">
+        <span class="price-label">Такса за курса</span>
+        <span class="price-note" style="display:block; margin-bottom:0.4rem;">Само 6 деца в групата</span>
+
+        <div class="price-value-wrap">
+          <span class="price-value" id="priceValue">99 <small>€ / месец</small></span>
+        </div>
+        <span class="price-note">плащане на месечна база</span>
+
+        <button type="button" class="btn-enroll" style="margin-top:1.1rem; width:100%; justify-content:center;" onclick="scrollToEnrollForm()">Запиши се</button>
+        <span style="display:block; margin-top:0.65rem; text-align:center; font-size:0.82rem; font-weight:700; color:var(--mid);">за да запазите място в курса</span>
+      </aside>
+
+      <div class="course-info" id="courseDetails">
+        <h2>Групи и график</h2>
+        <p>Има сутрешна и следобедна група, за да изберете по-удобното за семейството. Точните дни и часове ги уговаряме при записване, спрямо групата.</p>
+
+        <div class="group-tabs" id="groupTabs">
+          <button type="button" class="group-tab active" data-group="1">
+            <strong>Сутрешна група</strong>
+            <span>1 час седмично</span>
+          </button>
+          <button type="button" class="group-tab" data-group="2">
+            <strong>Следобедна група</strong>
+            <span>1 час седмично</span>
+          </button>
+        </div>
+
+        <div class="group-detail">
+          <div class="group-detail-row active" data-group="1">
+            <span class="detail-pill"><span class="ic">🕘</span> Точният ден и час се уговаря при записване</span>
+          </div>
+          <div class="group-detail-row" data-group="2">
+            <span class="detail-pill"><span class="ic">🕓</span> Точният ден и час се уговаря при записване</span>
+          </div>
+        </div>
+
+        <div class="glance">
+          <div class="glance-item">
+            <span class="glance-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <div class="glance-text"><strong>Формат</strong><span>Групи от 6 деца</span></div>
+          </div>
+          <div class="glance-item">
+            <span class="glance-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            </span>
+            <div class="glance-text"><strong>Възраст</strong><span>5–9 години</span></div>
+          </div>
+          <div class="glance-item">
+            <span class="glance-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            </span>
+            <div class="glance-text"><strong>Продължителност</strong><span>1 час, веднъж седмично</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="fun-course" id="funCourse">
       <div class="fun-course-stars" id="funCourseStars"></div>
       <div class="fun-course-inner">
         <span class="fun-course-badge">🎭 Lights, camera… English!</span>
         <h2 class="fun-title">🌟 Театрален курс на английски език за деца от 5 до 9 години 🌟</h2>
 
-        <p class="fun-lead">Добре дошли в нашия театрален курс на английски език, където децата няма просто да учат английски — те ще го играят, преживяват и използват в истински ситуации!</p>
-        <p class="fun-lead">Тук ще влизаме в различни роли, ще измисляме истории, ще разиграваме забавни сценки и ще се сблъскваме с онези малки ежедневни ситуации, в които всъщност се учим да общуваме.</p>
-        <p class="fun-lead">🎬 Днес сме в магазин. Утре сме на летището. После може да се окажем на парти, в ресторант или в училище. А кой знае — може някой ден да се събудим и да се окажем супергерои, детективи или принцеси, които… говорят само на английски!</p>
+        <div class="fun-columns">
+          <div class="fun-col">
+            <p class="fun-kicker">🎬 Всеки път сме на друго място</p>
+            <p class="fun-lead">Добре дошли в нашия театрален курс на английски език, където децата няма просто да учат английски — те ще го играят, преживяват и използват в истински ситуации!</p>
+            <p class="fun-lead">Тук ще влизаме в различни роли, ще измисляме истории, ще разиграваме забавни сценки и ще се сблъскваме с онези малки ежедневни ситуации, в които всъщност се учим да общуваме.</p>
+            <p class="fun-lead">Днес сме в магазин. Утре сме на летището. После може да се окажем на парти, в ресторант или в училище. А кой знае — може някой ден да се събудим и да се окажем супергерои, детективи или принцеси, които… говорят само на английски!</p>
+          </div>
 
-        <p class="fun-kicker">🌟 Английският влиза в играта, а увереността идва естествено</p>
-        <p class="fun-lead">Понякога едно дете знае много думи на английски, но се притеснява да ги използва. Точно тук идва магията на театъра.</p>
-        <p class="fun-lead">Когато детето не говори „пред класа“, а играе герой, притеснението изчезва. То може да бъде смело, смешно, любопитно, ядосано, щастливо или дори малко нелепо — и всичко това е част от играта! А докато играе, детето започва да говори.</p>
-        <p class="fun-lead">Чрез театрални сценки, етюди, игри и импровизации децата постепенно ще започнат да използват английския по естествен и непринуден начин.</p>
-        <p class="fun-lead">Но курсът не е само за езика. Чрез ролите и театъра децата ще изследват емоциите, реакциите и начина, по който общуваме с другите.</p>
+          <div class="fun-col">
+            <p class="fun-kicker">🌟 Английският влиза в играта, а увереността идва естествено</p>
+            <p class="fun-lead">Понякога едно дете знае много думи на английски, но се притеснява да ги използва. Точно тук идва магията на театъра.</p>
+            <p class="fun-lead">Когато детето не говори „пред класа“, а играе герой, притеснението изчезва. То може да бъде смело, смешно, любопитно, ядосано, щастливо или дори малко нелепо — и всичко това е част от играта! А докато играе, детето започва да говори.</p>
+            <p class="fun-lead">Чрез театрални сценки, етюди, игри и импровизации децата постепенно ще започнат да използват английския по естествен и непринуден начин.</p>
+            <p class="fun-lead">Но курсът не е само за езика. Чрез ролите и театъра децата ще изследват емоциите, реакциите и начина, по който общуваме с другите.</p>
+          </div>
+        </div>
 
         <p class="fun-kicker">🚀 В курса децата ще се учат:</p>
         <div class="fun-features" id="funFeatures">
@@ -524,7 +626,7 @@
 
         <div class="fun-location-bar">
           <span class="loc-text">📍 Light Academy, ул. „Горски пътник“ №56</span>
-          <button type="button" class="fun-location-jump" onclick="scrollToCourseDetails()">Групи, час и цена ⬇</button>
+          <button type="button" class="fun-location-jump" onclick="scrollToCourseDetails()">Групи, час и цена ⬆</button>
         </div>
 
         <div class="fun-cta">
@@ -651,98 +753,37 @@
       </div>
     </section>
 
-    <section class="course-content">
-      <div class="content-blob content-blob-1"></div>
-      <div class="content-blob content-blob-2"></div>
-      <aside class="price-box">
-        <span class="price-label">Такса за курса</span>
-        <span class="price-note" style="display:block; margin-bottom:0.4rem;">Само 6 деца в групата</span>
+    <section class="enroll-section">
+      <div class="enroll-form-section" id="enrollFormSection">
+        <h3>Запиши се за курса</h3>
+        <p>Попълнете данните по-долу — предварително сме попълнили курса вместо вас, но можете да ги промените.</p>
 
-        <div class="price-value-wrap">
-          <span class="price-value" id="priceValue">99 <small>€ / месец</small></span>
+        <form id="enrollForm" onsubmit="submitEnrollForm(event)">
+          <div class="enroll-field">
+            <label for="enrollName">Име на ученика</label>
+            <input type="text" id="enrollName" placeholder="Иван Иванов" autocomplete="name" required />
+          </div>
+          <div class="enroll-field">
+            <label for="enrollPhone">Телефон на родителя</label>
+            <input type="tel" id="enrollPhone" placeholder="0888 123 456" inputmode="tel" autocomplete="tel" pattern="0[0-9\s\-]{7,12}" title="Телефонен номер, започващ с 0 (напр. 0888 123 456)" required />
+          </div>
+          <div class="enroll-field">
+            <label for="enrollCourse">Курс</label>
+            <input type="text" id="enrollCourse" value="Театър на английски, 5–9 години" required />
+          </div>
+          <div class="enroll-field">
+            <label for="enrollMessage">Съобщение</label>
+            <textarea id="enrollMessage" rows="3">Здравейте, искам да запиша детето си за курса &quot;Театър на английски, 5–9 години&quot;.</textarea>
+          </div>
+          <button type="submit" class="enroll-submit" id="enrollSubmitBtn">Запиши се</button>
+        </form>
+
+        <div id="enrollSuccess" class="enroll-success" style="display:none;">
+          <div class="success-icon">✓</div>
+          <h4>Благодарим Ви!</h4>
+          <p>Получихме заявката ви — ще се свържем с вас възможно най-скоро.</p>
         </div>
-        <span class="price-note">плащане на месечна база</span>
-
-        <button type="button" class="btn-enroll" style="margin-top:1.1rem; width:100%; justify-content:center;" onclick="scrollToEnrollForm()">Запиши се</button>
-        <span style="display:block; margin-top:0.65rem; text-align:center; font-size:0.82rem; font-weight:700; color:var(--mid);">за да запазите място в курса</span>
-      </aside>
-
-      <div class="course-info" id="courseDetails">
-        <h2>Групи и график</h2>
-        <p>Има сутрешна и следобедна група, за да изберете по-удобното за семейството. Точните дни и часове ги уговаряме при записване, спрямо групата.</p>
-
-        <div class="group-tabs" id="groupTabs">
-          <button type="button" class="group-tab active" data-group="1">
-            <strong>Сутрешна група</strong>
-            <span>1 час седмично</span>
-          </button>
-          <button type="button" class="group-tab" data-group="2">
-            <strong>Следобедна група</strong>
-            <span>1 час седмично</span>
-          </button>
-        </div>
-
-        <div class="group-detail">
-          <div class="group-detail-row active" data-group="1">
-            <span class="detail-pill"><span class="ic">🕘</span> Точният ден и час се уговаря при записване</span>
-          </div>
-          <div class="group-detail-row" data-group="2">
-            <span class="detail-pill"><span class="ic">🕓</span> Точният ден и час се уговаря при записване</span>
-          </div>
-        </div>
-
-        <div class="glance">
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </span>
-            <div class="glance-text"><strong>Формат</strong><span>Групи от 6 деца</span></div>
-          </div>
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-            </span>
-            <div class="glance-text"><strong>Възраст</strong><span>5–9 години</span></div>
-          </div>
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-            </span>
-            <div class="glance-text"><strong>Продължителност</strong><span>1 час, веднъж седмично</span></div>
-          </div>
-        </div>
-
-        <div class="enroll-form-section" id="enrollFormSection">
-          <h3>Запиши се за курса</h3>
-          <p>Попълнете данните по-долу — предварително сме попълнили курса вместо вас, но можете да ги промените.</p>
-
-          <form id="enrollForm" onsubmit="submitEnrollForm(event)">
-            <div class="enroll-field">
-              <label for="enrollName">Име на ученика</label>
-              <input type="text" id="enrollName" placeholder="Иван Иванов" autocomplete="name" required />
-            </div>
-            <div class="enroll-field">
-              <label for="enrollPhone">Телефон на родителя</label>
-              <input type="tel" id="enrollPhone" placeholder="0888 123 456" inputmode="tel" autocomplete="tel" pattern="0[0-9\s\-]{7,12}" title="Телефонен номер, започващ с 0 (напр. 0888 123 456)" required />
-            </div>
-            <div class="enroll-field">
-              <label for="enrollCourse">Курс</label>
-              <input type="text" id="enrollCourse" value="Театър на английски, 5–9 години" required />
-            </div>
-            <div class="enroll-field">
-              <label for="enrollMessage">Съобщение</label>
-              <textarea id="enrollMessage" rows="3">Здравейте, искам да запиша детето си за курса &quot;Театър на английски, 5–9 години&quot;.</textarea>
-            </div>
-            <button type="submit" class="enroll-submit" id="enrollSubmitBtn">Запиши се</button>
-          </form>
-
-          <div id="enrollSuccess" class="enroll-success" style="display:none;">
-            <div class="success-icon">✓</div>
-            <h4>Благодарим Ви!</h4>
-            <p>Получихме заявката ви — ще се свържем с вас възможно най-скоро.</p>
-          </div>
-          <div id="enrollError" class="enroll-error" style="display:none;"></div>
-        </div>
+        <div id="enrollError" class="enroll-error" style="display:none;"></div>
       </div>
     </section>
   </main>
