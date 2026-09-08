@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/portal.css" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background.webp" media="(min-aspect-ratio: 1/1)" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background_mobile.webp" media="(max-aspect-ratio: 1/1)" />
@@ -39,7 +39,31 @@
     <div class="tlp__inner">
       <div class="tlp__pagehead">
         <div>
-            <h1 class="tlp__h1">Моят профил</h1>
+          <span class="tls-logo">
+        <svg class="tls-logo__mark" viewBox="0 0 260 60" fill="none" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="tlsTrail" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#F2B94B" stop-opacity="0" />
+              <stop offset=".38" stop-color="#F2B94B" stop-opacity=".45" />
+              <stop offset="1" stop-color="#F2B94B" stop-opacity="1" />
+            </linearGradient>
+            <radialGradient id="tlsSpark" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#F2B94B" stop-opacity=".34" />
+              <stop offset=".55" stop-color="#F2B94B" stop-opacity=".10" />
+              <stop offset="1" stop-color="#F2B94B" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <!-- the trajectory, twice: a wide faint pass for the glow, then the line -->
+          <path d="M8 50C74 47 148 41 213 15" stroke="url(#tlsTrail)" stroke-opacity=".22"
+                stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+          <path d="M8 50C74 47 148 41 213 15" stroke="url(#tlsTrail)"
+                stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+          <circle cx="233" cy="10" r="17" fill="url(#tlsSpark)" />
+          <path d="M233 -4Q235 8 247 10Q235 12 233 24Q231 12 219 10Q231 8 233 -4Z" fill="#F2B94B" />
+        </svg>
+        <span class="tls-logo__word"><span class="tls-logo__l">Light</span><span class="tls-logo__s">Space</span></span>
+      </span>
+          <h1 class="tlp__h1">Моят профил</h1>
         </div>
         <div class="tlp__pagehead-actions">
           <a class="tla-btn tla-btn--navy tla-btn--sm" id="teacherLink" href="teacher.html" hidden>Табло на преподавателя</a>

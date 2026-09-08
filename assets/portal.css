@@ -951,3 +951,70 @@ body.tlp-space { background: #05070F; }
   box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
+
+/* =====================================================================
+   The LightSpace wordmark
+   ---------------------------------------------------------------------
+   Poppins SemiBold/Bold, one word, no gap: "Light" in warm ivory and
+   "Space" in gold, the same face and size in both halves so the split
+   reads as colour, not as two words. Above it a thin gold trajectory
+   that rises to the right and ends in a four-pointed spark — a signature
+   on the type rather than an icon beside it.
+
+   The glow is done with gradients and one drop-shadow on static text,
+   never with a blurred moving layer: this sheet has a rule about that.
+   ===================================================================== */
+.tls-logo {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(1.9rem, 5.2vw, 2.9rem);
+  line-height: 1;
+  /* the arc lives in this padding, measured in the wordmark's own ems so
+     the whole lockup scales as one thing */
+  padding-top: 1.00em;
+  margin-bottom: 0.55rem;
+}
+.tls-logo__word {
+  display: block;
+  font-family: 'Poppins', 'Montserrat', 'Inter', ui-sans-serif, system-ui,
+               -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 1em;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+.tls-logo__l { color: #F8F7F2; }
+
+/* The gold. Flat colour first, so a browser without background-clip:text
+   still gets gold letters rather than invisible ones. */
+.tls-logo__s { color: #F2B94B; }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .tls-logo__s {
+    background-image: linear-gradient(178deg, #F6C65B 0%, #EFB742 52%, #E9A832 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    /* the "almost imperceptible" glow — one static shadow, no blur layer */
+    filter: drop-shadow(0 0 8px rgba(242,185,75,0.26));
+  }
+}
+
+.tls-logo__mark {
+  position: absolute; top: 0; left: 0.05em;
+  /* 260 : 60 kept exactly, so the spark stays round at any size. The width is
+     set from where the spark should land. Measured: "LightSpace" in Poppins
+     Bold at -0.015em is 5.58em wide, and the spark sits at 0.896 of the mark,
+     so 5.45em puts it just past the final "e" -- where a rising trajectory
+     would leave the word rather than hanging over it. */
+  width: 5.45em; height: 1.258em;
+  overflow: visible; pointer-events: none;
+}
+
+/* On the sign-in card the lockup is the page's mark and sits centred; the
+   padlock badge that used to hold that spot would only crowd it. */
+.tlp__login-head .tls-logo { margin-bottom: 0.55rem; }
+.tlp__login-head .tlp__lock { display: none; }
+
+@media (prefers-reduced-motion: reduce) { .tls-logo { transition: none; } }
