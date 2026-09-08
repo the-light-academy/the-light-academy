@@ -811,35 +811,73 @@ body.tlp-page { background: #FFFDF7; }
 /* =====================================================================
    LightSpace — the sky behind the platform
    ---------------------------------------------------------------------
-   Only the three pages that are the platform itself carry `tlp-space` on
-   <body>: sign-in, the student's profile, the teacher's dashboard. An
-   exam or a homework sheet keeps the cream paper it has always had — a
-   moving background behind a question is a thing to look at instead of
-   the question.
+   One photograph, fixed behind the page: a wide frame on landscape screens
+   and a tall one on portrait, because a 2.7:1 picture cropped to a phone
+   keeps only its middle and loses both planets.
 
-   Everything here obeys the rule this project learned the hard way on the
-   marketing hero: no filter: blur() anywhere near a backdrop-filter, and
-   nothing animated except transform and opacity. The whole sky is four
-   tiled gradient layers and three planets, each one composited, so the
-   page paints once and then the GPU slides it.
+   Only the three pages that are the platform itself carry `tlp-space` on
+   <body>: sign-in, the student's profile, the teacher's dashboard. An exam
+   or a homework sheet keeps the cream paper it has always had.
+
+   The picture is served as WebP with the uploaded PNG behind it in the
+   same declaration -- 262KB against 2.5MB for the same frame, which on a
+   phone is the difference between a background and a wait. Browsers
+   without image-set() take the plain url() above it.
    ===================================================================== */
 
 body.tlp-space { background: #05070F; }
 
 .tlp-sky {
-  /* Behind everything, and it has to be z-index -1 rather than 0: the
-     planets animate, so the compositor gives each one its own layer, and
-     a promoted layer at z-index 0 was painting over the white cards that
-     came after it in the document. Negative z puts it below every block
-     background in the page, promoted or not. body's colour still paints
-     first, as the canvas, so the sky has a ground even before it loads. */
+  /* Behind everything: negative z puts it below every block background in
+     the page. body's colour still paints first, as the canvas, so there is
+     a ground under it before the photograph arrives. */
   position: fixed; inset: 0; z-index: -1; overflow: hidden;
-  pointer-events: none; contain: paint;
-  background:
-    /* two faint clouds of diffuse light, then the deep field */
-    radial-gradient(58% 40% at 18% 8%,  rgba(52,86,168,0.20), transparent 70%),
-    radial-gradient(52% 46% at 88% 78%, rgba(126,74,142,0.15), transparent 72%),
-    radial-gradient(90% 70% at 50% 0%,  #16224A 0%, #0A1128 42%, #05070F 100%);
+  pointer-events: none;
+  background-color: #05070F;
+  background-position: 50% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url('../photos/lightSpace_background.png');
+  background-image: image-set(
+    url('../photos/lightSpace_background.webp') type('image/webp'),
+    url('../photos/lightSpace_background.png')  type('image/png'));
+}
+
+/* Portrait -- a phone, or a tablet held upright -- gets the tall frame. */
+@media (max-aspect-ratio: 1/1) {
+  .tlp-sky {
+    background-image: url('../photos/lightSpace_background_mobile.png');
+    background-image: image-set(
+      url('../photos/lightSpace_background_mobile.webp') type('image/webp'),
+      url('../photos/lightSpace_background_mobile.png')  type('image/png'));
+  }
+}
+
+/* The scrim. The photograph has a sun flare in it and a lit planet rim,
+   and white headings stand directly on both; measured against the rendered
+   pixels, this is what carries the worst of them past 4.5:1. It is darkest
+   top and bottom, where the bar and the footer sit. */
+.tlp-sky::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(4,6,14,0.74) 0%,
+    rgba(4,6,14,0.56) 26%,
+    rgba(4,6,14,0.56) 68%,
+    rgba(4,6,14,0.82) 100%);
+}
+
+/* The tall frame puts its lit planet exactly where a phone puts the page head,
+   and the captions there measured 2.7:1 against it, so portrait carries a
+   heavier scrim. This override has to sit after the rule it overrides: same
+   specificity, and the cascade takes the later one. */
+@media (max-aspect-ratio: 1/1) {
+  .tlp-sky::after {
+    background: linear-gradient(180deg,
+      rgba(4,6,14,0.86) 0%,
+      rgba(4,6,14,0.80) 30%,
+      rgba(4,6,14,0.72) 62%,
+      rgba(4,6,14,0.88) 100%);
+  }
 }
 
 /* Content sits above the sky. The bar already carries z-index 50. */
@@ -848,196 +886,6 @@ body.tlp-space { background: #05070F; }
 
 /* The cream page's soft blobs would be two bright smudges up here. */
 .tlp-space .tlp__blob { display: none; }
-
-/* ── the star layers ──
-   Four tiles at four different sizes, laid over each other. Because the
-   sizes share no common factor the field never repeats within a screen,
-   which is what stops a tiled sky from reading as wallpaper.
-
-   They do not move, and that is deliberate twice over. A star four light
-   years away does not visibly drift past a window, so a sliding starfield
-   is the thing that makes a space background look like a screensaver. And
-   it is not free: sliding four viewport-plus-margin layers, each carrying
-   forty stacked gradients, measured 50ms a frame here — 20fps — against
-   16.7ms with them held still. The planets move. The stars are the sky. */
-.tlp-sky__layer { position: absolute; inset: 0; }
-.tlp-sky__dust {
-  background-image:
-    radial-gradient(circle 0.67px at 126px 99px, rgba(255,255,255,0.36) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.61px at 130px 8px, rgba(255,255,255,0.34) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.7px at 110px 212px, rgba(255,255,255,0.49) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.8px at 388px 210px, rgba(255,255,255,0.39) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.87px at 376px 216px, rgba(255,255,255,0.32) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.64px at 90px 259px, rgba(255,255,255,0.61) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.65px at 99px 188px, rgba(255,255,255,0.54) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.87px at 182px 386px, rgba(207,224,255,0.6) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.56px at 176px 179px, rgba(255,208,178,0.36) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 0.8px at 141px 154px, rgba(255,255,255,0.45) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.76px at 237px 154px, rgba(255,208,178,0.5) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 0.76px at 188px 294px, rgba(207,224,255,0.54) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.6px at 212px 102px, rgba(207,224,255,0.31) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.72px at 25px 418px, rgba(255,255,255,0.34) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.64px at 221px 380px, rgba(207,224,255,0.34) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.8px at 291px 378px, rgba(255,232,204,0.34) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 0.73px at 394px 228px, rgba(255,255,255,0.37) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.85px at 156px 221px, rgba(255,232,204,0.39) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 0.76px at 292px 386px, rgba(255,255,255,0.51) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.68px at 286px 109px, rgba(255,232,204,0.47) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 0.75px at 71px 229px, rgba(207,224,255,0.6) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.7px at 341px 195px, rgba(255,255,255,0.31) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.85px at 112px 293px, rgba(255,232,204,0.49) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 0.62px at 49px 203px, rgba(255,255,255,0.36) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.62px at 170px 187px, rgba(207,224,255,0.36) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.7px at 378px 125px, rgba(255,208,178,0.6) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 0.72px at 349px 36px, rgba(255,255,255,0.54) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.86px at 274px 68px, rgba(255,255,255,0.37) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.76px at 167px 145px, rgba(255,208,178,0.49) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 0.78px at 313px 10px, rgba(255,255,255,0.4) 0 55%, rgba(255,255,255,0) 100%);
-  background-size: 420px 420px;
-}
-.tlp-sky__mid {
-  background-image:
-    radial-gradient(circle 0.98px at 21px 296px, rgba(255,255,255,0.53) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.14px at 148px 73px, rgba(255,255,255,0.71) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.13px at 265px 57px, rgba(255,255,255,0.67) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.27px at 181px 241px, rgba(255,255,255,0.81) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.14px at 48px 79px, rgba(207,224,255,0.78) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 1.15px at 40px 366px, rgba(255,208,178,0.62) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 0.84px at 191px 26px, rgba(207,224,255,0.66) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 1.28px at 369px 482px, rgba(207,224,255,0.67) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.87px at 232px 254px, rgba(255,255,255,0.79) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.04px at 197px 478px, rgba(255,255,255,0.78) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.22px at 234px 232px, rgba(207,224,255,0.73) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.89px at 470px 94px, rgba(255,255,255,0.59) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.05px at 19px 27px, rgba(255,208,178,0.67) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 1.19px at 156px 131px, rgba(207,224,255,0.81) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 0.92px at 142px 199px, rgba(255,255,255,0.68) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 0.86px at 536px 468px, rgba(255,255,255,0.55) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.14px at 435px 138px, rgba(207,224,255,0.81) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 1.33px at 68px 355px, rgba(255,255,255,0.67) 0 55%, rgba(255,255,255,0) 100%);
-  background-size: 560px 560px;
-}
-.tlp-sky__bright {
-  background-image:
-    radial-gradient(circle 1.26px at 73px 471px, rgba(255,255,255,0.88) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 5.3px at 73px 471px, rgba(255,255,255,0.141) 0, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.51px at 170px 245px, rgba(255,255,255,0.85) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.81px at 187px 208px, rgba(255,255,255,0.95) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 7.6px at 187px 208px, rgba(255,255,255,0.152) 0, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.72px at 542px 536px, rgba(255,208,178,0.81) 0 55%, rgba(255,208,178,0) 100%),
-    radial-gradient(circle 1.65px at 579px 567px, rgba(255,255,255,0.97) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.48px at 383px 108px, rgba(207,224,255,0.84) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 1.86px at 436px 44px, rgba(207,224,255,0.92) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 7.8px at 436px 44px, rgba(207,224,255,0.147) 0, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 1.79px at 326px 91px, rgba(255,255,255,0.93) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 7.5px at 326px 91px, rgba(255,255,255,0.149) 0, rgba(255,255,255,0) 100%);
-  background-size: 760px 760px;
-}
-.tlp-sky__blink {
-  background-image:
-    radial-gradient(circle 1.33px at 488px 213px, rgba(255,255,255,0.86) 0 55%, rgba(255,255,255,0) 100%),
-    radial-gradient(circle 1.56px at 455px 482px, rgba(255,232,204,0.85) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 6.6px at 455px 482px, rgba(255,232,204,0.136) 0, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 1.54px at 784px 592px, rgba(207,224,255,0.96) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 6.5px at 784px 592px, rgba(207,224,255,0.154) 0, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 1.28px at 191px 767px, rgba(255,232,204,0.98) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 5.4px at 191px 767px, rgba(255,232,204,0.157) 0, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 1.68px at 721px 582px, rgba(255,232,204,0.91) 0 55%, rgba(255,232,204,0) 100%),
-    radial-gradient(circle 1.41px at 635px 649px, rgba(207,224,255,0.96) 0 55%, rgba(207,224,255,0) 100%),
-    radial-gradient(circle 5.9px at 635px 649px, rgba(207,224,255,0.154) 0, rgba(207,224,255,0) 100%);
-  background-size: 900px 900px;
-}
-
-/* The one moving thing in the field: six stars whose brightness breathes.
-   Real stars scintillate, they do not blink on and off, so the swing is
-   small and the cycle long. Opacity on an already-painted layer costs the
-   compositor nothing. */
-.tlp-sky__blink {
-  /* Promoted on purpose: without it the browser re-paints ten gradients
-     across the whole viewport on every step of the fade, which showed up
-     as a 33ms frame at the 95th percentile. Promoted, the compositor just
-     changes the layer's alpha and the number goes back to 16.7. */
-  will-change: opacity;
-  animation: tlpTwinkle 9s ease-in-out infinite;
-}
-@keyframes tlpTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-
-/* ── the planets ──
-   A sphere is a radial gradient offset towards the light plus a hard dark
-   limb; the rim light on the sunward edge is what stops it reading as a
-   flat disc. All three are lit from the same direction as the nebula
-   above, up and to the left. */
-.tlp-planet { position: absolute; border-radius: 50%; will-change: transform; }
-
-/* The gas giant, bottom left, two thirds of it below the page. Its bands
-   are a child sliding behind a round mask, so the planet turns without
-   the shading turning with it. */
-.tlp-planet--giant {
-  width: clamp(320px, 40vw, 560px); height: clamp(320px, 40vw, 560px);
-  right: -13%; bottom: -38%; overflow: hidden;
-  background: radial-gradient(circle at 30% 24%,
-    #40372D 0%, #2E2822 28%, #1E1B18 50%, #121012 70%, #0A0A0F 88%, #07070C 100%);
-  box-shadow:
-    inset -30px -24px 80px rgba(0,0,0,0.86),
-    inset 14px 11px 26px -14px rgba(255,222,182,0.22);
-  animation: tlpDriftGiant 340s ease-in-out infinite;
-}
-.tlp-planet--giant .tlp-planet__bands {
-  position: absolute; top: 0; bottom: 0; left: -100%; width: 300%;
-  background:
-    radial-gradient(ellipse 22% 5%  at 26% 24%, rgba(214,176,132,0.20), transparent 70%),
-    radial-gradient(ellipse 30% 4%  at 62% 33%, rgba(120,98,76,0.30),   transparent 72%),
-    radial-gradient(ellipse 26% 6%  at 40% 47%, rgba(226,192,150,0.16), transparent 70%),
-    radial-gradient(ellipse 34% 5%  at 74% 58%, rgba(104,84,64,0.28),   transparent 72%),
-    radial-gradient(ellipse 24% 4%  at 20% 66%, rgba(198,160,120,0.14), transparent 70%);
-  animation: tlpBandTurn 200s linear infinite;
-}
-
-/* A small rocky world high on the right, far enough to stay crisp. */
-.tlp-planet--rock {
-  width: clamp(64px, 6.5vw, 104px); height: clamp(64px, 6.5vw, 104px);
-  right: 4%; top: 11%;
-  background: radial-gradient(circle at 34% 30%,
-    #8592AA 0%, #5D6A84 34%, #38425C 58%, #1C2335 80%, #0E1322 100%);
-  box-shadow:
-    inset -8px -6px 22px rgba(0,0,0,0.7),
-    0 0 26px 2px rgba(122,158,222,0.12);
-  animation: tlpDriftRock 260s ease-in-out infinite;
-}
-
-/* The ringed one, small and far off to the right. The ring is one ellipse
-   drawn behind the globe and a second, clipped to its lower half, drawn in
-   front — which is the only way the ring passes round a sphere. */
-.tlp-planet--ringed {
-  width: clamp(84px, 8.5vw, 128px); height: clamp(84px, 8.5vw, 128px);
-  left: 2.5%; top: 58%; border-radius: 0; background: none;
-  animation: tlpDriftRinged 420s ease-in-out infinite;
-}
-.tlp-planet--ringed .tlp-planet__globe {
-  position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(circle at 34% 28%,
-    #BFAA84 0%, #9C8663 32%, #6F5C42 56%, #3C3327 78%, #191610 100%);
-  box-shadow:
-    inset -10px -8px 26px rgba(0,0,0,0.66),
-    inset 6px 5px 16px -6px rgba(255,238,208,0.30);
-}
-.tlp-planet--ringed .tlp-planet__ring {
-  position: absolute; left: -46%; right: -46%; top: 50%; height: 46%;
-  transform: translateY(-50%) rotate(-17deg);
-  border-radius: 50%;
-  border: 2px solid rgba(226,206,168,0.30);
-  box-shadow: 0 0 0 3px rgba(226,206,168,0.08);
-}
-.tlp-planet--ringed .tlp-planet__ring--front {
-  clip-path: polygon(0 52%, 100% 52%, 100% 100%, 0 100%);
-}
-
-/* Slow enough that nothing appears to move while you look at it, and far
-   enough that the sky is not the same picture twice in one sitting. */
-@keyframes tlpDriftGiant  { 0%, 100% { transform: translate3d(0, 0, 0); }        50% { transform: translate3d(34px, -22px, 0); } }
-@keyframes tlpDriftRock   { 0%, 100% { transform: translate3d(0, 0, 0); }        50% { transform: translate3d(-26px, 18px, 0); } }
-@keyframes tlpDriftRinged { 0%, 100% { transform: translate3d(0, 0, 0); }        50% { transform: translate3d(22px, -30px, 0); } }
-@keyframes tlpBandTurn    { to { transform: translate3d(33.333%, 0, 0); } }
 
 /* ── the platform's furniture, relit ──
    Everything below is the same component, told that its ground is now
@@ -1103,8 +951,3 @@ body.tlp-space { background: #05070F; }
   box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
-/* The sky is decoration. Anyone who has asked the system to stop moving
-   things gets the same picture, held still. */
-@media (prefers-reduced-motion: reduce) {
-  .tlp-sky__blink, .tlp-planet, .tlp-planet__bands { animation: none !important; }
-}
