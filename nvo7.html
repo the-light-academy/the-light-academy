@@ -22,7 +22,7 @@
   <link rel="manifest" href="site.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Bad+Script&family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Bad+Script&family=Pacifico&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2069,6 +2069,45 @@
       color: var(--tlap-accent-deep);
     }
 
+    /* ── the platform's own mark ──
+       The same lockup as assets/portal.css (.tls-logo), in the one variant
+       that ground demands. Inside the platform the word sits on a night sky,
+       so "Light" is ivory and the gold can be luminous; here it stands on
+       cream, where ivory would vanish and #E9A832 reads at 2.2:1. So the
+       ivory becomes the navy this page already uses and the gold goes two
+       steps deeper -- measured at 3.5:1 and 5.0:1, against 3:1 required for
+       type this size. Same face, same spacing, same trajectory. */
+    .tlap__logo {
+      position: relative; display: inline-block;
+      font-size: clamp(1.9rem, 5vw, 2.85rem); line-height: 1;
+      padding-top: 1.00em; margin: 0 0 0.85rem;
+    }
+    .tlap__logo-word {
+      display: block; font-weight: 700; font-size: 1em; line-height: 1;
+      letter-spacing: -0.015em; white-space: nowrap;
+      font-family: 'Poppins', 'Montserrat', 'Inter', ui-sans-serif, system-ui,
+                   -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    .tlap__logo-l { color: var(--tlap-navy); }
+    .tlap__logo-s { color: #A16706; }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      .tlap__logo-s {
+        background-image: linear-gradient(178deg, #B0740A 0%, #A16706 55%, #935D08 100%);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+      }
+    }
+    .tlap__logo-mark {
+      position: absolute; top: 0; left: 0.05em;
+      width: 5.45em; height: 1.258em;   /* 260 : 60, so the spark stays round */
+      overflow: visible; pointer-events: none;
+    }
+    .tlap__logo-note {
+      display: block; font-size: 0.82rem; font-weight: 800;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: var(--tlap-ink-soft); margin: 0 0 1.4rem;
+    }
+
     .tlap__title {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: clamp(1.75rem, 4.2vw, 2.75rem);
@@ -2682,7 +2721,7 @@
   <!-- PARALLAX MATH BACKGROUND (mobile only) -->
   <div id="mathParallax">
     <svg viewBox="0 0 400 1200" xmlns="http://www.w3.org/2000/svg"
-         font-family="Georgia, serif" fill="#C07A0A">
+         font-family="Georgia, serif" fill="#B4730A">
       <!-- Row 1 -->
       <text x="18"  y="80"  font-size="22">a² + b² = c²</text>
       <text x="220" y="55"  font-size="18">∫₀¹ x dx</text>
@@ -2898,10 +2937,37 @@
           <span class="tlap__new">Ново!</span>
           <span class="tlap__eyebrow">Ученическа web платформа</span>
         </p>
+
+        <span class="tlap__logo">
+          <svg class="tlap__logo-mark" viewBox="0 0 260 60" fill="none" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="tlapTrail" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0" stop-color="#B4730A" stop-opacity="0" />
+                <stop offset=".38" stop-color="#B4730A" stop-opacity=".45" />
+                <stop offset="1" stop-color="#B4730A" stop-opacity="1" />
+              </linearGradient>
+              <radialGradient id="tlapSpark" cx=".5" cy=".5" r=".5">
+                <stop offset="0" stop-color="#B4730A" stop-opacity=".26" />
+                <stop offset=".55" stop-color="#B4730A" stop-opacity=".08" />
+                <stop offset="1" stop-color="#B4730A" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <path d="M8 50C74 47 148 41 213 15" stroke="url(#tlapTrail)" stroke-opacity=".22"
+                  stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+            <path d="M8 50C74 47 148 41 213 15" stroke="url(#tlapTrail)"
+                  stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+            <circle cx="233" cy="10" r="17" fill="url(#tlapSpark)" />
+            <path d="M233 -4Q235 8 247 10Q235 12 233 24Q231 12 219 10Q231 8 233 -4Z" fill="#B4730A" />
+          </svg>
+          <span class="tlap__logo-word"><span class="tlap__logo-l">Light</span><span class="tlap__logo-s">Space</span></span>
+        </span>
+        <span class="tlap__logo-note">Наша собствена разработка</span>
+
         <h2 class="tlap__title" id="tlapTitle">Повече от курс. Лична web платформа за подготовка.</h2>
         <p class="tlap__sub">
-          Всеки ученик получава собствен профил, в който вижда своята подготовка,
-          задачи, резултати и развитие през цялата учебна година.
+          <strong>LightSpace</strong> е платформата, която разработихме сами — за нашите ученици,
+          по начина, по който преподаваме. Всеки получава собствен профил, в който вижда своята
+          подготовка, задачи, резултати и развитие през цялата учебна година.
         </p>
       </header>
 
@@ -2909,7 +2975,7 @@
       <div class="tlap__app">
         <div class="tlap__chrome">
           <span class="tlap__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="tlap__crumb">The Light Academy · Моят профил</span>
+          <span class="tlap__crumb">LightSpace · Моят профил</span>
           <span class="tlap__demo">примерен изглед</span>
         </div>
 
