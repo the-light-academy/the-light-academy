@@ -277,6 +277,34 @@ body.tlp-page { background: #FFFDF7; }
 }
 .tlp-nav__where-short { display: none; }
 
+/* The teacher's bar carries the dashboard's own four sections instead of the
+   site's menu: inside the dashboard, the pages of the website are not where
+   anyone is going. The strip scrolls sideways rather than wrapping, so the
+   bar keeps its height on a phone. */
+.tlp-nav__tabs {
+  display: flex; align-items: center; gap: 0.4rem;
+  flex: 1 1 auto; min-width: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.tlp-nav__tabs::-webkit-scrollbar { display: none; }
+.tlp-nav__tabs .tla-tab { flex-shrink: 0; min-height: 36px; padding: 0.35rem 0.9rem; }
+
+/* Four tabs need the room the wordmark was taking. */
+@media (max-width: 1000px) {
+  .tlp-nav--tabs .tlp-nav__name,
+  .tlp-nav--tabs .tlp-nav__sep { display: none; }
+}
+
+/* Measured: the four stop fitting at 615px. Below that the strip scrolls, and
+   a soft fade on the right edge says so — otherwise "Ученици" and "Задания"
+   simply look absent. Applied only where something is actually hidden. */
+@media (max-width: 618px) {
+  .tlp-nav__tabs {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
+  }
+}
+
 /* Three widths of the same bar: full wording, then a short label, then the
    round mark alone -- the identity is never the thing that goes. */
 @media (max-width: 700px) {
