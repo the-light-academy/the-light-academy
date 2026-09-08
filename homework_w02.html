@@ -95,6 +95,10 @@ body{
 }
 @media (max-width:560px){
   .tlp-bar{ height:58px; }
+}
+/* "LightSpace" is half the width the old wordmark was, so it now survives
+   down to the narrowest phone; below that the round mark carries alone. */
+@media (max-width:380px){
   .tlp-bar__name, .tlp-bar__sep{ display:none; }
 }
 
@@ -436,7 +440,7 @@ canvas.gauge{ position:relative; }
   <div class="tlp-bar__left">
     <a href="index.html" class="tlp-bar__logo">
       <img src="theLightAcademyLogo.png" alt="" />
-      <span class="tlp-bar__name">The Light Academy</span>
+      <span class="tlp-bar__name">LightSpace</span>
     </a>
     <span class="tlp-bar__sep" aria-hidden="true"></span>
     <span class="tlp-bar__where">
