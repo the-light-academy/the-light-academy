@@ -248,7 +248,10 @@ values
    'homework', 'homework_w01.html', 10, false, 100, 1),
   ('hw-w02',
    'Домашно 2 — Степени с естествен показател — седмица 2',
-   'homework', 'homework_w02.html', 10, false, 110, 2)
+   'homework', 'homework_w02.html', 10, false, 110, 2),
+  ('hw-w03',
+   'Домашно 3 — Рационални изрази — седмица 3',
+   'homework', 'homework_w03.html', 10, false, 120, 3)
 on conflict (slug) do nothing;
 
 -- The second entrance test, week 2 in the calendar ("Входно равнище").

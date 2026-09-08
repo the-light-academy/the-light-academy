@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Домашно 1 — Рационални числа — седмица 1 · The Light Academy</title>
+<title>Домашно 3 — Рационални изрази — седмица 3 · The Light Academy</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Домашно за седмица 1 — рационални числа. За ученици с профил в платформата." />
+<meta name="description" content="Домашно за седмица 3 — рационални изрази. За ученици с профил в платформата." />
 <link rel="icon" href="favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -242,6 +242,10 @@ h1 em{
   font-weight:700;
   font-size:clamp(19px,3.4vw,23px);
   font-variant-numeric:tabular-nums;
+  line-height:1.55;
+  /* Част от условията са на два реда — текст, после самият израз.
+     pre-line пази прекъсването и събира излишните интервали. */
+  white-space:pre-line;
   margin:2px 0 16px;
   color:var(--ink);
 }
@@ -303,6 +307,46 @@ h1 em{
 .qcard.graded .verdict{ display:flex; }
 .verdict.ok{ color:var(--success); }
 .verdict.no{ color:var(--error); }
+
+/* Последните две задачи се пишат, не се избират. Полето е нарочно
+   по-голямо от ред текст: на телефон в него се цели с пръст. Задача 9
+   иска израз, затова полето ѝ е по-широко и не е центрирано. */
+.fields{ display:grid; gap:10px; }
+.field{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.field label{
+  font-family:'JetBrains Mono', monospace; font-size:15px; font-weight:700;
+  color:var(--pencil); flex:none;
+}
+.field input{
+  flex:1 1 160px; min-height:48px; font:inherit;
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:17px;
+  color:var(--ink); padding:12px 16px; text-align:center;
+  border:2px solid var(--grid); border-radius:12px; background:var(--paper-raised);
+  transition:border-color .15s ease, background .15s ease;
+}
+.field input::placeholder{ font-weight:500; color:var(--ink-soft); opacity:.7; }
+.field input:hover{ border-color:var(--pencil); }
+.field input:focus{
+  outline:3px solid rgba(27,46,82,0.16); outline-offset:1px;
+  border-color:var(--pencil); background:#fff;
+}
+.qcard.graded .field input{ pointer-events:none; }
+.qcard.graded.correct .field input{ border-color:var(--success); background:var(--success-soft); }
+.qcard.graded.wrong .field input{ border-color:var(--error); background:var(--error-soft); }
+.field input.expr{ text-align:left; font-size:16px; }
+.hint{ font-size:12.5px; color:var(--ink-soft); margin:8px 0 0; }
+
+/* Обяснението се появява само след "Провери" — преди това то би бил
+   отговорът. Изчисленията в него са на редове, както се пишат на дъска. */
+.explain{
+  display:none;
+  margin-top:10px; padding:10px 13px;
+  background:var(--pencil-soft); border-radius:10px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:13.5px; font-weight:500; line-height:1.65;
+  color:var(--pencil); white-space:pre-line;
+}
+.qcard.graded .explain.has{ display:block; }
 
 .dock{
   position:fixed;
@@ -410,7 +454,7 @@ canvas.gauge{ position:relative; }
     </a>
     <span class="tlp-bar__sep" aria-hidden="true"></span>
     <span class="tlp-bar__where">
-      <span class="tlp-bar__long">Домашно · седмица 1</span>
+      <span class="tlp-bar__long">Домашно · седмица 3</span>
       <span class="tlp-bar__short">Домашно</span>
     </span>
   </div>
@@ -421,9 +465,9 @@ canvas.gauge{ position:relative; }
 
 <div class="wrap" id="sheet" hidden>
   <header class="hw">
-    <div class="eyebrow"><span class="dot"></span>Домашно 1 · Начален преговор · Седмица 1</div>
-    <h1>Рационални <em>числа</em></h1>
-    <div class="subhead">Събиране, изваждане, умножение и деление на рационални числа. Сравняване на числа. Избери верния отговор от А, Б, В или Г за всяка задача.</div>
+    <div class="eyebrow"><span class="dot"></span>Домашно · седмица 3</div>
+    <h1><em>Рационални</em> изрази</h1>
+    <div class="subhead">Опростяване, разкриване на скоби, събиране на подобни членове и заместване на стойности. Избери верния отговор или въведи своя отговор.</div>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <div class="progress-label" id="progressLabel">0 / 10 отговорени</div>
@@ -456,26 +500,124 @@ canvas.gauge{ position:relative; }
 <script src="assets/supabase-config.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-/* Десетичните дроби се пишат със запетая — така се пише в България, и
-   така ще ги видят и на изпита. Дробите като 5/6 си остават с наклонена
-   черта. */
+/* Домашно 3 — рационални изрази.
+
+   Осем задачи с избор и две писани, с растяща трудност: разпознаване,
+   подобни членове, разкриване на скоби, дроби с еднакъв знаменател,
+   скоба с минус пред нея, заместване. Последните две събират всичко.
+
+   Двете писани задачи не са от един вид и затова не се проверяват
+   еднакво: 9 иска израз (сравнява се нормализиран текст), 10 иска
+   число. Степените се пишат с Unicode — x², не x<sup>2</sup>. */
 const QUESTIONS = [
-  { tag:"Събиране", expr:"−3,5 + 2,1 =", choices:["−1,4","1,4","−5,6","5,6"], correct:0 },
-  { tag:"Изваждане", expr:"5/6 − 1/3 =", choices:["1/2","1/3","2/3","1/6"], correct:0 },
-  { tag:"Умножение", expr:"(−2/3) · (3/4) =", choices:["−1/2","1/2","−2/3","2/3"], correct:0 },
-  { tag:"Деление", expr:"−8 ÷ (−2/5) =", choices:["−20","20","−4","4"], correct:1 },
-  { tag:"Сравняване", expr:"Кое число е по-малко: −7 или −3 ?", choices:["−7","−3","Равни са","Не може да се сравнят"], correct:0 },
-  { tag:"Събиране", expr:"−4/5 + (−1/5) =", choices:["−1","0","1","−2/5"], correct:0 },
-  { tag:"Изваждане", expr:"−2,3 − (−5,8) =", choices:["3,5","−3,5","8,1","−8,1"], correct:0 },
-  { tag:"Умножение", expr:"(−1,5) · (−4) =", choices:["−6","6","−5,5","5,5"], correct:1 },
-  { tag:"Деление", expr:"3/7 ÷ (−3/14) =", choices:["−2","2","−1/2","1/2"], correct:0 },
-  { tag:"Сравняване", expr:"Кое от числата −2/3, −0,5, −1 е най-голямото?", choices:["−2/3","−0,5","−1","Всички са равни"], correct:1 },
+  { type:"mc", tag:"Разпознаване",
+    expr:"Кой от следните е рационален израз?",
+    choices:["3x + 5","7 : x","2 + 4","5x² - 3"], correct:1,
+    explain:"7 : x = 7/x — променливата е в знаменателя.\nОстаналите са цели изрази." },
+
+  { type:"mc", tag:"Подобни членове",
+    expr:"Опрости израза:\n3x + 5x = ?",
+    choices:["8","15x","8x","2x"], correct:2,
+    explain:"3x + 5x = (3 + 5)x = 8x" },
+
+  { type:"mc", tag:"Подобни членове",
+    expr:"Пресметни:\n7x - 3x + 2 = ?",
+    choices:["4x + 2","10x + 2","4x - 2","10x - 2"], correct:0,
+    explain:"7x - 3x = 4x, а числото 2 няма подобен член.\n7x - 3x + 2 = 4x + 2" },
+
+  { type:"mc", tag:"Разкриване на скоби",
+    expr:"Опрости:\n3(x + 4)",
+    choices:["3x + 4","3x + 12","x + 12","3x + 7"], correct:1,
+    explain:"3(x + 4) = 3x + 12" },
+
+  { type:"mc", tag:"Разкриване на скоби",
+    expr:"Опрости:\n-2(x - 5)",
+    choices:["-2x - 10","2x - 10","-2x + 10","2x + 10"], correct:2,
+    explain:"-2(x - 5) = -2x + 10" },
+
+  { type:"mc", tag:"Дроби с еднакъв знаменател",
+    expr:"Опрости:\nx/3 + 2x/3 = ?",
+    choices:["x/3","2x/3","x","3x/6"], correct:2,
+    explain:"x/3 + 2x/3 = 3x/3 = x" },
+
+  { type:"mc", tag:"Скоба с минус",
+    expr:"Опрости израза:\n2(x + 3) - (x - 4)",
+    choices:["x + 2","x + 10","3x + 2","x - 10"], correct:1,
+    explain:"2x + 6 - x + 4 = x + 10" },
+
+  { type:"mc", tag:"Заместване",
+    expr:"Намери стойността на израза 2x + 3, при x = -2.",
+    choices:["-1","1","-7","7"], correct:0,
+    explain:"2(-2) + 3 = -4 + 3 = -1" },
+
+  /* 4x - 8 + 3x + 3 = 7x - 5 */
+  { type:"free-expr", tag:"Разкриване на скоби",
+    expr:"Опрости израза:\n4(x - 2) + 3(x + 1)",
+    label:"=", placeholder:"Въведи отговора си…",
+    answer:"7x - 5", accept:["7x-5","-5+7x"],
+    explain:"4x - 8 + 3x + 3 = 7x - 5",
+    hint:"Въведи опростения израз, например 2x + 1." },
+
+  /* -9 - 2(-7) + 5 = -9 + 14 + 5 = 10 -- минусът пред скобата обръща
+     знака на двата ѝ члена; сгрешен, дава 16 вместо 10. */
+  { type:"free-num", tag:"Заместване",
+    expr:"Намери стойността на израза 3x - 2(x - 4) + 5, при x = -3.",
+    label:"=", placeholder:"Въведи числения отговор…",
+    answer:10,
+    explain:"3(-3) - 2(-3 - 4) + 5\n= -9 - 2(-7) + 5\n= -9 + 14 + 5\n= 10",
+    hint:"Въведи само числото." }
 ];
+
 const LABELS = ["А","Б","В","Г"];
 
 const qWrap = document.getElementById('questions');
 const state = new Array(QUESTIONS.length).fill(null);
 let graded = false;
+
+function isFree(q){ return q.type === 'free-expr' || q.type === 'free-num'; }
+
+/* Празно поле не е отговор — задачата се брои за нерешена и после за
+   сгрешена, точно както е на хартия. */
+function isAnswered(qi){
+  const s = state[qi];
+  if(isFree(QUESTIONS[qi])) return typeof s === 'string' && s.trim() !== '';
+  return s !== null;
+}
+
+/* Сравнява се числото, а не изписването му: "10", " 10 " и "10,0" са
+   един отговор. Каквото не е число, не е отговор. */
+function freeValue(raw){
+  const t = String(raw == null ? '' : raw).trim().replace(/\s+/g,'').replace(',', '.');
+  if(t === '') return null;
+  const n = Number(t);
+  return isNaN(n) ? null : n;
+}
+
+/* Изразът се сравнява по същество, не по изписване. Махат се интервалите,
+   знакът за умножение (7*x и 7x са едно), кирилското х, което идва от
+   българската подредба, и тиретата, които телефонът поправя на дълго
+   тире. Редът на членовете е позволен само там, където е изброен в
+   accept — "7x-5" и "-5+7x" са един отговор, "5-7x" не е. */
+function normExpr(raw){
+  return String(raw == null ? '' : raw)
+    .toLowerCase()
+    .replace(/[−–—]/g, '-')
+    .replace(/[хx]/g, 'x')
+    .replace(/[*·×]/g, '')
+    .replace(/\s+/g, '')
+    .replace(/[=;.]+$/, '');
+}
+
+function freeIsRight(q, raw){
+  if(q.type === 'free-num'){
+    const given = freeValue(raw);
+    return given !== null && given === q.answer;
+  }
+  const given = normExpr(raw);
+  if(given === '') return false;
+  const ok = (q.accept && q.accept.length ? q.accept : [q.answer]).map(normExpr);
+  return ok.indexOf(given) !== -1;
+}
 
 function render(){
   qWrap.innerHTML = QUESTIONS.map((q,qi)=>`
@@ -485,14 +627,27 @@ function render(){
         <div class="qtag">${q.tag}</div>
       </div>
       <div class="qexpr">${q.expr}</div>
-      <div class="choices">
-        ${q.choices.map((c,ci)=>`
-          <button type="button" class="choice" data-q="${qi}" data-c="${ci}">
-            <span class="lab">${LABELS[ci]}</span><span>${c}</span>
-          </button>
-        `).join('')}
-      </div>
+      ${isFree(q)
+        ? `<div class="fields">
+             <div class="field">
+               <label for="f-${qi}">${q.label}</label>
+               <input id="f-${qi}" type="text" data-q="${qi}"
+                      class="${q.type === 'free-expr' ? 'expr' : ''}"
+                      inputmode="${q.type === 'free-num' ? 'numeric' : 'text'}"
+                      placeholder="${q.placeholder}" autocomplete="off"
+                      autocapitalize="off" spellcheck="false" />
+             </div>
+           </div>
+           <p class="hint">${q.hint}</p>`
+        : `<div class="choices">
+             ${q.choices.map((c,ci)=>`
+               <button type="button" class="choice" data-q="${qi}" data-c="${ci}">
+                 <span class="lab">${LABELS[ci]}</span><span>${c}</span>
+               </button>
+             `).join('')}
+           </div>`}
       <div class="verdict" id="verdict-${qi}"></div>
+      <div class="explain" id="explain-${qi}"></div>
     </div>
   `).join('');
 
@@ -506,10 +661,25 @@ function render(){
       updateProgress();
     });
   });
+
+  qWrap.querySelectorAll('input[data-q]').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      if(graded) return;
+      const qi = +inp.dataset.q;
+      /* полето на задача 10 е за число: буквите просто не влизат в него.
+         В задача 9 се пише израз, затова там нищо не се маха. */
+      if(QUESTIONS[qi].type === 'free-num'){
+        const cleaned = inp.value.replace(/[^0-9,.\-]/g, '');
+        if(cleaned !== inp.value) inp.value = cleaned;
+      }
+      state[qi] = inp.value;
+      updateProgress();
+    });
+  });
 }
 
 function updateProgress(){
-  const answered = state.filter(s=>s!==null).length;
+  const answered = QUESTIONS.filter((q,qi)=>isAnswered(qi)).length;
   document.getElementById('progressFill').style.width = (answered/QUESTIONS.length*100)+'%';
   document.getElementById('progressLabel').textContent = `${answered} / ${QUESTIONS.length} отговорени`;
   document.getElementById('checkBtn').disabled = answered === 0;
@@ -518,30 +688,53 @@ function updateProgress(){
 function grade(){
   graded = true;
   let score = 0;
+
   QUESTIONS.forEach((q,qi)=>{
     const card = document.getElementById(`card-${qi}`);
     card.classList.add('graded');
-    const pick = state[qi];
-    const isRight = pick === q.correct;
+    const v = document.getElementById(`verdict-${qi}`);
+    let isRight;
+
+    if(isFree(q)){
+      const raw = String(state[qi] == null ? '' : state[qi]).trim();
+      isRight = freeIsRight(q, raw);
+      if(isRight){
+        v.textContent = 'Вярно!';
+        v.classList.add('ok');
+      } else {
+        v.textContent = (raw === '' ? 'Без отговор' : 'Грешно') + ` — верният е ${q.answer}`;
+        v.classList.add('no');
+      }
+    } else {
+      const pick = state[qi];
+      isRight = (pick === q.correct);
+      document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b=>{
+        const ci = +b.dataset.c;
+        if(ci === q.correct) b.classList.add('is-correct');
+        if(ci === pick && !isRight) b.classList.add('is-wrong-pick');
+      });
+      if(pick === null){
+        v.textContent = `Без отговор — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`;
+        v.classList.add('no');
+      } else if(isRight){
+        v.textContent = 'Вярно!';
+        v.classList.add('ok');
+      } else {
+        v.textContent = `Грешно — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`;
+        v.classList.add('no');
+      }
+    }
+
+    if(q.explain){
+      const ex = document.getElementById(`explain-${qi}`);
+      ex.textContent = q.explain;
+      ex.classList.add('has');
+    }
+
     if(isRight) score++;
     card.classList.add(isRight ? 'correct' : 'wrong');
-    document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b=>{
-      const ci = +b.dataset.c;
-      if(ci === q.correct) b.classList.add('is-correct');
-      if(ci === pick && !isRight) b.classList.add('is-wrong-pick');
-    });
-    const v = document.getElementById(`verdict-${qi}`);
-    if(pick === null){
-      v.textContent = `Без отговор — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`;
-      v.classList.add('no');
-    } else if(isRight){
-      v.textContent = 'Вярно!';
-      v.classList.add('ok');
-    } else {
-      v.textContent = `Грешно — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`;
-      v.classList.add('no');
-    }
   });
+
   document.getElementById('scoreNow').textContent = score;
   document.getElementById('checkBtn').disabled = true;
   showResult(score);
@@ -551,18 +744,24 @@ function grade(){
 function showResult(score){
   const panel = document.getElementById('resultPanel');
   panel.classList.add('show');
-  const pct = score / QUESTIONS.length;
-  const messages = [
-    [0.9, "Отлично! 🎉", "Пълно овладяване на рационалните числа тази седмица."],
-    [0.7, "Много добре!", "Малко упражнения върху пропуснатите и си перфектен."],
-    [0.4, "Добро начало.", "Прегледай отново правилата за знаци при действията."],
-    [0,   "Продължавай да тренираш.", "Прочети внимателно верните отговори в ключа по-долу."],
+  const total = QUESTIONS.length;
+
+  /* Четирите оценки, които домашното дава: празникът е само за пълния
+     резултат, а най-долната лента казва какво да се направи, не колко
+     е слабо. */
+  const bands = [
+    [10, "Отлично!",     "Рационалните изрази са усвоени — скоби, подобни членове и заместване."],
+    [8,  "Много добре!", "Съвсем малко остава. Виж обяснението под сгрешената задача."],
+    [6,  "Добре.",       "Основното го можеш. Преговори скобата с минус пред нея."],
+    [0,  "",             "Опитай отново и преговори правилата."]
   ];
-  const msg = messages.find(m => pct >= m[0]);
-  document.getElementById('resultTitle').textContent = `${score} / ${QUESTIONS.length} — ${msg[1]}`;
-  document.getElementById('resultSub').textContent = msg[2];
-  drawGauge(pct);
-  if(pct >= 0.6) burstConfetti();
+  const band = bands.find(b => score >= b[0]);
+  document.getElementById('resultTitle').textContent =
+    (band[1] ? band[1] + ' ' : '') + `${score} / ${total}`;
+  document.getElementById('resultSub').textContent = band[2];
+
+  drawGauge(score/total);
+  if(score/total >= 0.6) burstConfetti();
   panel.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
@@ -582,7 +781,6 @@ function drawGauge(pct){
   const accent = pct >= 0.6 ? styles.getPropertyValue('--success').trim() : styles.getPropertyValue('--accent-ink').trim();
 
   let start = -Math.PI/2;
-  let t = 0;
   const duration = 700;
   const t0 = performance.now();
 
@@ -692,9 +890,9 @@ document.getElementById('signOutBtn').addEventListener('click', () => TLA.signOu
    не се трият, за да се вижда развитието.
 
    Записът е в същата форма, която профилът очаква: по един ред на
-   задача, с избрания и с верния отговор, за да се показва в "Преглед"
-   без специален случай. Всички десет задачи са с избираем отговор,
-   така че резултатът е автоматичен докрай.
+   задача, с даден и с верен отговор, за да се показва в "Преглед" без
+   специален случай. Осем задачи са с избор, две се пишат — и двата вида
+   се проверяват от страницата, така че резултатът е автоматичен докрай.
 --------------------------------------------------------------- */
 let saved = false;
 
@@ -704,24 +902,41 @@ async function saveToPortal(score){
   saved = true;
 
   const records = QUESTIONS.map((q, qi) => {
+    const base = {
+      id: String(qi + 1),
+      points: 1,
+      text: q.expr,
+      explanation: q.explain || (q.tag ? ('Тема: ' + q.tag) : '')
+    };
+
+    /* Задачите с писан отговор не се записват като избор: те нямат
+       варианти, а въведен и очакван отговор. */
+    if(isFree(q)){
+      const raw = String(state[qi] == null ? '' : state[qi]).trim();
+      const correct = freeIsRight(q, raw);
+      return Object.assign(base, {
+        kind: 'free',
+        chosenAnswer: raw === '' ? '(без отговор)' : raw,
+        correctAnswer: String(q.answer),
+        earned: correct ? 1 : 0,
+        correct: correct
+      });
+    }
+
     const pick = state[qi];
     const correct = (pick === q.correct);
-    return {
-      id: String(qi + 1),
+    return Object.assign(base, {
       kind: 'mc',
-      points: 1,
       earned: correct ? 1 : 0,
       correct: correct,
-      text: q.expr,
       options: q.choices,
       correctIndex: q.correct,
-      chosenIndex: (pick == null ? null : pick),
-      explanation: q.tag ? ('Тема: ' + q.tag) : ''
-    };
+      chosenIndex: (pick == null ? null : pick)
+    });
   });
 
   try{
-    await TLA.saveAttempt('hw-w01', {
+    await TLA.saveAttempt('hw-w03', {
       autoScore: score,
       autoMax: QUESTIONS.length,
       manualMax: null,
