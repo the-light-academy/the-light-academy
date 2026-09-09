@@ -2080,7 +2080,7 @@
     .tlap__logo {
       position: relative; display: inline-block;
       font-size: clamp(1.9rem, 5vw, 2.85rem); line-height: 1;
-      padding-top: 1.00em; margin: 0 0 0.85rem;
+      padding-top: 1.00em; margin: 0 0 1.4rem;
     }
     .tlap__logo-word {
       display: block; font-weight: 700; font-size: 1em; line-height: 1;
@@ -2102,10 +2102,18 @@
       width: 5.45em; height: 1.258em;   /* 260 : 60, so the spark stays round */
       overflow: visible; pointer-events: none;
     }
-    .tlap__logo-note {
-      display: block; font-size: 0.82rem; font-weight: 800;
-      letter-spacing: 0.10em; text-transform: uppercase;
-      color: var(--tlap-ink-soft); margin: 0 0 1.4rem;
+    /* Reads straight into the wordmark under it -- "…разработихме:" and then
+       the name -- so it sits close, and it is a sentence rather than another
+       uppercase label; there is already one of those above it. */
+    .tlap__logo-lead {
+      display: block; font-size: clamp(1rem, 1.5vw, 1.1rem); font-weight: 700;
+      line-height: 1.5; color: var(--tlap-ink-soft);
+      /* the spark's glow reaches a little above the wordmark's own box, so
+         the gap has to clear it -- on a phone this wraps to two lines and
+         the second one was almost touching the star */
+      margin: 0 0 0.6rem;
+      /* without this the wrap left "разработихме:" alone on its own line */
+      text-wrap: balance;
     }
 
     .tlap__title {
@@ -2938,6 +2946,8 @@
           <span class="tlap__eyebrow">Ученическа web платформа</span>
         </p>
 
+        <span class="tlap__logo-lead">В допълнение към курса за НВО разработихме:</span>
+
         <span class="tlap__logo">
           <svg class="tlap__logo-mark" viewBox="0 0 260 60" fill="none" aria-hidden="true" focusable="false">
             <defs>
@@ -2961,8 +2971,6 @@
           </svg>
           <span class="tlap__logo-word"><span class="tlap__logo-l">Light</span><span class="tlap__logo-s">Space</span></span>
         </span>
-        <span class="tlap__logo-note">Наша собствена разработка</span>
-
         <h2 class="tlap__title" id="tlapTitle">Повече от курс. Лична web платформа за подготовка.</h2>
         <p class="tlap__sub">
           <strong>LightSpace</strong> е платформата, която разработихме сами — за нашите ученици,
