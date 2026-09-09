@@ -3255,7 +3255,12 @@
           Затова проследяваме развитието на ученика през цялата година — от
           първия входящ тест до финалната подготовка за изпита.
         </p>
-        <a class="tlap__cta" href="#section-zapishete-se">Запази място за НВО 7 клас</a>
+        <!-- Straight to the form, not to the block above it: the anchor this used
+             to carry sits over the "places left" counter, so the button landed
+             a screen short of the thing it asks you to do. The href is the
+             no-JavaScript fallback; scrollToRegForm() also pulses the form. -->
+        <a class="tlap__cta" href="#regFormBox"
+           onclick="scrollToRegForm(); return false;">Запази място за НВО 7 клас</a>
       </div>
     </div>
   </section>
