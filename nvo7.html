@@ -958,24 +958,6 @@
     .post-pricing-group .cta-section { order: 1; }
     .post-pricing-group .course-info-block { order: 2; }
 
-    /* Desktop: urgency card + buttons + hint stacked on the left, form on the right */
-    .cta-cards-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: start;
-      max-width: 1100px;
-      margin: 2.5rem auto 0;
-    }
-    .cta-cards-row .reg-form-wrap { margin: 0; }
-    .cta-left-col {
-      display: flex;
-      flex-direction: column;
-      gap: 1.4rem;
-    }
-    .cta-left-col .urgency-block { margin: 0; max-width: none; order: 1; }
-    .cta-left-col .cta-buttons { margin: 0; order: 2; }
-    .cta-left-col .cta-buttons-hint { order: 3; margin-top: 0; }
 
     /* Teacher intro (photo + short bio) inside "При нас" -- desktop only,
        matching the section's own text which is likewise hidden on mobile
@@ -1314,18 +1296,112 @@
       margin-bottom: 2.5rem;
       font-size: 1.05rem;
     }
-    .cta-buttons {
-      display: flex;
-      gap: 1.25rem;
-      justify-content: center;
-      flex-wrap: wrap;
+    /* ── the final choice: two doors instead of one ──
+       A parent who is still deciding and a parent who is ready need
+       different next steps, and funnelling both into "Запази място" loses
+       the first one. Same card twice; the booking one carries the amber
+       edge and the filled button, because that is the primary conversion.
+       Everything here uses the section's existing dark glass, radii and
+       --sun -- no new palette. */
+    .cta-spots {
+      max-width: 1100px;
+      margin: 0 auto 1.75rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 0.6rem 1.5rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.78);
     }
-    .cta-buttons-hint {
-      color: rgba(255,255,255,0.55);
-      font-size: 0.82rem;
-      text-align: center;
-      margin-top: 0.7rem;
+    .cta-spots__nums { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    .cta-spot { display: inline-flex; align-items: baseline; gap: 0.35rem; }
+    .cta-spot__n {
+      font-family: 'Playfair Display', serif; font-size: 1.15rem;
+      font-weight: 700; color: var(--sun);
     }
+    .cta-spot__of { color: rgba(255,255,255,0.5); font-weight: 700; }
+    .cta-spot__label {
+      font-size: 0.74rem; font-weight: 800; letter-spacing: 0.05em;
+      text-transform: uppercase; color: rgba(255,255,255,0.62);
+    }
+
+    .cta-choice {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;   /* the booking card, a shade wider */
+      gap: 1.75rem;
+      align-items: stretch;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .cta-card {
+      display: flex; flex-direction: column;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 22px;
+      padding: 2rem 2rem 1.75rem;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+    }
+    .cta-card--book {
+      background: rgba(245,166,35,0.07);
+      border-color: rgba(245,166,35,0.38);
+      box-shadow: 0 26px 64px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+    .cta-card__title {
+      font-family: 'Bad Script', cursive;
+      font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+      line-height: 1.15; color: var(--white); margin: 0 0 0.3rem;
+    }
+    .cta-card__lead {
+      font-family: 'Bad Script', cursive; font-size: 1.3rem;
+      color: var(--sun); margin: 0 0 0.7rem;
+    }
+    .cta-card__text {
+      color: rgba(255,255,255,0.75); font-size: 0.98rem;
+      line-height: 1.6; margin: 0 0 1.4rem;
+    }
+    /* The button follows its own pitch; it is the secondary block that gets
+       pushed to the foot, so the two cards' footers line up even though one
+       card has more to say than the other. */
+    .cta-card__act { margin-top: 0; margin-bottom: 0.55rem; }
+    .cta-card__btn { width: 100%; justify-content: center; min-height: 52px; }
+    .cta-card__note {
+      color: rgba(255,255,255,0.62); font-size: 0.8rem;
+      margin: 0.55rem 0 0; text-align: center;
+    }
+    .cta-card__or {
+      margin-top: auto; padding-top: 1.4rem;
+      border-top: 1px solid rgba(255,255,255,0.13);
+    }
+    .cta-card__act + .cta-card__or { margin-top: 1.5rem; }
+    .cta-choice .cta-card__or { margin-top: auto; }
+    .cta-card__or-h {
+      color: rgba(255,255,255,0.82); font-weight: 800;
+      font-size: 0.95rem; line-height: 1.45; margin: 0 0 0.15rem;
+    }
+    .cta-card__or-when {
+      color: var(--sun); font-weight: 800; font-size: 0.95rem; margin: 0 0 0.5rem;
+    }
+    .cta-card__link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      min-height: 44px;                     /* a real touch target */
+      color: var(--sun); font-weight: 800; font-size: 0.95rem;
+      text-decoration: none;
+    }
+    .cta-card__link span { transition: transform 0.2s ease; }
+    .cta-card__link:hover span { transform: translateX(3px); }
+    .cta-card__link u { text-decoration-color: rgba(245,166,35,0.45); text-underline-offset: 3px; }
+    .cta-card__link:hover u { text-decoration-color: var(--sun); }
+    .cta-card__link:focus-visible { outline: 2px solid var(--sun); outline-offset: 3px; border-radius: 6px; }
+    @media (prefers-reduced-motion: reduce) {
+      .cta-card__link span { transition: none; }
+      .cta-card__link:hover span { transform: none; }
+    }
+
     .btn-cta-primary {
       display: inline-flex;
       align-items: center;
@@ -1400,44 +1476,6 @@
       margin-top: 2.75rem;
       scroll-margin-top: 90px;
     }
-    .urgency-block {
-      max-width: 640px;
-      margin: 2.5rem auto 0;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(232,88,10,0.4);
-      border-radius: 20px;
-      padding: 1.75rem 1.75rem 1.5rem;
-      text-align: center;
-    }
-    .urgency-text {
-      color: rgba(255,255,255,0.82);
-      font-size: 0.95rem;
-      line-height: 1.65;
-      margin-bottom: 1.25rem;
-    }
-    .urgency-text strong { color: var(--sun); font-weight: 900; }
-    .urgency-timer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .urgency-timer-box {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 14px;
-      padding: 0.75rem 1.4rem;
-      min-width: 84px;
-    }
-    .urgency-timer-num {
-      display: block;
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--orange);
-      line-height: 1;
-    }
-    .urgency-timer-total {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.5);
-    }
     .spots-count {
       display: inline-block;
       transform: translateY(0);
@@ -1446,15 +1484,6 @@
     }
     .spots-count.counting { color: #ff8a4c; }
     .spots-count.digit-swap { transform: translateY(-10px); opacity: 0; }
-    .urgency-timer-label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: rgba(255,255,255,0.6);
-      margin-top: 4px;
-    }
     .reg-form-wrap.reg-highlight .modal-box { animation: regPulse 1.6s ease; }
     @keyframes regPulse {
       0%, 100% { box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
@@ -1666,19 +1695,14 @@
         margin: 3rem auto 0;
       }
       .pricing-section, .post-pricing-group, .course-info-block,
-      .cta-section, .cta-cards-row, .cta-left-col {
+      .cta-section {
         display: contents;
       }
       .pricing-heading { order: 1; margin: 0; }
       .pricing-heading h2, .pricing-heading p { display: none; }
       .pricing-card { order: 2; }
-      .reg-form-wrap { order: 4; margin: 0; }
+      .reg-form-wrap { order: 6; margin: 0; }   /* under the two cards */
       .modal-box { background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%); }
-      /* Buttons + hint broken out of .cta-buttons so the hint can sit between
-         the entrance-test button and the call button on mobile. */
-      .cta-buttons { display: contents; }
-      .cta-buttons a[href="entrance_test.html"] { order: 2; }
-      .cta-buttons a[href^="tel:"] { order: 4; }
       .btn-cta-outline {
         background: transparent;
         border-color: #1B2E52;
@@ -1698,14 +1722,6 @@
         border-width: 1.5px;
       }
       .pricing-cta-flow .btn-cta-outline i { width: 18px; text-align: center; }
-      .pricing-cta-flow .cta-buttons-hint {
-        order: 3;
-        margin: -0.15rem 0 0;
-        font-size: 0.78rem;
-        line-height: 1.45;
-        color: var(--light-text);
-      }
-      .cta-section > h2, .cta-section > p,
       .course-info-block > h2, .course-info-block > p {
         display: none;
       }
@@ -1723,48 +1739,56 @@
       }
       .hero-pills { display: none; }
 
-      /* The availability card, the two actions and their hint used to be four
-         loose items spaced 1.75rem apart in the page-wide column, which read
-         as scattered rather than as one offer. They are one panel now, on the
-         same cream ground as the platform section higher up the page, so
-         .cta-left-col stops dissolving here and becomes a real container. */
-      .pricing-cta-flow .cta-left-col {
-        display: flex;
-        flex-direction: column;
-        gap: 0.7rem;
-        order: 5;
-        padding: 1.1rem;
-        border-radius: 20px;
-        /* The platform section's warm-top-left / cool-right wash, pushed a
-           little further: the page is already #FFFDF7, so at panel size the
-           original stops leave nothing to see. */
-        background:
-          radial-gradient(90% 75% at 10% 0%, #FFF1D6 0%, rgba(255,241,214,0) 70%),
-          radial-gradient(85% 70% at 98% 35%, #E7EFFA 0%, rgba(231,239,250,0) 72%),
-          #FFFCF3;
-        border: 1px solid rgba(13,27,54,0.08);
-        box-shadow: 0 14px 34px -20px rgba(9,18,38,0.35);
-      }
-      /* the scroll target belongs at the top of the panel, not after it */
-      .pricing-cta-flow .cta-left-col > #section-zapishete-se { order: 0; }
-
-      .cta-left-col .urgency-block {
-        display: block;
-        order: 1;
+      /* On this ground the two cards are dark panels, the same navy the
+         price card, the form and the reviews already use here -- so the
+         choice reads as part of the mobile page, not as a section that
+         forgot it left the dark desktop behind. */
+      .cta-spots {
+        order: 4;
         margin: 0;
-        max-width: none;
-        padding: 1rem 1rem 0.9rem;
+        justify-content: space-between;
+        gap: 0.5rem 0.9rem;
+        padding: 0.7rem 1rem;
         border-radius: 16px;
+        font-size: 0.82rem;
         background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
         border: 1px solid rgba(255,255,255,0.1);
         box-shadow: 0 14px 30px -18px rgba(9, 18, 38, 0.5);
       }
-      .cta-left-col .urgency-text { font-size: 0.86rem; line-height: 1.5; margin-bottom: 0.8rem; }
-      .cta-left-col .urgency-timer { gap: 10px; }
-      .cta-left-col .urgency-timer-box { padding: 0.5rem 0.5rem; min-width: 0; border-radius: 12px; }
-      .cta-left-col .urgency-timer-num { font-size: 1.5rem; }
-      .cta-left-col .urgency-timer-total { font-size: 0.9rem; }
-      .cta-left-col .urgency-timer-label { font-size: 0.64rem; letter-spacing: 0.04em; }
+      .cta-spots__text { flex: 1 1 100%; text-align: center; }
+      .cta-spots__nums { flex: 1 1 auto; justify-content: space-around; gap: 0.75rem; }
+      .cta-choice > #section-zapishete-se,
+      .pricing-cta-flow > #section-zapishete-se { order: 4; }
+
+      .cta-choice {
+        order: 5;
+        display: flex; flex-direction: column; gap: 1rem;
+        margin: 0;
+      }
+      .cta-card {
+        padding: 1.4rem 1.25rem 1.25rem;
+        border-radius: 20px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: linear-gradient(135deg, #0D1B36 0%, #1B2E52 55%, #0B1730 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 16px 36px -18px rgba(9, 18, 38, 0.5);
+      }
+      .cta-card--book { border-color: rgba(245,166,35,0.45); }
+      /* the outline pill goes dark-on-cream out here; inside the card it has
+         to come back to light-on-navy, full width, and without the arrow the
+         mobile rule appends -- the copy already ends in an asterisk */
+      .cta-card .btn-cta-outline,
+      .pricing-cta-flow .cta-card .btn-cta-outline {
+        width: 100%; max-width: none;
+        justify-content: center;
+        padding: 13px 18px; font-size: 0.95rem;
+        background: rgba(255,255,255,0.06);
+        border: 1.5px solid rgba(255,255,255,0.3);
+        color: #fff;
+      }
+      .cta-card .btn-cta-outline::after { content: none; }
+      .cta-card .btn-cta-yellow { width: 100%; max-width: none; justify-content: center; }
 
       #section-pri-nas { order: 9; }
       .schedule-link-btn {
@@ -3772,39 +3796,78 @@
 
   <!-- CTA -->
   <section class="cta-section">
-    <h2>Готови ли сте за резултати?</h2>
-    <p>Модерен подход, индивидуално внимание и ясна стратегия за успех на НВО.</p>
+    <!-- Availability first, compact: it is context for the choice below, not
+         a third call to action. Same ids and data-target the counter script
+         has always animated. -->
+    <div class="cta-spots">
+      <span class="cta-spots__text">2 групи × 8 деца, местата намаляват.</span>
+      <span class="cta-spots__nums" id="urgencyTimer">
+        <span class="cta-spot">
+          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup1" data-target="6">8</span></span>
+          <span class="cta-spot__of">/8</span>
+          <span class="cta-spot__label">Група 1</span>
+        </span>
+        <span class="cta-spot">
+          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup2" data-target="7">8</span></span>
+          <span class="cta-spot__of">/8</span>
+          <span class="cta-spot__label">Група 2</span>
+        </span>
+      </span>
+    </div>
 
-    <!-- Урджънси + бутони + форма — 2 колони на десктоп (ляво: урджънси/бутони, дясно: форма), стек на мобилен (непроменено) -->
-    <div class="cta-cards-row">
-    <div class="cta-left-col">
     <span id="section-zapishete-se" class="section-anchor"></span>
-    <div class="urgency-block">
-      <p class="urgency-text">2 групи × 8 деца, местата намаляват. Не чакайте есента, за да разберете, че мястото е заето.</p>
-      <div class="urgency-timer" id="urgencyTimer">
-        <div class="urgency-timer-box">
-          <span class="urgency-timer-num"><span class="spots-count" id="spotsGroup1" data-target="6">8</span><span class="urgency-timer-total">/8</span></span>
-          <span class="urgency-timer-label">Група 1 места</span>
-        </div>
-        <div class="urgency-timer-box">
-          <span class="urgency-timer-num"><span class="spots-count" id="spotsGroup2" data-target="7">8</span><span class="urgency-timer-total">/8</span></span>
-          <span class="urgency-timer-label">Група 2 места</span>
-        </div>
-      </div>
-    </div>
 
-    <div class="cta-buttons">
-      <a href="entrance_test.html" class="btn-cta-outline">
-        <i class="fa-solid fa-clipboard-question"></i>
-        Входящ тест за 7 клас
-      </a>
-      <a href="tel:+359885501283" class="btn-cta-outline">
-        <i class="fa-solid fa-phone"></i>
-        Обадете се за повече детайли
-      </a>
+    <div class="cta-choice">
+      <!-- still deciding -->
+      <article class="cta-card cta-card--talk">
+        <h2 class="cta-card__title">Не сте сигурни?</h2>
+        <p class="cta-card__lead">Нека поговорим.</p>
+        <p class="cta-card__text">
+          Разберете дали нашият подход е подходящ за вашето дете и как изглежда
+          подготовката за НВО 7. клас в The Light Academy.
+        </p>
+
+        <div class="cta-card__act">
+          <a href="tel:+359885501283" class="btn-cta-outline cta-card__btn">
+            <i class="fa-solid fa-phone"></i>
+            Обадете се за консултация*
+          </a>
+          <p class="cta-card__note">* Не се заплаща</p>
+        </div>
+
+        <div class="cta-card__or">
+          <p class="cta-card__or-h">Или елате на Деня на отворените врати</p>
+          <p class="cta-card__or-when">15 септември · 17:00 ч.</p>
+          <a class="cta-card__link" href="https://www.facebook.com/share/1CHw6bY4Tw/?mibextid=wwXIfr"
+             target="_blank" rel="noopener noreferrer">
+            <u>Вижте събитието във Facebook</u> <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- ready to book -->
+      <article class="cta-card cta-card--book">
+        <h2 class="cta-card__title">Готови ли сте за резултати?</h2>
+        <p class="cta-card__text">
+          Модерен подход, индивидуално внимание и ясна стратегия за подготовка
+          за НВО 7. клас.
+        </p>
+
+        <div class="cta-card__act">
+          <button type="button" class="btn-cta-yellow cta-card__btn" onclick="scrollToRegForm()">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Запази място <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <div class="cta-card__or">
+          <p class="cta-card__or-h">Не сте сигурни от какво ниво започва детето?</p>
+          <a class="cta-card__link" href="entrance_test.html">
+            <u>Направете входящия тест</u> <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
     </div>
-    <p class="cta-buttons-hint">Ако не сте сигурни, направете нашия входящ тест за определяне на знанията</p>
-    </div><!-- end .cta-left-col -->
 
     <!-- REGISTRATION FORM — inline, always open at the bottom of the page -->
     <div class="reg-form-wrap" id="regFormBox">
@@ -3856,7 +3919,6 @@
         </div>
       </div>
     </div>
-    </div><!-- end .cta-cards-row -->
   </section>
   </div><!-- end .post-pricing-group -->
   </div><!-- end .pricing-cta-flow -->
