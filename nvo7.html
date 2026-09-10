@@ -2220,7 +2220,7 @@
 
     /* ── stat tiles ── */
     .tlap__stats {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
     .tlap__stat {
@@ -2474,18 +2474,23 @@
 
     /* ── responsive ── */
     @media (max-width: 900px) {
-      .tlap__stats { grid-template-columns: repeat(2, 1fr); }
       .tlap__grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 620px) {
+      /* Three figures stay on one row rather than wrapping to two: at this
+         width the second row was 136px of the phone spent on the same three
+         numbers. The tile shrinks instead. */
+      .tlap__stat { padding: 0.65rem 0.55rem; }
+      .tlap__stat-k { font-size: 0.62rem; letter-spacing: 0.03em; margin-bottom: 0.25rem; }
+      .tlap__stat-n { font-size: 0.7rem; }
+      .tlap__stats { gap: 0.5rem; }
+
       .tlap__grid { grid-template-columns: 1fr 1fr; }
+      .tlap__tile { padding: 0.8rem 0.75rem; }
       .tlap__two { grid-template-columns: 1fr; }
       .tlap__top { justify-content: center; text-align: center; }
       .tlap__plot { height: 130px; }
       .tlap__keys > span { font-size: 0.66rem; }
-    }
-    @media (max-width: 400px) {
-      .tlap__grid { grid-template-columns: 1fr; }
     }
 
     /* Motion is here to explain the product, so it is all optional. */
@@ -3020,9 +3025,8 @@
         </span>
         <h2 class="tlap__title" id="tlapTitle">Повече от курс. Лична web платформа за подготовка.</h2>
         <p class="tlap__sub">
-          <strong>LightSpace</strong> е платформата, която разработихме сами — за нашите ученици,
-          по начина, по който преподаваме. Всеки получава собствен профил, в който вижда своята
-          подготовка, задачи, резултати и развитие през цялата учебна година.
+          Всеки ученик получава собствен профил в <strong>LightSpace</strong>, в който вижда
+          своята подготовка, задачи, резултати и развитие през цялата учебна година.
         </p>
       </header>
 
@@ -3061,11 +3065,6 @@
               <p class="tlap__stat-n">завършени</p>
             </div>
             <div class="tlap__stat">
-              <p class="tlap__stat-k">Точки</p>
-              <p class="tlap__stat-v">1 280 ⭐</p>
-              <p class="tlap__stat-n">от упражнения</p>
-            </div>
-            <div class="tlap__stat">
               <p class="tlap__stat-k">Среден резултат</p>
               <p class="tlap__stat-v tlap__up">+12%</p>
               <p class="tlap__stat-n">спрямо началния тест</p>
@@ -3073,15 +3072,12 @@
           </div>
 
           <p class="tlap__try" id="tlapTry">
-            <span aria-hidden="true">👆</span>
-            Пробвайте сами — отворете разделите и стартирайте пробния изпит
+            <span aria-hidden="true">👆</span> Пробвайте сами — отворете разделите.
           </p>
           <div class="tlap__tabs" role="tablist" aria-label="Раздели в профила">
             <button class="tlap__tab" role="tab" id="tlapTab1" aria-controls="tlapPanel1" aria-selected="true"  type="button">Домашни</button>
             <button class="tlap__tab" role="tab" id="tlapTab2" aria-controls="tlapPanel2" aria-selected="false" type="button" tabindex="-1" data-nudge>Пробни изпити</button>
             <button class="tlap__tab" role="tab" id="tlapTab3" aria-controls="tlapPanel3" aria-selected="false" type="button" tabindex="-1">Резултати</button>
-            <button class="tlap__tab" role="tab" id="tlapTab4" aria-controls="tlapPanel4" aria-selected="false" type="button" tabindex="-1">Обратна връзка</button>
-            <button class="tlap__tab" role="tab" id="tlapTab5" aria-controls="tlapPanel5" aria-selected="false" type="button" tabindex="-1">AI анализ</button>
           </div>
 
           <!-- Домашни -->
@@ -3094,13 +3090,6 @@
               <p class="tlap__card-m">18 / 20 задачи</p>
               <div class="tlap__bar" aria-hidden="true"><span style="width:90%"></span></div>
               <p style="margin:0.75rem 0 0;"><span class="tlap__chip">Завършено ✓</span></p>
-            </div>
-            <div class="tlap__card">
-              <div class="tlap__card-row">
-                <p class="tlap__card-t">Геометрични задачи — упражнения</p>
-                <span class="tlap__chip tlap__chip--next">Следващо</span>
-              </div>
-              <p class="tlap__card-m">Отваря се след последния урок</p>
             </div>
             <p class="tlap__note">
               Домашните не се губят между тетрадки и съобщения. Всичко е събрано
@@ -3165,67 +3154,6 @@
             </p>
           </div>
 
-          <!-- Обратна връзка -->
-          <div class="tlap__panel" role="tabpanel" id="tlapPanel4" aria-labelledby="tlapTab4" tabindex="0">
-            <div class="tlap__card">
-              <p class="tlap__card-t">👩‍🏫 Обратна връзка от преподавателя</p>
-              <p class="tlap__quote">
-                „Работиш много по-уверено с уравненията. Следващата ни цел е да
-                обърнем повече внимание на текстовите задачи.“
-              </p>
-            </div>
-            <div class="tlap__two">
-              <div class="tlap__card">
-                <p class="tlap__card-t">Силни страни</p>
-                <ul class="tlap__list tlap__list--good">
-                  <li data-mark="✓">Уравнения</li>
-                  <li data-mark="✓">Числови изрази</li>
-                </ul>
-              </div>
-              <div class="tlap__card">
-                <p class="tlap__card-t">За упражнение</p>
-                <ul class="tlap__list tlap__list--work">
-                  <li data-mark="→">Текстови задачи</li>
-                  <li data-mark="→">Геометрия</li>
-                </ul>
-              </div>
-            </div>
-            <p class="tlap__note">
-              Резултатът не е просто число. Преподавателят проследява работата на
-              ученика и дава конкретна обратна връзка и насоки.
-            </p>
-          </div>
-
-          <!-- AI анализ -->
-          <div class="tlap__panel" role="tabpanel" id="tlapPanel5" aria-labelledby="tlapTab5" tabindex="0">
-            <div class="tlap__card">
-              <p class="tlap__card-t">🤖 AI анализ на резултатите</p>
-              <p class="tlap__card-m">Анализ на пробен изпит №3</p>
-              <div class="tlap__ai">
-                <div class="tlap__ai-row">
-                  <span class="tlap__ai-tag tlap__ai-tag--good">Силен резултат</span>
-                  <span class="tlap__ai-txt">Уравнения</span>
-                </div>
-                <div class="tlap__ai-row">
-                  <span class="tlap__ai-tag tlap__ai-tag--work">Нужда от упражнение</span>
-                  <span class="tlap__ai-txt">Геометрия</span>
-                </div>
-                <div class="tlap__ai-row">
-                  <span class="tlap__ai-tag tlap__ai-tag--err">Повтарящ се тип грешка</span>
-                  <span class="tlap__ai-txt">Текстови задачи</span>
-                </div>
-              </div>
-              <div class="tlap__disclaim">
-                <span aria-hidden="true">ℹ️</span>
-                <span>AI анализът е допълнителен инструмент за анализ и не замества
-                преценката и обратната връзка на преподавателя.</span>
-              </div>
-            </div>
-            <p class="tlap__note">
-              AI анализът помага да открием закономерности в резултатите и
-              областите, в които ученикът има нужда от допълнителна практика.
-            </p>
-          </div>
         </div>
       </div>
 
@@ -3306,10 +3234,6 @@
       <!-- ── closing ── -->
       <div class="tlap__final">
         <p class="tlap__final-h">Подготовката за НВО не започва през май.</p>
-        <p class="tlap__final-p">
-          Затова проследяваме развитието на ученика през цялата година — от
-          първия входящ тест до финалната подготовка за изпита.
-        </p>
         <!-- Straight to the form, not to the block above it: the anchor this used
              to carry sits over the "places left" counter, so the button landed
              a screen short of the thing it asks you to do. The href is the
