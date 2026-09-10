@@ -306,6 +306,11 @@
     }
 
     .hero-glass-card {
+      /* Amber text on this card is not the amber of a button. Measured against
+         the card's own ground, --sun (#F5A623) reads 3.4:1 at the secondary
+         link and 3.6:1 at the eyebrow -- under the 4.5:1 small text needs. This
+         is the same lift the platform's own dark screens make to their gold. */
+      --hero-gold: #FFD98A;
       position: relative;
       z-index: 2;
       width: min(665px, calc(100% - 24px));
@@ -322,7 +327,10 @@
     }
     .hero-card-shine {
       position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(118deg, rgba(255,255,255,0.14), transparent 38%, rgba(255,206,110,0.12));
+      /* The bright corner of this sheen falls exactly where the eyebrow sits.
+         At 0.14 it lifted the ground enough to cost 11px gold its AA on a
+         narrow card; 0.09 still reads as a sheen and the text clears. */
+      background: linear-gradient(118deg, rgba(255,255,255,0.09), transparent 38%, rgba(255,206,110,0.10));
     }
     .hero-eyebrow {
       position: relative;
@@ -330,8 +338,9 @@
       font-size: 11px; font-weight: 800; letter-spacing: 0.18em;
       text-transform: uppercase;
       display: flex; align-items: center; gap: 9px;
-      color: var(--sun);
-      opacity: 0.9;
+      color: var(--hero-gold);
+      /* was 0.9 -- at 11px the dimming cost it AA on a narrow card, where the
+         shine gradient is brightest right where this line sits */
     }
     .hero-eyebrow-dash { width: 28px; height: 1px; background: currentColor; display: inline-block; flex-shrink: 0; }
     .page-hero h1 {
@@ -348,56 +357,62 @@
     .page-hero h1 span { color: var(--sun); }
     .page-hero .hero-sub {
       position: relative;
-      max-width: 420px;
-      font-size: 1rem;
+      /* was 420px, when this was a five-word strapline; it is a sentence now */
+      max-width: 34rem;
+      font-size: clamp(1rem, 1.4vw, 1.08rem);
       line-height: 1.55;
-      color: rgba(255,255,255,0.72);
-      margin: 0 0 1.5rem;
+      color: rgba(255,255,255,0.82);
+      margin: 0 0 1.1rem;
     }
+    .page-hero .hero-sub strong { color: var(--hero-gold); font-weight: 800; }
     .hero-cta {
       position: relative;
       display: flex; gap: 0.7rem; flex-wrap: wrap;
       margin-top: 1.5rem;
     }
 
-    /* Hero checklist — replaces the old section pills. Three promises, each
-       one a thing the portal actually does, so the hero and the platform
-       section below it say the same thing. */
-    .hero-checks {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
+    /* What is in the offer, on one line. A list in the markup -- a screen
+       reader should hear four things, not one run-on sentence -- laid out
+       inline with a dot between them. The dot is an ::after on every item
+       but the last, so a line that wraps never begins with a stray dot. */
+    .hero-facts {
       position: relative;
+      list-style: none; margin: 0 0 0.4rem; padding: 0;
+      display: flex; flex-wrap: wrap; align-items: baseline;
+      gap: 0.1rem 0.55rem;
+      font-size: clamp(0.88rem, 1.2vw, 0.95rem);
+      font-weight: 700; line-height: 1.7;
+      color: rgba(255,255,255,0.9);
     }
-    .hero-checks li {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;                 /* the hero is dark navy, not cream */
+    .hero-facts li { display: inline-flex; align-items: baseline; gap: 0.55rem; }
+    .hero-facts li:not(:last-child)::after {
+      content: '·'; color: var(--hero-gold); font-weight: 800; opacity: 0.8;
     }
-    .hero-checks li::before {
-      content: '✓';
-      display: grid;
-      place-items: center;
-      width: 22px;
-      height: 22px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      background: var(--sun);
-      color: #2D1F0E;              /* dark tick on the amber disc reads better */
-      font-size: 0.8rem;
-      font-weight: 800;
-      line-height: 1;
+
+    /* The quieter second door, for a parent who is not ready to book. */
+    .hero-cta-alt {
+      position: relative;
+      margin: 0.9rem 0 0;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.7);
     }
+    .hero-cta-alt a {
+      color: var(--hero-gold); font-weight: 800; text-decoration: none;
+      border-bottom: 1px solid rgba(255,217,138,0.45);
+      padding-bottom: 1px; white-space: nowrap;
+    }
+    .hero-cta-alt a:hover { border-bottom-color: var(--hero-gold); }
+    .hero-cta-alt a:focus-visible { outline: 2px solid var(--hero-gold); outline-offset: 3px; border-radius: 3px; }
+    .hero-cta-alt__arrow { display: inline-block; transition: transform 0.2s ease; }
+    .hero-cta-alt a:hover .hero-cta-alt__arrow { transform: translateX(3px); }
+
     @media (max-width: 600px) {
       .page-hero { padding: 2.25rem 1.1rem 2.75rem; }
       .hero-glass-card { padding: 1.9rem 1.5rem 1.8rem; border-radius: 22px; }
-      .hero-checks li { font-size: 0.92rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-cta-alt__arrow { transition: none; }
+      .hero-cta-alt a:hover .hero-cta-alt__arrow { transform: none; }
     }
 
     .hero-pills {
@@ -2916,11 +2931,15 @@
       <div class="hero-card-shine" aria-hidden="true"></div>
       <p class="hero-eyebrow"><span class="hero-eyebrow-dash" aria-hidden="true"></span><span>📐 НВО · 7. клас · Математика</span></p>
       <h1><span>НВО</span> 7 клас<br>по математика</h1>
-      <p class="hero-sub">Малки групи + личен ученически портал + проследяване на прогреса</p>
-      <ul class="hero-checks">
-        <li>Личен профил</li>
-        <li>Пробни изпити + таймер</li>
-        <li>AI анализ + проверка от учителя</li>
+      <p class="hero-sub">
+        Присъствена подготовка в малки групи + личен <strong>LightSpace</strong> профил,
+        който показва реалния прогрес на детето.
+      </p>
+      <ul class="hero-facts">
+        <li>До 8 ученици</li>
+        <li>5 пробни изпита</li>
+        <li>онлайн упражнения</li>
+        <li>обратна връзка от преподавател</li>
       </ul>
 
       <div class="hero-cta">
@@ -2929,6 +2948,10 @@
           Запази място
         </button>
       </div>
+      <p class="hero-cta-alt">
+        Не сте сигурни?
+        <a href="entrance_test.html">Направете входящ тест <span class="hero-cta-alt__arrow" aria-hidden="true">→</span></a>
+      </p>
     </div>
   </section>
 
