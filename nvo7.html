@@ -2472,6 +2472,34 @@
     .tlap__cta:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(247,173,25,0.45); }
     .tlap__cta:focus-visible { outline: 2px solid var(--tlap-navy); outline-offset: 3px; }
 
+    /* Two ways out of this section: book, or just talk to us. The second is
+       the same pill unfilled, so it reads as an equal option rather than a
+       lesser one -- only the amber says which is primary. */
+    .tlap__ctas {
+      display: flex; justify-content: center; align-items: center;
+      flex-wrap: wrap; gap: 0.75rem;
+    }
+    .tlap__cta--ghost {
+      background: transparent; color: var(--tlap-navy);
+      border: 2px solid rgba(13,27,54,0.22);
+      box-shadow: none;
+      padding: calc(0.9rem - 2px) calc(1.9rem - 2px);   /* the border keeps both pills the same height */
+    }
+    .tlap__cta--ghost:hover {
+      background: var(--tlap-surface); border-color: var(--tlap-navy);
+      box-shadow: 0 10px 24px rgba(13,27,54,0.12);
+    }
+    .tlap__cta-note {
+      font-size: 0.85rem; line-height: 1.5; color: var(--tlap-ink-soft);
+      margin: 0.8rem 0 0;
+    }
+    /* Once they stack, two pills of different widths read as a mistake --
+       so below this they share one width and sit as a pair. */
+    @media (max-width: 560px) {
+      .tlap__ctas { flex-direction: column; align-items: stretch; max-width: 340px; margin: 0 auto; }
+      .tlap__ctas .tlap__cta { width: 100%; }
+    }
+
     /* ── responsive ── */
     @media (max-width: 900px) {
       .tlap__grid { grid-template-columns: repeat(3, 1fr); }
@@ -3410,12 +3438,17 @@
       <!-- ── closing ── -->
       <div class="tlap__final">
         <p class="tlap__final-h">Подготовката за НВО не започва през май.</p>
-        <!-- Straight to the form, not to the block above it: the anchor this used
-             to carry sits over the "places left" counter, so the button landed
-             a screen short of the thing it asks you to do. The href is the
-             no-JavaScript fallback; scrollToRegForm() also pulses the form. -->
-        <a class="tlap__cta" href="#regFormBox"
-           onclick="scrollToRegForm(); return false;">Запази място за НВО 7 клас</a>
+        <div class="tlap__ctas">
+          <!-- Straight to the form, not to the block above it: the anchor this used
+               to carry sits over the "places left" counter, so the button landed
+               a screen short of the thing it asks you to do. The href is the
+               no-JavaScript fallback; scrollToRegForm() also pulses the form. -->
+          <a class="tlap__cta" href="#regFormBox"
+             onclick="scrollToRegForm(); return false;">Запази място за НВО 7 клас</a>
+          <!-- the page's own number, the same one the CTA cards call -->
+          <a class="tlap__cta tlap__cta--ghost" href="tel:+359885501283">Обади ни се <span aria-hidden="true">😊</span></a>
+        </div>
+        <p class="tlap__cta-note">Ще се радваме да разкажем повече.</p>
       </div>
     </div>
   </section>
