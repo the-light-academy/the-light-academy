@@ -812,9 +812,8 @@
       border-radius: 24px;
       box-shadow: 0 24px 55px -20px rgba(9, 18, 38, 0.5);
       padding: 2.25rem;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
+      max-width: 640px;
+      margin: 0 auto;
     }
     .pricing-card::before,
     .pricing-card::after {
@@ -836,89 +835,12 @@
       opacity: 0.14;
       bottom: -80px; left: -60px;
     }
-    .pricing-calculator, .pricing-display { position: relative; z-index: 1; }
+    .pricing-display { position: relative; z-index: 1; }
     @media (min-width: 860px) {
-      .pricing-card {
-        grid-template-columns: 1.05fr 0.95fr;
-        padding: 2.75rem;
-      }
+      .pricing-card { padding: 2.75rem; }
     }
 
-    /* -- Left: calculator controls -- */
-    .pricing-calculator h3 {
-      font-family: 'Bad Script', cursive;
-      font-size: 1.4rem;
-      color: #fff;
-      margin-bottom: 1.1rem;
-    }
-
-    .toggle-group {
-      margin-bottom: 1.6rem;
-    }
-    .toggle-group-label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.65);
-      margin-bottom: 0.6rem;
-    }
-    .toggle-pills {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-    .toggle-pill {
-      flex: 1 1 auto;
-      min-width: 140px;
-      border: 2px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: #fff;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 0.92rem;
-      border-radius: var(--radius-sm);
-      padding: 0.75rem 0.9rem;
-      cursor: pointer;
-      text-align: left;
-      transition: border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
-    }
-    .toggle-pill span.sub {
-      display: block;
-      font-weight: 500;
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.55);
-      margin-top: 0.15rem;
-    }
-    .toggle-pill:hover { border-color: var(--sun); transform: translateY(-1px); }
-    .toggle-pill.active {
-      background: rgba(245,166,35,0.2);
-      border-color: var(--sun);
-      color: #fff;
-    }
-    .toggle-pill.active span.sub { color: rgba(255,255,255,0.85); }
-
-    .savings-badge {
-      display: none;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(26,140,133,0.25);
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: #fff;
-      font-weight: 800;
-      font-size: 0.85rem;
-      padding: 0.5rem 0.85rem;
-      border-radius: 999px;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-    .savings-badge.show { display: inline-flex; opacity: 1; transform: translateY(0); }
-
-    /* -- Right: live price display -- */
+    /* -- one price, and what it buys -- */
     .pricing-display {
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.14);
@@ -938,17 +860,41 @@
       margin: 0.3rem 0 0.15rem;
       transition: transform 0.15s ease;
     }
-    .pricing-display-amount.bump { transform: scale(1.06); }
-    .pricing-display-caption {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.78);
-      margin-top: 0.5rem;
-      margin-bottom: 1.1rem;
+
+    .pricing-includes-k {
+      font-weight: 800;
+      color: #fff;
+      font-size: 0.95rem;
+      margin: 1.25rem 0 0.6rem;
     }
+    .pricing-includes {
+      list-style: none;
+      margin: 0 0 1.4rem;
+      padding: 0;
+      display: grid;
+      gap: 0.55rem;
+    }
+    .pricing-includes li {
+      position: relative;
+      padding-left: 1.65rem;
+      font-size: 0.97rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.9);
+    }
+    .pricing-includes li::before {
+      content: '\2713';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--sun);
+      font-weight: 800;
+    }
+    .pricing-includes strong { color: #fff; font-weight: 800; }
 
     .pricing-note {
       font-size: 0.78rem;
-      color: rgba(255,255,255,0.5);
+      /* 0.5 measured 3.8:1 against the glass -- under AA for text this small */
+      color: rgba(255,255,255,0.72);
       line-height: 1.5;
     }
 
@@ -1921,8 +1867,7 @@
         .course-reviews-track { animation: none; }
       }
 
-      .pricing-card { gap: 0.9rem; }
-      .toggle-group { margin-bottom: 0.9rem; }
+      .pricing-card { padding: 1.5rem; }
 
       /* Step 1 (Gen Alpha) — full-bleed photo background w/ glass cards, mobile only */
       #section-gen-alpha {
@@ -2759,19 +2704,18 @@
     "offers": [
       {
         "@type": "Offer",
-        "price": "360",
+        "price": "135",
         "priceCurrency": "EUR",
         "url": "https://the-light-academy.github.io/the-light-academy/nvo7.html",
-        "description": "360 EUR на вноска, 3 вноски общо 1080 EUR (или 999 EUR еднократно), до 8 деца в група",
-        "category": "Education"
-      },
-      {
-        "@type": "Offer",
-        "price": "999",
-        "priceCurrency": "EUR",
-        "url": "https://the-light-academy.github.io/the-light-academy/nvo7.html",
-        "description": "999 EUR еднократно плащане за целогодишния курс",
-        "category": "Education"
+        "description": "135 EUR на месец — 3 учебни часа седмично, домашни, достъп до платформата LightSpace и 5 пробни изпита, до 8 деца в група",
+        "category": "Education",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "price": "135",
+          "priceCurrency": "EUR",
+          "unitCode": "MON",
+          "billingIncrement": 1
+        }
       }
     ]
   }
@@ -3557,38 +3501,20 @@
     <div class="pricing-heading" id="section-tseni">
       <span class="eyebrow">Инвестиция в подготовката</span>
       <h2>Такса за курса</h2>
-      <p>Изберете начин на плащане, за да видите точната сума — изчислява се веднага.</p>
+      <p>Всичко, което влиза в курса, на една месечна такса.</p>
     </div>
 
     <div class="pricing-card">
-      <div class="pricing-calculator">
-        <h3>Изчисли своята такса</h3>
-
-        <div class="toggle-group">
-          <span class="toggle-group-label">Начин на плащане</span>
-          <div class="toggle-pills" id="paymentToggle">
-            <button type="button" class="toggle-pill active" data-payment="installments">
-              3 вноски
-              <span class="sub">разсрочено плащане</span>
-            </button>
-            <button type="button" class="toggle-pill" data-payment="full">
-              Еднократно плащане
-              <span class="sub">със спестяване</span>
-            </button>
-          </div>
-        </div>
-
-        <span class="savings-badge" id="savingsBadge">
-          <i class="fa-solid fa-piggy-bank"></i>
-          <span id="savingsText"></span>
-        </span>
-      </div>
-
       <div class="pricing-display">
-        <div class="pricing-display-top">
-          <div class="pricing-display-amount" id="priceAmount">135 € / мес.</div>
-          <div class="pricing-display-caption" id="priceCaption">3 вноски по 360 € · общо 1 080 €</div>
-        </div>
+        <div class="pricing-display-amount">135 € / месец</div>
+
+        <p class="pricing-includes-k">Включва:</p>
+        <ul class="pricing-includes">
+          <li>3 учебни часа всяка седмица</li>
+          <li>домашни всеки път</li>
+          <li>постоянен достъп до онлайн платформата <strong>LightSpace</strong></li>
+          <li>5 пробни изпита</li>
+        </ul>
 
         <p class="pricing-note">
           Всички суми са крайни, без допълнителни такси.
@@ -3896,64 +3822,6 @@
         parallaxTicking = true;
       }
     }, { passive: true });
-
-    // ── Pricing calculator ──
-    const PLAN = { installment: 360, full: 999 };
-
-    let selectedPayment = 'installments';
-
-    const paymentToggle = document.getElementById('paymentToggle');
-    const priceAmount = document.getElementById('priceAmount');
-    const priceCaption = document.getElementById('priceCaption');
-    const savingsBadge = document.getElementById('savingsBadge');
-    const savingsText = document.getElementById('savingsText');
-
-    function formatEUR(n) {
-      return n.toLocaleString('bg-BG') + ' €';
-    }
-
-    const COURSE_MONTHS = 8; // септември – май, закръглено за изчисление на месечна цена
-
-    function renderPricing() {
-      const installmentTotal = PLAN.installment * 3;
-      const savings = installmentTotal - PLAN.full;
-
-      // Amount + labels — водещото число вече е средно на месец,
-      // а общата сума за курса стои по-малка, под него.
-      if (selectedPayment === 'installments') {
-        const perMonth = Math.round(installmentTotal / COURSE_MONTHS);
-        priceAmount.textContent = `${formatEUR(perMonth)} / мес.`;
-        priceCaption.textContent = `3 вноски по ${formatEUR(PLAN.installment)} · общо ${formatEUR(installmentTotal)}`;
-      } else {
-        const perMonth = Math.round(PLAN.full / COURSE_MONTHS);
-        priceAmount.textContent = `${formatEUR(perMonth)} / мес.`;
-        priceCaption.textContent = `${formatEUR(PLAN.full)} за целогодишния курс · еднократно плащане`;
-      }
-
-      // Bump animation on change
-      priceAmount.classList.remove('bump');
-      void priceAmount.offsetWidth; // force reflow to restart animation
-      priceAmount.classList.add('bump');
-      setTimeout(() => priceAmount.classList.remove('bump'), 150);
-
-      // Savings badge — only relevant for one-time payment
-      if (selectedPayment === 'full' && savings > 0) {
-        savingsText.textContent = `Спестявате ${formatEUR(savings)} спрямо разсрочено плащане`;
-        savingsBadge.classList.add('show');
-      } else {
-        savingsBadge.classList.remove('show');
-      }
-    }
-
-    paymentToggle.addEventListener('click', (e) => {
-      const btn = e.target.closest('.toggle-pill');
-      if (!btn) return;
-      selectedPayment = btn.dataset.payment;
-      [...paymentToggle.children].forEach(p => p.classList.toggle('active', p === btn));
-      renderPricing();
-    });
-
-    renderPricing();
 
     // ── Group schedule widget ──
     const SCHEDULE_DATA = {
