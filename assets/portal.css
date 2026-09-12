@@ -774,6 +774,16 @@ body.tlp-page { background: #FFFDF7; }
    hang that week's homework.
    ===================================================================== */
 
+/* With more than one class on screen, each programme needs a name above it. */
+.tlc__prog {
+  font-family: 'Playfair Display', serif; font-weight: 700;
+  font-size: clamp(1.3rem, 3vw, 1.7rem); color: var(--tlp-navy);
+  margin: 2.5rem 0 0.25rem; padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--tlp-accent);
+}
+.tlc__prog:first-child { margin-top: 0; }
+.tlc__prog + .tlc__term { margin-top: 1rem; }
+
 .tlc__term {
   font-family: 'Playfair Display', serif; font-weight: 700;
   font-size: clamp(1.15rem, 2.6vw, 1.45rem); color: var(--tlp-navy);

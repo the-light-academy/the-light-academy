@@ -107,10 +107,11 @@
       <div class="tla-card">
         <h2 class="tla-card__title">Календар на годината</h2>
         <p class="tla-muted" style="margin-bottom:1rem;">
-          Програмата е за 7. клас. 36 учебни седмици, като седмица 1 е
-          28 септември – 2 октомври и всяка следваща върви подред. Ваканциите не
-          са извадени — седмиците са учебни и са номерирани както в програмата.
-          Отворете тема, за да видите седмиците ѝ.
+          Две програми: 7. клас — 36 учебни седмици, седмица 1 е 28 септември
+          – 2 октомври; 6. клас — 34 седмици, седмица 1 е 21 – 25 септември.
+          Ваканциите не са извадени — седмиците са учебни и са номерирани както
+          в програмата. Изберете клас, за да видите само неговата, и отворете
+          тема, за да видите седмиците ѝ.
         </p>
         <div class="tla-filters">
           <label for="calGradeFilter">Клас:</label>
@@ -944,116 +945,196 @@
          any other class yet, so the class filter has to say so rather than
          show these weeks under someone else's name. When another class gets
          a programme, it becomes a second entry keyed by grade here. */
-      var CURRICULUM_GRADE = 7;
+      /* One programme per class. Each carries its own first Monday, its own
+         number of teaching weeks and its own themes, so "седмица 5" is a
+         different week and a different lesson depending on the class you are
+         looking at. A third class is a third entry here and nothing else. */
 
-      var YEAR_START = new Date(2026, 8, 28);      /* понеделник, 28.09.2026 */
       var MONTHS_SHORT = ['ян.','фев.','март','апр.','май','юни',
                           'юли','авг.','сеп.','окт.','ноем.','дек.'];
 
-      var CURRICULUM = [
-        { term: 1, no: 1, title: 'Начален преговор', from: 1, weeks: [
-          'Рационални числа — събиране, изваждане, умножение и деление. Сравняване на числа.',
-          'Степени с естествен показател. Входно равнище (диагностика на знанията от 6. клас).'
-        ]},
-        { term: 1, no: 2, title: 'Цели изрази', from: 3, weeks: [
-          'Рационални изрази. Променливи и постоянни величини. Числена стойност на израз.',
-          'Едночлен. Нормален вид на едночлен. Действия с едночлени.',
-          'Многочлен. Нормален вид и степен на многочлен. Събиране и изваждане на многочлени.',
-          'Умножение на многочлен с едночлен и многочлен с многочлен.',
-          'Формули за съкратено умножение: (a ± b)², (a − b)(a + b).',
-          'Формули за съкратено умножение: (a ± b)³ и a³ ± b³.',
-          'Разлагане на многочлени на множители (изнасяне на общ множител, формули, групиране). Контролна работа върху цели изрази.'
-        ]},
-        { term: 1, no: 3, title: 'Уравнения', from: 10, weeks: [
-          'Числово равенство. Уравнение с едно неизвестно. Еквивалентни уравнения.',
-          'Линейни уравнения от вида ax + b = 0 и уравнения, свеждащи се до тях.',
-          'Уравнения от вида (ax + b)(cx + d) = 0 и |ax + b| = c.',
-          'Моделиране с линейни уравнения. Текстови задачи от движение и работа.',
-          'Текстови задачи от капитал, смеси, сплави и проценти. Контролна работа.'
-        ]},
-        { term: 1, no: 4, title: 'Основни геометрични фигури', from: 15, weeks: [
-          'Въведение в геометрията — точка, права, отсечка, полуправа, равнина.',
-          'Ъгъл. Видове ъгли. Съседни и връхни ъгли.',
-          'Перпендикулярни прави. Успоредни прави — признаци и свойства.',
-          'Триъгълник — сборове на ъгли, външен ъгъл на триъгълник. Обобщение на първия срок.'
-        ]},
-        { term: 2, no: 5, title: 'Еднакви триъгълници', from: 19, weeks: [
-          'Понятие за еднакви триъгълници. Първи признак за еднаквост.',
-          'Втори признак за еднаквост на триъгълници. Упражнения.',
-          'Равнобедрен и равностранен триъгълник — свойства и признаци.',
-          'Симетрала на отсечка. Построения с линия и пергел (симетрала, перпендикуляр).',
-          'Трети признак за еднаквост. Правоъгълен триъгълник с ъгъл 30°.',
-          'Медиана към хипотенуза в правоъгълен триъгълник. Ъглополовяща на ъгъл. Контролна работа.'
-        ]},
-        { term: 2, no: 6, title: 'Неравенства', from: 25, weeks: [
-          'Числови неравенства — свойства. Линейно неравенство с едно неизвестно.',
-          'Неравенства, свеждащи се до линейни. Представяне на решенията върху числова ос.',
-          'Неравенства между страни и ъгли в триъгълника.',
-          'Неравенство на триъгълника (сбор от две страни спрямо третата).'
-        ]},
-        { term: 2, no: 7, title: 'Успоредник', from: 29, weeks: [
-          'Понятие за четириъгълник. Успоредник — определение, свойства на страни и ъгли.',
-          'Признаци за успоредник. Правоъгълник — свойства и признаци.',
-          'Ромб и квадрат — дефиниции, специфични свойства и признаци.',
-          'Обобщение на четириъгълници. Контролна работа.'
-        ]},
-        { term: 2, no: 8, title: 'Елементи от вероятности и статистика', from: 33, weeks: [
-          'Организиране и представяне на данни (таблици, диаграми). Случайно събитие и вероятност.'
-        ]},
-        { term: 2, no: 9, title: 'Годишен преговор и подготовка за НВО', from: 34, weeks: [
-          'Преговор на Алгебра (Изрази, Уравнения, Неравенства). Решаване на тестове по формата на МОН.',
-          'Преговор на Геометрия (Ъгли, Еднакви триъгълници, Успоредници).',
-          'Изпитни симулации за НВО, финален анализ на резултатите и Изходно равнище.'
-        ]}
+      var PROGRAMMES = [
+        {
+          grade: 7,
+          weeks: 36,
+          start: new Date(2026, 8, 28),   /* понеделник, 28.09.2026 */
+          themes: [
+            { term: 1, no: 1, title: 'Начален преговор', from: 1, weeks: [
+              'Рационални числа — събиране, изваждане, умножение и деление. Сравняване на числа.',
+              'Степени с естествен показател. Входно равнище (диагностика на знанията от 6. клас).'
+            ]},
+            { term: 1, no: 2, title: 'Цели изрази', from: 3, weeks: [
+              'Рационални изрази. Променливи и постоянни величини. Числена стойност на израз.',
+              'Едночлен. Нормален вид на едночлен. Действия с едночлени.',
+              'Многочлен. Нормален вид и степен на многочлен. Събиране и изваждане на многочлени.',
+              'Умножение на многочлен с едночлен и многочлен с многочлен.',
+              'Формули за съкратено умножение: (a ± b)², (a − b)(a + b).',
+              'Формули за съкратено умножение: (a ± b)³ и a³ ± b³.',
+              'Разлагане на многочлени на множители (изнасяне на общ множител, формули, групиране). Контролна работа върху цели изрази.'
+            ]},
+            { term: 1, no: 3, title: 'Уравнения', from: 10, weeks: [
+              'Числово равенство. Уравнение с едно неизвестно. Еквивалентни уравнения.',
+              'Линейни уравнения от вида ax + b = 0 и уравнения, свеждащи се до тях.',
+              'Уравнения от вида (ax + b)(cx + d) = 0 и |ax + b| = c.',
+              'Моделиране с линейни уравнения. Текстови задачи от движение и работа.',
+              'Текстови задачи от капитал, смеси, сплави и проценти. Контролна работа.'
+            ]},
+            { term: 1, no: 4, title: 'Основни геометрични фигури', from: 15, weeks: [
+              'Въведение в геометрията — точка, права, отсечка, полуправа, равнина.',
+              'Ъгъл. Видове ъгли. Съседни и връхни ъгли.',
+              'Перпендикулярни прави. Успоредни прави — признаци и свойства.',
+              'Триъгълник — сборове на ъгли, външен ъгъл на триъгълник. Обобщение на първия срок.'
+            ]},
+            { term: 2, no: 5, title: 'Еднакви триъгълници', from: 19, weeks: [
+              'Понятие за еднакви триъгълници. Първи признак за еднаквост.',
+              'Втори признак за еднаквост на триъгълници. Упражнения.',
+              'Равнобедрен и равностранен триъгълник — свойства и признаци.',
+              'Симетрала на отсечка. Построения с линия и пергел (симетрала, перпендикуляр).',
+              'Трети признак за еднаквост. Правоъгълен триъгълник с ъгъл 30°.',
+              'Медиана към хипотенуза в правоъгълен триъгълник. Ъглополовяща на ъгъл. Контролна работа.'
+            ]},
+            { term: 2, no: 6, title: 'Неравенства', from: 25, weeks: [
+              'Числови неравенства — свойства. Линейно неравенство с едно неизвестно.',
+              'Неравенства, свеждащи се до линейни. Представяне на решенията върху числова ос.',
+              'Неравенства между страни и ъгли в триъгълника.',
+              'Неравенство на триъгълника (сбор от две страни спрямо третата).'
+            ]},
+            { term: 2, no: 7, title: 'Успоредник', from: 29, weeks: [
+              'Понятие за четириъгълник. Успоредник — определение, свойства на страни и ъгли.',
+              'Признаци за успоредник. Правоъгълник — свойства и признаци.',
+              'Ромб и квадрат — дефиниции, специфични свойства и признаци.',
+              'Обобщение на четириъгълници. Контролна работа.'
+            ]},
+            { term: 2, no: 8, title: 'Елементи от вероятности и статистика', from: 33, weeks: [
+              'Организиране и представяне на данни (таблици, диаграми). Случайно събитие и вероятност.'
+            ]},
+            { term: 2, no: 9, title: 'Годишен преговор и подготовка за НВО', from: 34, weeks: [
+              'Преговор на Алгебра (Изрази, Уравнения, Неравенства). Решаване на тестове по формата на МОН.',
+              'Преговор на Геометрия (Ъгли, Еднакви триъгълници, Успоредници).',
+              'Изпитни симулации за НВО, финален анализ на резултатите и Изходно равнище.'
+            ]}
+          ]
+        },
+        {
+          grade: 6,
+          weeks: 34,
+          start: new Date(2026, 8, 21),   /* понеделник, 21.09.2026 */
+          themes: [
+          { term: 1, no: 1, title: 'Начален преговор и входно ниво', from: 1, weeks: [
+            'Начален преговор — действия с обикновени и десетични дроби.',
+            'Намиране на част от число и процент. Геометрични фигури от 5. клас.',
+            'Провеждане и анализ на входно ниво.'
+          ]},
+          { term: 1, no: 2, title: 'Степенуване', from: 4, weeks: [
+            'Понятие за степен с естествен показател. Умножение на степени с равни основи.',
+            'Деление на степени с равни основи. Степенуване на произведение, частно и степен.',
+            'Пресмятане на числови изрази, съдържащи степени. Стандартен запис на число.'
+          ]},
+          { term: 1, no: 3, title: 'Рационални числа', from: 7, weeks: [
+            'Положителни и отрицателни числа. Множество на рационалните числа. Изобразяване върху числова ос.',
+            'Абсолютна стойност (модул) на число. Сравняване на рационални числа.',
+            'Събиране на рационални числа с еднакви и различни знаци. Свойства на събирането.',
+            'Изваждане на рационални числа. Алгебричен сбор.',
+            'Умножение на рационални числа. Свойства на умножението.',
+            'Деление на рационални числа. Намиране на неизвестно число.',
+            'Правоъгълна координатна система. Координати на точка. Разстояние между две точки.'
+          ]},
+          { term: 1, no: 4, title: 'Уравнения', from: 14, weeks: [
+            'Понятие за уравнение. Линейни уравнения от вида ax + b = 0.',
+            'Решаване на уравнения, които се свеждат до линейни чрез свойствата на числовите равенства.',
+            'Текстови задачи, решавани с уравнения.',
+            'Обобщение на темите от първия срок и подготовка за класна работа.',
+            'Провеждане и анализ на класна работа за първия срок.'
+          ]},
+          { term: 2, no: 5, title: 'Пропорции', from: 19, weeks: [
+            'Отношение и пропорция. Основно свойство на пропорциите.',
+            'Намиране на неизвестен член на пропорция. Основна задача от процент в пропорции.',
+            'Права и обратна пропорционалност. Коефициент на пропорционалност.',
+            'Чертане на графики на права пропорционалност. Приложения на пропорциите (мащаб).'
+          ]},
+          { term: 2, no: 6, title: 'Елементи от вероятности и статистика', from: 23, weeks: [
+            'Организиране и представяне на данни (таблици и диаграми).',
+            'Четене и интерпретиране на кръгови и линейни диаграми. Понятие за средноаритметично.',
+            'Случайно събитие. Вероятност на случайно събитие като отношение на възможности.'
+          ]},
+          { term: 2, no: 7, title: 'Геометрични фигури и тела', from: 26, weeks: [
+            'Окръжност и кръг — елементи, дължина на окръжност и лице на кръг.',
+            'Правилен многоъгълник. Лице на правилен многоъгълник.',
+            'Ръбести тела (многостени): права призма — развивка, лице на повърхнина и обем.',
+            'Правилна пирамида — елементи, лице на повърхнина и обем.',
+            'Валчести тела: прав кръгов цилиндър — повърхнина и обем.',
+            'Прав кръгов конус и кълбо (сфера) — основни формули и понятия.'
+          ]},
+          { term: 2, no: 8, title: 'Годишен преговор и изходно ниво', from: 32, weeks: [
+            'Подготовка за годишна класна работа. Обобщение на геометричните тела.',
+            'Провеждане на класна работа за втория срок / изходно ниво.',
+            'Анализ на резултатите, годишен преговор на най-важните теми и оформяне на успеваемостта.'
+          ]}
+          ]
+        }
       ];
 
-      /* Monday of week n, and the Friday that closes it. */
-      function weekDates(n) {
-        var from = new Date(YEAR_START.getTime());
+      function programmeFor(grade) {
+        var hit = PROGRAMMES.filter(function (p) { return p.grade === Number(grade); });
+        return hit.length ? hit[0] : null;
+      }
+
+      /* Monday of week n in one programme, and the Friday that closes it. */
+      function weekDates(prog, n) {
+        var from = new Date(prog.start.getTime());
         from.setDate(from.getDate() + (n - 1) * 7);
         var to = new Date(from.getTime());
         to.setDate(to.getDate() + 4);
         return { from: from, to: to };
       }
 
-      function weekLabel(n) {
-        var d = weekDates(n);
+      function weekLabel(prog, n) {
+        var d = weekDates(prog, n);
         var same = d.from.getMonth() === d.to.getMonth();
         return d.from.getDate() + (same ? '' : ' ' + MONTHS_SHORT[d.from.getMonth()]) +
                ' – ' + d.to.getDate() + ' ' + MONTHS_SHORT[d.to.getMonth()] + ' ' + d.to.getFullYear();
       }
 
-      /* Which teaching week today falls in, or null outside the year. */
-      function currentWeek() {
+      /* Which teaching week today falls in for this programme, or null
+         outside its year. The two classes start a week apart, so this is not
+         the same answer for both. */
+      function currentWeek(prog) {
         var today = new Date();
         today.setHours(0, 0, 0, 0);
-        var diff = Math.floor((today - YEAR_START) / 86400000);
+        var diff = Math.floor((today - prog.start) / 86400000);
         if (diff < 0) return null;
         var n = Math.floor(diff / 7) + 1;
-        return (n >= 1 && n <= 36) ? n : null;
+        return (n >= 1 && n <= prog.weeks) ? n : null;
       }
 
       /* Homework hangs off a week through assignments.week. The column is
          added by supabase/schema.sql; if it is not there yet the query
          fails and the slot says so rather than taking the panel down. */
-      var calByWeek = {}, calSpare = [], calWeekColumn = true;
+      var calAll = [], calWeekColumn = true;
 
       async function loadCalendar() {
         var res = await TLA.client.from('assignments')
           .select('id, slug, title, kind, published, week, grades')
           .order('sort_order', { ascending: true });
-        if (res.error) { calWeekColumn = false; renderCalendar(); return; }
-        calByWeek = {}; calSpare = [];
-        (res.data || []).filter(function (a) {
-          return filters.calGrade === '' || assignmentIsForGrade(a, filters.calGrade);
-        }).forEach(function (a) {
-          if (a.week) { (calByWeek[a.week] = calByWeek[a.week] || []).push(a); }
-          else { calSpare.push(a); }
-        });
+        if (res.error) { calWeekColumn = false; calAll = []; renderCalendar(); return; }
+        calAll = res.data || [];
         renderCalendar();
       }
 
-      function calHwSlot(n) {
+      /* What is pinned where, for one class. `week` carries no class of its
+         own, so the class comes from the assignment's own grades -- and one
+         set for every class shows up in every programme, which is right. */
+      function calBucket(grade) {
+        var byWeek = {}, spare = [];
+        calAll.filter(function (a) { return assignmentIsForGrade(a, grade); })
+          .forEach(function (a) {
+            if (a.week) { (byWeek[a.week] = byWeek[a.week] || []).push(a); }
+            else { spare.push(a); }
+          });
+        return { byWeek: byWeek, spare: spare };
+      }
+
+      function calHwSlot(prog, n, bucket) {
         if (!calWeekColumn) {
           return '<div class="tlc__hw"><p class="tlc__hw-k">Домашно за седмицата</p>' +
             '<p class="tlc__hw-none">За да закачате домашни към седмици, добавете ' +
@@ -1061,20 +1142,23 @@
             'готов в supabase/schema.sql.</p></div>';
         }
 
-        var pick = calSpare.length
-          ? '<select data-cal-pick="' + n + '" aria-label="Задание за седмица ' + n + '">' +
+        /* Both attributes, because two programmes can be on screen at once
+           and week 5 exists in each of them. */
+        var key = 'data-cal-pick="' + n + '" data-cal-grade="' + prog.grade + '"';
+        var pick = bucket.spare.length
+          ? '<select ' + key + ' aria-label="Задание за седмица ' + n + '">' +
               '<option value="">Закачи задание…</option>' +
-              calSpare.map(function (a) {
+              bucket.spare.map(function (a) {
                 return '<option value="' + esc(a.id) + '">' + esc(a.title) + '</option>';
               }).join('') +
             '</select>' +
             '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
-              'data-cal-add="' + n + '">Закачи</button>'
+              'data-cal-add="' + n + '" data-cal-grade="' + prog.grade + '">Закачи</button>'
           : '';
 
-        var mine = calByWeek[n] || [];
+        var mine = bucket.byWeek[n] || [];
 
-        /* A week with nothing set is the normal case for 35 of the 36, so it
+        /* A week with nothing set is the normal case for most of them, so it
            gets one quiet line rather than a heading and an empty box. */
         if (!mine.length) {
           return '<div class="tlc__hw tlc__hw--empty">' +
@@ -1101,35 +1185,16 @@
         '</div>';
       }
 
-      function renderCalendar() {
-        var el = document.getElementById('calendar');
-        var now = currentWeek();
-        var lastTerm = null, html = '';
+      /* One class's year: term headings, collapsible themes, a week each. */
+      function renderProgramme(prog, withHeading) {
+        var now = currentWeek(prog);
+        var bucket = calBucket(prog.grade);
+        var lastTerm = null;
+        var html = withHeading
+          ? '<h2 class="tlc__prog">Програма — ' + esc(TLA.gradeLabel(prog.grade)) + '</h2>'
+          : '';
 
-        /* Filtering by a class with no syllabus used to leave the 7th-grade
-           weeks on screen with nothing pinned to them, which read as "the
-           filter is broken". Say what is actually true instead. */
-        if (filters.calGrade !== '' && Number(filters.calGrade) !== CURRICULUM_GRADE) {
-          var g = Number(filters.calGrade);
-          var mine = Object.keys(state.assignments)
-            .map(function (k) { return state.assignments[k]; })
-            .filter(function (a) { return assignmentIsForGrade(a, g); });
-          /* "Предучилищна (5 г.)" starts a label, not a sentence, so it is
-             lower-cased where it lands mid-sentence. */
-          var lower = function (t) { return t.charAt(0).toLowerCase() + t.slice(1); };
-          el.innerHTML =
-            '<p class="tla-empty">Още няма програма за ' + esc(lower(TLA.gradeLabel(g))) + '. ' +
-              'Календарът със седмиците е направен за ' + esc(TLA.gradeLabel(CURRICULUM_GRADE)) + '.' +
-              (mine.length
-                ? ' За този клас има ' + mine.length + ' ' +
-                  (mine.length === 1 ? 'задание' : 'задания') +
-                  ' — в раздел „Задания“.'
-                : '') +
-            '</p>';
-          return;
-        }
-
-        CURRICULUM.forEach(function (theme) {
+        prog.themes.forEach(function (theme) {
           if (theme.term !== lastTerm) {
             lastTerm = theme.term;
             html += '<h3 class="tlc__term">' +
@@ -1154,18 +1219,52 @@
                 return '<div class="tlc__week' + (n === now ? ' is-now' : '') + '">' +
                   '<div class="tlc__week-top">' +
                     '<span class="tlc__week-n">Седмица ' + n + '</span>' +
-                    '<span class="tlc__week-d">' + esc(weekLabel(n)) + '</span>' +
+                    '<span class="tlc__week-d">' + esc(weekLabel(prog, n)) + '</span>' +
                     (n === now ? '<span class="tlc__now">тази седмица</span>' : '') +
                   '</div>' +
                   '<p class="tlc__what">' + esc(what) + '</p>' +
-                  calHwSlot(n) +
+                  calHwSlot(prog, n, bucket) +
                 '</div>';
               }).join('') +
             '</div></div></div>' +
           '</div>';
         });
+        return html;
+      }
 
-        el.innerHTML = html;
+      function renderCalendar() {
+        var el = document.getElementById('calendar');
+
+        /* No filter: every class's programme, one after the other, each
+           under its own heading. */
+        if (filters.calGrade === '') {
+          el.innerHTML = PROGRAMMES.map(function (prog) {
+            return renderProgramme(prog, true);
+          }).join('');
+          return;
+        }
+
+        var prog = programmeFor(filters.calGrade);
+        if (prog) { el.innerHTML = renderProgramme(prog, PROGRAMMES.length > 1); return; }
+
+        /* A class with no syllabus used to leave someone else's weeks on
+           screen with nothing pinned to them, which read as "the filter is
+           broken". Say what is actually true instead. */
+        var g = Number(filters.calGrade);
+        var mine = calAll.filter(function (a) { return assignmentIsForGrade(a, g); });
+        /* "Предучилищна (5 г.)" starts a label, not a sentence, so it is
+           lower-cased where it lands mid-sentence. */
+        var lower = function (t) { return t.charAt(0).toLowerCase() + t.slice(1); };
+        el.innerHTML =
+          '<p class="tla-empty">Още няма програма за ' + esc(lower(TLA.gradeLabel(g))) + '. ' +
+            'Засега има програма за ' +
+            PROGRAMMES.map(function (x) { return TLA.gradeLabel(x.grade); }).join(' и ') + '.' +
+            (mine.length
+              ? ' За този клас има ' + mine.length + ' ' +
+                (mine.length === 1 ? 'задание' : 'задания') +
+                ' — в раздел „Задания“.'
+              : '') +
+          '</p>';
       }
 
       document.getElementById('calendar').addEventListener('click', async function (e) {
@@ -1181,8 +1280,7 @@
         if (pub) {
           clearMsgs();
           var pid = pub.getAttribute('data-cal-pub');
-          var row = calSpare.concat.apply([], Object.keys(calByWeek).map(function (k) { return calByWeek[k]; }))
-            .filter(function (a) { return a.id === pid; })[0];
+          var row = calAll.filter(function (a) { return a.id === pid; })[0];
           if (!row) return;
           var r1 = await TLA.client.from('assignments')
             .update({ published: !row.published }).eq('id', pid);
@@ -1206,7 +1304,9 @@
         if (add) {
           clearMsgs();
           var wk = Number(add.getAttribute('data-cal-add'));
-          var pick = document.querySelector('[data-cal-pick="' + wk + '"]');
+          var gr = add.getAttribute('data-cal-grade');
+          var pick = document.querySelector(
+            '[data-cal-pick="' + wk + '"][data-cal-grade="' + gr + '"]');
           if (!pick || !pick.value) { say('err', 'Изберете задание от списъка.'); return; }
           var r3 = await TLA.client.from('assignments')
             .update({ week: wk }).eq('id', pick.value);
