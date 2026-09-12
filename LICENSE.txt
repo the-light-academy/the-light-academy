@@ -1,0 +1,88 @@
+THE LIGHT ACADEMY — ЛИЦЕНЗ / LICENSE
+====================================
+
+© 2026 The Light Academy. Всички права запазени.
+© 2026 The Light Academy. All rights reserved.
+
+
+БЪЛГАРСКИ
+---------
+
+Този репозиторий и сайтът, който се публикува от него, включително — но не
+само — изходният код, HTML и CSS файловете, скриптовете, схемата на базата
+данни, дизайнът, текстовете, изображенията, фотографиите, логото, названието
+„The Light Academy", названието и облика на платформата „LightSpace", както и
+всички учебни материали, задачи, домашни работи, тестове и техните решения,
+са собственост на The Light Academy и са защитени от Закона за авторското
+право и сродните му права.
+
+НЕ СЕ РАЗРЕШАВА без предварително писмено съгласие на притежателя на правата:
+
+  * копиране, възпроизвеждане или разпространение на съдържанието, изцяло
+    или частично;
+  * създаване на производни произведения, преработки или преводи;
+  * публикуване на съдържанието на друг сайт, в приложение или в печатно
+    издание;
+  * използване на съдържанието с търговска цел;
+  * използване на кода или материалите за обучение на модели с изкуствен
+    интелект, за автоматизирано извличане на данни или за изграждане на
+    набори от данни.
+
+РАЗРЕШАВА СЕ:
+
+  * разглеждане на сайта и ползване на учебните материали от записаните
+    ученици на The Light Academy за собствената им подготовка;
+  * цитиране на отделни изречения с ясно посочване на източника и връзка
+    към сайта.
+
+Достъпът до платформата LightSpace е личен. Данните за вход не се споделят
+и профилът не се преотстъпва на трето лице.
+
+За разрешение и за всякакви въпроси: the.light.academy56@gmail.com
+
+
+ENGLISH
+-------
+
+This repository and the website published from it — including but not limited
+to the source code, HTML and CSS files, scripts, database schema, design,
+texts, images, photographs, logo, the name "The Light Academy", the name and
+appearance of the "LightSpace" platform, and all teaching materials, exercises,
+homework, tests and their solutions — are the property of The Light Academy and
+are protected by Bulgarian and international copyright law.
+
+WITHOUT THE PRIOR WRITTEN PERMISSION of the rights holder you may NOT copy,
+reproduce, distribute, adapt, translate, republish or commercially exploit any
+part of this work, and you may NOT use it to train artificial-intelligence
+models, for automated scraping, or to build datasets.
+
+YOU MAY view the site, and — if you are an enrolled student of The Light
+Academy — use the teaching materials for your own preparation. Short quotations
+are permitted with clear attribution and a link to the site.
+
+Permission requests and questions: the.light.academy56@gmail.com
+
+
+ТРЕТИ СТРАНИ / THIRD-PARTY COMPONENTS
+-------------------------------------
+
+Сайтът зарежда външни компоненти, които си остават под собствените си лицензи
+и не се покриват от горното. The site loads third-party components which remain
+under their own licences and are not covered by the terms above:
+
+  * Font Awesome (иконите / the icons)            — fontawesome.com
+  * Google Fonts: Nunito, Playfair Display,
+    Bad Script, Pacifico, Poppins                 — fonts.google.com
+  * supabase-js                                   — MIT, supabase.com
+
+Задачите в страниците с пробни изпити възпроизвеждат публикувани от
+Министерството на образованието и науката изпитни материали за НВО. Авторските
+права върху самите изпитни задачи принадлежат на МОН; тук са приложени
+решенията, обясненията и програмната им реализация, които са собственост на
+The Light Academy.
+
+The exercises on the mock-exam pages reproduce national examination papers
+published by the Bulgarian Ministry of Education and Science. Copyright in the
+examination questions themselves belongs to the Ministry; the solutions,
+explanations and the software implementation around them belong to
+The Light Academy.

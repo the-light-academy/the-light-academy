@@ -297,6 +297,16 @@ canvas.gauge{ position:relative; }
 @media (prefers-reduced-motion: reduce){
   .btn, .choice{ transition:none; }
 }
+
+/* The one legal line these self-contained sheets carry instead of the
+   site's footer. */
+.page-legal{
+  margin:2.25rem auto 1.5rem;
+  padding:0 1rem;
+  text-align:center;
+  font-size:12px;
+  color:var(--ink-soft);
+}
 </style>
 </head>
 <body>
@@ -778,5 +788,6 @@ $('signOutBtn').addEventListener('click', () => TLA.signOut());
   render();
 })();
 </script>
+<p class="page-legal">© 2026 The Light Academy. Всички права запазени.</p>
 </body>
 </html>
