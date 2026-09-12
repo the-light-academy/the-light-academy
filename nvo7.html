@@ -1267,11 +1267,15 @@
       font-family: 'Playfair Display', serif; font-size: 1.15rem;
       font-weight: 700; color: var(--sun);
     }
-    .cta-spot__of { color: rgba(255,255,255,0.5); font-weight: 700; }
+    .cta-spot__say { color: rgba(255,255,255,0.78); }
     .cta-spot__label {
       font-size: 0.74rem; font-weight: 800; letter-spacing: 0.05em;
       text-transform: uppercase; color: rgba(255,255,255,0.62);
     }
+    /* "Остават 4 свободни места" е изречение: щом се пречупи, се пречупва
+       цялото, а не числото да остане само на реда си. */
+    .cta-spot { flex-wrap: wrap; row-gap: 0.15rem; }
+    .cta-spot__label { flex: 0 0 100%; }
 
     .cta-choice {
       display: grid;
@@ -1708,7 +1712,8 @@
         box-shadow: 0 14px 30px -18px rgba(9, 18, 38, 0.5);
       }
       .cta-spots__text { flex: 1 1 100%; text-align: center; }
-      .cta-spots__nums { flex: 1 1 auto; justify-content: space-around; gap: 0.75rem; }
+      .cta-spots__nums { flex: 1 1 100%; justify-content: space-between; gap: 0.5rem 0.9rem; }
+      .cta-spot { flex: 1 1 auto; justify-content: center; text-align: center; }
       .cta-choice > #section-zapishete-se,
       .pricing-cta-flow > #section-zapishete-se { order: 4; }
 
@@ -3671,14 +3676,16 @@
       <span class="cta-spots__text">2 групи × 6 деца, местата намаляват.</span>
       <span class="cta-spots__nums" id="urgencyTimer">
         <span class="cta-spot">
-          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup1" data-target="4">6</span></span>
-          <span class="cta-spot__of">/6</span>
           <span class="cta-spot__label">Група 1</span>
+          <span class="cta-spot__say">Остават</span>
+          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup1" data-target="4">6</span></span>
+          <span class="cta-spot__say" data-spots-word="spotsGroup1">свободни места</span>
         </span>
         <span class="cta-spot">
-          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup2" data-target="5">6</span></span>
-          <span class="cta-spot__of">/6</span>
           <span class="cta-spot__label">Група 2</span>
+          <span class="cta-spot__say">Остават</span>
+          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup2" data-target="5">6</span></span>
+          <span class="cta-spot__say" data-spots-word="spotsGroup2">свободни места</span>
         </span>
       </span>
     </div>
@@ -4302,10 +4309,18 @@
       // Swaps the digit with a brief slide-up-and-fade "flip" instead of an
       // instant textContent change, so each step reads as a smooth
       // transition rather than a jump cut.
+      /* Едно място е "свободно място", не "свободни места" -- думата се
+         сменя заедно с числото, не само накрая. */
+      function spotsWord(el, value) {
+        const word = document.querySelector('[data-spots-word="' + el.id + '"]');
+        if (word) word.textContent = value === 1 ? 'свободно място' : 'свободни места';
+      }
+
       function swapDigit(el, value, onSettled) {
         el.classList.add('digit-swap');
         setTimeout(() => {
           el.textContent = value;
+          spotsWord(el, value);
           void el.offsetWidth; // force reflow so removing the class transitions back in
           el.classList.remove('digit-swap');
           if (onSettled) setTimeout(onSettled, 280);
@@ -4316,10 +4331,12 @@
         const target = parseInt(el.dataset.target, 10);
         if (prefersReduced || isNaN(target)) {
           el.textContent = isNaN(target) ? el.textContent : target;
+          spotsWord(el, target);
           return;
         }
         let current = GROUP_SIZE;
         el.textContent = current;
+        spotsWord(el, current);
         if (current <= target) return;
         el.classList.add('counting');
         function step() {
