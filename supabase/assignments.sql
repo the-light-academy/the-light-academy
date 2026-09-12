@@ -39,6 +39,33 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
+-- 6. клас, седмица 2 — намиране на част от число и процент.
+-- Четирите задачи на Мишо, осем отговора, по една точка всеки.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w02',
+   'Домашно — Част от число и процент',
+   'homework',
+   'homework_6_w02.html',
+   8,
+   false,
+   392,
+   2,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
 -- 6. клас, седмица 32 — преговор на геометричните тела.
 -- Басейнът на Мишо: лице на основата, обем на права призма, 3/4 от обем
 -- и превръщане на m³ в литри. Четири задачи, по една точка всяка.
