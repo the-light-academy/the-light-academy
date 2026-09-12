@@ -2713,7 +2713,7 @@
         "price": "135",
         "priceCurrency": "EUR",
         "url": "https://the-light-academy.github.io/the-light-academy/nvo7.html",
-        "description": "135 EUR на месец — 3 учебни часа седмично, домашни, достъп до платформата LightSpace, входящ диагностичен тест, 5 пробни изпита и AI анализ на всяка задача, до 8 деца в група",
+        "description": "135 EUR на месец — 3 учебни часа седмично, домашни, достъп до платформата LightSpace, входящ диагностичен тест, 5 пробни изпита и AI анализ на всяка задача, до 6 деца в група",
         "category": "Education",
         "priceSpecification": {
           "@type": "UnitPriceSpecification",
@@ -2924,7 +2924,7 @@
         който показва реалния прогрес на детето.
       </p>
       <ul class="hero-facts">
-        <li>До 8 ученици</li>
+        <li>До 6 ученици</li>
         <li>5 пробни изпита</li>
         <li>онлайн упражнения</li>
         <li>обратна връзка от преподавател</li>
@@ -3668,16 +3668,16 @@
          a third call to action. Same ids and data-target the counter script
          has always animated. -->
     <div class="cta-spots">
-      <span class="cta-spots__text">2 групи × 8 деца, местата намаляват.</span>
+      <span class="cta-spots__text">2 групи × 6 деца, местата намаляват.</span>
       <span class="cta-spots__nums" id="urgencyTimer">
         <span class="cta-spot">
-          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup1" data-target="6">8</span></span>
-          <span class="cta-spot__of">/8</span>
+          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup1" data-target="4">6</span></span>
+          <span class="cta-spot__of">/6</span>
           <span class="cta-spot__label">Група 1</span>
         </span>
         <span class="cta-spot">
-          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup2" data-target="7">8</span></span>
-          <span class="cta-spot__of">/8</span>
+          <span class="cta-spot__n"><span class="spots-count" id="spotsGroup2" data-target="5">6</span></span>
+          <span class="cta-spot__of">/6</span>
           <span class="cta-spot__label">Група 2</span>
         </span>
       </span>
@@ -4287,10 +4287,12 @@
       timerObserver.observe(timerEl);
     })();
 
-    // Remaining-spots counters — animate down from 8 to the real number left,
+    // Remaining-spots counters — animate down from 6, the group size, to the
+    // real number left,
     // once when the block scrolls into view (not a live countdown, just a
     // one-time "places are filling up" reveal).
     (function () {
+      const GROUP_SIZE = 6;   // places in a group; the counters start here
       const counters = Array.from(document.querySelectorAll('.spots-count'));
       const timerEl = document.getElementById('urgencyTimer');
       if (!counters.length || !timerEl) return;
@@ -4316,7 +4318,7 @@
           el.textContent = isNaN(target) ? el.textContent : target;
           return;
         }
-        let current = 8;
+        let current = GROUP_SIZE;
         el.textContent = current;
         if (current <= target) return;
         el.classList.add('counting');
