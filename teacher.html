@@ -107,10 +107,10 @@
       <div class="tla-card">
         <h2 class="tla-card__title">Календар на годината</h2>
         <p class="tla-muted" style="margin-bottom:1rem;">
-          36 учебни седмици, като седмица 1 е 28 септември – 2 октомври и всяка
-          следваща върви подред. Ваканциите не са извадени — седмиците са учебни
-          и са номерирани както в програмата. Отворете тема, за да видите
-          седмиците ѝ.
+          Програмата е за 7. клас. 36 учебни седмици, като седмица 1 е
+          28 септември – 2 октомври и всяка следваща върви подред. Ваканциите не
+          са извадени — седмиците са учебни и са номерирани както в програмата.
+          Отворете тема, за да видите седмиците ѝ.
         </p>
         <div class="tla-filters">
           <label for="calGradeFilter">Клас:</label>
@@ -940,6 +940,12 @@
          The material is data, not markup, so a change to the syllabus is a
          change to this list. */
 
+      /* The syllabus below is the 7th-grade one. There is no programme for
+         any other class yet, so the class filter has to say so rather than
+         show these weeks under someone else's name. When another class gets
+         a programme, it becomes a second entry keyed by grade here. */
+      var CURRICULUM_GRADE = 7;
+
       var YEAR_START = new Date(2026, 8, 28);      /* понеделник, 28.09.2026 */
       var MONTHS_SHORT = ['ян.','фев.','март','апр.','май','юни',
                           'юли','авг.','сеп.','окт.','ноем.','дек.'];
@@ -1099,6 +1105,29 @@
         var el = document.getElementById('calendar');
         var now = currentWeek();
         var lastTerm = null, html = '';
+
+        /* Filtering by a class with no syllabus used to leave the 7th-grade
+           weeks on screen with nothing pinned to them, which read as "the
+           filter is broken". Say what is actually true instead. */
+        if (filters.calGrade !== '' && Number(filters.calGrade) !== CURRICULUM_GRADE) {
+          var g = Number(filters.calGrade);
+          var mine = Object.keys(state.assignments)
+            .map(function (k) { return state.assignments[k]; })
+            .filter(function (a) { return assignmentIsForGrade(a, g); });
+          /* "Предучилищна (5 г.)" starts a label, not a sentence, so it is
+             lower-cased where it lands mid-sentence. */
+          var lower = function (t) { return t.charAt(0).toLowerCase() + t.slice(1); };
+          el.innerHTML =
+            '<p class="tla-empty">Още няма програма за ' + esc(lower(TLA.gradeLabel(g))) + '. ' +
+              'Календарът със седмиците е направен за ' + esc(TLA.gradeLabel(CURRICULUM_GRADE)) + '.' +
+              (mine.length
+                ? ' За този клас има ' + mine.length + ' ' +
+                  (mine.length === 1 ? 'задание' : 'задания') +
+                  ' — в раздел „Задания“.'
+                : '') +
+            '</p>';
+          return;
+        }
 
         CURRICULUM.forEach(function (theme) {
           if (theme.term !== lastTerm) {
