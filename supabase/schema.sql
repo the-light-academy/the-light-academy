@@ -3,6 +3,12 @@
 -- Run this once in the Supabase dashboard: SQL Editor -> New query -> Run.
 -- Safe to re-run: every statement is idempotent.
 --
+-- !!! ВНИМАНИЕ: този файл е вече надграден от supabase/schema-v2.sql
+-- (класове и предмети). Ако си пуснала v2, НЕ пускай този файл наново —
+-- той ще върне старата колона `grade`, стария тригер за нов потребител
+-- и стария достъп на `anon` до заданията. v2 очаква v1 да е минал веднъж
+-- и после да не се пипа.
+--
 -- Passwords are NOT stored here. Supabase Auth owns auth.users and keeps a
 -- salted hash; this schema only ever references users by id.
 -- =====================================================================
