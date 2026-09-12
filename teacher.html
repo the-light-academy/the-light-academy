@@ -112,6 +112,10 @@
           и са номерирани както в програмата. Отворете тема, за да видите
           седмиците ѝ.
         </p>
+        <div class="tla-filters">
+          <label for="calGradeFilter">Клас:</label>
+          <select id="calGradeFilter"><option value="">всички</option></select>
+        </div>
         <div id="calendar"><p class="tla-empty">Зареждане…</p></div>
       </div>
     </section>
@@ -134,23 +138,34 @@
               <label for="nuPass">Начална парола</label>
               <input type="text" id="nuPass" required minlength="8" placeholder="поне 8 знака" />
             </div>
+            <div>
+              <label for="nuGrade">Клас</label>
+              <select id="nuGrade" required></select>
+            </div>
             <button type="submit" class="tla-btn" id="addUserBtn">Добави</button>
           </div>
         </form>
         <p class="tla-muted">
           Паролата се показва само сега — запишете си я и я дайте на ученика.
-          Той може да я смени по-късно.
+          Той може да я смени по-късно. Класът се записва заедно с учебната
+          година, в която го задавате, и оттам нататък се вдига сам всеки
+          1 септември — няма нужда да се пипа отново.
         </p>
       </div>
 
       <div class="tla-card">
         <h2 class="tla-card__title">Ученици</h2>
+        <div class="tla-filters">
+          <label for="rosterGradeFilter">Клас:</label>
+          <select id="rosterGradeFilter"><option value="">всички</option></select>
+          <span class="tla-filters__count" id="rosterCount"></span>
+        </div>
         <div class="tla-tablewrap">
           <table class="tla-table" id="rosterTable">
             <thead>
-              <tr><th>Име</th><th>Роля</th><th>Статус</th><th>Създаден</th><th></th></tr>
+              <tr><th>Име</th><th>Клас</th><th>Роля</th><th>Статус</th><th>Създаден</th><th></th></tr>
             </thead>
-            <tbody><tr><td colspan="5" class="tla-empty">Зареждане…</td></tr></tbody>
+            <tbody><tr><td colspan="6" class="tla-empty">Зареждане…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -161,10 +176,17 @@
       <div class="tla-card">
         <h2 class="tla-card__title">Задания</h2>
         <p class="tla-muted" style="margin-bottom:1rem;">
-          Учениците виждат само публикуваните задания. Адресът е страницата,
-          която се отваря с бутона „Започни“ — сменя се тук, ако файлът е
-          преименуван или е заменен с друг.
+          Ученикът вижда задание само ако е публикувано, ако е за неговия клас
+          и ако учи предмета. Адресът е страницата, която се отваря с бутона
+          „Започни“ — сменя се тук, ако файлът е преименуван или е заменен с друг.
         </p>
+        <div class="tla-filters">
+          <label for="assignGradeFilter">Клас:</label>
+          <select id="assignGradeFilter"><option value="">всички</option></select>
+          <label for="assignSubjFilter">Предмет:</label>
+          <select id="assignSubjFilter"><option value="">всички</option></select>
+          <span class="tla-filters__count" id="assignCount"></span>
+        </div>
         <ul class="tla-list" id="assignAdmin">
           <li class="tla-empty">Зареждане…</li>
         </ul>
@@ -183,7 +205,23 @@
   <script>
     (function () {
       var esc = TLA.escapeHtml;
-      var state = { attempts: [], profiles: {}, assignments: {}, roster: [] };
+      var state = { attempts: [], profiles: {}, assignments: {}, roster: [], subjects: [] };
+      var filters = { rosterGrade: '', assignGrade: '', assignSubject: '', calGrade: '' };
+
+      /* The class a student is in right now, worked out from the class they
+         were entered in and the school year that was. The same arithmetic as
+         current_grade() in the database; here it is only for labels. */
+      function gradeOf(p) { return TLA.currentGrade(p); }
+
+      function gradeOptions(selected, firstLabel) {
+        var out = firstLabel
+          ? '<option value="">' + esc(firstLabel) + '</option>' : '';
+        return out + TLA.GRADES.map(function (g) {
+          return '<option value="' + g + '"' +
+            (String(selected) === String(g) ? ' selected' : '') + '>' +
+            esc(TLA.gradeLabel(g)) + '</option>';
+        }).join('');
+      }
       /* Set while the review panel is open. Lets you paste a reply that
          carries no attempt id -- it belongs to the work on screen. */
       var openAttemptId = null;
@@ -734,14 +772,48 @@
       /* ---- roster ---- */
       function renderRoster() {
         var tb = document.querySelector('#rosterTable tbody');
-        if (!state.roster.length) {
-          tb.innerHTML = '<tr><td colspan="5" class="tla-empty">Няма ученици.</td></tr>';
+        var count = document.getElementById('rosterCount');
+        var rows = state.roster.filter(function (p) {
+          if (filters.rosterGrade === '') return true;
+          if (p.role === 'teacher') return false;
+          return String(gradeOf(p)) === filters.rosterGrade;
+        });
+
+        var students = state.roster.filter(function (p) { return p.role !== 'teacher'; });
+        var noGrade = students.filter(function (p) { return gradeOf(p) === null; }).length;
+        count.textContent = rows.length + ' от ' + state.roster.length +
+          (noGrade ? ' · ' + noGrade + ' без зададен клас' : '');
+
+        if (!rows.length) {
+          tb.innerHTML = '<tr><td colspan="6" class="tla-empty">' +
+            (state.roster.length ? 'Няма ученици в този клас.' : 'Няма ученици.') +
+            '</td></tr>';
           return;
         }
-        tb.innerHTML = state.roster.map(function (p) {
+        tb.innerHTML = rows.map(function (p) {
           var isTeacher = p.role === 'teacher';
+          var g = gradeOf(p);
+          /* A student with no class set sees no assignments at all, so it is
+             marked rather than left blank. */
+          /* The class is read far more often than it is changed, so the row
+             shows it as text and keeps the control behind one click. */
+          var gradeCell = isTeacher ? '—'
+            : (g === null
+                ? '<span class="tla-badge tla-badge--off">без клас</span>'
+                : esc(TLA.gradeLabel(g))) +
+              '<details class="tla-gradeedit"><summary>смени</summary>' +
+                '<span class="tla-setgrade">' +
+                  '<select class="tla-sel" data-gradesel="' + esc(p.id) + '" ' +
+                    'aria-label="Клас на ' + esc(p.full_name || '') + '">' +
+                    gradeOptions(g === null ? '' : g, 'избери…') +
+                  '</select>' +
+                  '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                    'data-setgrade="' + esc(p.id) + '">Задай</button>' +
+                '</span>' +
+              '</details>';
           return '<tr>' +
             '<td>' + esc(p.full_name || '—') + '</td>' +
+            '<td>' + gradeCell + '</td>' +
             '<td>' + (isTeacher ? '<span class="tla-badge">Преподавател</span>' : 'Ученик') + '</td>' +
             '<td>' + (p.active
                 ? '<span class="tla-badge tla-badge--graded">Активен</span>'
@@ -763,6 +835,26 @@
         var tgl = e.target.closest('[data-toggle]');
         var del = e.target.closest('[data-del]');
         clearMsgs();
+
+        var setg = e.target.closest('[data-setgrade]');
+        if (setg) {
+          var sid = setg.getAttribute('data-setgrade');
+          var sel = document.querySelector('[data-gradesel="' + sid + '"]');
+          if (!sel || sel.value === '') { say('err', 'Изберете клас.'); if (sel) sel.focus(); return; }
+          setg.disabled = true;
+          /* set_student_grade() moves the entry point to this school year,
+             so the class carries on rising by itself from here. It also
+             overwrites the original "entered in X in year Y" record --
+             grade_set_at keeps when that happened. */
+          var rpc = await TLA.client.rpc('set_student_grade', {
+            student: sid, new_grade: Number(sel.value)
+          });
+          setg.disabled = false;
+          if (rpc.error) { say('err', rpc.error.message); return; }
+          say('ok', 'Класът е зададен.');
+          await loadRoster();
+          return;
+        }
 
         if (tgl) {
           var id = tgl.getAttribute('data-toggle');
@@ -821,13 +913,17 @@
         var btn = document.getElementById('addUserBtn');
         btn.disabled = true;
         try {
+          var gradeSel = document.getElementById('nuGrade');
+          if (gradeSel.value === '') throw new Error('Изберете клас.');
           await adminCall('POST', {
             email: document.getElementById('nuEmail').value.trim(),
             password: document.getElementById('nuPass').value,
-            full_name: document.getElementById('nuName').value.trim()
+            full_name: document.getElementById('nuName').value.trim(),
+            grade: Number(gradeSel.value)
           });
-          say('ok', 'Ученикът е добавен.');
+          say('ok', 'Ученикът е добавен в ' + TLA.gradeLabel(Number(gradeSel.value)) + '.');
           e.target.reset();
+          fillGradeSelects();
           await loadRoster();
         } catch (err) { say('err', String(err.message || err)); }
         btn.disabled = false;
@@ -937,11 +1033,13 @@
 
       async function loadCalendar() {
         var res = await TLA.client.from('assignments')
-          .select('id, slug, title, kind, published, week')
+          .select('id, slug, title, kind, published, week, grades')
           .order('sort_order', { ascending: true });
         if (res.error) { calWeekColumn = false; renderCalendar(); return; }
         calByWeek = {}; calSpare = [];
-        (res.data || []).forEach(function (a) {
+        (res.data || []).filter(function (a) {
+          return filters.calGrade === '' || assignmentIsForGrade(a, filters.calGrade);
+        }).forEach(function (a) {
           if (a.week) { (calByWeek[a.week] = calByWeek[a.week] || []).push(a); }
           else { calSpare.push(a); }
         });
@@ -1089,11 +1187,39 @@
       });
 
       /* ---- assignments ---- */
+      function subjectName(id) {
+        if (!id) return 'без предмет';
+        var hit = state.subjects.filter(function (s) { return s.id === id; })[0];
+        return hit ? hit.name : 'непознат предмет';
+      }
+
+      /* Does this assignment reach a student in class g? Mirrors the read
+         policy on assignments -- minus the enrolment check, which the list
+         cannot see. */
+      function assignmentIsForGrade(a, g) {
+        if (!a.grades || !a.grades.length) return true;
+        return a.grades.indexOf(Number(g)) !== -1;
+      }
+
       function renderAssignAdmin() {
         var el = document.getElementById('assignAdmin');
-        var list = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
-        list.sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
-        if (!list.length) { el.innerHTML = '<li class="tla-empty">Няма задания.</li>'; return; }
+        var all = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
+        all.sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
+
+        var list = all.filter(function (a) {
+          if (filters.assignGrade !== '' && !assignmentIsForGrade(a, filters.assignGrade)) return false;
+          if (filters.assignSubject === '') return true;
+          if (filters.assignSubject === 'none') return !a.subject_id;
+          return a.subject_id === filters.assignSubject;
+        });
+
+        document.getElementById('assignCount').textContent = list.length + ' от ' + all.length;
+
+        if (!list.length) {
+          el.innerHTML = '<li class="tla-empty">' +
+            (all.length ? 'Няма задания по този филтър.' : 'Няма задания.') + '</li>';
+          return;
+        }
         el.innerHTML = list.map(function (a) {
           return '<li class="tla-item">' +
             '<div class="tla-item__main">' +
@@ -1101,8 +1227,43 @@
                 (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span> ' +
               '<span class="tla-item__title">' + esc(a.title) + '</span>' +
               '<div class="tla-item__meta">' + esc(a.slug) + ' · ' +
+                esc(subjectName(a.subject_id)) + ' · ' +
+                esc(TLA.gradesLabel(a.grades)) + ' · ' +
                 esc(a.url || 'без адрес') + ' · ' +
                 (a.published ? 'публикувано' : 'скрито') + '</div>' +
+              '<details class="tla-help" style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
+                '<summary>Клас и предмет</summary>' +
+                '<label class="tla-check tla-check--all">' +
+                  '<input type="checkbox" data-all-grades="' + esc(a.id) + '"' +
+                    (!a.grades || !a.grades.length ? ' checked' : '') + ' /> ' +
+                  'За всички класове' +
+                '</label>' +
+                '<div class="tla-gradegrid" data-grades-for="' + esc(a.id) + '">' +
+                  TLA.GRADES.map(function (g) {
+                    return '<label class="tla-check">' +
+                      '<input type="checkbox" data-grade="' + esc(a.id) + '" value="' + g + '"' +
+                        (a.grades && a.grades.indexOf(g) !== -1 ? ' checked' : '') +
+                        (!a.grades || !a.grades.length ? ' disabled' : '') + ' /> ' +
+                      esc(TLA.gradeLabel(g)) +
+                    '</label>';
+                  }).join('') +
+                '</div>' +
+                '<div class="tla-pickrow">' +
+                  '<select class="tla-sel" data-subject="' + esc(a.id) + '" aria-label="Предмет">' +
+                    '<option value=""' + (a.subject_id ? '' : ' selected') + '>без предмет</option>' +
+                    state.subjects.map(function (sb) {
+                      return '<option value="' + esc(sb.id) + '"' +
+                        (sb.id === a.subject_id ? ' selected' : '') + '>' +
+                        esc(sb.name) + '</option>';
+                    }).join('') +
+                  '</select>' +
+                  '<button type="button" class="tla-btn tla-btn--sm" data-scope-save="' +
+                    esc(a.id) + '">Запази</button>' +
+                '</div>' +
+                '<p class="tla-muted" style="margin:0.5rem 0 0;">' +
+                  'Без предмет заданието стига до всеки в избрания клас. С предмет ' +
+                  'го виждат само записаните в него.</p>' +
+              '</details>' +
               /* The address lives in the database, so renaming a file in the
                  repository leaves the old one behind. Editing it here beats
                  an SQL statement in the Supabase console. */
@@ -1125,7 +1286,49 @@
         }).join('');
       }
 
+      document.getElementById('assignAdmin').addEventListener('change', function (e) {
+        var allBox = e.target.closest('[data-all-grades]');
+        if (!allBox) return;
+        var id = allBox.getAttribute('data-all-grades');
+        var grid = document.querySelector('[data-grades-for="' + id + '"]');
+        Array.prototype.forEach.call(grid.querySelectorAll('input'), function (box) {
+          box.disabled = allBox.checked;
+          if (allBox.checked) box.checked = false;
+        });
+      });
+
       document.getElementById('assignAdmin').addEventListener('click', async function (e) {
+        var scopeBtn = e.target.closest('[data-scope-save]');
+        if (scopeBtn) {
+          clearMsgs();
+          var aid = scopeBtn.getAttribute('data-scope-save');
+          var allBox = document.querySelector('[data-all-grades="' + aid + '"]');
+          var picked = Array.prototype.filter.call(
+            document.querySelectorAll('[data-grade="' + aid + '"]'),
+            function (b) { return b.checked; }
+          ).map(function (b) { return Number(b.value); });
+
+          /* An empty array would match nobody and read as a mistake, so an
+             assignment for no class at all is refused. */
+          if (!allBox.checked && !picked.length) {
+            say('err', 'Изберете поне един клас или отметнете „За всички класове“.');
+            return;
+          }
+          var subjSel = document.querySelector('[data-subject="' + aid + '"]');
+          scopeBtn.disabled = true;
+          var upd = await TLA.client.from('assignments').update({
+            grades: allBox.checked ? null : picked,
+            subject_id: subjSel.value || null
+          }).eq('id', aid);
+          scopeBtn.disabled = false;
+          if (upd.error) { say('err', upd.error.message); return; }
+          say('ok', 'Записано: ' + (allBox.checked ? 'всички класове' : TLA.gradesLabel(picked)) +
+                    ' · ' + (subjSel.value ? subjSel.options[subjSel.selectedIndex].text : 'без предмет') + '.');
+          await loadAssignments();
+          await loadCalendar();
+          return;
+        }
+
         var saveBtn = e.target.closest('[data-url-save]');
         if (saveBtn) {
           clearMsgs();
@@ -1154,6 +1357,22 @@
       });
 
       /* ---- loaders ---- */
+      async function loadSubjects() {
+        try {
+          state.subjects = await TLA.listSubjects();
+        } catch (err) {
+          /* The subjects table only exists once schema-v2.sql has been run.
+             Without it the panel still works, just without a subject. */
+          state.subjects = [];
+        }
+        var sel = document.getElementById('assignSubjFilter');
+        sel.innerHTML = '<option value="">всички</option>' +
+          state.subjects.map(function (sb) {
+            return '<option value="' + esc(sb.id) + '">' + esc(sb.name) + '</option>';
+          }).join('') +
+          '<option value="none">без предмет</option>';
+      }
+
       async function loadAssignments() {
         var list = await TLA.listAssignments();
         state.assignments = {};
@@ -1163,7 +1382,7 @@
 
       async function loadRoster() {
         var res = await TLA.client.from('profiles')
-          .select('id, full_name, role, active, created_at')
+          .select('id, full_name, role, active, created_at, grade_at_entry, entry_school_year, grade_set_at')
           .order('role', { ascending: true })
           .order('full_name', { ascending: true });
         if (res.error) { say('err', res.error.message); return; }
@@ -1182,12 +1401,37 @@
         renderAttempts();
       }
 
+      function fillGradeSelects() {
+        document.getElementById('nuGrade').innerHTML = gradeOptions('', 'изберете…');
+        ['rosterGradeFilter', 'assignGradeFilter', 'calGradeFilter'].forEach(function (id) {
+          var sel = document.getElementById(id);
+          var keep = sel.value;
+          sel.innerHTML = gradeOptions(keep, 'всички');
+          sel.value = keep;
+        });
+      }
+
+      document.getElementById('rosterGradeFilter').addEventListener('change', function () {
+        filters.rosterGrade = this.value; renderRoster();
+      });
+      document.getElementById('assignGradeFilter').addEventListener('change', function () {
+        filters.assignGrade = this.value; renderAssignAdmin();
+      });
+      document.getElementById('assignSubjFilter').addEventListener('change', function () {
+        filters.assignSubject = this.value; renderAssignAdmin();
+      });
+      document.getElementById('calGradeFilter').addEventListener('change', async function () {
+        filters.calGrade = this.value; await loadCalendar();
+      });
+
       (async function () {
         if (!TLA.isConfigured()) { say('err', TLA.notConfiguredMessage()); return; }
         var auth = await TLA.requireAuth({ role: 'teacher' });
         if (!auth) return;
         document.getElementById('whoami').textContent =
           (auth.profile && auth.profile.full_name) || auth.session.user.email;
+        fillGradeSelects();
+        await loadSubjects();
         await loadAssignments();
         await loadCalendar();
         await loadRoster();

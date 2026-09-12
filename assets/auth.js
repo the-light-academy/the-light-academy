@@ -71,15 +71,16 @@
 
     /* ---- profile -------------------------------------------------- */
 
-    /* Returns { id, full_name, role, active } or null.
-       RLS means a student can only ever read their own row here. */
+    /* Returns { id, full_name, role, active, grade_at_entry,
+       entry_school_year } or null. RLS means a student can only ever read
+       their own row here. */
     getProfile: async function () {
       if (!client) return null;
       var session = await TLA.getSession();
       if (!session) return null;
       var res = await client
         .from('profiles')
-        .select('id, full_name, role, active')
+        .select('id, full_name, role, active, grade_at_entry, entry_school_year')
         .eq('id', session.user.id)
         .maybeSingle();
       if (res.error) return null;
@@ -113,15 +114,69 @@
       return { session: session, profile: profile };
     },
 
+    /* ---- school year and grade -------------------------------------
+       The same arithmetic as school_year_of() / current_grade() in
+       supabase/schema-v2.sql, repeated here only so a page can print a
+       class without a round trip. The database is the one that decides
+       what a student may actually see; this is for labels. */
+
+    /* The school year turns over on 1 September. 2026 means 2026/27. */
+    schoolYearOf: function (d) {
+      d = d || new Date();
+      return d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1;
+    },
+
+    currentSchoolYear: function () { return TLA.schoolYearOf(new Date()); },
+
+    /* A profile stores the class it was entered in and the year that was;
+       the current class follows from those two. null when no class is set. */
+    currentGrade: function (profile) {
+      if (!profile) return null;
+      var g = profile.grade_at_entry, y = profile.entry_school_year;
+      if (g === null || g === undefined || y === null || y === undefined) return null;
+      return g + (TLA.currentSchoolYear() - y);
+    },
+
+    /* -1 and 0 are preschool and must never reach the screen as numbers. */
+    gradeLabel: function (g) {
+      if (g === null || g === undefined || g === '') return 'Без клас';
+      g = Number(g);
+      if (g === -1) return 'Предучилищна (5 г.)';
+      if (g === 0) return 'Предучилищна (6 г.)';
+      if (g >= 1 && g <= 12) return g + '. клас';
+      return 'Завършил';
+    },
+
+    /* Every class, in the order they belong in a dropdown. */
+    GRADES: [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+
+    /* Which classes an assignment is for, as text. null means all. */
+    gradesLabel: function (grades) {
+      if (!grades || !grades.length) return 'всички класове';
+      return grades.slice().sort(function (a, b) { return a - b; })
+        .map(TLA.gradeLabel).join(', ');
+    },
+
     /* ---- data ----------------------------------------------------- */
 
     listAssignments: async function () {
       if (!client) return [];
       var res = await client
         .from('assignments')
-        .select('id, slug, title, kind, url, max_points, published, due_at, sort_order')
+        .select('id, slug, title, kind, url, max_points, published, due_at, sort_order, week, subject_id, grades')
         .order('sort_order', { ascending: true })
         .order('title', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    listSubjects: async function () {
+      if (!client) return [];
+      var res = await client
+        .from('subjects')
+        .select('id, slug, name, active, sort_order')
+        .order('sort_order', { ascending: true })
+        .order('name', { ascending: true });
       if (res.error) throw res.error;
       return res.data || [];
     },

@@ -39,6 +39,15 @@ function corsHeaders(origin: string | null) {
   };
 }
 
+/* The school year turns over on 1 September; 2026 means 2026/27. The same
+   rule as school_year_of() in supabase/schema-v2.sql. Deno runs in UTC, and
+   the first hours of 1 September in Sofia are still 31 August in UTC, so the
+   date is read in Sofia time rather than the server's. */
+function schoolYearOf(d: Date): number {
+  const sofia = new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Sofia' }));
+  return sofia.getMonth() >= 8 ? sofia.getFullYear() : sofia.getFullYear() - 1;
+}
+
 function json(body: unknown, status: number, origin: string | null) {
   return new Response(JSON.stringify(body), {
     status,
@@ -90,18 +99,38 @@ Deno.serve(async (req: Request) => {
     const password = String(body.password || '');
     const fullName = String(body.full_name || '').trim();
 
+    // The class the student is entered in. -1 and 0 are the two preschool
+    // years. The database stores this together with the school year it was
+    // set in, and works out the current class from the pair, so this value
+    // never has to be migrated in September.
+    const rawGrade = body.grade;
+    const grade =
+      rawGrade === null || rawGrade === undefined || rawGrade === ''
+        ? null
+        : Number(rawGrade);
+
     if (!email || !email.includes('@')) {
       return json({ error: 'Невалиден имейл.' }, 400, origin);
     }
     if (password.length < 8) {
       return json({ error: 'Паролата трябва да е поне 8 знака.' }, 400, origin);
     }
+    if (grade === null) {
+      return json({ error: 'Изберете клас.' }, 400, origin);
+    }
+    if (!Number.isInteger(grade) || grade < -1 || grade > 12) {
+      return json({ error: 'Класът трябва да е между предучилищна и 12.' }, 400, origin);
+    }
 
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
       email,
       password,
       email_confirm: true,                     // teacher-issued, no confirmation mail
-      user_metadata: { full_name: fullName, role: 'student' },
+      // handle_new_user() reads full_name and grade out of this and makes
+      // the profile row, then enrols the student in every subject marked
+      // auto_enroll. role is hard-coded to 'student' in the trigger and is
+      // passed here only so the metadata says what it is.
+      user_metadata: { full_name: fullName, role: 'student', grade: String(grade) },
     });
 
     if (createErr) {
@@ -112,12 +141,34 @@ Deno.serve(async (req: Request) => {
     }
 
     // The on_auth_user_created trigger has already made the profile row;
-    // this just makes sure the name landed even if metadata was empty.
+    // this just makes sure the name and the class landed even if the
+    // metadata did not survive.
+    const schoolYear = schoolYearOf(new Date());
     await admin.from('profiles')
-      .update({ full_name: fullName, role: 'student', active: true })
+      .update({
+        full_name: fullName,
+        role: 'student',
+        active: true,
+        grade_at_entry: grade,
+        entry_school_year: schoolYear,
+        grade_set_at: new Date().toISOString(),
+      })
       .eq('id', created.user!.id);
 
-    return json({ ok: true, id: created.user!.id }, 200, origin);
+    // And the same for the enrolments, in case the subject was added after
+    // the trigger was last replaced.
+    const { data: autoSubjects } = await admin
+      .from('subjects').select('id').eq('active', true).eq('auto_enroll', true);
+    if (autoSubjects?.length) {
+      await admin.from('enrollments').upsert(
+        autoSubjects.map((s: { id: string }) => ({
+          profile_id: created.user!.id, subject_id: s.id,
+        })),
+        { onConflict: 'profile_id,subject_id', ignoreDuplicates: true },
+      );
+    }
+
+    return json({ ok: true, id: created.user!.id, grade }, 200, origin);
   }
 
   // ---- delete -------------------------------------------------------

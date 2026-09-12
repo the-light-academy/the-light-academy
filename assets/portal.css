@@ -117,6 +117,52 @@ footer a { color: var(--sun); text-decoration: none; }
 .tla-btn--sm { min-height: 34px; padding: 0.3rem 0.8rem; font-size: 0.82rem; }
 .tla-btn--full { width: 100%; }
 
+/* ── FILTERS AND PICKERS (teacher dashboard) ──
+   A class filter sits above three of the four panels, and the assignment
+   list needs a way to say "this one is for 6th and 7th". Both are plain
+   controls rather than a component, because there are only two of them. */
+.tla-filters {
+  display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1rem;
+}
+.tla-filters > label { font-size: 0.85rem; font-weight: 800; color: var(--mid); }
+.tla-filters select, .tla-sel {
+  font: inherit; font-size: 0.88rem; color: var(--dark); min-height: 38px;
+  padding: 0.4rem 0.7rem; border: 1px solid rgba(58,46,31,0.16);
+  border-radius: 10px; background: #fff; max-width: 100%;
+}
+.tla-filters select:focus, .tla-sel:focus {
+  outline: 3px solid rgba(247,173,25,0.35); outline-offset: 1px; border-color: var(--sun);
+}
+.tla-filters__count { font-size: 0.85rem; color: var(--mid); margin-left: auto; }
+
+/* the class cell in the roster: the current class, and a way to change it */
+.tla-setgrade { display: inline-flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+.tla-setgrade select { min-width: 9rem; }
+.tla-gradeedit { margin-top: 0.15rem; }
+.tla-gradeedit > summary {
+  font-size: 0.78rem; font-weight: 700; color: var(--mid);
+  cursor: pointer; list-style: none; width: max-content;
+}
+.tla-gradeedit > summary::-webkit-details-marker { display: none; }
+.tla-gradeedit > summary::before { content: '✎ '; }
+.tla-gradeedit > summary:hover { color: var(--sun-dark); }
+.tla-gradeedit[open] .tla-setgrade { margin-top: 0.4rem; }
+
+/* the grades an assignment is for */
+.tla-gradegrid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.3rem 0.8rem; margin: 0.6rem 0;
+}
+.tla-check {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-size: 0.88rem; color: var(--dark); cursor: pointer;
+  padding: 0.25rem 0; min-height: 32px;
+}
+.tla-check input { width: 18px; height: 18px; accent-color: var(--sun); flex: none; }
+.tla-check--all { font-weight: 800; }
+.tla-pickrow { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.6rem; }
+
 /* ── MESSAGES ── */
 .tla-msg { padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; }
 .tla-msg[hidden] { display: none; }
@@ -132,7 +178,7 @@ footer a { color: var(--sun); text-decoration: none; }
 .tla-item__title { font-weight: 800; color: var(--dark); }
 .tla-item__meta { font-size: 0.82rem; color: var(--mid); margin-top: 0.2rem; }
 
-.tla-badge { display: inline-block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+.tla-badge { display: inline-block; white-space: nowrap; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
   padding: 0.2rem 0.55rem; border-radius: 999px; background: var(--sun-light); color: var(--sun-dark); }
 .tla-badge--exam { background: #E7EDFA; color: #26406F; }
 .tla-badge--homework { background: #E9F7EF; color: #1D6B41; }
@@ -363,6 +409,15 @@ body.tlp-page { background: #FFFDF7; }
 }
 .tlp__hello { font-size: clamp(1.2rem, 2.6vw, 1.6rem); font-weight: 800; color: var(--tlp-navy); margin: 0; }
 .tlp__hello-sub { font-size: 0.95rem; color: var(--tlp-ink-soft); margin: 0.25rem 0 0; }
+/* The student's class, next to their name. It is worked out from the year
+   they were entered, so it needs no maintenance in September. */
+.tlp__grade {
+  display: inline-block; margin-left: 0.6rem; vertical-align: middle;
+  font-size: 0.78rem; font-weight: 800; letter-spacing: 0.01em;
+  color: var(--tlp-navy); background: rgba(247,173,25,0.22);
+  border: 1px solid rgba(247,173,25,0.5);
+  border-radius: 999px; padding: 0.18rem 0.65rem;
+}
 
 .tlp__ring { position: relative; width: 104px; height: 104px; flex-shrink: 0; }
 .tlp__ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }

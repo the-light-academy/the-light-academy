@@ -75,7 +75,7 @@
       <!-- greeting + progress ring -->
       <section class="tlp__band">
         <div>
-          <p class="tlp__hello" id="hello">Здравей 👋</p>
+          <p class="tlp__hello" id="hello">Здравей 👋<span class="tlp__grade" id="helloGrade" hidden></span></p>
           <p class="tlp__hello-sub" id="helloSub">Зареждане…</p>
         </div>
         <div>
@@ -319,10 +319,24 @@
 
       /* ---- the four figures ------------------------------------------ */
 
+      var myGrade = null;
+
       function renderHeader(profile, session) {
         var name = (profile && profile.full_name) || (session && session.user.email) || '';
         var first = String(name).trim().split(/\s+/)[0] || name;
-        $('hello').textContent = first ? ('Здравей, ' + first + ' 👋') : 'Здравей 👋';
+        var hello = $('hello');
+        var badge = $('helloGrade');
+        hello.firstChild.nodeValue = first ? ('Здравей, ' + first + ' 👋') : 'Здравей 👋';
+
+        /* The class is worked out from the year the student was entered, so
+           it is right on its own every September without anyone touching it. */
+        myGrade = TLA.currentGrade(profile);
+        if (myGrade !== null && myGrade >= -1 && myGrade <= 12) {
+          badge.textContent = TLA.gradeLabel(myGrade);
+          badge.hidden = false;
+        } else {
+          badge.hidden = true;
+        }
       }
 
       function renderStats(published) {
@@ -339,8 +353,15 @@
         /* The line under the greeting says something true for the state the
            student is actually in. On day one that matters more than a
            dashboard: nothing here is broken, it simply has not started. */
+        /* A student outside 1-12 matches no assignment at all, and an empty
+           dashboard with no reason given looks broken. Say which of the two
+           it is: no class set yet, or school finished. */
+        var finished = (myGrade !== null && myGrade > 12);
+        var noClass = (myGrade === null || myGrade < -1);
         $('helloSub').textContent =
-          !published.length ? 'Профилът ти е готов. Тук ще се появят задачите и резултатите ти.'
+          (finished && !published.length) ? 'Завършил си 12. клас — тук вече няма задачи за теб. Резултатите ти остават.'
+          : (noClass && !published.length) ? 'Класът ти още не е зададен, затова тук няма задачи. Кажи на преподавателя си.'
+          : !published.length ? 'Профилът ти е готов. Тук ще се появят задачите и резултатите ти.'
           : !attempts.length ? 'Започни от „Домашни“ или „Пробни изпити“ — резултатите се записват тук.'
           : 'Ето докъде стигна подготовката ти.';
 
