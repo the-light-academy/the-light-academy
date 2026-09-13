@@ -1327,6 +1327,21 @@
       margin-bottom: 0.75rem;
     }
 .about-text p { color: var(--mid); margin-bottom: 0.9rem; }
+    /* Последният ред е подпис, не абзац: името е с ръкописния шрифт на
+       заглавието, само по-едро и в цвета на марката. */
+    .about-signoff { margin-top: 1.35rem; }
+    .about-signature {
+      display: inline-block;
+      margin-top: 0.2rem;
+      font-family: 'Bad Script', cursive;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+      line-height: 1.25;
+      /* --sun-dark мери 3,9:1 върху кремавото. За едър текст стига, но
+         ръкописният шрифт е с тънки щрихи, затова тук е с един тон
+         по-тъмно злато — 5,3:1, колкото и абзаците над него. */
+      color: #8A6015;
+    }
       .about-title {
         font-family: 'Bad Script', cursive;
         font-weight: 400;
@@ -2137,7 +2152,7 @@
 
     <div class="hero-glass-card">
       <div class="hero-card-shine" aria-hidden="true"></div>
-      <p class="hero-eyebrow"><span class="hero-eyebrow-dash" aria-hidden="true"></span><span data-i18n="hero.eyebrow">БУТИКОВА АКАДЕМИЯ · ЛОЗЕНЕЦ</span></p>
+      <p class="hero-eyebrow"><span class="hero-eyebrow-dash" aria-hidden="true"></span><span data-i18n="hero.eyebrow">АКАДЕМИЯ · ЛОЗЕНЕЦ</span></p>
       <h1 data-i18n="hero.title">The Light<br>Academy</h1>
       <p data-i18n="hero.subtitle">Защото образованието изисква нов подход</p>
       <div class="hero-cta">
@@ -2201,9 +2216,11 @@
         <span class="about-eyebrow" data-i18n="about.eyebrow">За нас</span>
         <p class="section-title about-title" data-i18n="about.title">The Light Academy</p>
         <div class="divider"></div>
-        <p data-i18n="about.text1">🌟 Бутиков образователен център в кв. Лозенец, София, който предлага курсове и индивидуални уроци за деца.</p>
-        <p data-i18n="about.text2">✨ Нашите малки групи означават, че всяко дете получава вниманието, което заслужава.</p>
-        <p data-i18n="about.text3">💛Основан с любов и посвещение към детското образование, The Light Academy е място, където децата се вдъхновяват, учат и развиват своя потенциал.</p>
+        <p data-i18n="about.text1">Ние сме екип, който вярва в децата, в техния потенциал и в това, че правилният подход може да промени начина, по който те учат.</p>
+        <p data-i18n="about.text2">Вярваме в любопитството, в малките крачки напред и в това, че ученето може да бъде истински интересно.</p>
+        <p data-i18n="about.text3">Посвещаваме се на това да познаваме всяко дете, да виждаме неговия напредък и да му помагаме да стигне по-далеч.</p>
+        <p data-i18n="about.text4">Не просто преподаваме.<br>Изграждаме увереност, знания и желание да продължаваш напред.</p>
+        <p class="about-signoff" data-i18n="about.signoff">Това сме ние.<br><span class="about-signature">The Light Academy</span></p>
         <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
           <a href="#contact" class="btn btn-primary" data-i18n="about.btn">Свържете се с нас</a>
           <a href="our_star_team.html" class="btn btn-brown"><i class="fa-solid fa-star"></i> Нашият екип</a>
@@ -2717,7 +2734,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.weekly": "Weekly schedule",
         "hero.title": "The Light<br>Academy",
         "hero.subtitle": "Because education requires a new approach",
-        "hero.eyebrow": "BOUTIQUE ACADEMY · LOZENETS",
+        "hero.eyebrow": "ACADEMY · LOZENETS",
         "hero.footerLeft": "Lozenets, Sofia",
         "hero.footerRight": "See more ↓",
         "hero.scrollCue": "See more",
@@ -2782,9 +2799,11 @@ The Light Academy прави впечатление с малките групи
         "about.photoPlaceholder": "Calm and cosy atmosphere",
         "about.eyebrow": "About Us",
         "about.title": "A Place to Learn & Grow",
-        "about.text1": "The Light Academy is a creative educational centre for children in Sofia. We believe that learning should be joyful, personal, and full of discovery.",
-        "about.text2": "Our small groups mean every child gets the attention they deserve. Whether your child needs help with maths, wants to write their first story, explore a role on stage, or paint their world — we have a class for them.",
-        "about.text3": "Founded with love and dedication to childhood education, Light Academy is a place where children feel safe, inspired, and proud of what they create.",
+        "about.text1": "We are a team that believes in children, in their potential, and in the idea that the right approach can change the way they learn.",
+        "about.text2": "We believe in curiosity, in small steps forward, and in learning that can be genuinely interesting.",
+        "about.text3": "We are dedicated to knowing every child, seeing their progress, and helping them go further.",
+        "about.text4": "We do not simply teach.<br>We build confidence, knowledge and the wish to keep going.",
+        "about.signoff": "This is us.<br><span class=\"about-signature\">The Light Academy</span>",
         "about.btn": "Get in Touch",
         "updates.title": "Latest News & Updates",
         "updates.date.nvo": "August 2026",
@@ -2858,7 +2877,7 @@ The Light Academy прави впечатление с малките групи
         "navdrop.weekly": "График",
         "hero.title": "The Light<br>Academy",
         "hero.subtitle": "Защото образованието изисква нов подход",
-        "hero.eyebrow": "БУТИКОВА АКАДЕМИЯ · ЛОЗЕНЕЦ",
+        "hero.eyebrow": "АКАДЕМИЯ · ЛОЗЕНЕЦ",
         "hero.footerLeft": "Лозенец, София",
         "hero.footerRight": "Вижте още ↓",
         "hero.scrollCue": "Вижте още",
@@ -2923,9 +2942,11 @@ The Light Academy прави впечатление с малките групи
         "about.photoPlaceholder": "Уютна и спокойна атмосфера",
         "about.eyebrow": "За нас",
         "about.title": "The Light Academy",
-        "about.text1": "🌟 Бутиков образователен център в кв. Лозенец, София, който предлага курсове и индивидуални уроци за деца.",
-        "about.text2": "✨ Нашите малки групи означават, че всяко дете получава вниманието, което заслужава.",
-        "about.text3": "💛Основан с любов и посвещение към детското образование, The Light Academy е място, където децата се вдъхновяват, учат и развиват своя потенциал.",
+        "about.text1": "Ние сме екип, който вярва в децата, в техния потенциал и в това, че правилният подход може да промени начина, по който те учат.",
+        "about.text2": "Вярваме в любопитството, в малките крачки напред и в това, че ученето може да бъде истински интересно.",
+        "about.text3": "Посвещаваме се на това да познаваме всяко дете, да виждаме неговия напредък и да му помагаме да стигне по-далеч.",
+        "about.text4": "Не просто преподаваме.<br>Изграждаме увереност, знания и желание да продължаваш напред.",
+        "about.signoff": "Това сме ние.<br><span class=\"about-signature\">The Light Academy</span>",
         "about.btn": "Свържете се с нас",
         "updates.title": "Най-актуалното при нас",
         "updates.date.nvo": "Август 2026",
