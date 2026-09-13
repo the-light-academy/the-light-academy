@@ -548,6 +548,9 @@ body.tlp-page { background: #FFFDF7; }
 .tlp__chip--done { background: var(--tlp-good-wash); color: var(--tlp-good); }
 .tlp__chip--ai   { background: #EDE7FA; color: #422873; }
 .tlp__chip--late { background: var(--tlp-bad-wash); color: var(--tlp-bad); }
+/* какъв вид е заданието, до заглавието на групата резултати */
+.tlp__chip--homework { background: #E9F7EF; color: #1D6B41; }
+.tlp__chip--exam     { background: #E7EDFA; color: #26406F; }
 
 .tlp__note { font-size: 0.88rem; line-height: 1.6; color: var(--tlp-ink-soft); margin: 0.9rem 0 0; }
 
@@ -575,6 +578,45 @@ body.tlp-page { background: #FFFDF7; }
 .tlp__readout-v { font-size: 2rem; font-weight: 800; color: var(--tlp-good); line-height: 1; margin: 0; }
 .tlp__readout-v span { font-size: 1rem; }
 .tlp__readout-k { font-size: 0.85rem; line-height: 1.5; color: var(--tlp-ink-soft); margin: 0.45rem 0 0; }
+
+/* Опитите по задание: заглавие с шеврон, а редовете под него се отварят.
+   Същата механика като темите в календара — grid-template-rows от 0fr до
+   1fr — плюс visibility, за да не се стига с таб до бутоните в затворена
+   група. */
+.tlp__grp {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); overflow: hidden;
+}
+.tlp__grp + .tlp__grp { margin-top: 0.6rem; }
+.tlp__grp-head {
+  width: 100%; display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+  padding: 0.9rem 1.05rem; background: none; border: none; cursor: pointer;
+  font: inherit; text-align: left; min-height: 44px;
+}
+.tlp__grp-head:hover { background: #FFFBF2; }
+.tlp__grp-head:focus-visible { outline: 2px solid var(--tlp-accent-deep); outline-offset: -2px; }
+.tlp__grp-t { flex: 1 1 220px; min-width: 0; font-weight: 800; color: var(--tlp-navy); }
+.tlp__grp-m { font-size: 0.82rem; color: var(--tlp-ink-soft); white-space: nowrap; }
+.tlp__grp-chev {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--tlp-accent-wash); color: var(--tlp-accent-deep);
+  font-size: 0.7rem; transition: transform 0.25s ease;
+}
+.tlp__grp.is-open .tlp__grp-chev {
+  transform: rotate(180deg); background: var(--tlp-accent); color: #2D1F0E;
+}
+.tlp__grp-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.tlp__grp.is-open .tlp__grp-wrap { grid-template-rows: 1fr; }
+.tlp__grp-reveal {
+  overflow: hidden; visibility: hidden; transition: visibility 0s linear 0.3s;
+}
+.tlp__grp.is-open .tlp__grp-reveal { visibility: visible; transition-delay: 0s; }
+.tlp__grp-body { padding: 0 0.65rem 0.65rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tlp__grp-wrap, .tlp__grp-chev, .tlp__grp-reveal { transition: none; }
+}
 
 /* one attempt in the list under the chart */
 .tlp__res {
@@ -976,6 +1018,7 @@ body.tlp-space { background: #05070F; }
 
 /* Headings and captions that sit on the sky itself, not in a card. */
 .tlp-space .tlp__h1,
+.tlp-space .tlp__h2,
 .tlp-space .tla-p__title { color: #F1F5FF; }
 .tlp-space .tla-p__sub,
 .tlp-space .tlp__login-head .tlp__hello-sub,

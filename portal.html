@@ -527,23 +527,69 @@
           '</div></div></div>';
         }
 
-        html += '<h2 class="tlp__h2">Всички опити</h2>';
-        html += attempts.map(function (t) {
-          var a = byId[t.assignment_id];
-          var pct = pctOf(t);
-          return '<div class="tlp__res">' +
-            '<div class="tlp__res-main">' +
-              '<div class="tlp__res-t">' + esc(a ? a.title : 'Задание') + '</div>' +
-              '<div class="tlp__res-m">' + esc(TLA.formatDate(t.submitted_at)) + '</div>' +
-            '</div>' +
-            '<div class="tlp__res-score">' +
-              (t.total_score != null ? esc(t.total_score) : '—') +
-              (a && a.max_points ? ' / ' + esc(a.max_points) : '') +
-              (pct != null ? ' · ' + pct + '%' : '') +
-            '</div>' +
-            statusChip(t) +
-            '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
-              esc(t.id) + '">Преглед</button>' +
+        /* Опитите се четат по задание, не като една дълга лента: пробната
+           матура, решена пет пъти, е една история с пет реда в нея, а не
+           пет отделни реда между домашните. `attempts` идва от най-новия
+           към най-стария, така че и групите, и редовете в тях пазят този
+           ред. */
+        var groups = [], byAssignment = {};
+        attempts.forEach(function (t) {
+          var key = String(t.assignment_id);
+          if (!byAssignment[key]) {
+            byAssignment[key] = { a: byId[t.assignment_id], items: [] };
+            groups.push(byAssignment[key]);
+          }
+          byAssignment[key].items.push(t);
+        });
+
+        html += '<h2 class="tlp__h2">Резултати по задание</h2>';
+        html += groups.map(function (g, gi) {
+          var a = g.a;
+          var n = g.items.length;
+          var best = null;
+          g.items.forEach(function (t) {
+            var p = settled(t) ? pctOf(t) : null;
+            if (p != null && (best == null || p > best)) best = p;
+          });
+
+          /* Най-новото задание е отворено, останалите чакат да ги отвориш --
+             иначе първото, което вижда ученикът, е списък от затворени
+             редове. */
+          var open = (gi === 0);
+          var meta = n + (n === 1 ? ' опит' : ' опита') +
+            (best != null ? ' · най-добър ' + best + '%' : '') +
+            ' · последен ' + esc(shortDate(g.items[0].submitted_at));
+
+          return '<div class="tlp__grp' + (open ? ' is-open' : '') + '">' +
+            '<button type="button" class="tlp__grp-head" aria-expanded="' + open + '">' +
+              (a ? '<span class="tlp__chip tlp__chip--' + esc(a.kind) + '">' +
+                    (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' : '') +
+              '<span class="tlp__grp-t">' + esc(a ? a.title : 'Задание') + '</span>' +
+              '<span class="tlp__grp-m">' + meta + '</span>' +
+              '<span class="tlp__grp-chev" aria-hidden="true">▾</span>' +
+            '</button>' +
+            '<div class="tlp__grp-wrap"><div class="tlp__grp-reveal">' +
+              '<div class="tlp__grp-body">' +
+                g.items.map(function (t, i) {
+                  var pct = pctOf(t);
+                  return '<div class="tlp__res">' +
+                    '<div class="tlp__res-main">' +
+                      '<div class="tlp__res-t">' +
+                        (n > 1 ? 'Опит ' + (n - i) : 'Решено') + '</div>' +
+                      '<div class="tlp__res-m">' + esc(TLA.formatDate(t.submitted_at)) + '</div>' +
+                    '</div>' +
+                    '<div class="tlp__res-score">' +
+                      (t.total_score != null ? esc(t.total_score) : '—') +
+                      (a && a.max_points ? ' / ' + esc(a.max_points) : '') +
+                      (pct != null ? ' · ' + pct + '%' : '') +
+                    '</div>' +
+                    statusChip(t) +
+                    '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-review="' +
+                      esc(t.id) + '">Преглед</button>' +
+                  '</div>';
+                }).join('') +
+              '</div>' +
+            '</div></div>' +
           '</div>';
         }).join('');
 
@@ -775,6 +821,13 @@
       });
 
       $('resBody').addEventListener('click', function (e) {
+        var head = e.target.closest('.tlp__grp-head');
+        if (head) {
+          var card = head.closest('.tlp__grp');
+          var open = card.classList.toggle('is-open');
+          head.setAttribute('aria-expanded', String(open));
+          return;
+        }
         var btn = e.target.closest('[data-review]');
         if (btn) openReview(btn.getAttribute('data-review'));
       });
