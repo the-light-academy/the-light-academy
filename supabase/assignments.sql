@@ -12,6 +12,33 @@
 -- Изисква supabase/schema-v2.sql да е минал (заради subjects и grades).
 -- =====================================================================
 
+-- 5. клас, седмица 1 — начален преговор: естествени числа.
+-- Десет задачи с избор, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w01',
+   'Домашно — Начален преговор: естествени числа',
+   'homework',
+   'homework_5_w01.html',
+   10,
+   false,
+   380,
+   1,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
 -- 6. клас, седмица 1 — начален преговор: обикновени и десетични дроби.
 -- 45 отговора в две части (23 + 22), всеки по една точка.
 insert into public.assignments
@@ -96,4 +123,4 @@ on conflict (slug) do update set
 -- Провери какво се получи:
 --   select slug, title, grades, week, max_points, published
 --     from public.assignments
---    where grades @> '{6}' order by week;
+--    where grades is not null order by grades, week;
