@@ -623,14 +623,30 @@
       }
 
       /* ---- AI анализ ---------------------------------------------------
-         The rows come from the free-text answers of the most recent attempt
-         the AI has marked. Fetched only when the tab is opened, because
-         `part2` carries the full text of every answer. */
+         Разборът вече не е само на последния опит: показват се всички
+         оценени опити, групирани по задание, точно както в „Резултати“.
+         `part2` носи целия текст на отговорите, затова се тегли чак когато
+         табът се отвори — и наведнъж за всички опити, вместо по един. */
 
       function aiTag(mark, points) {
         if (points && mark >= points) return ['good', 'вярно'];
         if (mark > 0) return ['work', 'частично'];
         return ['err', 'за преговор'];
+      }
+
+      function aiRows(rows) {
+        return '<div class="tlp__ai">' +
+          rows.map(function (r) {
+            var tag = aiTag(Number(r.mark), Number(r.points));
+            return '<div class="tlp__ai-row">' +
+              '<span class="tlp__ai-tag tlp__ai-tag--' + tag[0] + '">' + tag[1] + '</span>' +
+              '<span class="tlp__ai-txt"><b>' + esc(r.id) + '.</b> ' +
+                esc(r.aiComment || r.prompt || '') +
+                ' <b>' + esc(r.mark) + (r.points != null ? ' / ' + esc(r.points) : '') + ' т.</b>' +
+              '</span>' +
+            '</div>';
+          }).join('') +
+        '</div>';
       }
 
       async function loadAi() {
@@ -655,40 +671,83 @@
         box.innerHTML = '<p class="tlp__note">Зареждане…</p>';
         var res = await TLA.client.from('attempts')
           .select('id, assignment_id, part2, submitted_at')
-          .eq('id', marked[0].id).maybeSingle();
+          .in('id', marked.map(function (t) { return t.id; }));
         if (res.error) {
           box.innerHTML = '<p class="tlp__note">Анализът не се зареди: ' + esc(res.error.message) + '</p>';
           aiLoaded = false;
           return;
         }
 
-        var t = res.data || {};
-        var rows = (Array.isArray(t.part2) ? t.part2 : []).filter(function (r) { return r.mark != null; });
-        if (!rows.length) {
+        /* Редът идва от `marked`, който е от най-новия към най-стария --
+           заявката с .in() не обещава ред. */
+        var full = {};
+        (res.data || []).forEach(function (r) { full[r.id] = r; });
+
+        /* Номерът на опита се брои сред ВСИЧКИ опити по това задание, не
+           само сред анализираните — иначе една и съща работа излиза
+           „Опит 3“ в „Резултати“ и „Опит 2“ тук. */
+        var total = {}, seen = {}, ordinal = {};
+        attempts.forEach(function (t) {
+          var k = String(t.assignment_id);
+          total[k] = (total[k] || 0) + 1;
+        });
+        attempts.forEach(function (t) {
+          var k = String(t.assignment_id);
+          seen[k] = (seen[k] || 0) + 1;
+          ordinal[t.id] = total[k] - seen[k] + 1;
+        });
+
+        var groups = [], byAssignment = {};
+        marked.forEach(function (m) {
+          var t = full[m.id];
+          if (!t) return;
+          var rows = (Array.isArray(t.part2) ? t.part2 : [])
+            .filter(function (r) { return r.mark != null; });
+          if (!rows.length) return;          /* опит без оценени свободни отговори */
+          var key = String(t.assignment_id);
+          if (!byAssignment[key]) {
+            byAssignment[key] = { a: byId[t.assignment_id], tries: [] };
+            groups.push(byAssignment[key]);
+          }
+          byAssignment[key].tries.push({ t: t, rows: rows });
+        });
+
+        if (!groups.length) {
           box.innerHTML = empty('🤖', 'Още няма AI анализ',
-            'Последният ти опит няма оценени отговори със свободен текст.');
+            'Оценените ти опити нямат отговори със свободен текст.');
           return;
         }
 
-        var a = byId[t.assignment_id];
-        box.innerHTML =
-          '<h2 class="tlp__h2">' + esc(a ? a.title : 'Последен опит') + '</h2>' +
-          '<p class="tlp__note" style="margin-top:0;">' +
-            esc('Предадено на ' + TLA.formatDate(t.submitted_at)) + '</p>' +
-          '<div class="tlp__ai">' +
-            rows.map(function (r) {
-              var tag = aiTag(Number(r.mark), Number(r.points));
-              return '<div class="tlp__ai-row">' +
-                '<span class="tlp__ai-tag tlp__ai-tag--' + tag[0] + '">' + tag[1] + '</span>' +
-                '<span class="tlp__ai-txt"><b>' + esc(r.id) + '.</b> ' +
-                  esc(r.aiComment || r.prompt || '') +
-                  ' <b>' + esc(r.mark) + (r.points != null ? ' / ' + esc(r.points) : '') + ' т.</b>' +
-                '</span>' +
-              '</div>';
-            }).join('') +
-          '</div>' +
-          '<p class="tlp__disclaim">Тези бележки са от AI и са предварителни. ' +
-            'Преподавателят ги преглежда и може да промени точките — тогава статусът става „Оценено“.</p>';
+        box.innerHTML = groups.map(function (g, gi) {
+          var a = g.a;
+          var n = g.tries.length;
+          var open = (gi === 0);
+          var meta = n + (n === 1 ? ' опит с разбор' : ' опита с разбор') +
+            ' · последен ' + esc(shortDate(g.tries[0].t.submitted_at));
+
+          return '<div class="tlp__grp' + (open ? ' is-open' : '') + '">' +
+            '<button type="button" class="tlp__grp-head" aria-expanded="' + open + '">' +
+              (a ? '<span class="tlp__chip tlp__chip--' + esc(a.kind) + '">' +
+                    (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' : '') +
+              '<span class="tlp__grp-t">' + esc(a ? a.title : 'Задание') + '</span>' +
+              '<span class="tlp__grp-m">' + meta + '</span>' +
+              '<span class="tlp__grp-chev" aria-hidden="true">▾</span>' +
+            '</button>' +
+            '<div class="tlp__grp-wrap"><div class="tlp__grp-reveal">' +
+              '<div class="tlp__grp-body">' +
+                g.tries.map(function (o) {
+                  var many = (total[String(o.t.assignment_id)] || 1) > 1;
+                  return '<p class="tlp__ai-try">' +
+                    (many ? '<b>Опит ' + ordinal[o.t.id] + '</b> · ' : '') +
+                    esc(TLA.formatDate(o.t.submitted_at)) +
+                  '</p>' + aiRows(o.rows);
+                }).join('') +
+              '</div>' +
+            '</div></div>' +
+          '</div>';
+        }).join('') +
+        '<p class="tlp__disclaim">Тези бележки са от AI и са предварителни. ' +
+          'Преподавателят ги преглежда и може да промени точките — тогава статусът става „Оценено“.</p>';
       }
 
       /* ---- one attempt in full ---------------------------------------- */
@@ -820,17 +879,23 @@
         $('panel-res').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
-      $('resBody').addEventListener('click', function (e) {
+      /* Картите по задание са в два таба и се отварят еднакво. */
+      function toggleGroup(e) {
         var head = e.target.closest('.tlp__grp-head');
-        if (head) {
-          var card = head.closest('.tlp__grp');
-          var open = card.classList.toggle('is-open');
-          head.setAttribute('aria-expanded', String(open));
-          return;
-        }
+        if (!head) return false;
+        var card = head.closest('.tlp__grp');
+        var open = card.classList.toggle('is-open');
+        head.setAttribute('aria-expanded', String(open));
+        return true;
+      }
+
+      $('resBody').addEventListener('click', function (e) {
+        if (toggleGroup(e)) return;
         var btn = e.target.closest('[data-review]');
         if (btn) openReview(btn.getAttribute('data-review'));
       });
+
+      $('aiBody').addEventListener('click', toggleGroup);
 
       $('signOutBtn').addEventListener('click', function () { TLA.signOut(); });
 

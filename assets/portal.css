@@ -642,6 +642,15 @@ body.tlp-page { background: #FFFDF7; }
   text-transform: uppercase; color: var(--tlp-ink-soft); margin-bottom: 0.5rem; white-space: normal; }
 
 /* ── AI analysis rows ── */
+/* Заглавието на един опит вътре в картата на заданието. */
+.tlp__ai-try {
+  font-size: 0.85rem; color: var(--tlp-ink-soft);
+  margin: 0.9rem 0 0.5rem; padding-top: 0.9rem;
+  border-top: 1px dashed var(--tlp-line);
+}
+.tlp__grp-body > .tlp__ai-try:first-child { margin-top: 0.35rem; padding-top: 0; border-top: none; }
+.tlp__ai-try b { color: var(--tlp-navy); }
+
 .tlp__ai { display: grid; gap: 0.55rem; }
 .tlp__ai-row {
   display: flex; gap: 0.7rem; align-items: flex-start;
@@ -1028,7 +1037,9 @@ body.tlp-space { background: #05070F; }
 
 /* The line under a panel, and the empty state's dashed box, both stand on
    the sky rather than on a card. */
-.tlp-space .tlp__note { color: #AFBDDA; }
+.tlp-space .tlp__note,
+/* Дребният ред под AI разбора стои на самото небе, не в карта. */
+.tlp-space .tlp__disclaim { color: #AFBDDA; border-top-color: rgba(255,255,255,0.16); }
 .tlp-space .tlp__empty { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.20); }
 .tlp-space .tlp__empty-t { color: #F1F5FF; }
 .tlp-space .tlp__empty-p { color: #AFBDDA; }
