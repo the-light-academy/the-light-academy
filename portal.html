@@ -529,18 +529,8 @@
 
         /* Опитите се четат по задание, не като една дълга лента: пробната
            матура, решена пет пъти, е една история с пет реда в нея, а не
-           пет отделни реда между домашните. `attempts` идва от най-новия
-           към най-стария, така че и групите, и редовете в тях пазят този
-           ред. */
-        var groups = [], byAssignment = {};
-        attempts.forEach(function (t) {
-          var key = String(t.assignment_id);
-          if (!byAssignment[key]) {
-            byAssignment[key] = { a: byId[t.assignment_id], items: [] };
-            groups.push(byAssignment[key]);
-          }
-          byAssignment[key].items.push(t);
-        });
+           пет отделни реда между домашните. */
+        var groups = groupByAssignment(attempts);
 
         html += '<h2 class="tlp__h2">Резултати по задание</h2>';
         html += groups.map(function (g, gi) {
@@ -561,13 +551,7 @@
             ' · последен ' + esc(shortDate(g.items[0].submitted_at));
 
           return '<div class="tlp__grp' + (open ? ' is-open' : '') + '">' +
-            '<button type="button" class="tlp__grp-head" aria-expanded="' + open + '">' +
-              (a ? '<span class="tlp__chip tlp__chip--' + esc(a.kind) + '">' +
-                    (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' : '') +
-              '<span class="tlp__grp-t">' + esc(a ? a.title : 'Задание') + '</span>' +
-              '<span class="tlp__grp-m">' + meta + '</span>' +
-              '<span class="tlp__grp-chev" aria-hidden="true">▾</span>' +
-            '</button>' +
+            groupHead(a, meta, open) +
             '<div class="tlp__grp-wrap"><div class="tlp__grp-reveal">' +
               '<div class="tlp__grp-body">' +
                 g.items.map(function (t, i) {
@@ -603,6 +587,50 @@
         });
       }
 
+      /* ---- три таба, едно номериране ------------------------------------
+         Колко опита има по всяко задание и кой по ред е даден опит. Броят
+         е сред ВСИЧКИ опити по заданието, а не сред показаните в текущия
+         таб, за да не излиза една и съща работа „Опит 3“ на едно място и
+         „Опит 2“ на друго. `attempts` идва от най-новия към най-стария. */
+      function attemptOrdinals() {
+        var total = {}, seen = {}, ordinal = {};
+        attempts.forEach(function (t) {
+          var k = String(t.assignment_id);
+          total[k] = (total[k] || 0) + 1;
+        });
+        attempts.forEach(function (t) {
+          var k = String(t.assignment_id);
+          seen[k] = (seen[k] || 0) + 1;
+          ordinal[t.id] = total[k] - seen[k] + 1;
+        });
+        return { total: total, ordinal: ordinal };
+      }
+
+      /* Опитите на един таб, събрани по задание, в реда на `attempts`. */
+      function groupByAssignment(list) {
+        var groups = [], byAssignment = {};
+        list.forEach(function (t) {
+          var key = String(t.assignment_id);
+          if (!byAssignment[key]) {
+            byAssignment[key] = { a: byId[t.assignment_id], items: [] };
+            groups.push(byAssignment[key]);
+          }
+          byAssignment[key].items.push(t);
+        });
+        return groups;
+      }
+
+      /* Заглавието на една такава карта: вид, име, ред отдясно, шеврон. */
+      function groupHead(a, meta, open) {
+        return '<button type="button" class="tlp__grp-head" aria-expanded="' + open + '">' +
+          (a ? '<span class="tlp__chip tlp__chip--' + esc(a.kind) + '">' +
+                (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' : '') +
+          '<span class="tlp__grp-t">' + esc(a ? a.title : 'Задание') + '</span>' +
+          '<span class="tlp__grp-m">' + meta + '</span>' +
+          '<span class="tlp__grp-chev" aria-hidden="true">▾</span>' +
+        '</button>';
+      }
+
       /* ---- Обратна връзка --------------------------------------------- */
 
       function renderFeedback() {
@@ -612,12 +640,29 @@
             'Когато преподавателят напише бележка към някой твой опит, тя се появява тук.');
           return;
         }
-        $('fbBody').innerHTML = withNote.map(function (t) {
-          var a = byId[t.assignment_id];
-          return '<div class="tlp__quote">' +
-            '<span class="tlp__quote-who">' +
-              esc((a ? a.title : 'Задание') + ' · ' + TLA.formatDate(t.submitted_at)) +
-            '</span>' + esc(t.teacher_note) +
+
+        var ord = attemptOrdinals();
+        $('fbBody').innerHTML = groupByAssignment(withNote).map(function (g, gi) {
+          var n = g.items.length;
+          var open = (gi === 0);
+          var meta = n + (n === 1 ? ' бележка' : ' бележки') +
+            ' · последна ' + esc(shortDate(g.items[0].submitted_at));
+
+          return '<div class="tlp__grp' + (open ? ' is-open' : '') + '">' +
+            groupHead(g.a, meta, open) +
+            '<div class="tlp__grp-wrap"><div class="tlp__grp-reveal">' +
+              '<div class="tlp__grp-body">' +
+                g.items.map(function (t) {
+                  var many = (ord.total[String(t.assignment_id)] || 1) > 1;
+                  return '<div class="tlp__quote">' +
+                    '<span class="tlp__quote-who">' +
+                      (many ? 'Опит ' + ord.ordinal[t.id] + ' · ' : '') +
+                      esc(TLA.formatDate(t.submitted_at)) +
+                    '</span>' + esc(t.teacher_note) +
+                  '</div>';
+                }).join('') +
+              '</div>' +
+            '</div></div>' +
           '</div>';
         }).join('');
       }
@@ -683,19 +728,7 @@
         var full = {};
         (res.data || []).forEach(function (r) { full[r.id] = r; });
 
-        /* Номерът на опита се брои сред ВСИЧКИ опити по това задание, не
-           само сред анализираните — иначе една и съща работа излиза
-           „Опит 3“ в „Резултати“ и „Опит 2“ тук. */
-        var total = {}, seen = {}, ordinal = {};
-        attempts.forEach(function (t) {
-          var k = String(t.assignment_id);
-          total[k] = (total[k] || 0) + 1;
-        });
-        attempts.forEach(function (t) {
-          var k = String(t.assignment_id);
-          seen[k] = (seen[k] || 0) + 1;
-          ordinal[t.id] = total[k] - seen[k] + 1;
-        });
+        var ord = attemptOrdinals();
 
         var groups = [], byAssignment = {};
         marked.forEach(function (m) {
@@ -726,19 +759,13 @@
             ' · последен ' + esc(shortDate(g.tries[0].t.submitted_at));
 
           return '<div class="tlp__grp' + (open ? ' is-open' : '') + '">' +
-            '<button type="button" class="tlp__grp-head" aria-expanded="' + open + '">' +
-              (a ? '<span class="tlp__chip tlp__chip--' + esc(a.kind) + '">' +
-                    (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' : '') +
-              '<span class="tlp__grp-t">' + esc(a ? a.title : 'Задание') + '</span>' +
-              '<span class="tlp__grp-m">' + meta + '</span>' +
-              '<span class="tlp__grp-chev" aria-hidden="true">▾</span>' +
-            '</button>' +
+            groupHead(a, meta, open) +
             '<div class="tlp__grp-wrap"><div class="tlp__grp-reveal">' +
               '<div class="tlp__grp-body">' +
                 g.tries.map(function (o) {
-                  var many = (total[String(o.t.assignment_id)] || 1) > 1;
+                  var many = (ord.total[String(o.t.assignment_id)] || 1) > 1;
                   return '<p class="tlp__ai-try">' +
-                    (many ? '<b>Опит ' + ordinal[o.t.id] + '</b> · ' : '') +
+                    (many ? '<b>Опит ' + ord.ordinal[o.t.id] + '</b> · ' : '') +
                     esc(TLA.formatDate(o.t.submitted_at)) +
                   '</p>' + aiRows(o.rows);
                 }).join('') +
@@ -896,6 +923,7 @@
       });
 
       $('aiBody').addEventListener('click', toggleGroup);
+      $('fbBody').addEventListener('click', toggleGroup);
 
       $('signOutBtn').addEventListener('click', function () { TLA.signOut(); });
 
