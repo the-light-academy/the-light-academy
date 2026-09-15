@@ -925,7 +925,45 @@
       clearFiltersBtn.addEventListener('click', resetFilters);
       showAllBtn.addEventListener('click', resetFilters);
 
+      /* ── ФИЛТЪР ОТ АДРЕСА ──
+         Страницата може да се отвори вече филтрирана:
+           all_courses.html?type=individual   — само индивидуалните уроци
+           all_courses.html?grade=7           — само 7. клас
+           all_courses.html?tag=nvo           — само НВО
+         Оттам идва бутонът „Търсите индивидуални уроци?“ на началната
+         страница. Приемат се само познатите стойности — каквото и да е
+         друго в адреса просто се пренебрегва. */
+      function applyFiltersFromUrl() {
+        let params;
+        try { params = new URLSearchParams(window.location.search); }
+        catch (e) { return false; }
+        let applied = false;
+
+        const type = params.get('type');
+        if (type === 'individual' || type === 'group') { state.type = type; applied = true; }
+
+        const grade = params.get('grade');
+        if (grade === 'r13' || /^[4-7]$/.test(grade || '')) { state.grade = grade; applied = true; }
+
+        const tag = params.get('tag');
+        if (tag === 'nvo' || tag === 'math' || tag === 'lang') { state.tag = tag; applied = true; }
+
+        return applied;
+      }
+
+      const cameFiltered = applyFiltersFromUrl();
       render();
+
+      /* Ако адресът е филтрирал страницата, посетителят е дошъл за
+         резултатите — водим го до тях, вместо да ги търси под hero-то. */
+      if (cameFiltered) {
+        requestAnimationFrame(() => {
+          document.querySelector('.finder').scrollIntoView({
+            behavior: (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'),
+            block: 'start'
+          });
+        });
+      }
 
       /* ── ENROLL FORM ──
          One shared form at the bottom of the page. Every "Запиши се" /

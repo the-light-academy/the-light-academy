@@ -705,6 +705,23 @@
       line-height: 1.6;
     }
 
+    /* Едно изречение под инфографиката: курсовете горе са групови, а
+       индивидуалните уроци са на един клик, вече филтрирани. */
+    .tla-courses-infographic .tla-ci__aside {
+      margin: clamp(1rem, 2.5vw, 1.6rem) 0 0;
+      text-align: center;
+    }
+    .tla-courses-infographic .tla-ci__btn--wide {
+      font-size: clamp(0.92rem, 1.5vw, 1rem);
+      padding: 0.75rem 1.4rem;
+      border-color: rgba(58, 46, 31, 0.16);
+    }
+    .tla-courses-infographic .tla-ci__btn--wide:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(58, 46, 31, 0.16);
+      border-color: var(--sun);
+    }
+
     .tla-courses-infographic .tla-ci__stage {
       display: grid;
       grid-template-columns: minmax(160px, 1fr) minmax(0, 620px) minmax(160px, 1fr);
@@ -2240,6 +2257,13 @@
         <div class="tla-ci__block tla-ci__block--lang tla-ci__reveal"><svg class="tla-ci__badge" viewBox="222 10 221 204" aria-hidden="true" focusable="false"><use href="#tlaCiPYellow" fill="url(#tlaCiGYellow)"/></svg><h3 class="tla-ci__cat" data-i18n="courses.lang.title">Чужди езици</h3><ul class="tla-ci__links"><li><a class="tla-ci__btn" href="course_english.html"><span class="tla-ci__btn-label" data-i18n="courses.lang.chipEn">Английски език</span><svg class="tla-ci__arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h10M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a class="tla-ci__btn" href="course_theatre_english.html"><span class="tla-ci__btn-label" data-i18n="courses.lang.chipTheatre">Театър на английски</span><svg class="tla-ci__arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h10M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li><li><a class="tla-ci__btn" href="course_spanish.html"><span class="tla-ci__btn-label" data-i18n="courses.lang.chipEs">Испански език</span><svg class="tla-ci__arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h10M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li></ul></div>
         <div class="tla-ci__block tla-ci__block--science tla-ci__reveal"><svg class="tla-ci__badge" viewBox="261 200 207 221" aria-hidden="true" focusable="false"><use href="#tlaCiPCyan" fill="url(#tlaCiGCyan)"/></svg><h3 class="tla-ci__cat" data-i18n="courses.science.title">Природни науки</h3><ul class="tla-ci__links"><li><a class="tla-ci__btn" href="course_chemistry.html"><span class="tla-ci__btn-label" data-i18n="courses.science.chipChem">Химия</span><svg class="tla-ci__arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h10M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li></ul></div>
       </div>
+
+      <p class="tla-ci__aside">
+        <a class="tla-ci__btn tla-ci__btn--wide" href="all_courses.html?type=individual">
+          <span class="tla-ci__btn-label" data-i18n="courses.individual">Търсите индивидуални уроци?</span>
+          <svg class="tla-ci__arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h10M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </p>
     </div>
   </section>
 
@@ -2746,6 +2770,7 @@ The Light Academy прави впечатление с малките групи
         "hero.btn3": "All Courses",
         "courses.title": "Our Courses",
         "courses.subtitle": "We translate complex material into a language children understand - because modern education demands a new approach.",
+        "courses.individual": "Looking for one-to-one lessons?",
         "courses.nvo.label": "NVO",
         "courses.nvo.title": "NVO Preparation",
         "courses.nvo.desc": "Small groups · Mock exams · Individual approach",
@@ -2889,6 +2914,7 @@ The Light Academy прави впечатление с малките групи
         "hero.btn3": "Всички курсове",
         "courses.title": "Нашите курсове",
         "courses.subtitle": "Ние превеждаме сложния материал на език, който децата разбират - защото съвременното образование изисква нов подход.",
+        "courses.individual": "Търсите индивидуални уроци?",
         "courses.nvo.label": "НВО",
         "courses.nvo.title": "Подготовка за НВО",
         "courses.nvo.desc": "Малки групи · Пробни изпити · Индивидуален подход",
