@@ -140,6 +140,17 @@
 
       <div class="tlp__panel" role="tabpanel" id="panel-res" aria-labelledby="tab-res" tabindex="0" hidden>
         <div id="resBody"></div>
+
+        <!-- Прегледът на един опит стои ВЪТРЕ в панела „Резултати“, защото
+             се отваря само оттам. Когато беше отвън, оставаше отворен и
+             под „Обратна връзка“ и „AI анализ“. -->
+        <section id="reviewCard" hidden>
+          <h2 class="tlp__h2" id="reviewTitle">Преглед</h2>
+          <div id="reviewBody"></div>
+          <button type="button" class="tla-btn tla-btn--ghost" id="closeReview" style="margin-top:1rem;">
+            Затвори прегледа
+          </button>
+        </section>
       </div>
 
       <div class="tlp__panel" role="tabpanel" id="panel-fb" aria-labelledby="tab-fb" tabindex="0" hidden>
@@ -149,15 +160,6 @@
       <div class="tlp__panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" tabindex="0" hidden>
         <div id="aiBody"></div>
       </div>
-
-      <!-- one attempt, opened from Резултати -->
-      <section id="reviewCard" hidden>
-        <h2 class="tlp__h2" id="reviewTitle">Преглед</h2>
-        <div id="reviewBody"></div>
-        <button type="button" class="tla-btn tla-btn--ghost" id="closeReview" style="margin-top:1rem;">
-          Затвори прегледа
-        </button>
-      </section>
     </div>
   </main>
 
