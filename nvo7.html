@@ -365,11 +365,58 @@
       margin: 0 0 1.1rem;
     }
     .page-hero .hero-sub strong { color: var(--hero-gold); font-weight: 800; }
+    /* ── Двете действия в hero-а, нарочно с различна тежест ──
+       Родител, който още не е решил, и родител, който е готов, имат нужда
+       от различна следваща стъпка. Основната е тестът: оранжево хапче със
+       сянка, над него един ред, който казва защо. Втората е обаждане —
+       само текст, без рамка и без запълване, за да не изглежда като втора
+       равностойна реклама. Под нея най-тихото: че не се плаща. */
     .hero-cta {
       position: relative;
-      display: flex; gap: 0.7rem; flex-wrap: wrap;
-      margin-top: 1.5rem;
+      display: flex; flex-direction: column; align-items: flex-start;
+      gap: 0.55rem;
+      margin-top: 1.6rem;
     }
+    /* Тук светлото не е избор на стил, а на четимост: аурората зад стъклото
+       на моменти изсветлява фона до rgb(107,113,112), а бяло под 0,92 прозрачност
+       пада под 4,5:1 точно в тези мигове. Тежестта на второто действие идва от
+       размера и от това, че е само текст — не от това колко е избледняло. */
+    .hero-cta__label {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: rgba(255,255,255,0.94);
+    }
+    .hero-cta__primary {
+      display: inline-flex; align-items: center; gap: 11px;
+      background: #F7AD19;
+      color: #2D1F0E;
+      padding: 16px 34px;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(247,173,25,0.34);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    /* Стрелката върви със самия текст, а не е отделна клетка на флекса —
+       ако надписът се пренесе на два реда, тя остава след „тест“, вместо да
+       увисне сама вдясно. */
+    .hero-cta__text { text-align: left; line-height: 1.25; }
+    .hero-cta__primary:hover {
+      transform: translateY(-3px);
+      background: #FFBE3E;
+      box-shadow: 0 14px 34px rgba(247,173,25,0.46);
+    }
+    .hero-cta__primary:focus-visible {
+      outline: 3px solid #fff; outline-offset: 3px;
+    }
+    .hero-cta__arrow { display: inline-block; transition: transform 0.2s ease; }
+    .hero-cta__primary:hover .hero-cta__arrow { transform: translateX(4px); }
 
     /* What is in the offer, on one line. A list in the markup -- a screen
        reader should hear four things, not one run-on sentence -- laid out
@@ -389,30 +436,43 @@
       content: '·'; color: var(--hero-gold); font-weight: 800; opacity: 0.8;
     }
 
-    /* The quieter second door, for a parent who is not ready to book. */
+    /* Тихата втора врата: обаждане, за родител, който още не е готов за
+       теста. Бяло, не златно — златното до оранжевото хапче се четеше като
+       втори бутон. */
     .hero-cta-alt {
       position: relative;
-      margin: 0.9rem 0 0;
+      margin: 1rem 0 0;
       font-size: 0.92rem;
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.94);
     }
     .hero-cta-alt a {
-      color: var(--hero-gold); font-weight: 800; text-decoration: none;
-      border-bottom: 1px solid rgba(255,217,138,0.45);
+      color: #fff; font-weight: 700; text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.35);
       padding-bottom: 1px; white-space: nowrap;
     }
-    .hero-cta-alt a:hover { border-bottom-color: var(--hero-gold); }
-    .hero-cta-alt a:focus-visible { outline: 2px solid var(--hero-gold); outline-offset: 3px; border-radius: 3px; }
-    .hero-cta-alt__arrow { display: inline-block; transition: transform 0.2s ease; }
-    .hero-cta-alt a:hover .hero-cta-alt__arrow { transform: translateX(3px); }
+    .hero-cta-alt a i { font-size: 0.78em; opacity: 0.8; margin-right: 2px; }
+    .hero-cta-alt a:hover { border-bottom-color: rgba(255,255,255,0.85); }
+    .hero-cta-alt a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 3px; }
+    .hero-cta-note {
+      position: relative;
+      margin: 0.3rem 0 0;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.92);
+    }
 
     @media (max-width: 600px) {
       .page-hero { padding: 2.25rem 1.1rem 2.75rem; }
       .hero-glass-card { padding: 1.9rem 1.5rem 1.8rem; border-radius: 22px; }
+      /* На тясно хапчето заема целия ред — иначе опира до ръба и се цели трудно. */
+      .hero-cta { align-items: stretch; }
+      .hero-cta__primary { justify-content: center; padding: 16px 20px; font-size: 1rem; }
+      .hero-cta__text { text-align: center; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .hero-cta-alt__arrow { transition: none; }
-      .hero-cta-alt a:hover .hero-cta-alt__arrow { transform: none; }
+      .hero-cta__arrow { transition: none; }
+      .hero-cta__primary { transition: none; }
+      .hero-cta__primary:hover { transform: none; }
+      .hero-cta__primary:hover .hero-cta__arrow { transform: none; }
     }
 
     .hero-pills {
@@ -2936,15 +2996,20 @@
       </ul>
 
       <div class="hero-cta">
-        <button onclick="scrollToRegForm()" class="btn-cta-yellow">
-          <i class="fa-solid fa-pen-to-square"></i>
-          Запази място
-        </button>
+        <p class="hero-cta__label">Разберете откъде започва детето</p>
+        <a class="hero-cta__primary" href="entrance_test.html">
+          <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+          <span class="hero-cta__text">Направете входящия тест <span class="hero-cta__arrow" aria-hidden="true">→</span></span>
+        </a>
       </div>
       <p class="hero-cta-alt">
         Не сте сигурни?
-        <a href="entrance_test.html">Направете входящ тест <span class="hero-cta-alt__arrow" aria-hidden="true">→</span></a>
+        <a href="tel:+359885501283">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          Консултация
+        </a>
       </p>
+      <p class="hero-cta-note">Не се заплаща</p>
     </div>
   </section>
 
