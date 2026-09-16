@@ -174,6 +174,33 @@ on conflict (slug) do update set
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
 
+-- ── 6. клас, седмица 3 (5–9 окт. 2026): входно ниво ──
+-- Тринайсет задачи по материала на 5. клас, 25 точки, 35 минути.
+-- Оценява се изцяло от страницата и се записва като опит в профила.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('entrance_test_6',
+   'Входно ниво — 6. клас',
+   'exam',
+   'entrance_test_6.html',
+   25,
+   false,
+   40,
+   3,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
 -- Провери какво се получи:
 --   select slug, title, grades, week, max_points, published
 --     from public.assignments

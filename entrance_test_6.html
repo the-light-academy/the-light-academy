@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Входно ниво 2 — 7. клас · The Light Academy</title>
+<title>Входно ниво — 6. клас · The Light Academy</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Входно ниво по математика, група 1 — за ученици с профил в платформата." />
+<meta name="description" content="Входно ниво по математика за 6. клас — за ученици с профил в платформата." />
 <link rel="icon" href="favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -324,7 +324,7 @@ canvas.gauge{ position:relative; }
     </a>
     <span class="tlp-bar__sep" aria-hidden="true"></span>
     <span class="tlp-bar__where">
-      <span class="tlp-bar__long">Входно ниво · група 1</span>
+      <span class="tlp-bar__long">Входно ниво · 6. клас</span>
       <span class="tlp-bar__short">Входно ниво</span>
     </span>
   </div>
@@ -338,22 +338,23 @@ canvas.gauge{ position:relative; }
   <!-- 1. преди часовника -->
   <section class="screen active" id="introScreen">
     <div class="intro">
-      <div class="eyebrow"><span class="dot"></span>Входно ниво · 7. клас · Група 1</div>
-      <h1>Входно ниво <em>2</em></h1>
+      <div class="eyebrow"><span class="dot"></span>6. клас · седмица 3</div>
+      <h1>Входно <em>ниво</em></h1>
       <p class="subhead">
-        Десет задачи от материала на 5. и 6. клас. Изпитът показва откъде тръгваме —
-        не влиза в оценките в училище.
+        Тринайсет задачи от материала на 5. клас — дроби, част от число и процент,
+        геометрия. Изпитът показва откъде тръгваме и не влиза в оценките в училище.
       </p>
       <div class="facts">
-        <div class="fact"><b>10</b><span>задачи</span></div>
-        <div class="fact"><b>24</b><span>точки</span></div>
-        <div class="fact"><b>25</b><span>минути</span></div>
+        <div class="fact"><b>13</b><span>задачи</span></div>
+        <div class="fact"><b>25</b><span>точки</span></div>
+        <div class="fact"><b>35</b><span>минути</span></div>
       </div>
       <ul class="rules">
         <li>Часовникът тръгва с бутона и не спира.</li>
         <li>Щом времето свърши, изпитът се предава сам с това, което е попълнено.</li>
-        <li>Задачи 7, 9 и 10 се пишат с отговор — само числото.</li>
-        <li>Десетичните дроби се пишат със запетая: −3,8.</li>
+        <li>Задачи 3, 6, 9, 10, 12 и 13 се пишат с отговор — само числото.</li>
+        <li>Десетичните дроби се пишат със запетая: 0,3. Дроб се пише с наклонена черта: 5/8.</li>
+        <li>Дробта може да е несъкратена — 4/6 се приема наравно с 2/3.</li>
       </ul>
       <button type="button" class="btn btn--big" id="startBtn">Започни изпита</button>
     </div>
@@ -362,7 +363,7 @@ canvas.gauge{ position:relative; }
   <!-- 2. изпитът -->
   <section class="screen" id="examScreen">
     <header class="ex">
-      <div class="eyebrow"><span class="dot"></span>Входно ниво · 7. клас · Група 1</div>
+      <div class="eyebrow"><span class="dot"></span>6. клас · седмица 3</div>
     </header>
     <div id="questions"></div>
   </section>
@@ -388,8 +389,8 @@ canvas.gauge{ position:relative; }
 
 <div class="dock" id="dock" hidden>
   <div class="dock-inner">
-    <span class="clock" id="clock">25:00</span>
-    <span class="dock-score" id="answered">0 / 10 решени</span>
+    <span class="clock" id="clock">35:00</span>
+    <span class="dock-score" id="answered">0 / 13 решени</span>
     <span class="dock-fill"></span>
     <button type="button" class="btn" id="submitBtn">Предай</button>
   </div>
@@ -400,76 +401,104 @@ canvas.gauge{ position:relative; }
 <script src="assets/auth.js"></script>
 <script>
 /* =========================================================
-   ВХОДНО НИВО 2 — ГРУПА 1
+   ВХОДНО НИВО — 6. КЛАС, седмица 3 (5–9 окт. 2026)
 
-   Задачите са от хартиената бланка. Верните отговори са
-   пресметнати и проверени един по един:
+   Проверява материала, който седмици 1 и 2 преговарят:
+   действия с обикновени и десетични дроби, намиране на част
+   от число и процент, геометрични фигури от 5. клас.
 
-     1 в)  −0,0129 е с най-малка абсолютна стойност
-     2 г)  9 − 11,6 = −2,6
-     3 а)  −4,4 + 3,52 = −0,88
-     4 в)  (64 − 16) : 16 = 3
-     5 а)  (−3⁹·16) : (3³·16) = −3⁶
-     6 а)  −4 − 4x = −0,6 → x = −0,85
-     7     x:2 = 3:5 → x = 1,2 ; 1/7 : 3/7 = 5:x → x = 15
-     8 Г)  2 части = 8 см → 1 част = 4 см → 11·4 = 44 см
-     9     −9x − 2 = 17 − 4x → x = −19/5 = −3,8
-    10     (75 + v)·4/3 = 220 → v = 90 km/h
+   Всеки отговор е пресметнат отделно:
 
-   Всичко се оценява автоматично. Задачите с писан отговор
-   приемат няколко записа на едно и също число — 1,2 и 1.2 и
-   6/5 са един отговор — защото се проверява числото, а не
-   как е напечатано.
+     1  б)  0,45 е най-голямото от 0,405; 0,45; 0,0450; 0,4005
+     2  б)  3,6 − 1,25 + 0,4 = 2,75
+     3      0,25 · 1,2 = 0,3  ;  4,8 : 0,6 = 8
+     4  б)  2/3 + 1/4 = 8/12 + 3/12 = 11/12
+     5  б)  3 1/2 − 1 3/4 = 14/4 − 7/4 = 7/4 = 1 3/4
+     6      3/5 · 10/9 = 30/45 = 2/3  ;  3/4 : 6/5 = 3/4 · 5/6 = 15/24 = 5/8
+     7  в)  3/8 от 120 = 120 : 8 · 3 = 45
+     8  в)  15% от 240 = 240 · 0,15 = 36
+     9      12 е 20% от x  →  x = 12 : 0,2 = 60
+    10      P = 2 · (8 + 5) = 26 см  ;  S = 8 · 5 = 40 см²
+    11  б)  S = 12 · 7 : 2 = 42 см²
+    12      V = 5 · 4 · 3 = 60 см³
+    13      момичета: 40% от 25 = 10  →  момчета: 25 − 10 = 15
+
+   Оценява се изцяло от страницата. Отговорите с дроб се
+   сравняват като числа, не като изписване: 2/3, 4/6 и 30/45
+   са един и същ отговор.
 ========================================================= */
 
-const DURATION = 25 * 60;          /* 25 минути, както е на бланката */
+const DURATION = 35 * 60;          /* 35 минути */
 const LABELS = ["а", "б", "в", "г"];
 
 const QUESTIONS = [
-  { points:1, tag:'Сравняване', type:'mc',
-    text:'Най-голямото от числата −0,2019; −0,0219; −0,0129 и −0,2109 е:',
-    choices:['−0,2019','−0,0219','−0,0129','−0,2109'], correct:2 },
+  { points:1, tag:'Десетични дроби', type:'mc',
+    text:'Най-голямото от числата 0,405; 0,45; 0,0450 и 0,4005 е:',
+    choices:['0,405','0,45','0,0450','0,4005'], correct:1 },
 
-  { points:1, tag:'Числени изрази', type:'mc',
-    text:'Стойността на израза 9 − (15 − 3,4) е равна на:',
-    choices:['−9,4','−3,6','−3,4','−2,6'], correct:3 },
+  { points:1, tag:'Десетични дроби', type:'mc',
+    text:'Стойността на израза 3,6 − 1,25 + 0,4 е равна на:',
+    choices:['2,35','2,75','1,95','2,95'], correct:1 },
 
-  { points:2, tag:'Числени изрази', type:'mc',
-    text:'Стойността на израза −4,4 + 4,4 · 0,8 е равна на:',
-    choices:['−0,88','−0,44','0','0,88'], correct:0 },
-
-  { points:2, tag:'Степени', type:'mc',
-    html:'Изразът <span class="frac"><span class="num">2⁶ − 2⁴</span><span class="den">2⁴</span></span> е равен на:',
-    plain:'Изразът (2⁶ − 2⁴) : 2⁴ е равен на:',
-    choices:['1/4','1/2','3','63'], correct:2 },
-
-  { points:3, tag:'Степени', type:'mc',
-    html:'Изразът <span class="frac"><span class="num">(−3)⁹ · 2⁴</span><span class="den">3³ · (−4)²</span></span> е равен на:',
-    plain:'Изразът ((−3)⁹ · 2⁴) : (3³ · (−4)²) е равен на:',
-    choices:['−3⁶','−3³','3³','3⁶'], correct:0 },
-
-  { points:2, tag:'Уравнения', type:'mc',
-    text:'Ако −4 − 4 · x = 0,7 − 1,3, то x е равно на:',
-    choices:['−0,85','0,85','−0,6','0,6'], correct:0 },
-
-  { points:3, tag:'Пропорции', type:'text', prose:true,
-    text:'Намерете неизвестния член на пропорцията:',
+  { points:2, tag:'Десетични дроби', type:'text',
+    hint:'Пиши само числото, с запетая за десетичните дроби.',
+    text:'Пресметнете:',
     fields:[
-      { label:'А)', expr:'x : 2 = 3 : 5', answer:'1,2', accepts:['1,2','6/5','12/10'] },
-      { label:'Б)', expr:'1/7 : 3/7 = 5 : x', answer:'15', accepts:['15'] }
+      { label:'А)', expr:'0,25 · 1,2 =', answer:'0,3' },
+      { label:'Б)', expr:'4,8 : 0,6 =',  answer:'8' }
     ] },
 
-  { points:3, tag:'Пропорции', type:'mc', prose:true,
-    text:'Страните на триъгълник се отнасят както 4 : 2 : 5 и най-малката страна има дължина 8 см. Периметърът на триъгълника е равен на:',
-    choices:['4 см','20 см','28 см','44 см'], correct:3 },
+  { points:2, tag:'Обикновени дроби', type:'mc',
+    html:'Сборът <span class="frac"><span class="num">2</span><span class="den">3</span></span> + <span class="frac"><span class="num">1</span><span class="den">4</span></span> е равен на:',
+    plain:'Сборът 2/3 + 1/4 е равен на:',
+    choices:['3/7','11/12','5/12','2/12'], correct:1 },
 
-  { points:3, tag:'Уравнения', type:'text',
-    text:'Решете уравнението:  3 · (2 − 3 · x) − 8 = 3 − 2 · (2 · x − 7)',
-    fields:[ { label:'x =', prompt:'', answer:'−3,8', accepts:['-3,8','-19/5','-3.8'] } ] },
+  { points:2, tag:'Обикновени дроби', type:'mc',
+    text:'Разликата 3 1/2 − 1 3/4 е равна на:',
+    choices:['1 1/4','1 3/4','2 1/4','2 1/2'], correct:1 },
 
-  { points:4, tag:'Текстова задача', type:'text', prose:true,
-    text:'Два автомобила тръгват от А и В един срещу друг в 8 ч. сутринта и се срещат в 9 ч. и 20 мин. Разстоянието между А и В е 220 км, а скоростта на автомобила, който тръгва от А, е 75 km/h. Намерете скоростта на другия автомобил.',
-    fields:[ { label:'v =', prompt:'в km/h', answer:'90', accepts:['90','90km/h','90км/ч','90кмч'] } ] }
+  { points:2, tag:'Обикновени дроби', type:'text',
+    hint:'Пиши дробта с наклонена черта: 5/8. Няма нужда да я съкращаваш.',
+    text:'Пресметнете:',
+    fields:[
+      { label:'А)', expr:'3/5 · 10/9 =', answer:'2/3' },
+      { label:'Б)', expr:'3/4 : 6/5 =',  answer:'5/8' }
+    ] },
+
+  { points:2, tag:'Част от число', type:'mc',
+    html:'<span class="frac"><span class="num">3</span><span class="den">8</span></span> от 120 е равно на:',
+    plain:'3/8 от 120 е равно на:',
+    choices:['15','40','45','320'], correct:2 },
+
+  { points:2, tag:'Процент', type:'mc',
+    text:'15% от 240 е равно на:',
+    choices:['16','24','36','360'], correct:2 },
+
+  { points:2, tag:'Процент', type:'text', prose:true,
+    text:'Числото 12 е 20% от друго число. Кое е то?',
+    fields:[ { label:'Числото е', prompt:'', answer:'60' } ] },
+
+  { points:2, tag:'Геометрия', type:'text', prose:true,
+    hint:'Пиши само числото — мерната единица не е нужна.',
+    text:'Правоъгълник има страни 8 см и 5 см. Намерете периметъра и лицето му.',
+    fields:[
+      { label:'P =', prompt:'в см',  answer:'26', accepts:['26','26см','26 см'] },
+      { label:'S =', prompt:'в см²', answer:'40', accepts:['40','40см2','40 см2','40см²','40 см²'] }
+    ] },
+
+  { points:2, tag:'Геометрия', type:'mc', prose:true,
+    text:'Триъгълник има основа 12 см и височина към нея 7 см. Лицето му е равно на:',
+    choices:['19 см²','42 см²','84 см²','21 см²'], correct:1 },
+
+  { points:2, tag:'Геометрия', type:'text', prose:true,
+    hint:'Пиши само числото — мерната единица не е нужна.',
+    text:'Правоъгълен паралелепипед има измерения 5 см, 4 см и 3 см. Намерете обема му.',
+    fields:[ { label:'V =', prompt:'в см³', answer:'60', accepts:['60','60см3','60 см3','60см³','60 см³'] } ] },
+
+  { points:3, tag:'Текстова задача', type:'text', prose:true,
+    hint:'Пиши само броя на момчетата.',
+    text:'В един клас има 25 ученици и 40% от тях са момичета. Колко са момчетата в класа?',
+    fields:[ { label:'Момчета:', prompt:'', answer:'15' } ] }
 ];
 
 const TOTAL = QUESTIONS.reduce((s, q) => s + q.points, 0);
@@ -477,14 +506,14 @@ const TOTAL = QUESTIONS.reduce((s, q) => s + q.points, 0);
 /* Половин точка се пише 1,5 — както се пишат числата навсякъде другаде тук. */
 const num = v => String(v).replace('.', ',');
 
-/* Скалата от бланката. Границите там се застъпват (4, и 15), затова
-   тук са разделени: 4 е още слаб, 15 е още добър. */
+/* 25 точки, разделени по същия начин както на изпита за 7. клас:
+   под една пета е слаб, над четири пети е отличен. */
 const SCALE = [
-  { min:22, mark:'Отличен 6', range:'над 21' },
-  { min:16, mark:'Мн. добър 5', range:'от 16 до 21' },
-  { min:10, mark:'Добър 4', range:'от 10 до 15' },
-  { min:5,  mark:'Среден 3', range:'от 5 до 9' },
-  { min:0,  mark:'Слаб 2', range:'до 4' }
+  { min:22, mark:'Отличен 6', range:'от 22 до 25' },
+  { min:17, mark:'Мн. добър 5', range:'от 17 до 21' },
+  { min:12, mark:'Добър 4', range:'от 12 до 16' },
+  { min:6,  mark:'Среден 3', range:'от 6 до 11' },
+  { min:0,  mark:'Слаб 2', range:'до 5' }
 ];
 
 const state = QUESTIONS.map(q => q.type === 'mc' ? null : q.fields.map(() => ''));
@@ -508,7 +537,7 @@ function render(){
                    data-q="${qi}" data-f="${fi}"
                    placeholder="${f.prompt || 'отговор'}" autocomplete="off" />
           </div>`).join('')}</div>
-         <p class="hint">Пиши само числото, с запетая за десетичните дроби.</p>`;
+         <p class="hint">${q.hint || 'Пиши само числото, с запетая за десетичните дроби.'}</p>`;
 
     return `<div class="qcard" id="card-${qi}">
       <div class="qtop">
@@ -572,11 +601,72 @@ function norm(v){
     .trim().toLowerCase()
     .replace(/\s+/g, '')
     .replace(/[−–—]/g, '-')
-    .replace(/^[xх]=/, '')
-    .replace(/^v=/, '')
+    .replace(/^[a-zа-я]=/, '')
     .replace(/^=/, '')
     .replace(/\./g, ',')
     .replace(/,$/, '');
+}
+
+/* Мерната единица не е част от числото: „40 см²“ и „40“ са един
+   отговор, а и „%“ след число не бива да проваля сравнението. */
+function stripUnit(v){
+  return String(v == null ? '' : v)
+    .replace(/[  ]/g, ' ')
+    /* полето се казва „P =“, затова ученик пише и „P = 26“ */
+    .replace(/^\s*[a-zа-я]\s*=\s*/i, '')
+    .replace(/(см|cm|м|m|мм|mm|дм|dm)\s*(²|³|2|3)?\.?$/i, '')
+    .replace(/%$/, '')
+    .trim();
+}
+
+/* Отговор с дроб се чете като число, а не като низ: 2/3, 4/6, 30/45
+   и 0,75 срещу 3/4 се сравняват по стойност. Ученик, който не е
+   съкратил дробта, е решил задачата. */
+function parseRational(raw){
+  let t = stripUnit(raw)
+    .replace(/[−–—]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (t === '') return null;
+
+  /* смесено число: „1 3/4“ */
+  let m = t.match(/^(-?\d+) (\d+)\s*\/\s*(\d+)$/);
+  if (m){
+    const w = Number(m[1]), n = Number(m[2]), d = Number(m[3]);
+    if (d === 0) return null;
+    const sign = t[0] === '-' ? -1 : 1;
+    return { n: sign * (Math.abs(w) * d + n), d: d };
+  }
+
+  /* обикновена дроб: „5/8“ */
+  m = t.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m){
+    const d = Number(m[2]);
+    if (d === 0) return null;
+    return { n: Number(m[1]), d: d };
+  }
+
+  /* цяло или десетично число: „60“, „0,3“ */
+  const dec = t.replace(',', '.');
+  if (!/^-?\d+(\.\d+)?$/.test(dec)) return null;
+  const dot = dec.indexOf('.');
+  if (dot === -1) return { n: Number(dec), d: 1 };
+  const places = dec.length - dot - 1;
+  return { n: Math.round(Number(dec) * Math.pow(10, places)), d: Math.pow(10, places) };
+}
+
+function ratEq(a, b){
+  return !!a && !!b && a.n * b.d === b.n * a.d;
+}
+
+/* Първо по стойност; списъкът accepts остава за отговорите, които
+   не са само число. */
+function fieldIsRight(f, raw){
+  if (String(raw).trim() === '') return false;
+  const given = parseRational(raw), want = parseRational(f.answer);
+  if (given && want && ratEq(given, want)) return true;
+  const list = f.accepts || [f.answer];
+  return list.map(norm).indexOf(norm(raw)) !== -1;
 }
 
 function grade(byClock){
@@ -623,7 +713,7 @@ function grade(byClock){
       const given = [], expected = [];
       q.fields.forEach((f, fi) => {
         const raw = String(state[qi][fi] || '').trim();
-        const right = raw !== '' && f.accepts.map(norm).indexOf(norm(raw)) !== -1;
+        const right = fieldIsRight(f, raw);
         if (right) got += per;
         given.push(`${f.label} ${raw || '(без отговор)'}`);
         expected.push(`${f.label} ${f.answer}`);
@@ -753,7 +843,7 @@ async function saveToPortal(score, records){
   if (typeof TLA === 'undefined' || !TLA.isConfigured() || saved) return;
   saved = true;
   try{
-    await TLA.saveAttempt('entrance_test_2', {
+    await TLA.saveAttempt('entrance_test_6', {
       autoScore: score, autoMax: TOTAL, manualMax: null,
       records: records, part2: null
     });
