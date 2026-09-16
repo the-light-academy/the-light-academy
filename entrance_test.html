@@ -105,6 +105,49 @@
     .test-brand__title{ font-size: 22px; }
   }
 
+  /* ---------- БУТОНИ ----------
+     Тези правила бяха изтрити по невнимание заедно с началния екран, а
+     .btn-download, .btn-cta-main и .btn-link задават само разликите си и
+     разчитат на тази основа — без нея всички бутони на теста се връщаха
+     към сивите кутийки на браузъра. */
+
+  .btn{
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 14px;
+    padding: 16px 28px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .btn:active{ transform: scale(0.97); }
+  .btn:focus-visible{ outline: 3px solid var(--accent-dark); outline-offset: 3px; }
+
+  /* Тъмен надпис, не бял: бяло върху #F7AD19 е 1,9:1 — почти нечетимо.
+     Тъмното дава 7,4:1, а при посочване 5,4:1 върху по-тъмното кехлибарено. */
+  .btn-primary{
+    background: var(--accent);
+    color: var(--text);
+    width: 100%;
+    box-shadow: 0 6px 18px rgba(247,173,25,0.35);
+  }
+  .btn-primary:hover{ background: var(--accent-dark); box-shadow: var(--shadow-hover); }
+
+  .btn-secondary{
+    background: var(--card-bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+  /* --accent-dark върху бяло е 2,6:1; това тук е 5,9:1. */
+  .btn-secondary:hover{ border-color: var(--accent); color: #8A5B0B; }
+
+  .btn-secondary:disabled{
+    opacity: .45;
+    cursor: not-allowed;
+  }
+  .btn-secondary:disabled:hover{ border-color: var(--border); color: var(--text); }
+
   /* ---------- TEST SCREEN ---------- */
   .test-header{
     background: var(--card-bg);
@@ -618,7 +661,8 @@
     justify-content: center;
     gap: 8px;
     background: var(--card-bg);
-    color: var(--accent-dark);
+    /* --accent-dark върху бялата карта е 2,6:1; това е 5,9:1. */
+    color: #8A5B0B;
     border: 2px solid var(--accent);
     width: 100%;
   }
@@ -667,6 +711,13 @@
   /* ---------- RESPONSIVE ---------- */
   @media (min-width: 480px){
     .question-text{ font-size: 21px; }
+  }
+
+  /* На най-тесните телефони „← Предишен“ се пренасяше на два реда само
+     заради страничния отстъп на бутона. */
+  @media (max-width: 380px){
+    .test-nav{ gap: 8px; }
+    .test-nav .btn{ padding: 16px 12px; font-size: 15px; }
   }
 
   @media (min-width: 768px){
