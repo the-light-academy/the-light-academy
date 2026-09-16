@@ -1180,7 +1180,15 @@
     .about-photo-circle:hover img { transform: scale(1.1); }
 
     .reviews-section {
-      background: rgba(255, 255, 255, 0.82);
+      /* Преливащ фон, за да има какво да се вижда през стъклото на картите.
+         Четирите петна се застъпват — така преливането личи и зад самите
+         карти, не само по празните краища. */
+      background:
+        radial-gradient(760px 440px at 10% 6%, rgba(255, 201, 138, 0.58), transparent 64%),
+        radial-gradient(700px 420px at 88% 94%, rgba(255, 228, 176, 0.62), transparent 62%),
+        radial-gradient(560px 380px at 74% 12%, rgba(255, 206, 189, 0.46), transparent 60%),
+        radial-gradient(620px 400px at 26% 88%, rgba(255, 235, 205, 0.55), transparent 62%),
+        linear-gradient(140deg, rgba(255,252,245,0.94) 0%, rgba(255,245,225,0.82) 50%, rgba(255,236,208,0.9) 100%);
       padding: 4rem 2rem;
     }
     .reviews-intro {
@@ -1230,34 +1238,58 @@
       gap: 1rem;
       animation: scroll-left 55s linear infinite;
       will-change: transform;
-      align-items: stretch;
+      /* flex-start, а не stretch: иначе всяка карта става висока колкото
+         най-дългото мнение и под късите зее празно поле. */
+      align-items: flex-start;
       transition: transform 0.35s ease;
     }
     .reviews-carousel:hover .reviews-track {
       animation-duration: 110s;
     }
+    /* Стъкло: прозрачен преливащ тюл, бял кант по горния ръб и сянка,
+       достатъчно дълбока, че фонът под нея да я носи. */
     .review-card {
+      position: relative;
       min-width: 500px;
       max-width: 500px;
       flex: 0 0 auto;
-      border-radius: var(--radius);
-      background: #f7f8fb;
-      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 20px;
+      color: #3A2E1F;
+      border: 1px solid rgba(255,255,255,0.75);
       padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      overflow: hidden;
+      backdrop-filter: blur(12px) saturate(135%);
+      -webkit-backdrop-filter: blur(12px) saturate(135%);
+      box-shadow:
+        0 18px 40px rgba(120, 84, 24, 0.14),
+        inset 0 1px 0 rgba(255,255,255,0.85);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .reviews-track .review-card:nth-child(2n+1) {
-      background: #FFF3D6;
-      color: #3A2E1F;
-      border-color: rgba(255,255,255,0.65);
+    /* Отблясъкът по горния ръб на стъклото. */
+    .review-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 96px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), transparent);
+      pointer-events: none;
     }
-    .reviews-track .review-card:nth-child(2n) {
-      background: #FFF9E8;
-      color: #3A2E1F;
-      border-color: rgba(255,255,255,0.55);
+    .review-card > * { position: relative; }
+
+    /* Три преливки, редуващи се, за да не изглеждат картите като копия. */
+    .reviews-track .review-card:nth-child(3n+1) {
+      background: linear-gradient(145deg, rgba(255,255,255,0.78) 0%, rgba(255,235,193,0.62) 55%, rgba(255,222,176,0.58) 100%);
     }
-    .review-card:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,0.08); }
+    .reviews-track .review-card:nth-child(3n+2) {
+      background: linear-gradient(145deg, rgba(255,252,244,0.80) 0%, rgba(255,243,214,0.58) 50%, rgba(253,226,205,0.56) 100%);
+    }
+    .reviews-track .review-card:nth-child(3n) {
+      background: linear-gradient(145deg, rgba(255,255,255,0.76) 0%, rgba(252,240,222,0.60) 48%, rgba(255,231,188,0.60) 100%);
+    }
+    .review-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 50px rgba(120, 84, 24, 0.20), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
     .review-stars {
       display: inline-flex;
       gap: 6px;
@@ -1276,7 +1308,9 @@
       font-size: 0.92rem;
       color: var(--mid);
     }
-    .review-meta strong { color: var(--sun-dark); }
+    /* По-тъмно от --sun-dark: върху топлото стъкло името излизаше 3,9:1,
+       а за текст под 18px WCAG иска 4,5:1. Това дава 4,9:1. */
+    .review-meta strong { color: #8A5B0B; }
     .review-text {
       font-size: 0.95rem;
       line-height: 1.7;
@@ -1292,27 +1326,40 @@
       margin-top: 1rem;
     }
     .reviews-arrow {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      border: 1px solid rgba(58, 46, 31, 0.12);
-      background: var(--white);
-      color: var(--sun-dark);
+      border: 1px solid rgba(255,255,255,0.85);
+      background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(255,243,214,0.78));
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      color: #8A5B0B;
       font-size: 1.2rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.06);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 26px rgba(120, 84, 24, 0.22), inset 0 1px 0 rgba(255,255,255,0.9);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
     .reviews-arrow:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      background: linear-gradient(145deg, #fff, rgba(255,236,190,0.9));
+      box-shadow: 0 14px 30px rgba(120, 84, 24, 0.28), inset 0 1px 0 rgba(255,255,255,0.95);
     }
+    .reviews-arrow:focus-visible { outline: 3px solid rgba(247,173,25,0.55); outline-offset: 2px; }
     @keyframes scroll-left {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
+    }
+    /* Безкрайно движещ се текст е точно това, което изключеното движение
+       иска да спре. Спира се, но лентата става превъртаема, за да се стигне
+       и до останалите мнения. Само на широк екран — на телефон отзивите вече
+       са купчинка и не се движат. */
+    @media (prefers-reduced-motion: reduce) and (min-width: 769px) {
+      .reviews-track,
+      .reviews-carousel:hover .reviews-track { animation: none; }
+      .reviews-carousel { overflow-x: auto; scroll-snap-type: x proximity; }
+      .review-card { scroll-snap-align: start; }
     }
 
       /* ── ABOUT ── */
@@ -1973,23 +2020,84 @@
       .photo-main { width: 175px; height: 175px; margin-left: -30px; }
       .photo-secondary-2 { width: 110px; height: 110px; margin-left: -26px; }
 
-      .reviews-track {
-        gap: 0.9rem;
-        animation: none !important;
+      /* ── Отзивите на телефон: купчинка карти ──
+         Картите не се плъзгат настрани, а стоят една върху друга — предната
+         отпред, следващите две надничат изпод нея. Стрелките са по средата
+         на височината на предната карта, върху двата ѝ ръба.
+
+         --deck-peek е колко се подава купчинката надолу; същата стойност
+         вдига и стрелките, за да са по средата на КАРТАТА, а не на целия
+         блок заедно с подаващото се отдолу. */
+      .reviews-section { padding: 3rem 1rem; }
+
+      .reviews-carousel {
+        --deck-peek: 34px;
+        position: relative;
+        overflow: visible;
+        padding: 0.5rem 0 var(--deck-peek);
       }
+      .reviews-track,
       .reviews-carousel:hover .reviews-track {
+        display: grid;
+        gap: 0;
         animation: none !important;
+        transform: none !important;
+        transition: none;
       }
       .review-card {
-        min-width: min(86vw, 340px);
-        max-width: min(86vw, 340px);
-        width: min(86vw, 340px);
+        grid-area: 1 / 1;
+        min-width: 0;
+        max-width: none;
+        width: min(100%, 360px);
+        justify-self: center;
+        /* start, а не stretch: иначе всички карти в клетката стават високи
+           колкото най-дългото мнение и под текста на предната зее празно. */
+        align-self: start;
+        padding: 1.4rem 1.2rem;
+        transition: transform 0.35s cubic-bezier(0.22,0.61,0.36,1), opacity 0.35s ease;
       }
+      /* Задните две се подрязват до височината на предната (задава се от
+         JS), за да не стърчат, ако тяхното мнение е по-дълго. Текстът им се
+         скрива: от тях се вижда само ръбът, а нарязано наполовина изречение,
+         подаващо се изпод предната карта, само обърква. */
+      .review-card[data-deck="1"],
+      .review-card[data-deck="2"] { overflow: hidden; }
+      .review-card[data-deck="1"] > *,
+      .review-card[data-deck="2"] > * { visibility: hidden; }
+      /* Само трите най-отгоре се рисуват; останалите единайсет не заемат
+         нито слой, нито време за рисуване. */
+      .review-card[data-deck] { display: block; }
+      .review-card:not([data-deck]) { display: none; }
+      .review-card[data-deck="0"] { z-index: 3; transform: none; opacity: 1; }
+      .review-card[data-deck="1"] { z-index: 2; transform: translateY(17px) scale(0.955); opacity: 0.72; }
+      .review-card[data-deck="2"] { z-index: 1; transform: translateY(33px) scale(0.912); opacity: 0.45; }
+      .review-card[data-deck]:hover { transform: none; }
+      .review-card[data-deck="1"]:hover { transform: translateY(17px) scale(0.955); }
+      .review-card[data-deck="2"]:hover { transform: translateY(33px) scale(0.912); }
+
       .reviews-nav {
         display: flex;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: var(--deck-peek);
+        margin: 0;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.15rem;
+        pointer-events: none;
+        z-index: 4;
       }
-      .reviews-carousel {
-        padding-bottom: 0.5rem;
+      .reviews-arrow { pointer-events: auto; }
+
+      /* Текстът на предната карта не бива да минава под стрелките. */
+      .review-card[data-deck="0"] .review-text,
+      .review-card[data-deck="0"] .review-meta { padding: 0 1.6rem; }
+      .review-card .review-text { min-height: 0; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .review-card { transition: none; }
       }
 
       .contact-inner { gap: 2rem; }
@@ -3206,19 +3314,81 @@ The Light Academy прави впечатление с малките групи
       const cards = Array.from(track.children);
       let currentIndex = 0;
 
+      /* На телефон отзивите са купчинка: предната карта, следващата зад нея
+         и още една под тях. Позицията в купчинката се казва с data-deck, а
+         CSS-ът я превежда в отместване, мащаб и прозрачност. Останалите
+         карти нямат атрибута и не се рисуват изобщо.
+
+         На десктоп това се маха и лентата пак се движи сама. */
+      const DECK_DEPTH = 3;
+
+      function clearDeck() {
+        cards.forEach(function (card) {
+          card.removeAttribute('data-deck');
+          card.removeAttribute('aria-hidden');
+          card.style.height = '';
+        });
+      }
+
+      /* Височината на купчинката е височината на ПРЕДНАТА карта. Задните две
+         се подрязват до нея — иначе едно дълго мнение отзад издува блока и
+         под текста отпред остава празно поле. Кое мнение е отпред се сменя с
+         всяко натискане, затова се мери наново всеки път. */
+      function sizeDeck() {
+        var front = null;
+        cards.forEach(function (card) {
+          if (card.getAttribute('data-deck') === '0') front = card;
+          else card.style.height = '';
+        });
+        if (!front) return;
+        front.style.height = '';
+        var h = front.offsetHeight;
+        if (!h) return;
+        cards.forEach(function (card) {
+          var pos = card.getAttribute('data-deck');
+          if (pos === '1' || pos === '2') card.style.height = h + 'px';
+        });
+      }
+
+      /* Текстът може да смени височината си и без превъртане на купчинката —
+         при смяна на езика или когато шрифтът се зареди по-късно. */
+      var deckWatch = null;
+      if (window.ResizeObserver) {
+        deckWatch = new ResizeObserver(function () { sizeDeck(); });
+      }
+
       function updatePosition() {
         if (window.innerWidth > 768) {
+          clearDeck();
+          if (deckWatch) deckWatch.disconnect();
           track.style.transform = '';
           track.style.animation = '';
           return;
         }
 
+        if (!cards.length) return;
         track.style.animation = 'none';
-        const card = cards[0];
-        if (!card) return;
-        const gap = parseFloat(getComputedStyle(track).gap) || 0;
-        const offset = currentIndex * (card.getBoundingClientRect().width + gap);
-        track.style.transform = `translateX(-${offset}px)`;
+        track.style.transform = '';
+
+        cards.forEach(function (card, i) {
+          /* колко назад в купчинката е тази карта спрямо текущата */
+          const pos = (i - currentIndex + cards.length) % cards.length;
+          if (pos < DECK_DEPTH) {
+            card.setAttribute('data-deck', String(pos));
+            /* Картите отзад са декор — екранният четец чете само предната. */
+            if (pos === 0) card.removeAttribute('aria-hidden');
+            else card.setAttribute('aria-hidden', 'true');
+          } else {
+            card.removeAttribute('data-deck');
+            card.setAttribute('aria-hidden', 'true');
+          }
+        });
+
+        sizeDeck();
+        if (deckWatch) {
+          deckWatch.disconnect();
+          deckWatch.observe(cards[currentIndex]);
+        }
       }
 
       function goToNext() {
