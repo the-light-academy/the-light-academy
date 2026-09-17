@@ -29,6 +29,7 @@
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelCalendar">Календар</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelTeachers" data-admin hidden>Преподаватели</button>
     </div>
 
     <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="signOutBtn">Изход</button>
@@ -37,7 +38,7 @@
   <main class="tla-p">
     <div class="tla-p__head">
       <div>
-        <h1 class="tla-p__title">Табло на преподавателя</h1>
+        <h1 class="tla-p__title" id="pageTitle">Табло на преподавателя</h1>
         <p class="tla-p__sub" id="whoami">Зареждане…</p>
       </div>
     </div>
@@ -122,7 +123,7 @@
 
     <!-- ── ROSTER ─────────────────────────────────────────────── -->
     <section class="tla-panel" id="panelRoster" hidden>
-      <div class="tla-card">
+      <div class="tla-card" data-admin hidden>
         <h2 class="tla-card__title">Добавяне на ученик</h2>
         <form id="addUserForm">
           <div class="tla-field tla-field--inline">
@@ -142,6 +143,16 @@
               <label for="nuGrade">Клас</label>
               <select id="nuGrade" required></select>
             </div>
+            <div>
+              <label for="nuTeacher">Преподавател</label>
+              <select id="nuTeacher" required></select>
+            </div>
+          </div>
+          <div class="tla-pickrow" style="margin-top:0.7rem;align-items:flex-start;">
+            <div>
+              <span class="tla-muted" style="display:block;margin-bottom:0.3rem;">Предмети</span>
+              <div class="tla-gradegrid" id="nuSubjects"></div>
+            </div>
             <button type="submit" class="tla-btn" id="addUserBtn">Добави</button>
           </div>
         </form>
@@ -150,6 +161,11 @@
           Той може да я смени по-късно. Класът се записва заедно с учебната
           година, в която го задавате, и оттам нататък се вдига сам всеки
           1 септември — няма нужда да се пипа отново.
+        </p>
+        <p class="tla-muted">
+          Преподавателят не е украса: ученик без преподавател не вижда нищо в
+          профила си, защото всяко задание стига до него през преподавателя,
+          който му го е дал.
         </p>
       </div>
 
@@ -163,9 +179,67 @@
         <div class="tla-tablewrap">
           <table class="tla-table" id="rosterTable">
             <thead>
-              <tr><th>Име</th><th>Клас</th><th>Роля</th><th>Статус</th><th>Създаден</th><th></th></tr>
+              <tr><th>Име</th><th>Клас</th><th>Преподавател</th><th>Статус</th><th>Създаден</th><th></th></tr>
             </thead>
             <tbody><tr><td colspan="6" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TEACHERS (admin only) ──────────────────────────────── -->
+    <section class="tla-panel" id="panelTeachers" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Добавяне на преподавател</h2>
+        <form id="addTeacherForm">
+          <div class="tla-field tla-field--inline">
+            <div>
+              <label for="ntName">Име</label>
+              <input type="text" id="ntName" required placeholder="Петя Петрова" />
+            </div>
+            <div>
+              <label for="ntEmail">Имейл</label>
+              <input type="email" id="ntEmail" required placeholder="petya@example.com" />
+            </div>
+            <div>
+              <label for="ntPass">Начална парола</label>
+              <input type="text" id="ntPass" required minlength="8" placeholder="поне 8 знака" />
+            </div>
+            <button type="submit" class="tla-btn" id="addTeacherBtn">Добави</button>
+          </div>
+        </form>
+        <p class="tla-muted">
+          Преподавателят вижда само своите ученици, оценява техните работи и
+          решава кога да им даде дадено задание. Не създава задания, не пипа
+          календара и не прави профили — това остава при вас.
+        </p>
+      </div>
+
+      <div class="tla-card">
+        <h2 class="tla-card__title">Преподаватели</h2>
+        <div class="tla-tablewrap">
+          <table class="tla-table" id="teachersTable">
+            <thead>
+              <tr><th>Име</th><th>Ученици</th><th>Предмети</th><th>Статус</th><th></th></tr>
+            </thead>
+            <tbody><tr><td colspan="5" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tla-card">
+        <h2 class="tla-card__title">Кой кого води</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;">
+          Един ученик може да има различен преподавател по различните предмети.
+          Смяната тук важи веднага — от следващото отваряне ученикът вижда
+          заданията на новия си преподавател.
+        </p>
+        <div class="tla-tablewrap">
+          <table class="tla-table" id="teachingTable">
+            <thead>
+              <tr><th>Ученик</th><th>Предмет</th><th>Преподавател</th><th></th></tr>
+            </thead>
+            <tbody><tr><td colspan="4" class="tla-empty">Зареждане…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -175,10 +249,12 @@
     <section class="tla-panel" id="panelAssign" hidden>
       <div class="tla-card">
         <h2 class="tla-card__title">Задания</h2>
-        <p class="tla-muted" style="margin-bottom:1rem;">
-          Ученикът вижда задание само ако е публикувано, ако е за неговия клас
-          и ако учи предмета. Адресът е страницата, която се отваря с бутона
-          „Започни“ — сменя се тук, ако файлът е преименуван или е заменен с друг.
+        <p class="tla-muted" style="margin-bottom:1rem;" id="assignIntro">
+          До ученика се стига през две врати. „Готово в библиотеката“ казва, че
+          листът е завършен и се вижда от преподавателите — това е ваше решение.
+          „Дай на моите ученици“ е решението на всеки преподавател поотделно:
+          негов ученик вижда листа само ако той му го е дал и не го е скрил.
+          Класът и предметът на листа решават кой от учениците му го получава.
         </p>
         <div class="tla-filters">
           <label for="assignGradeFilter">Клас:</label>
@@ -206,7 +282,16 @@
   <script>
     (function () {
       var esc = TLA.escapeHtml;
-      var state = { attempts: [], profiles: {}, assignments: {}, roster: [], subjects: [] };
+      var state = {
+        attempts: [], profiles: {}, assignments: {}, roster: [], subjects: [],
+        /* who is looking, and what the database lets them see. isAdmin only
+           decides which controls are drawn -- every rule is enforced by the
+           policies in supabase/schema-v3.sql, not here. */
+        me: null, isAdmin: false,
+        teaching: [],      /* (teacher, student, subject) rows visible to me */
+        enrollments: [],   /* which student studies which subject */
+        releases: []       /* which sheets have been given to which students */
+      };
       var filters = { rosterGrade: '', assignGrade: '', assignSubject: '', calGrade: '' };
 
       /* The class a student is in right now, worked out from the class they
@@ -775,15 +860,20 @@
         var tb = document.querySelector('#rosterTable tbody');
         var count = document.getElementById('rosterCount');
         var rows = state.roster.filter(function (p) {
-          if (filters.rosterGrade === '') return true;
+          /* Teachers have their own tab; this table is about students. */
           if (p.role === 'teacher') return false;
+          if (filters.rosterGrade === '') return true;
           return String(gradeOf(p)) === filters.rosterGrade;
         });
 
         var students = state.roster.filter(function (p) { return p.role !== 'teacher'; });
         var noGrade = students.filter(function (p) { return gradeOf(p) === null; }).length;
-        count.textContent = rows.length + ' от ' + state.roster.length +
-          (noGrade ? ' · ' + noGrade + ' без зададен клас' : '');
+        /* A student with no teacher sees an empty portal, so they are counted
+           in the open the same way as a student with no class. */
+        var noTeacher = students.filter(function (p) { return !teacherOf(p.id).length; }).length;
+        count.textContent = rows.length + ' от ' + students.length +
+          (noGrade ? ' · ' + noGrade + ' без зададен клас' : '') +
+          (noTeacher ? ' · ' + noTeacher + ' без преподавател' : '');
 
         if (!rows.length) {
           tb.innerHTML = '<tr><td colspan="6" class="tla-empty">' +
@@ -815,12 +905,17 @@
           return '<tr>' +
             '<td>' + esc(p.full_name || '—') + '</td>' +
             '<td>' + gradeCell + '</td>' +
-            '<td>' + (isTeacher ? '<span class="tla-badge">Преподавател</span>' : 'Ученик') + '</td>' +
+            '<td>' + (isTeacher ? '<span class="tla-badge">Преподавател</span>'
+              : (function () {
+                  var t = teacherOf(p.id);
+                  return t.length ? esc(t.join(', '))
+                    : '<span class="tla-badge tla-badge--off">без преподавател</span>';
+                })()) + '</td>' +
             '<td>' + (p.active
                 ? '<span class="tla-badge tla-badge--graded">Активен</span>'
                 : '<span class="tla-badge tla-badge--off">Спрян</span>') + '</td>' +
             '<td class="tla-num">' + esc(TLA.formatDate(p.created_at)) + '</td>' +
-            '<td>' + (isTeacher ? '' :
+            '<td>' + ((isTeacher || !state.isAdmin) ? '' :
               '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-toggle="' + esc(p.id) + '">' +
                 (p.active ? 'Спри достъпа' : 'Върни достъпа') + '</button> ' +
               '<button type="button" class="tla-btn tla-btn--danger tla-btn--sm" data-del="' + esc(p.id) + '">Изтрий</button>'
@@ -916,16 +1011,31 @@
         try {
           var gradeSel = document.getElementById('nuGrade');
           if (gradeSel.value === '') throw new Error('Изберете клас.');
+          var teacherSel = document.getElementById('nuTeacher');
+          if (!teacherSel.value) throw new Error('Изберете преподавател.');
+          var subjIds = Array.prototype.filter.call(
+            document.querySelectorAll('#nuSubjects input'), function (b) { return b.checked; }
+          ).map(function (b) { return b.value; });
+          if (!subjIds.length) throw new Error('Изберете поне един предмет.');
+
           await adminCall('POST', {
+            kind: 'student',
             email: document.getElementById('nuEmail').value.trim(),
             password: document.getElementById('nuPass').value,
             full_name: document.getElementById('nuName').value.trim(),
-            grade: Number(gradeSel.value)
+            grade: Number(gradeSel.value),
+            teacher_id: teacherSel.value,
+            subject_ids: subjIds
           });
-          say('ok', 'Ученикът е добавен в ' + TLA.gradeLabel(Number(gradeSel.value)) + '.');
+          say('ok', 'Ученикът е добавен в ' + TLA.gradeLabel(Number(gradeSel.value)) +
+                    ' при ' + teacherSel.options[teacherSel.selectedIndex].text + '.');
           e.target.reset();
           fillGradeSelects();
+          fillNewStudentPickers();
           await loadRoster();
+          await loadTeaching();
+          renderRoster();
+          if (state.isAdmin) renderTeachers();
         } catch (err) { say('err', String(err.message || err)); }
         btn.disabled = false;
       });
@@ -1217,7 +1327,7 @@
         /* Both attributes, because two programmes can be on screen at once
            and week 5 exists in each of them. */
         var key = 'data-cal-pick="' + n + '" data-cal-grade="' + prog.grade + '"';
-        var pick = bucket.spare.length
+        var pick = (state.isAdmin && bucket.spare.length)
           ? '<select ' + key + ' aria-label="Задание за седмица ' + n + '">' +
               '<option value="">Закачи задание…</option>' +
               bucket.spare.map(function (a) {
@@ -1246,11 +1356,25 @@
               '<span class="tla-badge tla-badge--' + a.kind + '">' +
                 (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' +
               '<span class="tlc__hw-t">' + esc(a.title) + '</span>' +
-              '<button type="button" class="tla-btn tla-btn--sm' +
-                (a.published ? ' tla-btn--ghost' : '') + '" data-cal-pub="' + esc(a.id) + '">' +
-                (a.published ? 'Скрий' : 'Публикувай') + '</button>' +
-              '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
-                'data-cal-off="' + esc(a.id) + '">Откачи</button>' +
+              /* В календара стои същата двойка врати, както в „Задания“:
+                 библиотеката е на админа, даването — на всеки преподавател. */
+              (state.isAdmin
+                ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                    'data-cal-pub="' + esc(a.id) + '">' +
+                    (a.published ? '✓ В библиотеката' : 'Сложи в библиотеката') + '</button>'
+                : '') +
+              (a.published
+                ? (function () {
+                    var rel = releaseOf(a.id);
+                    var given = !!(rel && !rel.hidden);
+                    return '<button type="button" class="tla-btn tla-btn--sm' +
+                      (given ? ' tla-btn--ghost' : '') + '" data-release="' + esc(a.id) + '" ' +
+                      'data-given="' + (given ? '1' : '0') + '">' +
+                      (given ? 'Скрий от моите' : 'Дай на моите') + '</button>';
+                  })()
+                : '<span class="tla-muted">чернова</span>') +
+              (state.isAdmin ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                'data-cal-off="' + esc(a.id) + '">Откачи</button>' : '') +
             '</div>';
           }).join('') +
           (pick ? '<div class="tlc__hw-add">' + pick + '</div>' : '') +
@@ -1348,6 +1472,22 @@
           return;
         }
 
+        var crel = e.target.closest('[data-release]');
+        if (crel) {
+          clearMsgs();
+          var crid = crel.getAttribute('data-release');
+          var cwas = crel.getAttribute('data-given') === '1';
+          crel.disabled = true;
+          try {
+            await TLA.setRelease(crid, cwas);
+            say('ok', cwas ? 'Скрито от вашите ученици.' : 'Дадено на вашите ученици.');
+            await loadReleases();
+            await loadCalendar();
+            renderAssignAdmin();
+          } catch (err) { crel.disabled = false; say('err', String(err.message || err)); }
+          return;
+        }
+
         var pub = e.target.closest('[data-cal-pub]');
         if (pub) {
           clearMsgs();
@@ -1432,7 +1572,8 @@
                 esc(subjectName(a.subject_id)) + ' · ' +
                 esc(TLA.gradesLabel(a.grades)) + ' · ' +
                 esc(a.url || 'без адрес') + ' · ' +
-                (a.published ? 'публикувано' : 'скрито') + '</div>' +
+                (a.published ? 'в библиотеката' : 'чернова') + '</div>' +
+              (state.isAdmin ?
               '<details class="tla-help" style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
                 '<summary>Клас и предмет</summary>' +
                 '<label class="tla-check tla-check--all">' +
@@ -1465,10 +1606,11 @@
                 '<p class="tla-muted" style="margin:0.5rem 0 0;">' +
                   'Без предмет заданието стига до всеки в избрания клас. С предмет ' +
                   'го виждат само записаните в него.</p>' +
-              '</details>' +
+              '</details>' : '') +
               /* The address lives in the database, so renaming a file in the
                  repository leaves the old one behind. Editing it here beats
                  an SQL statement in the Supabase console. */
+              (state.isAdmin ?
               '<details class="tla-help" style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
                 '<summary>Промени адреса</summary>' +
                 '<div class="tla-field--inline" style="margin-top:0.6rem;">' +
@@ -1479,11 +1621,34 @@
                   '<button type="button" class="tla-btn tla-btn--sm" data-url-save="' +
                     esc(a.id) + '">Запази адреса</button>' +
                 '</div>' +
-              '</details>' +
+              '</details>' : '') +
             '</div>' +
-            '<button type="button" class="tla-btn ' + (a.published ? 'tla-btn--ghost' : '') +
-              '" data-pub="' + esc(a.id) + '">' +
-              (a.published ? 'Скрий' : 'Публикувай') + '</button>' +
+            '<div class="tla-item__acts">' +
+              /* gate 1 -- the admin's: is this sheet finished at all */
+              (state.isAdmin
+                ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                    'data-pub="' + esc(a.id) + '" ' +
+                    'title="Дали листът изобщо се вижда от преподавателите">' +
+                    (a.published ? '✓ В библиотеката' : 'Сложи в библиотеката') + '</button>'
+                : '') +
+              /* gate 2 -- every teacher's own, the admin included */
+              (function () {
+                var rel = releaseOf(a.id);
+                var given = !!(rel && !rel.hidden);
+                var n = reachOf(a);
+                if (!a.published) {
+                  return '<span class="tla-muted tla-item__reach">чернова</span>';
+                }
+                return '<span class="tla-item__reach">' +
+                    (n ? 'стига до ' + n + (n === 1 ? ' мой ученик' : ' мои ученици')
+                       : 'няма твой ученик за този клас') +
+                  '</span>' +
+                  '<button type="button" class="tla-btn ' + (given ? 'tla-btn--ghost' : '') + '" ' +
+                    'data-release="' + esc(a.id) + '" data-given="' + (given ? '1' : '0') + '"' +
+                    (n ? '' : ' disabled') + '>' +
+                    (given ? 'Скрий от моите' : 'Дай на моите ученици') + '</button>';
+              })() +
+            '</div>' +
           '</li>';
         }).join('');
       }
@@ -1547,6 +1712,29 @@
           return;
         }
 
+        /* Giving a sheet to my own students, or taking it back. This is the
+           one control a plain teacher has here. */
+        var relBtn = e.target.closest('[data-release]');
+        if (relBtn) {
+          clearMsgs();
+          var rid = relBtn.getAttribute('data-release');
+          var wasGiven = relBtn.getAttribute('data-given') === '1';
+          relBtn.disabled = true;
+          try {
+            await TLA.setRelease(rid, wasGiven);
+            var ra = state.assignments[rid];
+            say('ok', wasGiven
+              ? 'Скрито от вашите ученици: ' + (ra ? ra.title : '')
+              : 'Дадено на вашите ученици: ' + (ra ? ra.title : ''));
+            await loadReleases();
+            renderAssignAdmin();
+          } catch (err) {
+            relBtn.disabled = false;
+            say('err', String(err.message || err));
+          }
+          return;
+        }
+
         var btn = e.target.closest('[data-pub]');
         if (!btn) return;
         clearMsgs();
@@ -1556,6 +1744,164 @@
           .update({ published: !a.published }).eq('id', id);
         if (upd.error) { say('err', upd.error.message); return; }
         await loadAssignments();
+        renderAssignAdmin();
+      });
+
+      /* ── Преподаватели (само за админа) ──────────────────────────── */
+
+      function renderTeachers() {
+        var tb = document.querySelector('#teachersTable tbody');
+        var teachers = state.roster.filter(function (p) { return p.role === 'teacher'; });
+        if (!teachers.length) {
+          tb.innerHTML = '<tr><td colspan="5" class="tla-empty">Няма преподаватели.</td></tr>';
+        } else {
+          tb.innerHTML = teachers.map(function (t) {
+            var rows = state.teaching.filter(function (x) {
+              return x.teacher_id === t.id && x.active !== false;
+            });
+            var students = {}, subjects = {};
+            rows.forEach(function (x) { students[x.student_id] = 1; subjects[x.subject_id] = 1; });
+            var nStud = Object.keys(students).length;
+            var subjNames = Object.keys(subjects).map(subjectName).join(', ') || '—';
+            var isMe = state.me && t.id === state.me.id;
+            return '<tr>' +
+              '<td>' + esc(t.full_name || '—') +
+                (t.is_admin ? ' <span class="tla-badge">админ</span>' : '') +
+                (isMe ? ' <span class="tla-muted">(вие)</span>' : '') + '</td>' +
+              '<td class="tla-num">' + nStud + '</td>' +
+              '<td>' + esc(subjNames) + '</td>' +
+              '<td>' + (t.active
+                  ? '<span class="tla-badge tla-badge--graded">Активен</span>'
+                  : '<span class="tla-badge tla-badge--off">Спрян</span>') + '</td>' +
+              '<td>' + (t.is_admin ? '' :
+                '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-toggle="' +
+                  esc(t.id) + '">' + (t.active ? 'Спри достъпа' : 'Върни достъпа') + '</button> ' +
+                '<button type="button" class="tla-btn tla-btn--danger tla-btn--sm" data-del="' +
+                  esc(t.id) + '">Изтрий</button>') + '</td>' +
+            '</tr>';
+          }).join('');
+        }
+
+        /* Кой кого води — един ред на (ученик, предмет), за да се смени
+           преподавателят по един предмет, без да се пипат другите. */
+        var tb2 = document.querySelector('#teachingTable tbody');
+        var students = state.roster.filter(function (p) { return p.role !== 'teacher'; });
+        var lines = [];
+        students.forEach(function (st) {
+          (state.subjects || []).forEach(function (sb) {
+            var enrolled = state.enrollments.some(function (e) {
+              return e.profile_id === st.id && e.subject_id === sb.id && e.active !== false;
+            });
+            var current = state.teaching.filter(function (x) {
+              return x.student_id === st.id && x.subject_id === sb.id && x.active !== false;
+            })[0];
+            /* Показваме реда, ако ученикът учи предмета — включително когато
+               още няма преподавател. Иначе точно този ученик остава невидим. */
+            if (!enrolled && !current) return;
+            lines.push({ st: st, sb: sb, teacherId: current ? current.teacher_id : '' });
+          });
+        });
+        lines.sort(function (a, b) {
+          /* Без преподавател — най-отгоре, защото това е недовършеното. */
+          if (!a.teacherId !== !b.teacherId) return a.teacherId ? 1 : -1;
+          return (a.st.full_name || '').localeCompare(b.st.full_name || '', 'bg');
+        });
+        if (!lines.length) {
+          tb2.innerHTML = '<tr><td colspan="4" class="tla-empty">Няма ученици.</td></tr>';
+          return;
+        }
+        tb2.innerHTML = lines.map(function (ln) {
+          return '<tr>' +
+            '<td>' + esc(ln.st.full_name || '—') +
+              (ln.teacherId ? '' : ' <span class="tla-badge tla-badge--off">без преподавател</span>') + '</td>' +
+            '<td>' + esc(ln.sb.name) + '</td>' +
+            '<td><select class="tla-sel" data-teachsel="' + esc(ln.st.id) + '|' + esc(ln.sb.id) + '">' +
+              '<option value="">— без преподавател —</option>' +
+              teachers.map(function (t) {
+                return '<option value="' + esc(t.id) + '"' +
+                  (t.id === ln.teacherId ? ' selected' : '') + '>' + esc(t.full_name || '—') + '</option>';
+              }).join('') +
+            '</select></td>' +
+            '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+              'data-teachsave="' + esc(ln.st.id) + '|' + esc(ln.sb.id) + '">Запази</button></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      document.getElementById('teachingTable').addEventListener('click', async function (e) {
+        var btn = e.target.closest('[data-teachsave]');
+        if (!btn) return;
+        clearMsgs();
+        var key = btn.getAttribute('data-teachsave').split('|');
+        var studentId = key[0], subjectId = key[1];
+        var sel = document.querySelector('[data-teachsel="' + key.join('|') + '"]');
+        var newTeacher = sel.value;
+        btn.disabled = true;
+        try {
+          /* Изключваме стария и включваме новия, вместо да трием: така
+             остава следа кой е водил ученика досега. */
+          var off = await TLA.client.from('teaching').update({ active: false })
+            .eq('student_id', studentId).eq('subject_id', subjectId);
+          if (off.error) throw off.error;
+          if (newTeacher) {
+            var on = await TLA.client.from('teaching').upsert({
+              teacher_id: newTeacher, student_id: studentId,
+              subject_id: subjectId, active: true
+            }, { onConflict: 'teacher_id,student_id,subject_id' });
+            if (on.error) throw on.error;
+          }
+          say('ok', newTeacher ? 'Преподавателят е сменен.' : 'Ученикът остана без преподавател.');
+          await loadTeaching();
+          await loadEnrollments();
+          renderTeachers();
+          renderRoster();
+        } catch (err) { say('err', String(err.message || err)); }
+        btn.disabled = false;
+      });
+
+      document.getElementById('teachersTable').addEventListener('click', async function (e) {
+        var tgl = e.target.closest('[data-toggle]');
+        var del = e.target.closest('[data-del]');
+        clearMsgs();
+        if (tgl) {
+          var id = tgl.getAttribute('data-toggle');
+          var row = state.roster.filter(function (p) { return p.id === id; })[0];
+          var upd = await TLA.client.from('profiles').update({ active: !row.active }).eq('id', id);
+          if (upd.error) { say('err', upd.error.message); return; }
+          say('ok', row.active ? 'Достъпът е спрян.' : 'Достъпът е върнат.');
+          await loadRoster(); renderTeachers();
+          return;
+        }
+        if (del) {
+          var did = del.getAttribute('data-del');
+          var drow = state.roster.filter(function (p) { return p.id === did; })[0];
+          if (!confirm('Изтриване на преподавателя „' + (drow.full_name || '') +
+                       '“. Ако още води ученици, действието ще бъде отказано.')) return;
+          try {
+            await adminCall('DELETE', { user_id: did });
+            say('ok', 'Профилът е изтрит.');
+            await loadRoster(); await loadTeaching(); renderTeachers();
+          } catch (err) { say('err', String(err.message || err)); }
+        }
+      });
+
+      document.getElementById('addTeacherForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        clearMsgs();
+        var btn = document.getElementById('addTeacherBtn');
+        btn.disabled = true;
+        try {
+          await adminCall('POST', {
+            kind: 'teacher',
+            full_name: document.getElementById('ntName').value.trim(),
+            email: document.getElementById('ntEmail').value.trim(),
+            password: document.getElementById('ntPass').value
+          });
+          say('ok', 'Преподавателят е добавен. Дайте му имейла и паролата.');
+          e.target.reset();
+          await loadRoster(); await loadTeaching(); await loadEnrollments(); renderTeachers();
+        } catch (err) { say('err', String(err.message || err)); }
+        btn.disabled = false;
       });
 
       /* ---- loaders ---- */
@@ -1592,6 +1938,69 @@
         state.profiles = {};
         state.roster.forEach(function (p) { state.profiles[p.id] = p; });
         renderRoster();
+        if (state.isAdmin) fillNewStudentPickers();
+      }
+
+      /* Both of these come back already narrowed by the database: the admin
+         gets every row, a teacher only their own. */
+      async function loadTeaching() {
+        try { state.teaching = await TLA.listTeaching(); }
+        catch (err) { state.teaching = []; say('err', String(err.message || err)); }
+      }
+
+      /* Кой какъв предмет учи. „Кой кого води“ стъпва на това, а не на
+         teaching: ученик без преподавател няма ред в teaching, а точно той
+         е този, на когото най-много трябва да се зададе преподавател. */
+      async function loadEnrollments() {
+        var res = await TLA.client.from('enrollments')
+          .select('id, profile_id, subject_id, active').eq('active', true);
+        state.enrollments = res.error ? [] : (res.data || []);
+      }
+
+      async function loadReleases() {
+        try { state.releases = await TLA.listReleases(); }
+        catch (err) { state.releases = []; }
+      }
+
+      /* Which of MY students a sheet would actually reach, by the same three
+         tests the database applies: I teach them, in this subject, and the
+         sheet is for their class. Shown next to the button so giving a sheet
+         is never a guess. */
+      function reachOf(a) {
+        var mine = state.teaching.filter(function (t) {
+          return t.teacher_id === (state.me && state.me.id) && t.active !== false;
+        });
+        var hit = {};
+        mine.forEach(function (t) {
+          if (a.subject_id && t.subject_id !== a.subject_id) return;
+          var p = state.profiles[t.student_id];
+          if (!p || p.active === false) return;
+          var g = gradeOf(p);
+          if (g === null || g < -1 || g > 12) return;
+          if (a.grades && a.grades.length && a.grades.indexOf(g) === -1) return;
+          hit[t.student_id] = true;
+        });
+        return Object.keys(hit).length;
+      }
+
+      function releaseOf(aid) {
+        var mineId = state.me && state.me.id;
+        for (var i = 0; i < state.releases.length; i++) {
+          if (state.releases[i].assignment_id === aid &&
+              state.releases[i].teacher_id === mineId) return state.releases[i];
+        }
+        return null;
+      }
+
+      function teacherOf(studentId) {
+        var names = [];
+        state.teaching.forEach(function (t) {
+          if (t.student_id !== studentId || t.active === false) return;
+          var tp = state.profiles[t.teacher_id];
+          var nm = (tp && tp.full_name) || null;
+          if (nm && names.indexOf(nm) === -1) names.push(nm);
+        });
+        return names;
       }
 
       async function loadResults() {
@@ -1601,6 +2010,32 @@
         if (res.error) { say('err', res.error.message); return; }
         state.attempts = res.data || [];
         renderAttempts();
+      }
+
+      /* The teacher and subject pickers on the add-student form. A student
+         with neither is a student who sees nothing, so both are required
+         here and again in the Edge Function. */
+      function fillNewStudentPickers() {
+        var tsel = document.getElementById('nuTeacher');
+        if (tsel) {
+          var teachers = state.roster.filter(function (p) {
+            return p.role === 'teacher' && p.active;
+          });
+          tsel.innerHTML = '<option value="">изберете…</option>' +
+            teachers.map(function (t) {
+              return '<option value="' + esc(t.id) + '"' +
+                (state.me && t.id === state.me.id ? ' selected' : '') + '>' +
+                esc(t.full_name || '—') + '</option>';
+            }).join('');
+        }
+        var box = document.getElementById('nuSubjects');
+        if (box) {
+          box.innerHTML = (state.subjects || []).map(function (sb, i) {
+            return '<label class="tla-check">' +
+              '<input type="checkbox" value="' + esc(sb.id) + '"' +
+              (i === 0 ? ' checked' : '') + ' /> ' + esc(sb.name) + '</label>';
+          }).join('') || '<span class="tla-muted">Няма предмети.</span>';
+        }
       }
 
       function fillGradeSelects() {
@@ -1630,15 +2065,49 @@
         if (!TLA.isConfigured()) { say('err', TLA.notConfiguredMessage()); return; }
         var auth = await TLA.requireAuth({ role: 'teacher' });
         if (!auth) return;
+
+        state.me = auth.profile || { id: auth.session.user.id };
+        state.isAdmin = TLA.isAdmin(auth.profile);
+
         document.getElementById('whoami').textContent =
-          (auth.profile && auth.profile.full_name) || auth.session.user.email;
+          ((auth.profile && auth.profile.full_name) || auth.session.user.email) +
+          (state.isAdmin ? ' · админ' : '');
+
+        /* Everything marked data-admin appears only for the admin. This is
+           tidiness, not security: a teacher who un-hides these by hand gets
+           nothing from them, because the database refuses the writes. The
+           rules live in supabase/schema-v3.sql. */
+        Array.prototype.forEach.call(document.querySelectorAll('[data-admin]'), function (el) {
+          if (state.isAdmin) el.removeAttribute('hidden');
+        });
+
+        if (!state.isAdmin) {
+          document.getElementById('pageTitle').textContent = 'Табло на преподавателя';
+          var intro = document.getElementById('assignIntro');
+          if (intro) {
+            intro.textContent = 'Тук решавате кога вашите ученици да получат всеки лист. ' +
+              'Листовете се правят от администратора; класът и предметът на листа решават ' +
+              'кой от вашите ученици го получава.';
+          }
+          /* The calendar is the academy's programme, arranged by the admin. */
+          document.body.classList.add('tla-noadmin');
+        } else {
+          document.getElementById('pageTitle').textContent = 'Табло на академията';
+        }
+
         fillGradeSelects();
         renderCalIntro();
         await loadSubjects();
         await loadAssignments();
+        await loadTeaching();
+        if (state.isAdmin) await loadEnrollments();
+        await loadReleases();
         await loadCalendar();
         await loadRoster();
         await loadResults();
+        fillNewStudentPickers();
+        renderAssignAdmin();
+        if (state.isAdmin) renderTeachers();
       })();
     })();
   </script>

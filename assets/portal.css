@@ -1138,3 +1138,24 @@ body.tlp-space { background: #05070F; }
 .tlp__login-head .tlp__lock { display: none; }
 
 @media (prefers-reduced-motion: reduce) { .tls-logo { transition: none; } }
+
+/* ── Двете врати към ученика (teacher.html → Задания, Календар) ──
+   Действията на един ред задание: вляво колко ученици ще го получат,
+   вдясно бутоните. На тясно падат под заглавието, вместо да го свият. */
+.tla-item__acts{
+  display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.tla-item__reach{
+  font-size:0.82rem; color:var(--tlp-ink-soft, #55658A); white-space:nowrap;
+}
+/* „Дай на моите ученици“, когато няма на кого: изключен бутон при 0.55
+   прозрачност още изглежда като главното действие на реда, защото е
+   запълнен. Празният вариант казва по-честно, че няма какво да се натисне. */
+.tla-btn[data-release]:disabled{
+  background:transparent; color:var(--tlp-ink-soft, #55658A);
+  border:1px dashed rgba(85,101,138,0.45); box-shadow:none; opacity:1;
+}
+@media (max-width:640px){
+  .tla-item__acts{ justify-content:flex-start; margin-top:0.6rem; width:100%; }
+}

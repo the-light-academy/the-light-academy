@@ -77,6 +77,7 @@
         <div>
           <p class="tlp__hello" id="hello">Здравей 👋<span class="tlp__grade" id="helloGrade" hidden></span></p>
           <p class="tlp__hello-sub" id="helloSub">Зареждане…</p>
+          <p class="tlp__hello-sub" id="helloTeacher" hidden></p>
         </div>
         <div>
           <div class="tlp__ring" id="ring" role="img" aria-label="Прогрес">
@@ -323,6 +324,7 @@
       /* ---- the four figures ------------------------------------------ */
 
       var myGrade = null;
+      var myTeachers = [];
 
       function renderHeader(profile, session) {
         var name = (profile && profile.full_name) || (session && session.user.email) || '';
@@ -364,6 +366,11 @@
         $('helloSub').textContent =
           (finished && !published.length) ? 'Завършил си 12. клас — тук вече няма задачи за теб. Резултатите ти остават.'
           : (noClass && !published.length) ? 'Класът ти още не е зададен, затова тук няма задачи. Кажи на преподавателя си.'
+          /* От schema-v3.sql насам задание стига до ученика само през
+             преподавател. Без преподавател профилът е празен — и това е
+             съвсем различна причина от „няма още качени задачи“. */
+          : (!published.length && !myTeachers.length)
+              ? 'Още нямаш записан преподавател, затова тук няма задачи. Кажи на академията.'
           : !published.length ? 'Профилът ти е готов. Тук ще се появят задачите и резултатите ти.'
           : !attempts.length ? 'Започни от „Домашни“ или „Пробни изпити“ — резултатите се записват тук.'
           : 'Ето докъде стигна подготовката ти.';
@@ -945,6 +952,21 @@
 
         renderHeader(auth.profile, auth.session);
         if (auth.profile && auth.profile.role === 'teacher') $('teacherLink').hidden = false;
+
+        /* Кой ми преподава. Идва от SECURITY DEFINER функция, така че
+           ученикът научава името, без да може да чете чужди профили. */
+        try { myTeachers = await TLA.myTeachers(); } catch (e) { myTeachers = []; }
+        if (myTeachers.length) {
+          var seen = {}, names = [];
+          myTeachers.forEach(function (t) {
+            if (!t.full_name || seen[t.full_name]) return;
+            seen[t.full_name] = 1; names.push(t.full_name);
+          });
+          var line = $('helloTeacher');
+          line.textContent = (names.length === 1 ? 'Преподавател: ' : 'Преподаватели: ') +
+            names.join(', ');
+          line.hidden = false;
+        }
 
         var assignments;
         try {

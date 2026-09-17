@@ -80,7 +80,7 @@
       if (!session) return null;
       var res = await client
         .from('profiles')
-        .select('id, full_name, role, active, grade_at_entry, entry_school_year')
+        .select('id, full_name, role, active, is_admin, grade_at_entry, entry_school_year')
         .eq('id', session.user.id)
         .maybeSingle();
       if (res.error) return null;
@@ -236,6 +236,68 @@
       var res = await client.from('attempts').insert(row).select('id').maybeSingle();
       if (res.error) throw res.error;
       return res.data;
+    },
+
+    /* ---- who teaches whom ------------------------------------------
+       The database is what actually decides any of this -- see the
+       policies in supabase/schema-v3.sql. These are here so a page can
+       show the right controls, not so it can enforce anything. */
+
+    isAdmin: function (profile) {
+      return !!(profile && profile.is_admin === true && profile.active !== false);
+    },
+
+    /* Every (teacher, student, subject) row the caller is allowed to see.
+       For the admin that is all of them; for a teacher, their own. */
+    listTeaching: async function () {
+      if (!client) return [];
+      var res = await client
+        .from('teaching')
+        .select('id, teacher_id, student_id, subject_id, active')
+        .eq('active', true);
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    /* Which sheets the signed-in teacher has given to their students.
+       A row with hidden = true was given and then taken back. */
+    listReleases: async function () {
+      if (!client) return [];
+      var res = await client
+        .from('assignment_releases')
+        .select('id, assignment_id, teacher_id, hidden, released_at');
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    /* Give a sheet to my students, or take it back. Upsert rather than
+       insert, so pressing it twice is harmless and un-hiding is the same
+       call with hidden = false. */
+    setRelease: async function (assignmentId, hidden) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var session = await TLA.getSession();
+      if (!session) throw new Error('Няма активна сесия.');
+      var res = await client
+        .from('assignment_releases')
+        .upsert({
+          assignment_id: assignmentId,
+          teacher_id: session.user.id,
+          hidden: !!hidden
+        }, { onConflict: 'assignment_id,teacher_id' })
+        .select('id, assignment_id, teacher_id, hidden')
+        .maybeSingle();
+      if (res.error) throw res.error;
+      return res.data;
+    },
+
+    /* For the portal: my teachers, by name and subject. Comes from a
+       SECURITY DEFINER function, so a student learns who teaches them
+       without being able to read anybody's profile row. */
+    myTeachers: async function () {
+      if (!client) return [];
+      var res = await client.rpc('my_teachers');
+      if (res.error) return [];
+      return res.data || [];
     },
 
     /* ---- small shared helpers ------------------------------------- */
