@@ -4,6 +4,12 @@
 -- Пусни този файл ЦЕЛИЯ и наведнъж: SQL Editor → New query → Run.
 -- Всичко е в една транзакция — или минава изцяло, или не се променя нищо.
 --
+-- ⚠️  ВАЖНО: ако в редактора има МАРКИРАН текст, Supabase пуска само него,
+--     а не целия файл. Натисни някъде в полето и Ctrl+A (Cmd+A на Mac),
+--     за да си сигурна, че тръгва всичко. Файл, пуснат на парчета, дава
+--     объркващи грешки от рода на „function public.teaches(uuid) does not
+--     exist“ — функцията се създава в раздел 2, а се използва в раздел 5.
+--
 -- Очаква schema.sql и schema-v2.sql да са минали веднъж преди него.
 -- Безопасен е за повторно пускане.
 --
@@ -314,7 +320,31 @@ end $$;
 
 -- ---------------------------------------------------------------------
 -- 5. Политиките
+--
+--    Първо се уверяваме, че четирите функции от раздел 2 наистина ги има.
+--    Ако файлът е пуснат на парчета, оттук нататък грешките са неразбираеми
+--    („function public.teaches(uuid) does not exist“), затова казваме право
+--    какво се е случило.
 -- ---------------------------------------------------------------------
+
+do $$
+declare
+  missing text;
+begin
+  select string_agg(want, ', ')
+    into missing
+    from (values ('is_admin()'), ('teaches(uuid)'), ('teaches_subject(uuid,uuid)'),
+                 ('can_see_assignment(uuid,uuid)'), ('my_teachers()')) as v(want)
+   where to_regprocedure('public.' || want) is null;
+
+  if missing is not null then
+    raise exception
+      'Липсват функции: %. Това значи, че файлът е пуснат на парчета. Маркирай всичко (Ctrl+A) и пусни schema-v3.sql целия — нищо не е променено.',
+      missing;
+  end if;
+end $$;
+
+
 
 alter table public.teaching            enable row level security;
 alter table public.assignment_releases enable row level security;
