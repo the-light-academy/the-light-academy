@@ -228,6 +228,33 @@ on conflict (slug) do update set
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
 
+-- ── 6. клас, седмица 5 (19–23 окт. 2026): степенуване, втора част ──
+-- Деление на степени с равни основи и степенуване на произведение,
+-- частно и степен. Десет задачи с избор, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w05',
+   'Домашно — Деление и степенуване на степени',
+   'homework',
+   'homework_6_w05.html',
+   10,
+   false,
+   394,
+   5,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
 -- Провери какво се получи:
 --   select slug, title, grades, week, max_points, published
 --     from public.assignments
