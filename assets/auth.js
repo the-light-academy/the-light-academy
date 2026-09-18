@@ -41,6 +41,94 @@
       : 'Порталът още не е свързан с база данни. Попълнете assets/supabase-config.js.';
   }
 
+  /* ---- преглед на лист от преподавател -----------------------------
+     „Отвори“ в таблото праща ?preview=1. Листът се показва точно както го
+     вижда ученикът — същите задачи, същият ред — но без бутон за предаване
+     и без да пише в базата.
+
+     Стои тук, а не в осемнайсетте листа, защото всички минават през този
+     файл. Така и следващият нов лист го получава, без да се пипа.
+
+     Само за преподавател: ученик с ?preview=1 в адреса вижда обикновения
+     лист. Иначе едно поставено от някого в чата URL-че би му дало начин да
+     реши домашното, без да го предаде. */
+  var previewOn = false;
+
+  /* Бутоните за предаване из листовете. Изброени, а не отгатнати по клас,
+     защото всеки лист си има собствен стил и няма общ клас. */
+  var SUBMIT_IDS = [
+    'checkBtn',        /* домашните листове */
+    'submitBtn',       /* входно ниво 2 и 6 */
+    'finish-btn',      /* входният тест отвътре */
+    'hwSubmit',        /* общият рендер homework.html */
+    'p1-finish-btn',   /* матурите — първа част */
+    'p2-finish-btn'    /* матурите — втора част */
+  ];
+
+  var previewAsked = /[?&]preview=1(&|$)/.test(global.location.search);
+
+  /* Спирачката се вдига ВЕДНАГА, щом адресът иска преглед, и пада едва ако
+     се окаже, че гледа ученик. Така посоката на грешката е безобидната: в
+     най-лошия случай за част от секундата не се записва нещо, вместо
+     преподавател да остави опит на свое име в чужд профил. */
+  previewOn = previewAsked;
+
+  function enterPreviewIfAsked(profile) {
+    if (!previewAsked) return;
+    if (!profile || profile.role !== 'teacher') { previewOn = false; return; }
+    previewOn = true;
+
+    var doc = global.document;
+    if (doc.documentElement.getAttribute('data-tla-preview')) return;   /* вече е включен */
+    doc.documentElement.setAttribute('data-tla-preview', '1');
+
+    var css = doc.createElement('style');
+    css.textContent =
+      '[data-tla-preview] #' + SUBMIT_IDS.join(',[data-tla-preview] #') + '{display:none !important;}' +
+      '.tla-prev{position:sticky;top:0;z-index:9999;display:flex;gap:10px;' +
+        'align-items:center;justify-content:center;flex-wrap:wrap;' +
+        'padding:10px 16px;background:#16233F;color:#fff;' +
+        'font:700 14px/1.45 Nunito,system-ui,sans-serif;text-align:center;}' +
+      '.tla-prev b{color:#FFD98A;}' +
+      '.tla-prev a{color:#fff;text-decoration:underline;white-space:nowrap;}';
+    doc.head.appendChild(css);
+
+    function banner() {
+      if (doc.querySelector('.tla-prev')) return;
+      var bar = doc.createElement('div');
+      bar.className = 'tla-prev';
+      bar.innerHTML =
+        '<span><b>Преглед.</b> Това е листът, както го вижда ученикът. ' +
+        'Няма бутон за предаване и нищо не се записва.</span>' +
+        '<a href="teacher.html">Обратно към таблото</a>';
+      doc.body.insertBefore(bar, doc.body.firstChild);
+    }
+    if (doc.body) banner();
+    else doc.addEventListener('DOMContentLoaded', banner);
+
+    /* Листът рисува задачите си след requireAuth(), тоест бутонът може да
+       се появи след този момент. Наблюдаваме го и го махаме, ако се върне. */
+    function hideSubmits() {
+      for (var i = 0; i < SUBMIT_IDS.length; i++) {
+        var el = doc.getElementById(SUBMIT_IDS[i]);
+        if (el) el.style.display = 'none';
+      }
+    }
+    hideSubmits();
+    if (global.MutationObserver) {
+      new global.MutationObserver(hideSubmits)
+        .observe(doc.documentElement, { childList: true, subtree: true });
+    }
+  }
+
+  /* Листовете пазят входа по два начина: повечето с requireAuth(), а трите
+     матури с getSession() направо. Затова прегледът не виси на нито един от
+     тях — включва се сам при зареждане. */
+  function bootPreview() {
+    if (!previewAsked) return;
+    TLA.getProfile().then(enterPreviewIfAsked).catch(function () { previewOn = false; });
+  }
+
   var TLA = {
     client: client,
     isConfigured: function () { return !!client; },
@@ -111,8 +199,16 @@
           ? 'teacher.html' : 'portal.html');
         return null;
       }
+      /* Преподавател, отворил лист с ?preview=1, го вижда както го вижда
+         ученикът, но без бутон за предаване и без да се записва нищо. */
+      enterPreviewIfAsked(profile);
       return { session: session, profile: profile };
     },
+
+    /* Вярно е само когато преподавател гледа лист с ?preview=1. Листовете
+       не го викат — auth.js се оправя сам — но е тук, ако някой лист
+       поиска да покаже нещо различно в преглед. */
+    isPreview: function () { return previewOn; },
 
     /* ---- school year and grade -------------------------------------
        The same arithmetic as school_year_of() / current_grade() in
@@ -214,6 +310,10 @@
        insert policy checks it again server-side, so a forged id is
        rejected by the database, not by this line. */
     saveAttempt: async function (slug, payload) {
+      /* Скритият бутон е подредбата; това е същинската спирачка. Дори лист,
+         който извика записването по друг път — часовник, който предава сам,
+         стар код — в преглед не оставя нищо в базата. */
+      if (previewOn) return { preview: true };
       if (!client) throw new Error(notConfiguredMessage());
       var session = await TLA.getSession();
       if (!session) throw new Error('Няма активна сесия.');
@@ -325,4 +425,5 @@
   };
 
   global.TLA = TLA;
+  bootPreview();
 })(window);

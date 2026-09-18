@@ -1356,6 +1356,7 @@
               '<span class="tla-badge tla-badge--' + a.kind + '">' +
                 (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' +
               '<span class="tlc__hw-t">' + esc(a.title) + '</span>' +
+              previewLink(a) +
               /* В календара стои същата двойка врати, както в „Задания“:
                  библиотеката е на админа, даването — на всеки преподавател. */
               (state.isAdmin
@@ -1624,6 +1625,7 @@
               '</details>' : '') +
             '</div>' +
             '<div class="tla-item__acts">' +
+              previewLink(a) +
               /* gate 1 -- the admin's: is this sheet finished at all */
               (state.isAdmin
                 ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
@@ -1981,6 +1983,17 @@
           hit[t.student_id] = true;
         });
         return Object.keys(hit).length;
+      }
+
+      /* „Отвори“ праща ?preview=1: листът се вижда както го вижда ученикът,
+         но без бутон за предаване и без да записва нищо. Правилото живее в
+         assets/auth.js, за да важи за всичките осемнайсет листа наведнъж. */
+      function previewLink(a, label) {
+        if (!a.url) return '';
+        var href = a.url + (a.url.indexOf('?') === -1 ? '?' : '&') + 'preview=1';
+        return '<a class="tla-btn tla-btn--ghost tla-btn--sm" href="' + esc(href) + '" ' +
+          'target="_blank" rel="noopener" title="Отваря листа в нов раздел, без предаване">' +
+          (label || 'Отвори') + '</a>';
       }
 
       function releaseOf(aid) {
