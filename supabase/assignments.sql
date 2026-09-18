@@ -255,6 +255,34 @@ on conflict (slug) do update set
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
 
+-- ── 6. клас, седмица 2 (28 септ. – 2 окт. 2026): геометрия ──
+-- Седмица 2 преговаря две неща: част от число и процент (това е hw6-w02)
+-- и геометричните фигури от 5. клас — това е листът тук. Двата стоят на
+-- една и съща седмица нарочно.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w02-geo',
+   'Домашно — Геометрични фигури от 5. клас',
+   'homework',
+   'homework_6_w02_geo.html',
+   10,
+   false,
+   392,
+   2,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
 -- Провери какво се получи:
 --   select slug, title, grades, week, max_points, published
 --     from public.assignments

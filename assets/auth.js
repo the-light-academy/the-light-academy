@@ -93,8 +93,13 @@
       '.tla-prev a{color:#fff;text-decoration:underline;white-space:nowrap;}' +
       /* Зеленото е рамка и лек фон, а не запълване: надписът вътре си остава
          както е написан в листа и се чете със същия контраст. */
+      /* Отстъпът вдясно е запазена лента за надписа „ВЕРЕН“. Без него
+         дълъг отговор минава под него — „правоъгълен и равнобедрен“ го
+         прави на 430px. По-добре текстът да се пренесе, отколкото да се
+         застъпят. */
       '[data-tla-preview] .tla-key{border:2px solid #16603A !important;' +
-        'background:#E9F7EF !important;box-shadow:none !important;position:relative;}' +
+        'background:#E9F7EF !important;box-shadow:none !important;position:relative;' +
+        'padding-right:72px !important;}' +
       '[data-tla-preview] .tla-key::after{content:"верен";position:absolute;' +
         'top:50%;right:12px;transform:translateY(-50%);' +
         'font:800 11px/1 Nunito,system-ui,sans-serif;letter-spacing:.06em;' +
