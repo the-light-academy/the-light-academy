@@ -259,18 +259,10 @@
     "offers": [
       {
         "@type": "Offer",
-        "price": "280",
+        "price": "80",
         "priceCurrency": "EUR",
         "url": "https://the-light-academy.github.io/the-light-academy/course_math_6_class.html",
-        "description": "280 EUR на вноска, 3 вноски общо (или 800 EUR еднократно), до 6 деца в група",
-        "category": "Education"
-      },
-      {
-        "@type": "Offer",
-        "price": "800",
-        "priceCurrency": "EUR",
-        "url": "https://the-light-academy.github.io/the-light-academy/course_math_6_class.html",
-        "description": "800 EUR еднократно плащане за целия курс",
+        "description": "80 EUR на месец, до 6 деца в група",
         "category": "Education"
       }
     ]
@@ -397,10 +389,8 @@
         <span class="price-note" style="display:block; margin-bottom:0.4rem;">До 6 деца в групата</span>
 
         <div class="price-value-wrap">
-          <span class="price-value" id="priceValue">280 <small>€ / вноска</small></span>
+          <span class="price-value" id="priceValue">80 <small>€ / месец</small></span>
         </div>
-        <span class="price-note">цената е за 1 вноска от общо 3</span>
-        <span class="price-onetime" id="priceOnetime">или еднократно плащане – 800 €</span>
 
         <button type="button" class="btn-enroll" style="margin-top:1.1rem; width:100%; justify-content:center;" onclick="scrollToEnrollForm()">Запиши се</button>
         <span style="display:block; margin-top:0.65rem; text-align:center; font-size:0.82rem; font-weight:700; color:var(--mid);">за да запазите място в курса</span>
@@ -421,7 +411,13 @@
             <span class="glance-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
             </span>
-            <div class="glance-text"><strong>График</strong><span>четвъртък 18.15–20.00</span></div>
+            <div class="glance-text"><strong>График</strong><span>четвъртък 18:00–19:00</span></div>
+          </div>
+          <div class="glance-item">
+            <span class="glance-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 1.5"/></svg>
+            </span>
+            <div class="glance-text"><strong>Продължителност</strong><span>60 минути</span></div>
           </div>
           <div class="glance-item">
             <span class="glance-icon">
@@ -430,22 +426,6 @@
             <div class="glance-text"><strong>Период</strong><span>8 окт 2026 – 13 май 2027</span></div>
           </div>
         </div>
-
-        <h3>Срокове за плащане</h3>
-        <ol class="pay-timeline" id="payTimeline">
-          <li class="pay-step">
-            <span class="pay-marker">1</span>
-            <div class="pay-body"><strong>Първа вноска</strong><span>при записване</span></div>
-          </li>
-          <li class="pay-step" data-due="2026-12-15">
-            <span class="pay-marker">2</span>
-            <div class="pay-body"><strong>Втора вноска</strong><span>до 15 декември 2026 г.</span></div>
-          </li>
-          <li class="pay-step" data-due="2027-03-01">
-            <span class="pay-marker">3</span>
-            <div class="pay-body"><strong>Трета вноска</strong><span>до 1 март 2027 г.</span></div>
-          </li>
-        </ol>
 
         <div class="enroll-form-section" id="enrollFormSection">
           <h3>Запиши се за курса</h3>
@@ -512,25 +492,7 @@
       }
     })();
 
-    (function () {
-      const steps = Array.from(document.querySelectorAll('#payTimeline .pay-step[data-due]'));
-      const now = new Date();
-      let nextMarked = false;
-      steps.forEach(step => {
-        const due = new Date(step.dataset.due);
-        if (due < now) {
-          step.classList.add('is-done');
-          step.querySelector('.pay-marker').textContent = '✓';
-        } else if (!nextMarked) {
-          step.classList.add('is-next');
-          const badge = document.createElement('span');
-          badge.className = 'pay-due';
-          badge.textContent = 'Предстои';
-          step.querySelector('.pay-body').appendChild(badge);
-          nextMarked = true;
-        }
-      });
-    })();
+
   </script>
 
   <script>
