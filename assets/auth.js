@@ -90,7 +90,18 @@
         'padding:10px 16px;background:#16233F;color:#fff;' +
         'font:700 14px/1.45 Nunito,system-ui,sans-serif;text-align:center;}' +
       '.tla-prev b{color:#FFD98A;}' +
-      '.tla-prev a{color:#fff;text-decoration:underline;white-space:nowrap;}';
+      '.tla-prev a{color:#fff;text-decoration:underline;white-space:nowrap;}' +
+      /* Зеленото е рамка и лек фон, а не запълване: надписът вътре си остава
+         както е написан в листа и се чете със същия контраст. */
+      '[data-tla-preview] .tla-key{border:2px solid #16603A !important;' +
+        'background:#E9F7EF !important;box-shadow:none !important;position:relative;}' +
+      '[data-tla-preview] .tla-key::after{content:"верен";position:absolute;' +
+        'top:50%;right:12px;transform:translateY(-50%);' +
+        'font:800 11px/1 Nunito,system-ui,sans-serif;letter-spacing:.06em;' +
+        'text-transform:uppercase;color:#16603A;pointer-events:none;}' +
+      '[data-tla-preview] .tla-keytag{display:inline-block;margin-left:10px;' +
+        'padding:3px 10px;border-radius:999px;background:#E9F7EF;color:#16603A;' +
+        'font:800 12px/1.4 Nunito,system-ui,sans-serif;white-space:nowrap;}';
     doc.head.appendChild(css);
 
     function banner() {
@@ -115,9 +126,79 @@
       }
     }
     hideSubmits();
+    markAnswers();
     if (global.MutationObserver) {
-      new global.MutationObserver(hideSubmits)
+      new global.MutationObserver(function () { hideSubmits(); markAnswers(); })
         .observe(doc.documentElement, { childList: true, subtree: true });
+    }
+  }
+
+  /* ---- верният отговор, в зелено --------------------------------------
+     За да се провери един лист, трябва да се види ключът, а не да се решава
+     наум. В преглед верният отговор се огражда в зелено, а при задачите с
+     писан отговор той се изписва до полето.
+
+     Ключът се чете от самия лист. auth.js е обикновен <script>, значи стои
+     в същия глобален обхват като скрипта на листа — затова `QUESTIONS` и
+     `part1Steps` се виждат по име, макар да са `const` и да ги няма в
+     window. Оттам и двата вида листове се покриват, без да се пипа нито
+     един от осемнайсетте. */
+  function answerKey() {
+    /* домашните листове и входните нива */
+    try { if (typeof QUESTIONS !== 'undefined' && QUESTIONS.length) return QUESTIONS; }
+    catch (e) {}
+    return null;
+  }
+
+  function maturaKey() {
+    /* матурите показват по една задача; трябва и коя е тя в момента */
+    try {
+      if (typeof part1Steps !== 'undefined' && typeof p1Index !== 'undefined') {
+        return { steps: part1Steps, at: p1Index };
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function markAnswers() {
+    var doc = global.document;
+
+    var qs = answerKey();
+    if (qs) {
+      for (var i = 0; i < qs.length; i++) {
+        var q = qs[i];
+
+        /* избор от няколко: огражда се верният бутон */
+        if (typeof q.correct === 'number') {
+          var btn = doc.querySelector('.choice[data-q="' + i + '"][data-c="' + q.correct + '"]');
+          if (btn && !btn.classList.contains('tla-key')) btn.classList.add('tla-key');
+        }
+
+        /* писан отговор: изписва се до полето, веднъж */
+        var fields = q.fields || (q.answer != null ? [{ answer: q.answer }] : null);
+        if (!fields) continue;
+        for (var f = 0; f < fields.length; f++) {
+          var want = fields[f].answer;
+          if (want == null || want === '') continue;
+          var inp = q.fields
+            ? doc.querySelector('input[data-q="' + i + '"][data-f="' + f + '"]')
+            : doc.querySelector('input[data-q="' + i + '"]');
+          if (!inp || inp.getAttribute('data-tla-key')) continue;
+          inp.setAttribute('data-tla-key', '1');
+          var tag = doc.createElement('span');
+          tag.className = 'tla-keytag';
+          tag.textContent = 'верен отговор: ' + want;
+          inp.parentNode.insertBefore(tag, inp.nextSibling);
+        }
+      }
+    }
+
+    var m = maturaKey();
+    if (m && m.steps[m.at] && typeof m.steps[m.at].correct === 'number') {
+      var opts = doc.querySelectorAll('.options-list .option');
+      for (var k = 0; k < opts.length; k++) {
+        opts[k].classList.toggle('tla-key', k === m.steps[m.at].correct);
+      }
     }
   }
 
