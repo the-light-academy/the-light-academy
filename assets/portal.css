@@ -1159,3 +1159,18 @@ body.tlp-space { background: #05070F; }
 @media (max-width:640px){
   .tla-item__acts{ justify-content:flex-start; margin-top:0.6rem; width:100%; }
 }
+
+/* ── Дроби в текста на задача ──────────────────────────────────────────
+   Домашните пишат 5/12 като истинска дроб — две числа с черта между тях,
+   а не като „5/12“. Записът в attempts носи същия този HTML, затова
+   прегледът на работата тук се нуждае от същите правила; без тях
+   числителят и знаменателят се слепват в „512“.
+   Правилата са същите като в самия лист, за да изглежда еднакво. */
+.frac{
+  display:inline-flex; flex-direction:column; vertical-align:middle;
+  text-align:center; font-size:.82em; line-height:1.05;
+  margin:0 .14em; position:relative; top:.06em;
+}
+.frac .num{ display:block; padding:0 .3em 2px; border-bottom:1.8px solid currentColor; }
+.frac .den{ display:block; padding:2px .3em 0; }
+.mixed{ white-space:nowrap; }

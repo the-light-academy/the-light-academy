@@ -282,6 +282,7 @@
   <script>
     (function () {
       var esc = TLA.escapeHtml;
+      var rich = TLA.richText;
       var state = {
         attempts: [], profiles: {}, assignments: {}, roster: [], subjects: [],
         /* who is looking, and what the database lets them see. isAdmin only
@@ -695,10 +696,13 @@
               given = (r.studentAnswer != null) ? r.studentAnswer : r.chosenAnswer;
               expected = (r.referenceAnswer != null) ? r.referenceAnswer : r.correctAnswer;
             }
+            /* rich, а не esc: текстът на задачата и вариантите носят
+               дробите като <span class="frac">. Виж TLA.richText — там е
+               казано защо суровият HTML тук не е безобиден. */
             return '<div class="' + cls + '">' +
-              '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.text || r.prompt || '')) + '</div>' +
-              '<div class="tla-muted">Отговор: ' + esc(given) +
-              ' · Верен: ' + esc(expected) +
+              '<div class="tla-q__prompt">' + esc(r.id + '. ') + rich(r.text || r.prompt || '') + '</div>' +
+              '<div class="tla-muted">Отговор: ' + rich(given) +
+              ' · Верен: ' + rich(expected) +
               ' · ' + esc(r.earned + '/' + r.points) + ' т.</div>' +
             '</div>';
           }).join('');
@@ -732,9 +736,9 @@
             g.items.forEach(function (o) {
               var r = o.r;
               html += '<div class="tla-q">' +
-                '<div class="tla-q__prompt">' + esc(r.id + '. ' + (r.prompt || '')) + '</div>' +
+                '<div class="tla-q__prompt">' + esc(r.id + '. ') + rich(r.prompt || '') + '</div>' +
                 '<div style="white-space:pre-wrap;">' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
-                (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Решение: ' + esc(r.solution) + '</div>' : '') +
+                (r.solution ? '<div class="tla-muted" style="margin-top:0.5rem;">Решение: ' + rich(r.solution) + '</div>' : '') +
                 (r.markSource === 'ai' && r.aiComment
                   ? '<div class="tla-muted" style="margin-top:0.5rem;">' +
                       '<span class="tla-badge tla-badge--ai">AI</span> ' + esc(r.aiComment) + '</div>'

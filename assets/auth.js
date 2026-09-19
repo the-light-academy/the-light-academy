@@ -494,6 +494,30 @@
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     },
 
+    /* Текстът на задача може да съдържа малко HTML — дробите се пишат
+       като <span class="frac"><span class="num">5</span>… Ако мине през
+       escapeHtml, учителят вижда самите тагове; ако мине суров, отваря се
+       дупка: записът идва от attempts, а attempts ги пише браузърът на
+       ученика, тоест чужда ръка може да сложи там каквото си поиска, а
+       страницата, която го чете, е админската.
+
+       Затова: първо се екранира ВСИЧКО, после се връщат обратно само
+       <span> с клас от списъка тук и затварящите им тагове. Нов таг или
+       атрибут не може да се появи — шаблонът не го допуска — а броячът
+       пази затварящите тагове да не излязат извън своите отварящи. */
+    richText: function (value) {
+      var s = TLA.escapeHtml(value), depth = 0;
+      s = s.replace(/&lt;(\/?)span(?: class=&quot;(frac|num|den|mixed)&quot;)?&gt;/g,
+        function (whole, slash, cls) {
+          if (slash) { if (!depth) return ''; depth--; return '</span>'; }
+          if (!cls) return whole;
+          depth++;
+          return '<span class="' + cls + '">';
+        });
+      while (depth-- > 0) s += '</span>';
+      return s;
+    },
+
     formatDate: function (iso) {
       if (!iso) return '—';
       try {

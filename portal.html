@@ -186,6 +186,7 @@
        do rather than inventing it. */
     (function () {
       var esc = TLA.escapeHtml;
+      var rich = TLA.richText;
       var byId = {};                 /* assignment id -> assignment */
       var attempts = [];
       var aiLoaded = false;
@@ -695,7 +696,7 @@
             return '<div class="tlp__ai-row">' +
               '<span class="tlp__ai-tag tlp__ai-tag--' + tag[0] + '">' + tag[1] + '</span>' +
               '<span class="tlp__ai-txt"><b>' + esc(r.id) + '.</b> ' +
-                esc(r.aiComment || r.prompt || '') +
+                rich(r.aiComment || r.prompt || '') +
                 ' <b>' + esc(r.mark) + (r.points != null ? ' / ' + esc(r.points) : '') + ' т.</b>' +
               '</span>' +
             '</div>';
@@ -854,13 +855,15 @@
             return '<div class="tlp__q ' + (r.correct ? 'tlp__q--right' : 'tlp__q--wrong') + '">' +
               '<div class="tlp__q-head">' +
                 '<span class="tlp__q-n">' + esc(r.id) + '</span>' +
-                '<span class="tlp__q-prompt">' + esc(r.text || r.prompt || '') + '</span>' +
+                /* rich, а не esc: условието и вариантите носят дробите
+                   като <span class="frac">. Виж TLA.richText. */
+                '<span class="tlp__q-prompt">' + rich(r.text || r.prompt || '') + '</span>' +
                 '<span class="tlp__q-pts">' + esc(r.earned + ' / ' + r.points) + ' т.</span>' +
               '</div>' +
               '<div class="tlp__q-body">' +
-                '<div class="tlp__q-line"><b>Твоят отговор:</b> ' + esc(given) + '</div>' +
-                '<div class="tlp__q-line"><b>Верен отговор:</b> ' + esc(expected) + '</div>' +
-                (r.explanation ? '<div class="tlp__q-line">' + esc(r.explanation) + '</div>' : '') +
+                '<div class="tlp__q-line"><b>Твоят отговор:</b> ' + rich(given) + '</div>' +
+                '<div class="tlp__q-line"><b>Верен отговор:</b> ' + rich(expected) + '</div>' +
+                (r.explanation ? '<div class="tlp__q-line">' + rich(r.explanation) + '</div>' : '') +
               '</div>' +
             '</div>';
           }).join('');
@@ -887,13 +890,13 @@
             out += '<div class="tlp__q">' +
               '<div class="tlp__q-head">' +
                 '<span class="tlp__q-n">' + esc(r.id) + '</span>' +
-                '<span class="tlp__q-prompt">' + esc(r.prompt || '') + '</span>' +
+                '<span class="tlp__q-prompt">' + rich(r.prompt || '') + '</span>' +
               '</div>' +
               '<div class="tlp__q-body">' +
                 '<div class="tlp__q-line"><b>Твоят отговор:</b> ' + esc(r.studentAnswer || '(няма отговор)') + '</div>' +
                 '<div class="tlp__q-line">Точки: ' + mark + '</div>' +
                 (r.aiComment ? '<div class="tlp__q-line">' + esc(r.aiComment) + '</div>' : '') +
-                (r.solution ? '<div class="tlp__q-line"><b>Примерно решение:</b> ' + esc(r.solution) + '</div>' : '') +
+                (r.solution ? '<div class="tlp__q-line"><b>Примерно решение:</b> ' + rich(r.solution) + '</div>' : '') +
               '</div>' +
             '</div>';
             return out;
