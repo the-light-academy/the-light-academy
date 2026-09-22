@@ -179,9 +179,9 @@
         <div class="tla-tablewrap">
           <table class="tla-table" id="rosterTable">
             <thead>
-              <tr><th>Име</th><th>Клас</th><th>Преподавател</th><th>Статус</th><th>Създаден</th><th></th></tr>
+              <tr><th>Име</th><th>Клас</th><th>Предмети</th><th>Преподавател</th><th>Статус</th><th>Създаден</th><th></th></tr>
             </thead>
-            <tbody><tr><td colspan="6" class="tla-empty">Зареждане…</td></tr></tbody>
+            <tbody><tr><td colspan="7" class="tla-empty">Зареждане…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -859,6 +859,18 @@
         if (btn) openAttempt(btn.getAttribute('data-open'));
       });
 
+      /* Кои предмети учи един ученик. Върви по enrollments, а не по
+         teaching: ученик може да е записан в предмет, без още да има
+         преподавател по него — точно това е състоянието веднага след като
+         го запишеш, и точно него трябва да се види. */
+      function subjectsOf(studentId) {
+        return (state.subjects || []).filter(function (sb) {
+          return state.enrollments.some(function (e) {
+            return e.profile_id === studentId && e.subject_id === sb.id && e.active !== false;
+          });
+        });
+      }
+
       /* ---- roster ---- */
       function renderRoster() {
         var tb = document.querySelector('#rosterTable tbody');
@@ -880,7 +892,7 @@
           (noTeacher ? ' · ' + noTeacher + ' без преподавател' : '');
 
         if (!rows.length) {
-          tb.innerHTML = '<tr><td colspan="6" class="tla-empty">' +
+          tb.innerHTML = '<tr><td colspan="7" class="tla-empty">' +
             (state.roster.length ? 'Няма ученици в този клас.' : 'Няма ученици.') +
             '</td></tr>';
           return;
@@ -906,9 +918,36 @@
                     'data-setgrade="' + esc(p.id) + '">Задай</button>' +
                 '</span>' +
               '</details>';
+          /* Предметите се четат по-често, отколкото се сменят — както и
+             класът — затова редът ги показва като текст, а отметките стоят
+             зад едно кликване. Записването е работа на админа: политиката
+             „enrollments: admin all“ отказва същото на преподавател, затова
+             на него изобщо не му се показва бутон, който базата ще отреже. */
+          var mine = isTeacher ? [] : subjectsOf(p.id);
+          var subjCell = isTeacher ? '—'
+            : (mine.length
+                ? esc(mine.map(function (sb) { return sb.name; }).join(', '))
+                : '<span class="tla-badge tla-badge--off">без предмет</span>') +
+              (state.isAdmin && (state.subjects || []).length
+                ? '<details class="tla-gradeedit"><summary>смени</summary>' +
+                    '<div class="tla-subjedit">' +
+                      state.subjects.map(function (sb) {
+                        var on = mine.some(function (x) { return x.id === sb.id; });
+                        return '<label class="tla-check">' +
+                          '<input type="checkbox" data-subjbox="' + esc(p.id) + '" ' +
+                            'value="' + esc(sb.id) + '"' + (on ? ' checked' : '') + ' /> ' +
+                          esc(sb.name) + '</label>';
+                      }).join('') +
+                      '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                        'data-setsubj="' + esc(p.id) + '">Запази</button>' +
+                    '</div>' +
+                  '</details>'
+                : '');
+
           return '<tr>' +
             '<td>' + esc(p.full_name || '—') + '</td>' +
             '<td>' + gradeCell + '</td>' +
+            '<td>' + subjCell + '</td>' +
             '<td>' + (isTeacher ? '<span class="tla-badge">Преподавател</span>'
               : (function () {
                   var t = teacherOf(p.id);
@@ -953,6 +992,45 @@
           if (rpc.error) { say('err', rpc.error.message); return; }
           say('ok', 'Класът е зададен.');
           await loadRoster();
+          return;
+        }
+
+        var setsub = e.target.closest('[data-setsubj]');
+        if (setsub) {
+          var stid = setsub.getAttribute('data-setsubj');
+          var boxes = Array.prototype.slice.call(
+            document.querySelectorAll('[data-subjbox="' + stid + '"]'));
+          var want = boxes.filter(function (b) { return b.checked; })
+                          .map(function (b) { return b.value; });
+          var had = subjectsOf(stid).map(function (sb) { return sb.id; });
+          var add = want.filter(function (id) { return had.indexOf(id) === -1; });
+          var drop = had.filter(function (id) { return want.indexOf(id) === -1; });
+          if (!add.length && !drop.length) { say('ok', 'Нищо не е променено.'); return; }
+          setsub.disabled = true;
+          try {
+            /* Отписването гаси реда, вместо да го трие — както при смяна на
+               преподавател — за да остане следа, че детето е учило предмета.
+               Заради това upsert-ът трябва изрично да върне active = true:
+               редът може да е стар и угасен. */
+            if (drop.length) {
+              var off = await TLA.client.from('enrollments').update({ active: false })
+                .eq('profile_id', stid).in('subject_id', drop);
+              if (off.error) throw off.error;
+            }
+            if (add.length) {
+              var on = await TLA.client.from('enrollments').upsert(
+                add.map(function (sid) {
+                  return { profile_id: stid, subject_id: sid, active: true };
+                }), { onConflict: 'profile_id,subject_id' });
+              if (on.error) throw on.error;
+            }
+            say('ok', 'Предметите са записани.' +
+              (add.length ? ' Задайте преподавател от „Преподаватели → Кой кого води“.' : ''));
+            await loadEnrollments();
+            renderRoster();
+            if (state.isAdmin) renderTeachers();
+          } catch (err) { say('err', String(err.message || err)); }
+          setsub.disabled = false;
           return;
         }
 
@@ -2117,7 +2195,9 @@
         await loadSubjects();
         await loadAssignments();
         await loadTeaching();
-        if (state.isAdmin) await loadEnrollments();
+        /* Вече не само за админа: колоната „Предмети“ в Ученици стъпва на
+           това. Политиката връща на преподавателя само неговите ученици. */
+        await loadEnrollments();
         await loadReleases();
         await loadCalendar();
         await loadRoster();
