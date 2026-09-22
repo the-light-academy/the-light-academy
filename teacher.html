@@ -144,15 +144,15 @@
               <select id="nuGrade" required></select>
             </div>
             <div>
+              <label for="nuSubject">Предмет</label>
+              <select id="nuSubject" required></select>
+            </div>
+            <div>
               <label for="nuTeacher">Преподавател</label>
               <select id="nuTeacher" required></select>
             </div>
           </div>
-          <div class="tla-pickrow" style="margin-top:0.7rem;align-items:flex-start;">
-            <div>
-              <span class="tla-muted" style="display:block;margin-bottom:0.3rem;">Предмети</span>
-              <div class="tla-gradegrid" id="nuSubjects"></div>
-            </div>
+          <div class="tla-pickrow" style="margin-top:0.7rem;">
             <button type="submit" class="tla-btn" id="addUserBtn">Добави</button>
           </div>
         </form>
@@ -1187,10 +1187,9 @@
           if (gradeSel.value === '') throw new Error('Изберете клас.');
           var teacherSel = document.getElementById('nuTeacher');
           if (!teacherSel.value) throw new Error('Изберете преподавател.');
-          var subjIds = Array.prototype.filter.call(
-            document.querySelectorAll('#nuSubjects input'), function (b) { return b.checked; }
-          ).map(function (b) { return b.value; });
-          if (!subjIds.length) throw new Error('Изберете поне един предмет.');
+          var subjSel = document.getElementById('nuSubject');
+          if (!subjSel.value) throw new Error('Изберете предмет.');
+          var subjIds = [subjSel.value];
 
           await adminCall('POST', {
             kind: 'student',
@@ -1201,8 +1200,23 @@
             teacher_id: teacherSel.value,
             subject_ids: subjIds
           });
-          say('ok', 'Ученикът е добавен в ' + TLA.gradeLabel(Number(gradeSel.value)) +
-                    ' при ' + teacherSel.options[teacherSel.selectedIndex].text + '.');
+          /* Предметите с auto_enroll се дават на всеки нов ученик от самата
+             база, независимо какво е избрано тук — но преподавател по тях
+             НЕ се задава. Мълчаливо това значи предмет, по който детето
+             не вижда нищо, затова се казва веднага и поименно. */
+          var chosen = subjSel.options[subjSel.selectedIndex].text;
+          var auto = (state.subjects || []).filter(function (sb) {
+            return sb.auto_enroll && sb.id !== subjSel.value;
+          }).map(function (sb) { return sb.name; });
+          say(auto.length ? 'err' : 'ok',
+            'Ученикът е добавен в ' + TLA.gradeLabel(Number(gradeSel.value)) +
+            ' при ' + teacherSel.options[teacherSel.selectedIndex].text +
+            ', по ' + chosen + '.' +
+            (auto.length
+              ? ' Внимание: ' + auto.join(', ') + ' се дава автоматично на всеки нов' +
+                ' ученик и остава БЕЗ преподавател. Махнете го или му задайте' +
+                ' преподавател от колоната „Предмети“ в таблицата отдолу.'
+              : ''));
           e.target.reset();
           fillGradeSelects();
           fillNewStudentPickers();
@@ -2232,13 +2246,18 @@
                 esc(t.full_name || '—') + '</option>';
             }).join('');
         }
-        var box = document.getElementById('nuSubjects');
-        if (box) {
-          box.innerHTML = (state.subjects || []).map(function (sb, i) {
-            return '<label class="tla-check">' +
-              '<input type="checkbox" value="' + esc(sb.id) + '"' +
-              (i === 0 ? ' checked' : '') + ' /> ' + esc(sb.name) + '</label>';
-          }).join('') || '<span class="tla-muted">Няма предмети.</span>';
+        /* Един предмет, избран съзнателно — както класът и преподавателят
+           до него. Ако ученикът учи повече от един, другите се слагат
+           после от колоната „Предмети“ в таблицата: там до всеки предмет
+           стои и преподавателят по него, а тук преподавателят е един. */
+        var ssel = document.getElementById('nuSubject');
+        if (ssel) {
+          var keep = ssel.value;
+          ssel.innerHTML = '<option value="">изберете…</option>' +
+            (state.subjects || []).map(function (sb) {
+              return '<option value="' + esc(sb.id) + '">' + esc(sb.name) + '</option>';
+            }).join('');
+          if (keep) ssel.value = keep;
         }
       }
 

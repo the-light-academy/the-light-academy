@@ -356,7 +356,10 @@
       if (!client) return [];
       var res = await client
         .from('subjects')
-        .select('id, slug, name, active, sort_order')
+        /* auto_enroll се чете, защото таблото трябва да знае кои предмети
+           базата раздава сама: те се лепват на всеки нов ученик БЕЗ
+           преподавател, а предмет без преподавател е празен портал. */
+        .select('id, slug, name, active, auto_enroll, sort_order')
         .order('sort_order', { ascending: true })
         .order('name', { ascending: true });
       if (res.error) throw res.error;
