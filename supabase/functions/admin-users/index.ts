@@ -29,7 +29,14 @@
      supabase functions deploy admin-users
    ===================================================================== */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+/* npm:, а не https://esm.sh/… — esm.sh е чужд сайт, който трябва да
+   отговори, докато Supabase сглобява функцията, и когато не отговори за
+   10 секунди, деплоят пада с „Fetch … timed out“. Причината не е в кода:
+   същият файл минава или пада според това как се чувства esm.sh в онзи
+   момент. С npm: пакетът се тегли от регистъра, който Deno ползва сам, и
+   един посредник отпада. Ако някога и това откаже, работи и
+   'jsr:@supabase/supabase-js@2'. */
+import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const ALLOWED_ORIGINS = [
   'https://the-light-academy.github.io',
