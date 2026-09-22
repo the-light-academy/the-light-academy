@@ -933,10 +933,30 @@
                     '<div class="tla-subjedit">' +
                       state.subjects.map(function (sb) {
                         var on = mine.some(function (x) { return x.id === sb.id; });
-                        return '<label class="tla-check">' +
-                          '<input type="checkbox" data-subjbox="' + esc(p.id) + '" ' +
-                            'value="' + esc(sb.id) + '"' + (on ? ' checked' : '') + ' /> ' +
-                          esc(sb.name) + '</label>';
+                        var who = teacherIdFor(p.id, sb.id);
+                        /* Предметът и преподавателят стоят на един ред,
+                           защото са едно решение: „Андрей минава на
+                           състезателна, при Валя“. Разделени по две
+                           таблици, това са два похода. Падащото меню е
+                           изключено, докато отметката не е сложена —
+                           преподавател по предмет, който детето не учи, е
+                           ред, който после само обърква. */
+                        return '<div class="tla-subjrow">' +
+                          '<label class="tla-check">' +
+                            '<input type="checkbox" data-subjbox="' + esc(p.id) + '" ' +
+                              'value="' + esc(sb.id) + '"' + (on ? ' checked' : '') + ' /> ' +
+                            esc(sb.name) + '</label>' +
+                          '<select class="tla-sel tla-sel--sm" data-subjteach="' +
+                              esc(p.id) + '|' + esc(sb.id) + '"' + (on ? '' : ' disabled') +
+                              ' aria-label="Преподавател по ' + esc(sb.name) + '">' +
+                            '<option value="">— без преподавател —</option>' +
+                            activeTeachers().map(function (t) {
+                              return '<option value="' + esc(t.id) + '"' +
+                                (t.id === who ? ' selected' : '') + '>' +
+                                esc(t.full_name || '—') + '</option>';
+                            }).join('') +
+                          '</select>' +
+                        '</div>';
                       }).join('') +
                       '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
                         'data-setsubj="' + esc(p.id) + '">Запази</button>' +
@@ -970,6 +990,19 @@
       /* Deactivating is a plain table update, so it works with or without
          the Edge Function deployed. Creating and hard-deleting a user
          need the service key, which only the function has. */
+      /* Отметката пали и гаси падащото меню до себе си веднага. Без това
+         менюто остава сиво, докато редът не се пречертае, и изглежда
+         счупено точно в мига, в който човек го иска. */
+      document.getElementById('rosterTable').addEventListener('change', function (e) {
+        var box = e.target.closest('[data-subjbox]');
+        if (!box) return;
+        var sel = document.querySelector('[data-subjteach="' +
+          box.getAttribute('data-subjbox') + '|' + box.value + '"]');
+        if (!sel) return;
+        sel.disabled = !box.checked;
+        if (!box.checked) sel.value = '';
+      });
+
       document.getElementById('rosterTable').addEventListener('click', async function (e) {
         var tgl = e.target.closest('[data-toggle]');
         var del = e.target.closest('[data-del]');
@@ -1005,7 +1038,21 @@
           var had = subjectsOf(stid).map(function (sb) { return sb.id; });
           var add = want.filter(function (id) { return had.indexOf(id) === -1; });
           var drop = had.filter(function (id) { return want.indexOf(id) === -1; });
-          if (!add.length && !drop.length) { say('ok', 'Нищо не е променено.'); return; }
+
+          /* Смените на преподавател се събират само за предметите, които
+             остават отметнати. Предмет, който се маха, не се „преназначава“
+             — той се затваря целият. */
+          var moves = want.filter(function (sid) {
+            var sel = document.querySelector('[data-subjteach="' + stid + '|' + sid + '"]');
+            return sel && sel.value !== teacherIdFor(stid, sid);
+          }).map(function (sid) {
+            return { subject: sid,
+                     teacher: document.querySelector('[data-subjteach="' + stid + '|' + sid + '"]').value };
+          });
+
+          if (!add.length && !drop.length && !moves.length) {
+            say('ok', 'Нищо не е променено.'); return;
+          }
           setsub.disabled = true;
           try {
             /* Отписването гаси реда, вместо да го трие — както при смяна на
@@ -1016,6 +1063,12 @@
               var off = await TLA.client.from('enrollments').update({ active: false })
                 .eq('profile_id', stid).in('subject_id', drop);
               if (off.error) throw off.error;
+              /* И преподавателят по махнатия предмет си отива с него. Иначе
+                 остава жив ред в teaching и „Кой кого води“ продължава да
+                 показва предмет, който детето вече не учи. */
+              var offT = await TLA.client.from('teaching').update({ active: false })
+                .eq('student_id', stid).in('subject_id', drop);
+              if (offT.error) throw offT.error;
             }
             if (add.length) {
               var on = await TLA.client.from('enrollments').upsert(
@@ -1024,9 +1077,48 @@
                 }), { onConflict: 'profile_id,subject_id' });
               if (on.error) throw on.error;
             }
-            say('ok', 'Предметите са записани.' +
-              (add.length ? ' Задайте преподавател от „Преподаватели → Кой кого води“.' : ''));
+            for (var mi = 0; mi < moves.length; mi++) {
+              var mv = moves[mi];
+              /* Старият се гаси, новият се пали — същото, както в „Кой кого
+                 води“, за да остане следа кой е водил детето досега. */
+              var mOff = await TLA.client.from('teaching').update({ active: false })
+                .eq('student_id', stid).eq('subject_id', mv.subject);
+              if (mOff.error) throw mOff.error;
+              if (mv.teacher) {
+                var mOn = await TLA.client.from('teaching').upsert({
+                  teacher_id: mv.teacher, student_id: stid,
+                  subject_id: mv.subject, active: true
+                }, { onConflict: 'teacher_id,student_id,subject_id' });
+                if (mOn.error) throw mOn.error;
+              }
+            }
+
+            var parts = [];
+            if (add.length) parts.push('записан в ' + add.length + ' нов(и)');
+            if (drop.length) parts.push('отписан от ' + drop.length);
+            if (moves.length) parts.push('сменен преподавател по ' + moves.length);
+
+            /* Предмет без преподавател е предмет, по който детето не вижда
+               нищо. Менюто е на една педя разстояние, затова пропускът е
+               лесен — и точно затова трябва да се каже на глас, вместо
+               мълчаливо „Готово“. */
+            var siraci = want.filter(function (sid) {
+              var sel = document.querySelector('[data-subjteach="' + stid + '|' + sid + '"]');
+              return sel && !sel.value;
+            }).map(function (sid) {
+              var sb = (state.subjects || []).filter(function (x) { return x.id === sid; })[0];
+              return sb ? sb.name : '';
+            }).filter(Boolean);
+
+            say(siraci.length ? 'err' : 'ok',
+              'Готово: ' + parts.join(', ') + '.' +
+              (siraci.length
+                ? ' Внимание: без преподавател по ' + siraci.join(', ') +
+                  ' — по този предмет детето няма да вижда нищо.'
+                : ''));
+
             await loadEnrollments();
+            await loadTeaching();
             renderRoster();
             if (state.isAdmin) renderTeachers();
           } catch (err) { say('err', String(err.message || err)); }
@@ -2096,6 +2188,23 @@
           if (nm && names.indexOf(nm) === -1) names.push(nm);
         });
         return names;
+      }
+
+      /* Кой води ученика по един конкретен предмет. teacherOf() връща
+         имената по всички предмети накуп — за редактора трябва точният
+         преподавател на точния предмет, иначе смяната по математика би
+         пипнала и състезателната. */
+      function teacherIdFor(studentId, subjectId) {
+        var hit = state.teaching.filter(function (t) {
+          return t.student_id === studentId && t.subject_id === subjectId && t.active !== false;
+        })[0];
+        return hit ? hit.teacher_id : '';
+      }
+
+      function activeTeachers() {
+        return state.roster.filter(function (p) {
+          return p.role === 'teacher' && p.active;
+        });
       }
 
       async function loadResults() {

@@ -1185,3 +1185,16 @@ body.tlp-space { background: #05070F; }
 }
 .tla-subjedit .tla-check { margin: 0; }
 .tla-subjedit .tla-btn { margin-top: 0.2rem; }
+
+/* Предмет и преподавател са едно решение, не две, затова стоят заедно.
+   Колоната в таблицата е тясна, а имената са дълги — опитът да се съберат
+   на един ред просто ги смачква, затова менюто стои ПОД отметката и е
+   отместено навътре точно колкото е квадратчето. Отместването е това,
+   което казва на окото чий е този преподавател; без него менюто увисва
+   между два предмета и се чете към грешния. */
+.tla-subjrow { display: block; width: 100%; }
+.tla-subjrow + .tla-subjrow { margin-top: 0.55rem; }
+.tla-subjrow .tla-check { margin: 0; }
+.tla-subjrow .tla-sel--sm { margin: 0.25rem 0 0 1.75rem; max-width: calc(100% - 1.75rem); }
+.tla-sel--sm { font-size: 0.82rem; padding: 0.28rem 0.5rem; min-width: 9rem; }
+.tla-sel--sm:disabled { opacity: 0.45; }
