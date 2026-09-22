@@ -24,16 +24,20 @@ insert into public.subjects (slug, name, active, auto_enroll, sort_order)
 values ('sastezatelna-matematika', 'Състезателна математика', true, false, 20)
 on conflict (slug) do nothing;
 
--- Показва какво има сега, за да се види, че е минало.
-do $$
-declare row_text text;
-begin
-  select string_agg(name || ' (' || slug || ')', ', ' order by sort_order)
-    into row_text from public.subjects where active;
-  raise notice 'Активни предмети: %', row_text;
-end $$;
-
 commit;
+
+-- Потвърждение, че е минало. НЕ е raise notice: SQL Editor-ът на Supabase
+-- показва само таблици с резултат и мълчи за notice-ите, така че човек
+-- вижда „Success. No rows returned“ и не разбира дали нещо се е случило.
+-- Затова тук е обикновен select — той се вижда.
+select name as предмет,
+       slug,
+       case when auto_enroll then 'всички ученици' else 'само записаните' end as кой_го_учи,
+       (select count(*) from public.enrollments e
+         where e.subject_id = s.id and e.active) as записани
+  from public.subjects s
+ where active
+ order by sort_order;
 
 -- ---------------------------------------------------------------------
 -- Ако някога трябва да се махне (внимание: трие и записванията на
