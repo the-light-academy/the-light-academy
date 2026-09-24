@@ -732,6 +732,12 @@
       const INDIVIDUAL_COURSES = [
         {
           id: 'ind-math', type: 'individual',
+          /* bookingSlug свързва картата с предмет в базата. Има го само
+             там, където предметът наистина съществува — за БЕЛ, испански
+             и химия няма какво да се запази, затова те остават на
+             запитването. Стойността трябва да съвпада със `slug` в
+             public.subjects. */
+          bookingSlug: 'matematika',
           title: 'Индивидуални уроци по математика',
           subjects: ['Математика'], grades: range(1, 12),
           tags: ['math'],
@@ -859,7 +865,10 @@
             <p class="card-meta">${c.subjects.join(', ')} · ${c.gradeLabel}</p>
             <p class="card-individual-line">Индивидуално обучение с преподавател</p>
             <div class="card-cta">
-              <button type="button" class="btn-enroll-sm btn-enroll-sm--wide" onclick="prefillEnrollForm('${c.id}')">Запитване за индивидуален урок</button>
+              ${c.bookingSlug
+                ? `<a class="btn-enroll-sm btn-enroll-sm--wide" href="booking.html?subject=${c.bookingSlug}">Вижте свободните часове</a>`
+                : ''}
+              <button type="button" class="${c.bookingSlug ? 'btn-info' : 'btn-enroll-sm btn-enroll-sm--wide'}" onclick="prefillEnrollForm('${c.id}')">Запитване за индивидуален урок</button>
             </div>
           </article>`;
       }

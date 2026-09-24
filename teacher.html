@@ -29,6 +29,7 @@
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelCalendar">Календар</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelHours">Часове</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelTeachers" data-admin hidden>Преподаватели</button>
     </div>
 
@@ -187,6 +188,95 @@
       </div>
     </section>
 
+    <!-- ── HOURS ─────────────────────────────────────────────────
+         Три неща на едно място: кога съм свободен, какво са ми поискали
+         и какво предстои. Свободните часове на публичната страница се
+         пресмятат от първото минус третото — виж supabase/schema-v4.sql.
+    -->
+    <section class="tla-panel" id="panelHours" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Заявки за час</h2>
+        <p class="tla-muted" id="holdsNote">Зареждане…</p>
+        <div class="tla-tablewrap">
+          <table class="tla-table" id="holdsTable">
+            <thead>
+              <tr><th>Кога</th><th>Дете</th><th>Родител</th><th>Предмет</th>
+                  <th>Преподавател</th><th>Бележка</th><th></th></tr>
+            </thead>
+            <tbody><tr><td colspan="7" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tla-card">
+        <h2 class="tla-card__title">Кога съм свободен</h2>
+        <p class="tla-muted">Това, което въведете тук, е точно това, което
+          родителите виждат на страницата за записване. Часовете се режат на
+          по 60 минути.</p>
+        <form id="availForm" class="tla-field tla-field--inline" style="margin-top:0.8rem;">
+          <div>
+            <label for="avDay">Ден</label>
+            <select id="avDay" required></select>
+          </div>
+          <div>
+            <label for="avFrom">От</label>
+            <input type="time" id="avFrom" required step="1800" value="17:00" />
+          </div>
+          <div>
+            <label for="avTo">До</label>
+            <input type="time" id="avTo" required step="1800" value="20:00" />
+          </div>
+          <div>
+            <label for="avSubject">Предмет</label>
+            <select id="avSubject"></select>
+          </div>
+          <div id="avTeacherWrap" hidden>
+            <label for="avTeacher">Преподавател</label>
+            <select id="avTeacher"></select>
+          </div>
+        </form>
+        <div class="tla-pickrow" style="margin-top:0.7rem;">
+          <button type="button" class="tla-btn" id="avAdd">Добави</button>
+        </div>
+        <div class="tla-tablewrap" style="margin-top:1rem;">
+          <table class="tla-table" id="availTable">
+            <thead><tr><th>Ден</th><th>Часове</th><th>Предмет</th><th>Преподавател</th><th></th></tr></thead>
+            <tbody><tr><td colspan="5" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tla-card">
+        <h2 class="tla-card__title">Няма да съм тук</h2>
+        <p class="tla-muted">Отпуска, празник или един зает ден. Тези дни
+          изчезват от свободните, без да се пипат прозорците отгоре.</p>
+        <form id="blockForm" class="tla-field tla-field--inline" style="margin-top:0.8rem;">
+          <div><label for="blFrom">От дата</label><input type="date" id="blFrom" required /></div>
+          <div><label for="blTo">До дата (включително)</label><input type="date" id="blTo" required /></div>
+          <div><label for="blNote">Защо</label><input type="text" id="blNote" placeholder="отпуска" /></div>
+        </form>
+        <div class="tla-pickrow" style="margin-top:0.7rem;">
+          <button type="button" class="tla-btn" id="blAdd">Добави</button>
+        </div>
+        <div class="tla-tablewrap" style="margin-top:1rem;">
+          <table class="tla-table" id="blockTable">
+            <thead><tr><th>От</th><th>До</th><th>Защо</th><th>Преподавател</th><th></th></tr></thead>
+            <tbody><tr><td colspan="5" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tla-card">
+        <h2 class="tla-card__title">Потвърдени часове напред</h2>
+        <div class="tla-tablewrap">
+          <table class="tla-table" id="upcomingTable">
+            <thead><tr><th>Кога</th><th>Дете</th><th>Родител</th><th>Предмет</th><th>Преподавател</th><th></th></tr></thead>
+            <tbody><tr><td colspan="6" class="tla-empty">Зареждане…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- ── TEACHERS (admin only) ──────────────────────────────── -->
     <section class="tla-panel" id="panelTeachers" hidden>
       <div class="tla-card">
@@ -289,6 +379,7 @@
            decides which controls are drawn -- every rule is enforced by the
            policies in supabase/schema-v3.sql, not here. */
         me: null, isAdmin: false,
+        availability: [], blocks: [], lessons: [],   /* часове (schema-v4) */
         teaching: [],      /* (teacher, student, subject) rows visible to me */
         enrollments: [],   /* which student studies which subject */
         releases: []       /* which sheets have been given to which students */
@@ -2094,6 +2185,231 @@
         btn.disabled = false;
       });
 
+      /* ================= ЧАСОВЕ =================================
+         Публичната страница показва: прозорците оттук, минус заетото,
+         минус дните долу. Пресмятането е в базата (free_slots), за да не
+         може страница да си измисли свободен час. */
+      var WEEKDAYS = ['', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък',
+                      'Петък', 'Събота', 'Неделя'];
+      var SOF_DAY  = { timeZone:'Europe/Sofia', weekday:'short', day:'numeric', month:'short' };
+      var SOF_TIME = { timeZone:'Europe/Sofia', hour:'2-digit', minute:'2-digit' };
+
+      /* Софийско време изрично, а не зоната на устройството: иначе
+         преподавател в чужбина би потвърдил друг час от написания. */
+      function whenLabel(iso) {
+        var d = new Date(iso);
+        return d.toLocaleDateString('bg-BG', SOF_DAY) + ' · ' +
+               d.toLocaleTimeString('bg-BG', SOF_TIME);
+      }
+      function hhmm(t) { return String(t || '').slice(0, 5); }
+      function teacherName(id) {
+        var p = state.profiles[id];
+        return (p && p.full_name) || '—';
+      }
+
+      function fillHourPickers() {
+        var day = document.getElementById('avDay');
+        if (day && !day.options.length) {
+          day.innerHTML = WEEKDAYS.slice(1).map(function (n, i) {
+            return '<option value="' + (i + 1) + '">' + esc(n) + '</option>';
+          }).join('');
+        }
+        var sub = document.getElementById('avSubject');
+        if (sub) {
+          sub.innerHTML = '<option value="">всички мои предмети</option>' +
+            (state.subjects || []).map(function (sb) {
+              return '<option value="' + esc(sb.id) + '">' + esc(sb.name) + '</option>';
+            }).join('');
+        }
+        /* Админът може да въведе прозорец и вместо преподавател, който не
+           е стигнал дотам. Преподавателят вписва само себе си. */
+        var wrap = document.getElementById('avTeacherWrap');
+        var tsel = document.getElementById('avTeacher');
+        if (wrap && tsel) {
+          wrap.hidden = !state.isAdmin;
+          if (state.isAdmin) {
+            tsel.innerHTML = activeTeachers().map(function (t) {
+              return '<option value="' + esc(t.id) + '"' +
+                (state.me && t.id === state.me.id ? ' selected' : '') + '>' +
+                esc(t.full_name || '—') + '</option>';
+            }).join('');
+          }
+        }
+      }
+
+      async function loadHours() {
+        try {
+          state.availability = await TLA.listAvailability();
+          state.blocks       = await TLA.listBlocks();
+          state.lessons      = await TLA.listLessons();
+        } catch (err) {
+          /* Таблиците ги има чак след supabase/schema-v4.sql. Дотогава
+             разделът стои празен, вместо страницата да падне. */
+          state.availability = []; state.blocks = []; state.lessons = [];
+          var note = document.getElementById('holdsNote');
+          if (note) note.textContent = 'Часовете още не са включени в базата ' +
+            '(пуснете supabase/schema-v4.sql).';
+        }
+        renderHours();
+      }
+
+      function renderHours() {
+        /* --- заявки --- */
+        var holds = state.lessons.filter(function (l) { return l.status === 'held'; });
+        var note = document.getElementById('holdsNote');
+        if (note) {
+          note.textContent = holds.length
+            ? (holds.length === 1 ? 'Една заявка чака отговор.'
+                                  : holds.length + ' заявки чакат отговор.')
+            : 'Няма заявки, които чакат.';
+        }
+        var tb = document.querySelector('#holdsTable tbody');
+        tb.innerHTML = holds.length ? holds.map(function (l) {
+          return '<tr>' +
+            '<td>' + esc(whenLabel(l.starts_at)) + '</td>' +
+            '<td>' + esc(l.child_name || '—') +
+              (l.child_grade != null ? '<br><span class="tla-muted">' +
+                esc(TLA.gradeLabel(l.child_grade)) + '</span>' : '') + '</td>' +
+            '<td>' + esc(l.parent_name || '—') + '<br>' +
+              '<a href="tel:' + esc((l.parent_phone || '').replace(/\s/g, '')) + '">' +
+                esc(l.parent_phone || '') + '</a>' +
+              (l.parent_email ? '<br><a href="mailto:' + esc(l.parent_email) + '">' +
+                esc(l.parent_email) + '</a>' : '') + '</td>' +
+            '<td>' + esc(subjectName(l.subject_id)) + '</td>' +
+            '<td>' + esc(teacherName(l.teacher_id)) + '</td>' +
+            '<td>' + esc(l.note || '—') + '</td>' +
+            '<td><button type="button" class="tla-btn tla-btn--sm" data-decide="' +
+                  esc(l.id) + '|confirmed">Потвърди</button> ' +
+                '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-decide="' +
+                  esc(l.id) + '|declined">Откажи</button></td>' +
+          '</tr>';
+        }).join('') : '<tr><td colspan="7" class="tla-empty">Няма заявки.</td></tr>';
+
+        /* --- прозорци --- */
+        var av = document.querySelector('#availTable tbody');
+        av.innerHTML = state.availability.length ? state.availability.map(function (a) {
+          return '<tr>' +
+            '<td>' + esc(WEEKDAYS[a.weekday] || '—') + '</td>' +
+            '<td>' + esc(hhmm(a.starts_at) + ' – ' + hhmm(a.ends_at)) + '</td>' +
+            '<td>' + esc(a.subject_id ? subjectName(a.subject_id) : 'всички') + '</td>' +
+            '<td>' + esc(teacherName(a.teacher_id)) + '</td>' +
+            '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-avdel="' +
+                  esc(a.id) + '">Махни</button></td>' +
+          '</tr>';
+        }).join('') : '<tr><td colspan="5" class="tla-empty">Още няма въведени часове — ' +
+                      'затова на страницата за записване няма какво да се избере.</td></tr>';
+
+        /* --- блокирани дни --- */
+        var bl = document.querySelector('#blockTable tbody');
+        bl.innerHTML = state.blocks.length ? state.blocks.map(function (b) {
+          return '<tr>' +
+            '<td>' + esc(new Date(b.starts_at).toLocaleDateString('bg-BG', SOF_DAY)) + '</td>' +
+            '<td>' + esc(new Date(new Date(b.ends_at).getTime() - 1)
+                          .toLocaleDateString('bg-BG', SOF_DAY)) + '</td>' +
+            '<td>' + esc(b.note || '—') + '</td>' +
+            '<td>' + esc(teacherName(b.teacher_id)) + '</td>' +
+            '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-bldel="' +
+                  esc(b.id) + '">Махни</button></td>' +
+          '</tr>';
+        }).join('') : '<tr><td colspan="5" class="tla-empty">Няма.</td></tr>';
+
+        /* --- потвърдени напред --- */
+        var now = Date.now();
+        var up = state.lessons.filter(function (l) {
+          return l.status === 'confirmed' && new Date(l.starts_at).getTime() >= now;
+        });
+        var ut = document.querySelector('#upcomingTable tbody');
+        ut.innerHTML = up.length ? up.map(function (l) {
+          return '<tr>' +
+            '<td>' + esc(whenLabel(l.starts_at)) + '</td>' +
+            '<td>' + esc(l.child_name || '—') + '</td>' +
+            '<td>' + esc(l.parent_name || '—') + '<br>' +
+              '<a href="tel:' + esc((l.parent_phone || '').replace(/\s/g, '')) + '">' +
+                esc(l.parent_phone || '') + '</a></td>' +
+            '<td>' + esc(subjectName(l.subject_id)) + '</td>' +
+            '<td>' + esc(teacherName(l.teacher_id)) + '</td>' +
+            '<td><button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-decide="' +
+                  esc(l.id) + '|cancelled">Отмени</button></td>' +
+          '</tr>';
+        }).join('') : '<tr><td colspan="6" class="tla-empty">Няма потвърдени часове напред.</td></tr>';
+      }
+
+      document.getElementById('panelHours').addEventListener('click', async function (e) {
+        var dec = e.target.closest('[data-decide]');
+        var avd = e.target.closest('[data-avdel]');
+        var bld = e.target.closest('[data-bldel]');
+        if (!dec && !avd && !bld) return;
+        clearMsgs();
+        var btn = dec || avd || bld;
+        btn.disabled = true;
+        try {
+          if (dec) {
+            var parts = dec.getAttribute('data-decide').split('|');
+            await TLA.decideLesson(parts[0], parts[1]);
+            say('ok', parts[1] === 'confirmed' ? 'Часът е потвърден.'
+               : parts[1] === 'declined' ? 'Часът е отказан и мястото е свободно.'
+               : 'Часът е отменен.');
+          } else if (avd) {
+            await TLA.removeAvailability(avd.getAttribute('data-avdel'));
+            say('ok', 'Часовете са махнати.');
+          } else {
+            await TLA.removeBlock(bld.getAttribute('data-bldel'));
+            say('ok', 'Махнато.');
+          }
+          await loadHours();
+        } catch (err) { say('err', String(err.message || err)); }
+        btn.disabled = false;
+      });
+
+      document.getElementById('avAdd').addEventListener('click', async function () {
+        clearMsgs();
+        var from = document.getElementById('avFrom').value;
+        var to   = document.getElementById('avTo').value;
+        if (!from || !to) { say('err', 'Въведете от кога до кога.'); return; }
+        if (to <= from) { say('err', 'Краят трябва да е след началото.'); return; }
+        /* По-малко от час не дава нито един час за записване — по-добре
+           да се каже сега, отколкото прозорецът да седи празен. */
+        var mins = (Number(to.slice(0,2)) * 60 + Number(to.slice(3,5))) -
+                   (Number(from.slice(0,2)) * 60 + Number(from.slice(3,5)));
+        if (mins < 60) { say('err', 'Прозорецът е по-къс от час — няма да даде нито един час.'); return; }
+        this.disabled = true;
+        try {
+          var tsel = document.getElementById('avTeacher');
+          await TLA.addAvailability({
+            teacherId: (state.isAdmin && tsel && tsel.value) ? tsel.value : null,
+            subjectId: document.getElementById('avSubject').value || null,
+            weekday: document.getElementById('avDay').value,
+            startsAt: from, endsAt: to
+          });
+          say('ok', 'Добавено. Родителите вече виждат тези часове.');
+          await loadHours();
+        } catch (err) { say('err', String(err.message || err)); }
+        this.disabled = false;
+      });
+
+      document.getElementById('blAdd').addEventListener('click', async function () {
+        clearMsgs();
+        var f = document.getElementById('blFrom').value;
+        var t = document.getElementById('blTo').value;
+        if (!f || !t) { say('err', 'Въведете двете дати.'); return; }
+        if (t < f) { say('err', 'Краят е преди началото.'); return; }
+        this.disabled = true;
+        try {
+          /* „до дата включително“: краят е 00:00 на следващия ден, защото
+             иначе последният ден остава наполовина отворен. */
+          var end = new Date(t + 'T00:00:00');
+          end.setDate(end.getDate() + 1);
+          await TLA.addBlock({
+            startsAt: new Date(f + 'T00:00:00').toISOString(),
+            endsAt: end.toISOString(),
+            note: document.getElementById('blNote').value.trim()
+          });
+          say('ok', 'Добавено.');
+          await loadHours();
+        } catch (err) { say('err', String(err.message || err)); }
+        this.disabled = false;
+      });
+
       /* ---- loaders ---- */
       async function loadSubjects() {
         try {
@@ -2330,6 +2646,8 @@
         await loadCalendar();
         await loadRoster();
         await loadResults();
+        fillHourPickers();
+        await loadHours();
         fillNewStudentPickers();
         renderAssignAdmin();
         if (state.isAdmin) renderTeachers();

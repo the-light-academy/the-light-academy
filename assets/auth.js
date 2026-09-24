@@ -497,6 +497,133 @@
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     },
 
+    /* ---- часове: свободни прозорци, заявки, решения -------------------
+       Всичко минава през supabase/schema-v4.sql. Трите функции долу
+       (bookableSubjects, freeSlots, requestLesson) са ЕДИНСТВЕНОТО, което
+       непознат посетител може да извика — таблиците са му затворени. */
+
+    /* Предметите, зад които наистина има отворени часове. */
+    bookableSubjects: async function () {
+      if (!client) return [];
+      var res = await client.rpc('bookable_subjects');
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    /* Свободните часове. Датите се подават като YYYY-MM-DD. */
+    freeSlots: async function (subjectId, fromDate, toDate) {
+      if (!client) return [];
+      var res = await client.rpc('free_slots', {
+        p_subject: subjectId,
+        p_from: fromDate || null,
+        p_to: toDate || null
+      });
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    /* Заема час. Базата решава кой печели при сблъсък — виж
+       ограничението lessons_no_overlap. Тук само се подава. */
+    requestLesson: async function (d) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var res = await client.rpc('request_lesson', {
+        p_teacher: d.teacherId,
+        p_subject: d.subjectId,
+        p_starts: d.startsAt,
+        p_parent_name: d.parentName,
+        p_parent_phone: d.parentPhone,
+        p_parent_email: d.parentEmail || null,
+        p_child_name: d.childName,
+        p_child_grade: (d.childGrade == null || d.childGrade === '') ? null : Number(d.childGrade),
+        p_note: d.note || null
+      });
+      if (res.error) throw res.error;
+      return res.data;
+    },
+
+    /* ---- оттук нататък трябва вход -------------------------------- */
+
+    listAvailability: async function () {
+      if (!client) return [];
+      var res = await client.from('teacher_availability')
+        .select('id, teacher_id, subject_id, weekday, starts_at, ends_at, valid_from, valid_to, active')
+        .eq('active', true)
+        .order('weekday', { ascending: true })
+        .order('starts_at', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    addAvailability: async function (w) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var session = await TLA.getSession();
+      if (!session) throw new Error('Няма активна сесия.');
+      var res = await client.from('teacher_availability').insert({
+        teacher_id: w.teacherId || session.user.id,
+        subject_id: w.subjectId || null,
+        weekday: Number(w.weekday),
+        starts_at: w.startsAt,
+        ends_at: w.endsAt
+      }).select('id').maybeSingle();
+      if (res.error) throw res.error;
+      return res.data;
+    },
+
+    /* Гаси прозореца, вместо да го трие: часовете, запазени по него,
+       остават обясними след това. */
+    removeAvailability: async function (id) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var res = await client.from('teacher_availability')
+        .update({ active: false }).eq('id', id);
+      if (res.error) throw res.error;
+    },
+
+    listBlocks: async function () {
+      if (!client) return [];
+      var res = await client.from('availability_blocks')
+        .select('id, teacher_id, starts_at, ends_at, note')
+        .order('starts_at', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    addBlock: async function (b) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var session = await TLA.getSession();
+      if (!session) throw new Error('Няма активна сесия.');
+      var res = await client.from('availability_blocks').insert({
+        teacher_id: b.teacherId || session.user.id,
+        starts_at: b.startsAt, ends_at: b.endsAt, note: b.note || null
+      }).select('id').maybeSingle();
+      if (res.error) throw res.error;
+      return res.data;
+    },
+
+    removeBlock: async function (id) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var res = await client.from('availability_blocks').delete().eq('id', id);
+      if (res.error) throw res.error;
+    },
+
+    /* Политиките решават какво се връща: админът вижда всичко,
+       преподавателят — своите. Заявката е една и съща. */
+    listLessons: async function () {
+      if (!client) return [];
+      var res = await client.from('lessons')
+        .select('id, teacher_id, subject_id, starts_at, ends_at, status, student_id, ' +
+                'parent_name, parent_phone, parent_email, child_name, child_grade, note, ' +
+                'hold_expires_at, created_at, decided_at, decided_by')
+        .order('starts_at', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    decideLesson: async function (id, status) {
+      if (!client) throw new Error(notConfiguredMessage());
+      var res = await client.rpc('decide_lesson', { p_id: id, p_status: status });
+      if (res.error) throw res.error;
+    },
+
     /* Текстът на задача може да съдържа малко HTML — дробите се пишат
        като <span class="frac"><span class="num">5</span>… Ако мине през
        escapeHtml, учителят вижда самите тагове; ако мине суров, отваря се
