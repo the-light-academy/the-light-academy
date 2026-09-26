@@ -287,3 +287,32 @@ on conflict (slug) do update set
 --   select slug, title, grades, week, max_points, published
 --     from public.assignments
 --    where grades is not null order by grades, week;
+
+-- ── 6. клас, седмица 3 (5–9 окт. 2026): състезание „Входно ниво“ ──
+-- Шестнайсет задачи от целия материал на 5. клас, 32 точки, 60 минути.
+-- Стои в същата седмица като входното ниво и не го замества: входното
+-- показва откъде тръгва детето, състезанието — докъде стига. Затова и
+-- sort_order е 41, точно след него.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('contest_6_entry',
+   'Състезание „Входно ниво“ — 6. клас',
+   'exam',
+   'contest_6_entry.html',
+   32,
+   false,
+   41,
+   3,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
