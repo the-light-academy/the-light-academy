@@ -850,3 +850,84 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 5. клас, седмица 22 — деление на десетична дроб на естествено число и на десетична дроб.
+-- Две задачи с избор и осем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w22',
+   'Домашно — Деление на десетични дроби',
+   'homework',
+   'homework_5_w22.html',
+   10,
+   false,
+   400,
+   22,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 5. клас, седмица 23 — превръщане между обикновени и десетични дроби и смесени изрази.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w23',
+   'Домашно — Обикновени и десетични дроби заедно',
+   'homework',
+   'homework_5_w23.html',
+   10,
+   false,
+   401,
+   23,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 5. клас, седмица 24 — текстови задачи и практически пресмятания с десетични дроби.
+-- Две задачи с избор и осем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w24',
+   'Домашно — Текстови задачи с десетични дроби',
+   'homework',
+   'homework_5_w24.html',
+   10,
+   false,
+   402,
+   24,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
