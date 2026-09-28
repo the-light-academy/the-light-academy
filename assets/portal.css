@@ -1333,6 +1333,25 @@ body.tlp-space { background: #05070F; }
   font-variant-numeric: tabular-nums; min-width: 4.5rem; text-align: right;
 }
 
+/* ── „това си ти“ ──
+   Детето трябва да се намери с един поглед. Затова собственият му ред
+   е обточен и носи думата „ти“ — не само различен цвят, който на
+   печат или при далтонизъм изчезва. */
+.tla-grid__row--me {
+  border-color: var(--navy-2); box-shadow: 0 0 0 2px rgba(27,46,82,0.14);
+}
+.tla-grid__me {
+  display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.45rem;
+  border-radius: 999px; background: var(--navy-2); color: #fff;
+  font-size: 0.72rem; font-weight: 800; letter-spacing: .04em;
+  vertical-align: 1px;
+}
+
+/* Менюто за избор на група в профила на ученика няма собствен стил —
+   ползва същия като филтрите в таблото. */
+#panel-race .tla-filters { margin-bottom: 0.4rem; }
+#panel-race .tla-filters > label { color: var(--mid); }
+
 @media (max-width: 560px) {
   .tla-grid__row { flex-wrap: wrap; gap: 0.35rem 0.6rem; }
   .tla-grid__name { flex: 1 1 100%; order: 3; }
