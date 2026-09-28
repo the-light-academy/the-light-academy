@@ -51,7 +51,7 @@ function corsHeaders(origin: string | null) {
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
-    'Access-Control-Allow-Methods': 'POST, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'POST, PATCH, DELETE, OPTIONS',
     'Vary': 'Origin',
   };
 }
@@ -259,6 +259,34 @@ Deno.serve(async (req: Request) => {
     }
 
     return json({ ok: true, id: newId, kind: 'student', grade }, 200, origin);
+  }
+
+  // ---- set a new password -------------------------------------------
+  // A family forgets the password far more often than anything else here.
+  // Without this the only way is the Supabase dashboard, which the admin
+  // should not have to open to run their own academy.
+  if (req.method === 'PATCH') {
+    const userId = String(body.user_id || '');
+    const password = String(body.password || '');
+    if (!userId) return json({ error: 'Липсва user_id.' }, 400, origin);
+    if (password.length < 8) {
+      return json({ error: 'Паролата трябва да е поне 8 знака.' }, 400, origin);
+    }
+
+    const { data: target } = await admin
+      .from('profiles').select('role, is_admin, full_name').eq('id', userId).maybeSingle();
+    if (!target) return json({ error: 'Няма такъв профил.' }, 404, origin);
+    // Another admin's password is not this endpoint's business: whoever
+    // holds that account changes it themselves. Your own goes through
+    // Supabase, so a stolen dashboard session cannot lock you out.
+    if (target.is_admin) {
+      return json({ error: 'Парола на администратор не се сменя оттук.' }, 400, origin);
+    }
+
+    const { error: pwErr } = await admin.auth.admin.updateUserById(userId, { password });
+    if (pwErr) return json({ error: pwErr.message }, 500, origin);
+
+    return json({ ok: true, id: userId, name: target.full_name }, 200, origin);
   }
 
   // ---- delete -------------------------------------------------------
