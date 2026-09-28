@@ -30,6 +30,7 @@
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelHours">Часове</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRace">Формула 1</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelTeachers" data-admin hidden>Преподаватели</button>
     </div>
 
@@ -284,6 +285,64 @@
       </div>
     </section>
 
+    <!-- ── FORMULA 1 ─────────────────────────────────────────────
+         Класирането на една група — един клас, един предмет, един
+         преподавател — нарисувано като финал на състезание. Всичко се
+         смята от данните, които таблото вече е заредило: нито една нова
+         заявка към базата и нито един ред SQL за пускане.
+    -->
+    <section class="tla-panel" id="panelRace" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Състезание Формула 1</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;">
+          Състезават се учениците от един и същи клас, по един и същи предмет,
+          при един и същи преподавател. Най-близо до финала е първият.
+        </p>
+
+        <div class="tla-filters">
+          <label for="raceGrade">Клас:</label>
+          <select id="raceGrade"></select>
+          <label for="raceSubject">Предмет:</label>
+          <select id="raceSubject"></select>
+          <label for="raceTeacher">Преподавател:</label>
+          <select id="raceTeacher"></select>
+        </div>
+
+        <p class="tla-empty" id="raceEmpty" hidden></p>
+
+        <h3 class="tla-race__h">Резултати:</h3>
+        <div class="tla-race" id="raceScene" aria-hidden="true"></div>
+        <p class="tla-muted" id="raceNote" style="margin-top:0.6rem;"></p>
+
+        <ol class="tla-grid" id="raceStandings"></ol>
+
+        <details class="tla-help" style="margin-top:1rem;">
+          <summary>Как се смятат точките и звездите</summary>
+          <p>
+            <strong>Точки</strong> — всичко, което ученикът е събрал от
+            предадените задания по този предмет. Всяко предадено задание
+            добавя точките си към сбора, затова класирането расте през
+            цялата година, както в истинско първенство.
+          </p>
+          <p>
+            <strong>Звезди</strong> — колко точно е решавал: делът на
+            спечелените точки от всички възможни. Пет звезди при 90% и
+            нагоре, четири при 75%, три при 60%, две при 40%, една под
+            това. Звездите не зависят от броя задания — затова дете, което
+            е предало по-малко, но по-точно, пак свети.
+          </p>
+          <p>
+            Подреждането е по точки. При равни точки напред минава този с
+            по-висок процент, а ако и той е равен — по име.
+          </p>
+          <p>
+            В сбора влизат заданията по този предмет и общите задания без
+            предмет. Незавършените работи не носят точки.
+          </p>
+        </details>
+      </div>
+    </section>
+
     <!-- ── TEACHERS (admin only) ──────────────────────────────── -->
     <section class="tla-panel" id="panelTeachers" hidden>
       <div class="tla-card">
@@ -434,6 +493,10 @@
           Array.prototype.forEach.call(document.querySelectorAll('.tla-panel'), function (p) {
             p.hidden = (p.id !== tab.dataset.panel);
           });
+          /* Финалът се изиграва наново при всяко влизане в раздела —
+             скрит елемент не анимира нищо и картината щеше да стои
+             замръзнала на първия кадър. */
+          if (tab.dataset.panel === 'panelRace' && typeof renderRace === 'function') renderRace();
         });
       });
 
@@ -2719,6 +2782,519 @@
         filters.calGrade = this.value; await loadCalendar();
       });
 
+      /* ==================================================================
+         Състезание Формула 1
+         ------------------------------------------------------------------
+         Една група = един клас + един предмет + един преподавател. Нищо
+         тук не пита базата: таблото вече е заредило roster, teaching,
+         assignments и attempts, а класирането е аритметика върху тях.
+
+         Картината е SVG, нарисуван на ръка. Пистата се събира в точка
+         (RVX, RVY) — истинска перспективна точка — и точно затова
+         движението работи: всичко по пистата е поставено по един
+         параметър u, а приближаването към зрителя е просто scale() около
+         тази точка. Затуй лентите и бордюрите се въртят в безкраен цикъл,
+         без нито един кадър да се вижда как се „пренавиват“.
+         ================================================================== */
+
+      /* Цветовете на колите са проверените осем от палитрата за тъмен фон.
+         Пуснати са през валидатора срещу точно този тъмносин фон и минават
+         и петте проверки по съседни двойки. Но цветът никъде не носи
+         смисъл сам: всяка кола си носи името, а класирането отдолу е
+         същото нещо с думи и числа. */
+      var RACE_COLORS = ['#3987e5', '#d95926', '#199e70', '#c98500',
+                         '#d55181', '#008300', '#9085e9', '#e66767'];
+      var RACE_DARK   = ['#1d5ba6', '#9c3d17', '#0f6f4a', '#8d5c00',
+                         '#9c3459', '#005700', '#5b4fb5', '#a63b3a'];
+
+      /* На широк екран пистата побира шест коли. На телефон същите шест
+         стават 4-пикселови петна — там картината се изрязва отстрани и
+         показва само тримата отпред, точно както изглежда снимка от финал.
+         Имената и точките на всички остават в класирането отдолу. */
+      function raceOnTrack() { return window.innerWidth < 720 ? 3 : 6; }
+
+      var raceSel = { grade: '', subject: '', teacher: '' };
+
+      function racePos(n) {
+        var tail = (n === 1) ? 'ви' : (n === 2) ? 'ри' : (n === 7 || n === 8) ? 'ми' : 'ти';
+        return n + tail;
+      }
+
+      function raceShortName(full) {
+        var parts = String(full || '').trim().split(/\s+/);
+        if (!parts[0]) return '—';
+        if (parts.length === 1) return parts[0].slice(0, 11);
+        return parts[0].slice(0, 10) + ' ' + parts[1].charAt(0) + '.';
+      }
+
+      function raceNum(v) {
+        return String(Math.round(v * 10) / 10).replace('.', ',');
+      }
+
+      /* Колко е събрал един ученик по един предмет. Броят се заданията на
+         този предмет и общите задания без предмет — точно тези, които
+         базата му дава да види. Незавършена работа не носи точки. */
+      function raceScoreOf(studentId, subjectId) {
+        var pts = 0, max = 0, done = 0;
+        state.attempts.forEach(function (t) {
+          if (t.user_id !== studentId) return;
+          if (t.status === 'in_progress') return;
+          var a = state.assignments[t.assignment_id];
+          if (!a) return;
+          if (a.subject_id && a.subject_id !== subjectId) return;
+          var cap = Number(t.auto_max || 0) + Number(t.manual_max || 0);
+          if (!cap) cap = Number(a.max_points || 0);
+          pts += Number(t.total_score || 0); max += cap; done += 1;
+        });
+        var pct = max > 0 ? (pts / max) : 0;
+        var stars = done === 0 ? 0
+          : pct >= 0.90 ? 5 : pct >= 0.75 ? 4 : pct >= 0.60 ? 3 : pct >= 0.40 ? 2 : 1;
+        return { points: pts, max: max, pct: pct, stars: stars, done: done };
+      }
+
+      function raceStarsText(n) {
+        return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n);
+      }
+
+      /* Всички групи, които реално съществуват. Ученик без преподавател по
+         даден предмет няма ред в teaching и затова не се състезава — него
+         го виждате в „Ученици“, където му се задава преподавател. */
+      function raceGroups() {
+        var byKey = {};
+        state.teaching.forEach(function (t) {
+          if (t.active === false) return;
+          var pr = state.profiles[t.student_id];
+          if (!pr || pr.role !== 'student' || pr.active === false) return;
+          var g = gradeOf(pr);
+          if (g === null) return;
+          var key = g + '|' + t.subject_id + '|' + t.teacher_id;
+          if (!byKey[key]) {
+            byKey[key] = { grade: g, subject: t.subject_id, teacher: t.teacher_id,
+                           ids: {}, students: [] };
+          }
+          if (byKey[key].ids[pr.id]) return;
+          byKey[key].ids[pr.id] = true;
+          byKey[key].students.push(pr);
+        });
+        return Object.keys(byKey).map(function (k) { return byKey[k]; })
+          .filter(function (gr) { return gr.students.length >= 2; })
+          .sort(function (a, b) {
+            return b.students.length - a.students.length || a.grade - b.grade;
+          });
+      }
+
+      function raceSubjectName(id) {
+        for (var i = 0; i < state.subjects.length; i++) {
+          if (state.subjects[i].id === id) return state.subjects[i].name;
+        }
+        return 'предмет';
+      }
+
+      /* Класирането на една група: точки надолу, при равни точки процентът,
+         после името — за да е подредбата една и съща при всяко отваряне. */
+      function raceStandings(group) {
+        var rows = group.students.map(function (pr) {
+          var sc = raceScoreOf(pr.id, group.subject);
+          return { id: pr.id, name: pr.full_name || '—',
+                   short: raceShortName(pr.full_name),
+                   points: sc.points, pct: sc.pct, stars: sc.stars, done: sc.done };
+        });
+        /* Цветът се раздава по азбучен ред, не по класиране: така едно
+           изпреварване мести колите, но не им сменя боята. */
+        rows.slice().sort(function (a, b) {
+          return a.name.localeCompare(b.name, 'bg');
+        }).forEach(function (r, i) {
+          r.color = RACE_COLORS[i % RACE_COLORS.length];
+          r.dark  = RACE_DARK[i % RACE_DARK.length];
+        });
+        rows.sort(function (a, b) {
+          return (b.points - a.points) || (b.pct - a.pct) ||
+                 a.name.localeCompare(b.name, 'bg');
+        });
+        return rows;
+      }
+
+      /* ---- картината -------------------------------------------------
+         Цялата геометрия виси на един параметър: u е „колко близо до
+         зрителя“. y и ширината са линейни по u и минават през (RVX, RVY),
+         затова умножаването на u по едно и също число е точно движение
+         напред. Оттам идва и анимацията.                                */
+
+      var RVX = 600, RVY = 252, RYB = 690, RWB = 760;
+      var RSTEP = 1.30;                    /* разстояние между две ленти */
+      function rY(u) { return RVY + (RYB - RVY) * u; }
+      function rW(u) { return RWB * u; }
+
+      function raceRand(seed) {
+        return function () {
+          seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+          var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+
+      function raceSky() {
+        var rnd = raceRand(20260928), out = [], i;
+        out.push('<ellipse cx="300" cy="120" rx="330" ry="150" fill="#6B4BC8" opacity=".24" filter="url(#rBlur)"/>');
+        out.push('<ellipse cx="960" cy="90" rx="260" ry="120" fill="#199e70" opacity=".16" filter="url(#rBlur)"/>');
+        out.push('<ellipse cx="600" cy="258" rx="540" ry="74" fill="#F7AD19" opacity=".30" filter="url(#rBlur)"/>');
+        /* Звездите са постоянни, защото зърното е постоянно — иначе всяко
+           прерисуване щеше да пренарежда небето пред очите на детето. */
+        for (i = 0; i < 130; i++) {
+          out.push('<circle class="tla-race__star" cx="' + Math.round(rnd() * 1200) +
+                   '" cy="' + Math.round(rnd() * 246) +
+                   '" r="' + (0.7 + rnd() * 1.6).toFixed(1) +
+                   '" fill="#FFFFFF" style="animation-delay:' + (rnd() * 4).toFixed(2) + 's"/>');
+        }
+        /* Планета с пръстен: задната половина на пръстена, после тялото,
+           после предната — така пръстенът наистина минава зад планетата.
+           Стои вляво от средата, но не чак в ъгъла: на телефон картината
+           се реже отстрани и ъглите изчезват. */
+        out.push(
+          '<g class="tla-race__planet">' +
+          '<ellipse cx="420" cy="118" rx="128" ry="27" fill="none" stroke="#7FD8C4" stroke-width="7" opacity=".55" transform="rotate(-17 420 118)"/>' +
+          '<circle cx="420" cy="118" r="76" fill="url(#rPlanet)"/>' +
+          '<path d="M 420 42 a 76 76 0 0 0 0 152 a 60 76 0 0 1 0 -152" fill="#0A0F22" opacity=".45"/>' +
+          '<clipPath id="rRingFront"><rect x="284" y="118" width="280" height="80"/></clipPath>' +
+          '<g clip-path="url(#rRingFront)">' +
+          '<ellipse cx="420" cy="118" rx="128" ry="27" fill="none" stroke="#9FE7D6" stroke-width="7" opacity=".85" transform="rotate(-17 420 118)"/>' +
+          '</g></g>');
+        out.push('<g class="tla-race__planet tla-race__planet--b">' +
+          '<circle cx="800" cy="86" r="42" fill="url(#rPlanetB)"/>' +
+          '<path d="M 800 44 a 42 42 0 0 0 0 84 a 30 42 0 0 1 0 -84" fill="#0A0F22" opacity=".5"/>' +
+          '</g>');
+        out.push('<circle cx="690" cy="196" r="15" fill="#D8DEEC" opacity=".9"/>' +
+          '<circle cx="684" cy="192" r="4" fill="#A8B2C8" opacity=".8"/>');
+        return out.join('');
+      }
+
+      /* Лентите и бордюрите се нареждат по геометрична прогресия на u,
+         затова групата се самоизобразява при умножение по RSTEP².
+         Точно това умножение прави анимацията — и цикълът се затваря без
+         скок. (RSTEP², а не RSTEP, защото бордюрите се редуват по цвят.) */
+      function raceRoad() {
+        var out = [], i, u, u2, w1, w2, y1, y2, inner = 0.90;
+        for (i = 0; i < 15; i++) {
+          u = 0.99 / Math.pow(RSTEP, i);
+          u2 = u * 0.74;
+          y1 = rY(u).toFixed(1); y2 = rY(u2).toFixed(1);
+          w1 = rW(u) * 0.014; w2 = rW(u2) * 0.014;
+          out.push('<polygon points="' + (RVX - w1).toFixed(1) + ',' + y1 +
+                   ' ' + (RVX + w1).toFixed(1) + ',' + y1 +
+                   ' ' + (RVX + w2).toFixed(1) + ',' + y2 +
+                   ' ' + (RVX - w2).toFixed(1) + ',' + y2 +
+                   '" fill="#E8EDF8" opacity=".85"/>');
+          var col = (i % 2 === 0) ? '#C9302C' : '#F2F5FB';
+          [-1, 1].forEach(function (sgn) {
+            var a = RVX + sgn * rW(u) * inner, b = RVX + sgn * rW(u);
+            var c = RVX + sgn * rW(u2), d = RVX + sgn * rW(u2) * inner;
+            out.push('<polygon points="' + a.toFixed(1) + ',' + y1 + ' ' + b.toFixed(1) + ',' + y1 +
+                     ' ' + c.toFixed(1) + ',' + y2 + ' ' + d.toFixed(1) + ',' + y2 +
+                     '" fill="' + col + '" opacity=".92"/>');
+          });
+        }
+        return out.join('');
+      }
+
+      /* Финалът: карирана лента напряко на пистата, точно под водача. */
+      function raceFinish() {
+        var out = [], uA = 0.995, uM = 0.945, uB = 0.895, cols = 18, i, r;
+        for (r = 0; r < 2; r++) {
+          var u1 = r === 0 ? uA : uM, u2 = r === 0 ? uM : uB;
+          var y1 = rY(u1).toFixed(1), y2 = rY(u2).toFixed(1);
+          for (i = 0; i < cols; i++) {
+            var f1 = -1 + 2 * i / cols, f2 = -1 + 2 * (i + 1) / cols;
+            out.push('<polygon points="' +
+              (RVX + f1 * rW(u1)).toFixed(1) + ',' + y1 + ' ' +
+              (RVX + f2 * rW(u1)).toFixed(1) + ',' + y1 + ' ' +
+              (RVX + f2 * rW(u2)).toFixed(1) + ',' + y2 + ' ' +
+              (RVX + f1 * rW(u2)).toFixed(1) + ',' + y2 +
+              '" fill="' + (((i + r) % 2) ? '#F5F8FF' : '#0E1526') + '"/>');
+          }
+        }
+        var yl = (rY(0.895) - 12).toFixed(1);
+        [-1, 1].forEach(function (sgn) {
+          out.push('<text class="tla-race__finish" x="' + (RVX + sgn * rW(0.895) * 0.62).toFixed(0) +
+                   '" y="' + yl + '" text-anchor="middle">ФИНАЛ</text>');
+        });
+        return out.join('');
+      }
+
+      /* Една кола, в свои координати: земята е y = 0, колата расте нагоре
+         до -119, половин ширина 106. Големината после я дава само scale(). */
+      function raceCar(c, d, no) {
+        return '' +
+          '<ellipse cx="0" cy="-4" rx="96" ry="14" fill="#04070F" opacity=".55"/>' +
+          '<rect x="-64" y="-115" width="128" height="15" rx="3" fill="' + c + '"/>' +
+          '<rect x="-64" y="-101" width="128" height="4" fill="' + d + '"/>' +
+          '<rect x="-70" y="-119" width="9" height="27" rx="2" fill="' + d + '"/>' +
+          '<rect x="61"  y="-119" width="9" height="27" rx="2" fill="' + d + '"/>' +
+          '<path d="M -17 -93 L 17 -93 L 13 -46 L -13 -46 Z" fill="' + c + '"/>' +
+          '<path d="M 0 -93 L 17 -93 L 13 -46 L 0 -46 Z" fill="' + d + '" opacity=".5"/>' +
+          '<path d="M -52 -58 q -9 0 -9 9 l 0 15 q 0 9 9 9 l 29 0 l 5 -33 z" fill="' + c + '"/>' +
+          '<path d="M  52 -58 q  9 0  9 9 l 0 15 q 0 9 -9 9 l -29 0 l -5 -33 z" fill="' + d + '"/>' +
+          '<path d="M -20 -60 q 0 -23 20 -23 q 20 0 20 23" fill="none" stroke="#C9D4E8" stroke-width="5"/>' +
+          '<ellipse cx="0" cy="-70" rx="14" ry="12" fill="#E9EEF8"/>' +
+          '<path d="M -12 -73 q 12 -7 24 0 l 0 7 q -12 5 -24 0 z" fill="#0D1B36"/>' +
+          '<path d="M -13 -46 L 13 -46 L 9 -13 L -9 -13 Z" fill="' + c + '"/>' +
+          '<g fill="#10151F">' +
+          '<rect x="-90" y="-67" width="35" height="62" rx="11"/>' +
+          '<rect x="55"  y="-67" width="35" height="62" rx="11"/>' +
+          '</g>' +
+          '<rect x="-86" y="-59" width="27" height="12" rx="6" fill="#2B3446"/>' +
+          '<rect x="59"  y="-59" width="27" height="12" rx="6" fill="#2B3446"/>' +
+          '<rect x="-100" y="-19" width="200" height="10" rx="3" fill="' + c + '"/>' +
+          '<rect x="-100" y="-10" width="200" height="5" rx="2" fill="' + d + '"/>' +
+          '<rect x="-106" y="-31" width="11" height="27" rx="3" fill="' + d + '"/>' +
+          '<rect x="95"   y="-31" width="11" height="27" rx="3" fill="' + d + '"/>' +
+          '<circle cx="0" cy="-31" r="12.5" fill="#FFFFFF"/>' +
+          '<text class="tla-race__no" x="0" y="-26" text-anchor="middle">' + no + '</text>';
+      }
+
+      /* Местата в дълбочина. Първият е най-едър и най-близо до финала,
+         останалите се редят зад него — вляво и вдясно през едно. */
+      var RACE_U    = [0.93, 0.72, 0.565, 0.45, 0.365, 0.30];
+      var RACE_LANE = [0.00, -0.46, 0.46, -0.82, 0.82, 0.02];
+      /* Изправената картина на телефона показва само средната ивица от
+         платното. Затова там колите се събират към средата и са малко
+         по-дребни — иначе предното крило на втория увисва извън кадъра. */
+      var RACE_LANE_N = [0.00, -0.28, 0.28];
+
+      function raceHits(a, b) {
+        return a.x < b.x + b.w + 8 && b.x < a.x + a.w + 8 &&
+               a.y < b.y + b.h + 6 && b.y < a.y + a.h + 6;
+      }
+
+      /* Надписите се разполагат от водача назад: неговият е на мястото си,
+         а всеки следващ, ако попадне върху вече поставен, се изтласква
+         навън от центъра и чак ако и там няма място — нагоре. Това е
+         разликата между картина, която работи за всяко име, и такава,
+         нагласена за едни конкретни деца. */
+      function racePlaceTag(placed, x0, y0, w, h) {
+        var dir = (x0 + w / 2) < RVX ? -1 : 1, lift, k, x, y, box;
+        for (lift = 0; lift < 4; lift++) {
+          y = Math.max(y0 - lift * 46, 6);
+          for (k = 0; k < 26; k++) {
+            x = Math.min(Math.max(x0 + dir * k * 24, 8), 1192 - w);
+            box = { x: x, y: y, w: w, h: h };
+            if (!placed.some(function (b) { return raceHits(b, box); })) return box;
+          }
+        }
+        return { x: Math.min(Math.max(x0, 8), 1192 - w), y: Math.max(y0, 6), w: w, h: h };
+      }
+
+      function raceSceneSvg(rows) {
+        var narrow = window.innerWidth < 720;
+        var lanes = narrow ? RACE_LANE_N : RACE_LANE;
+        var size  = narrow ? 1.6 : 1.9;
+        var on = rows.slice(0, raceOnTrack());
+        var cars = [], tags = [], i;
+
+        /* Рисува се отзад напред: по-близката кола покрива по-далечната,
+           точно както се вижда с очи. */
+        for (i = on.length - 1; i >= 0; i--) {
+          var r = on[i], u = RACE_U[i], sc = u * size;
+          var x = RVX + lanes[i] * rW(u), y = rY(u);
+          var top = y - 119 * sc;
+
+          cars.push('<path d="M ' + (x - 46 * sc).toFixed(1) + ' ' + (top + 10 * sc).toFixed(1) +
+                    ' L ' + (x + 46 * sc).toFixed(1) + ' ' + (top + 10 * sc).toFixed(1) +
+                    ' L ' + (x + 16 * sc).toFixed(1) + ' ' + (top - 120 * sc).toFixed(1) +
+                    ' L ' + (x - 16 * sc).toFixed(1) + ' ' + (top - 120 * sc).toFixed(1) +
+                    ' Z" fill="url(#rTrail)"/>');
+
+          cars.push('<g class="tla-race__car" style="animation-delay:' + (i * 0.09).toFixed(2) + 's">' +
+            '<g transform="translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ') scale(' + sc.toFixed(3) + ')">' +
+            (i === 0 ? '<ellipse cx="0" cy="-6" rx="112" ry="20" fill="#F7AD19" opacity=".30" filter="url(#rBlur)"/>' : '') +
+            raceCar(r.color, r.dark, i + 1) +
+            '<text class="tla-race__livery" x="0" y="-103.5" text-anchor="middle">' +
+              esc(r.short) + '</text>' +
+            '</g></g>');
+        }
+
+        /* Надписът НЕ се смалява с колата: далечната кола е малка, но
+           името ѝ трябва да се чете. Затова той живее извън scale(). */
+        var placed = [];
+        for (i = 0; i < on.length; i++) {
+          var rr = on[i], uu = RACE_U[i], ss = uu * size;
+          var cx = RVX + lanes[i] * rW(uu), cy = rY(uu) - 119 * ss;
+          var l1 = racePos(i + 1) + ' · ' + rr.name;
+          var l2 = raceStarsText(rr.stars) + '  ·  ' + raceNum(rr.points) + ' т.';
+          var w = Math.max(l1.length * 7.6, l2.length * 7.2) + 26;
+          var box = racePlaceTag(placed, cx - w / 2, cy - 44, w, 36);
+          placed.push(box);
+          tags.push('<g class="tla-race__tag" style="animation-delay:' + (0.35 + i * 0.09).toFixed(2) + 's">' +
+            '<rect x="' + box.x.toFixed(1) + '" y="' + box.y.toFixed(1) + '" width="' + w.toFixed(1) +
+              '" height="36" rx="10" fill="#080E1E" fill-opacity=".88" stroke="#33477A"/>' +
+            '<rect x="' + box.x.toFixed(1) + '" y="' + (box.y + 7).toFixed(1) +
+              '" width="5" height="22" rx="2.5" fill="' + rr.color + '"/>' +
+            '<text class="tla-race__tagname" x="' + (box.x + 14).toFixed(1) + '" y="' + (box.y + 16).toFixed(1) + '">' +
+              esc(l1) + '</text>' +
+            '<text class="tla-race__tagsub" x="' + (box.x + 14).toFixed(1) + '" y="' + (box.y + 29).toFixed(1) + '">' +
+              esc(l2) + '</text>' +
+            '</g>');
+        }
+
+        return '' +
+          '<svg class="tla-race__svg" viewBox="0 0 1200 690" role="img" ' +
+            'xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="' +
+            (narrow ? 'xMidYMax slice' : 'xMidYMid meet') + '">' +
+          '<defs>' +
+            '<linearGradient id="rSky" x1="0" y1="0" x2="0" y2="1">' +
+              '<stop offset="0" stop-color="#04060F"/><stop offset=".55" stop-color="#0D1B36"/>' +
+              '<stop offset="1" stop-color="#27407C"/></linearGradient>' +
+            '<linearGradient id="rRoad" x1="0" y1="0" x2="0" y2="1">' +
+              '<stop offset="0" stop-color="#26355C"/><stop offset=".45" stop-color="#141C33"/>' +
+              '<stop offset="1" stop-color="#0A0F1E"/></linearGradient>' +
+            '<radialGradient id="rPlanet" cx=".35" cy=".3">' +
+              '<stop offset="0" stop-color="#A88CF0"/><stop offset="1" stop-color="#3B2A78"/></radialGradient>' +
+            '<radialGradient id="rPlanetB" cx=".35" cy=".3">' +
+              '<stop offset="0" stop-color="#F2A15C"/><stop offset="1" stop-color="#8C3A22"/></radialGradient>' +
+            '<linearGradient id="rTrail" x1="0" y1="1" x2="0" y2="0">' +
+              '<stop offset="0" stop-color="#9FB6E8" stop-opacity=".40"/>' +
+              '<stop offset="1" stop-color="#9FB6E8" stop-opacity="0"/></linearGradient>' +
+            '<filter id="rBlur" x="-50%" y="-50%" width="200%" height="200%">' +
+              '<feGaussianBlur stdDeviation="26"/></filter>' +
+            '<clipPath id="rClip"><rect x="0" y="0" width="1200" height="690"/></clipPath>' +
+          '</defs>' +
+          '<g clip-path="url(#rClip)">' +
+            '<rect width="1200" height="690" fill="url(#rSky)"/>' +
+            raceSky() +
+            '<polygon points="600,252 1360,690 -160,690" fill="url(#rRoad)"/>' +
+            '<g class="tla-race__rush">' + raceRoad() + '</g>' +
+            raceFinish() +
+            cars.join('') +
+            tags.join('') +
+          '</g></svg>';
+      }
+
+      /* ---- раздел „Формула 1“ ---------------------------------------- */
+
+      function raceFillPickers(groups) {
+        function opts(list, sel) {
+          return list.map(function (o) {
+            return '<option value="' + esc(o.v) + '"' +
+              (String(sel) === String(o.v) ? ' selected' : '') + '>' + esc(o.t) + '</option>';
+          }).join('');
+        }
+        var seen, list;
+
+        seen = {}; list = [];
+        groups.forEach(function (g) {
+          if (seen[g.grade]) return; seen[g.grade] = 1;
+          list.push({ v: g.grade, t: TLA.gradeLabel(g.grade) });
+        });
+        list.sort(function (a, b) { return a.v - b.v; });
+        if (!list.some(function (o) { return String(o.v) === String(raceSel.grade); })) {
+          raceSel.grade = list.length ? list[0].v : '';
+        }
+        document.getElementById('raceGrade').innerHTML = opts(list, raceSel.grade);
+
+        var inGrade = groups.filter(function (g) { return String(g.grade) === String(raceSel.grade); });
+        seen = {}; list = [];
+        inGrade.forEach(function (g) {
+          if (seen[g.subject]) return; seen[g.subject] = 1;
+          list.push({ v: g.subject, t: raceSubjectName(g.subject) });
+        });
+        if (!list.some(function (o) { return o.v === raceSel.subject; })) {
+          raceSel.subject = list.length ? list[0].v : '';
+        }
+        document.getElementById('raceSubject').innerHTML = opts(list, raceSel.subject);
+
+        var inSubj = inGrade.filter(function (g) { return g.subject === raceSel.subject; });
+        seen = {}; list = [];
+        inSubj.forEach(function (g) {
+          if (seen[g.teacher]) return; seen[g.teacher] = 1;
+          var tp = state.profiles[g.teacher];
+          list.push({ v: g.teacher, t: (tp && tp.full_name) || 'преподавател' });
+        });
+        if (!list.some(function (o) { return o.v === raceSel.teacher; })) {
+          raceSel.teacher = list.length ? list[0].v : '';
+        }
+        document.getElementById('raceTeacher').innerHTML = opts(list, raceSel.teacher);
+
+        return inSubj.filter(function (g) { return g.teacher === raceSel.teacher; })[0] || null;
+      }
+
+      function renderRace() {
+        var scene = document.getElementById('raceScene');
+        var list  = document.getElementById('raceStandings');
+        var empty = document.getElementById('raceEmpty');
+        var note  = document.getElementById('raceNote');
+        var filt  = document.querySelector('#panelRace .tla-filters');
+        var head  = document.querySelector('#panelRace .tla-race__h');
+        if (!scene) return;
+
+        var groups = raceGroups();
+        if (!groups.length) {
+          empty.hidden = false;
+          empty.textContent = 'Състезание се нарежда, когато поне двама ученици от един ' +
+            'и същи клас учат един и същи предмет при един и същи преподавател. ' +
+            'Засега такава група няма — вижте колоната „Предмети“ в раздел Ученици.';
+          filt.hidden = true; head.hidden = true; scene.hidden = true;
+          scene.innerHTML = ''; list.innerHTML = ''; note.textContent = '';
+          return;
+        }
+        empty.hidden = true; filt.hidden = false; head.hidden = false; scene.hidden = false;
+
+        var group = raceFillPickers(groups);
+        if (!group) { scene.innerHTML = ''; list.innerHTML = ''; return; }
+
+        var rows = raceStandings(group);
+        raceWide = raceOnTrack();
+        scene.innerHTML = raceSceneSvg(rows);
+        /* Анимацията тръгва чак когато картината е в дървото, иначе
+           първото отваряне я заварва наполовина изиграна. */
+        scene.classList.remove('tla-race--go');
+        void scene.offsetWidth;
+        scene.classList.add('tla-race--go');
+
+        list.innerHTML = rows.map(function (r, i) {
+          var medal = i < 3 ? ' tla-grid__pos--' + (i + 1) : '';
+          return '<li class="tla-grid__row">' +
+            '<span class="tla-grid__pos' + medal + '">' + esc(racePos(i + 1)) + '</span>' +
+            '<span class="tla-grid__dot" style="background:' + esc(r.color) + '"></span>' +
+            '<span class="tla-grid__name">' + esc(r.name) + '</span>' +
+            '<span class="tla-grid__stars" title="' + r.stars + ' от 5">' +
+              esc(raceStarsText(r.stars)) + '</span>' +
+            '<span class="tla-grid__pts">' + esc(raceNum(r.points)) + ' т.</span>' +
+            '</li>';
+        }).join('');
+
+        var nobody = rows.every(function (r) { return r.done === 0; });
+        var extra = rows.length > raceOnTrack()
+          ? ' На пистата са първите ' + raceOnTrack() + '; всички са в класирането отдолу.' : '';
+        note.textContent = nobody
+          ? 'Още никой от групата не е предал задание — състезанието започва с първото.' + extra
+          : ('Класиране на ' + rows.length + ' ученици, ' + TLA.gradeLabel(group.grade).toLowerCase() +
+             ', ' + raceSubjectName(group.subject).toLowerCase() + '.' + extra);
+      }
+
+      /* Само когато екранът смени ширината си дотолкова, че броят коли да
+         се промени — иначе всяко влачене на ъгъла би пускало финала наново. */
+      var raceWide = null, raceTimer = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(raceTimer);
+        raceTimer = setTimeout(function () {
+          var now = raceOnTrack();
+          if (now === raceWide) return;
+          raceWide = now;
+          if (!document.getElementById('panelRace').hidden) renderRace();
+        }, 220);
+      });
+
+      ['raceGrade', 'raceSubject', 'raceTeacher'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', function () {
+          if (id === 'raceGrade') { raceSel.grade = this.value; raceSel.subject = ''; raceSel.teacher = ''; }
+          else if (id === 'raceSubject') { raceSel.subject = this.value; raceSel.teacher = ''; }
+          else raceSel.teacher = this.value;
+          renderRace();
+        });
+      });
+
       (async function () {
         if (!TLA.isConfigured()) { say('err', TLA.notConfiguredMessage()); return; }
         var auth = await TLA.requireAuth({ role: 'teacher' });
@@ -2769,6 +3345,7 @@
         await loadHours();
         fillNewStudentPickers();
         renderAssignAdmin();
+        renderRace();
         if (state.isAdmin) renderTeachers();
       })();
     })();

@@ -1213,3 +1213,136 @@ body.tlp-space { background: #05070F; }
          border-radius: 12px; padding: 0.6rem 0.85rem; font-weight: 700; }
 #pwOk  { background: rgba(22,96,58,.18);  color: #7BD6A4;
          border-radius: 12px; padding: 0.6rem 0.85rem; font-weight: 700; }
+
+/* =====================================================================
+   Състезание Формула 1 — класирането на една група като финал
+   ---------------------------------------------------------------------
+   Картината е SVG, построен в teacher.html. Тук са само боята и
+   движението. Цветовете на колите идват от проверената палитра за тъмен
+   фон и са минали валидатора срещу точно този тъмносин фон — но цветът
+   никъде не носи смисъл сам: всяка кола си носи името, а класирането
+   отдолу е същото нещо с думи и числа.
+   ===================================================================== */
+
+.tla-race__h {
+  font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--navy-1); margin: 1.1rem 0 0.6rem;
+}
+.tla-race {
+  position: relative; aspect-ratio: 1200 / 690;
+  border-radius: 18px; overflow: hidden; background: #0D1B36;
+  border: 1px solid rgba(13,27,54,0.25);
+  box-shadow: 0 18px 44px rgba(13,27,54,0.28);
+  line-height: 0;
+}
+.tla-race[hidden] { display: none; }
+.tla-race__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* На телефон широката картина би смалила колите до петна. Затова кутията
+   става изправена и SVG-то се изрязва отстрани вместо да се свива —
+   колите остават едри, а отрязаното е празно небе. Надписите отстъпват
+   на класирането отдолу: там имената се четат, тук биха били 4 пиксела. */
+@media (max-width: 719px) {
+  .tla-race { aspect-ratio: 4 / 5; }
+  .tla-race__tag { display: none; }
+}
+
+/* надписите в картината */
+.tla-race__no {
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; fill: #0D1B36;
+}
+/* Името върху задното крило е част от ливреята: бяло с тъмен кант, за да
+   се чете и върху жълта, и върху тъмносиня кола. */
+.tla-race__livery {
+  font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+  fill: #FFFFFF; stroke: #0A0F1E; stroke-width: 2.2px;
+  paint-order: stroke fill; letter-spacing: .02em;
+}
+.tla-race__tagname {
+  font-family: 'Nunito', sans-serif; font-size: 13.5px; font-weight: 800; fill: #F4F7FF;
+}
+.tla-race__tagsub {
+  font-family: 'Nunito', sans-serif; font-size: 11.5px; font-weight: 700; fill: #F7AD19;
+}
+.tla-race__finish {
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+  fill: #FFE7B0; letter-spacing: .22em; opacity: .85;
+}
+
+/* ── движението ──
+   Пистата се събира точно в (600, 252). Затова „напред“ е буквално
+   scale() около тази точка: лентите и бордюрите са наредени в
+   геометрична прогресия и след един цикъл всяка застава на мястото на
+   по-предната. Оттам цикълът се затваря без нито един видим скок. */
+.tla-race__rush {
+  transform-box: view-box; transform-origin: 600px 252px;
+  animation: tla-race-rush 0.95s linear infinite;
+}
+@keyframes tla-race-rush {
+  from { transform: scale(1); }
+  to   { transform: scale(1.69); }   /* = 1,30² — два реда напред */
+}
+
+/* Колите долитат от същата тази точка: от далечината до мястото си. */
+.tla-race__car {
+  transform-box: view-box; transform-origin: 600px 252px;
+  animation: tla-race-arrive 0.85s cubic-bezier(.16,.9,.3,1) both;
+}
+@keyframes tla-race-arrive {
+  from { transform: scale(0.06); opacity: 0; }
+  55%  { opacity: 1; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.tla-race__tag { animation: tla-race-tag 0.5s ease-out both; }
+@keyframes tla-race-tag { from { opacity: 0; } to { opacity: 1; } }
+
+.tla-race__star { animation: tla-race-twinkle 3.4s ease-in-out infinite; }
+@keyframes tla-race-twinkle {
+  0%, 100% { opacity: .28; } 50% { opacity: 1; }
+}
+.tla-race__planet { animation: tla-race-drift 26s ease-in-out infinite; }
+.tla-race__planet--b { animation-duration: 34s; animation-direction: reverse; }
+@keyframes tla-race-drift {
+  0%, 100% { transform: translate(0, 0); } 50% { transform: translate(0, 12px); }
+}
+
+/* ── класирането отдолу ── */
+.tla-grid { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.4rem; }
+.tla-grid__row {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.6rem 0.85rem; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--white);
+}
+.tla-grid__row:nth-child(1) { background: #FFF8E8; border-color: rgba(247,173,25,0.45); }
+.tla-grid__pos {
+  font-weight: 800; font-size: 0.9rem; color: var(--mid);
+  min-width: 3.1rem; font-variant-numeric: tabular-nums;
+}
+/* Медалът е в думата „1ви“, не в цвета — цветът само го повтаря. */
+.tla-grid__pos--1 { color: #8A6A00; }
+.tla-grid__pos--2 { color: #55606E; }
+.tla-grid__pos--3 { color: #8A5326; }
+.tla-grid__dot { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.tla-grid__name { font-weight: 700; color: var(--dark); flex: 1 1 auto; min-width: 0; }
+/* Тъмното кехлибарено на сайта, а не светлото: звездите са текст и
+   трябва да минат 4,5:1 — и върху бялото, и върху кремавия първи ред.
+   (#A17522 дава само 3,9:1 на крем.) */
+.tla-grid__stars { color: var(--tlp-accent-deep); letter-spacing: .06em; white-space: nowrap; }
+.tla-grid__pts {
+  font-weight: 800; color: var(--navy-1); white-space: nowrap;
+  font-variant-numeric: tabular-nums; min-width: 4.5rem; text-align: right;
+}
+
+@media (max-width: 560px) {
+  .tla-grid__row { flex-wrap: wrap; gap: 0.35rem 0.6rem; }
+  .tla-grid__name { flex: 1 1 100%; order: 3; }
+  .tla-grid__stars { order: 4; }
+  .tla-grid__pts { order: 5; margin-left: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tla-race__rush, .tla-race__car, .tla-race__tag,
+  .tla-race__star, .tla-race__planet { animation: none; }
+  .tla-race__car { opacity: 1; transform: none; }
+  .tla-race__star { opacity: .8; }
+}
