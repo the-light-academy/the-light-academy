@@ -931,3 +931,57 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 5. клас, седмица 25 — понятие за процент, превръщане на процент в дроб и обратно.
+-- Четири задачи с избор и шест писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w25',
+   'Домашно — Понятие за процент',
+   'homework',
+   'homework_5_w25.html',
+   10,
+   false,
+   403,
+   25,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 5. клас, седмица 26 — намиране на процент от число и на число по даден процент.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w26',
+   'Домашно — Процент от число. Отстъпки и лихви',
+   'homework',
+   'homework_5_w26.html',
+   10,
+   false,
+   404,
+   26,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
