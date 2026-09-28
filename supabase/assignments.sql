@@ -372,8 +372,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 4 — делимост, прости и съставни числа.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -399,8 +397,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 5 — признаци за делимост на 2, на 5 и на 10.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -426,8 +422,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 6 — признаци за делимост на 3 и на 9.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -453,8 +447,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 7 — разлагане на съставни числа на прости множители.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -480,8 +472,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 8 — общи делители и най-голям общ делител.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -507,8 +497,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 9 — общи кратни и най-малко общо кратно.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -534,8 +522,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 10 — понятие за обикновена дроб, правилни и неправилни дроби, смесени числа.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -561,8 +547,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 11 — основно свойство на дробите, разширяване и съкращаване.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -588,8 +572,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 12 — привеждане към общ знаменател и сравняване.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -640,8 +622,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 14 — събиране и изваждане на дроби с различни знаменатели.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
@@ -742,8 +722,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 18 — обобщение на първия срок и подготовка за класна работа №1.
 -- Петнайсет задачи през целия срок, по една точка всяка.
 insert into public.assignments
@@ -769,8 +747,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 19 — понятие за десетична дроб, четене, писане и сравняване.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
@@ -796,8 +772,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 20 — събиране и изваждане на десетични дроби, закръгляне.
 -- Четири задачи с избор и шест писани, по една точка всяка.
 insert into public.assignments
@@ -823,8 +797,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 21 — умножение на десетични дроби и умножение с 10, 100 и 1000.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
@@ -850,8 +822,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 22 — деление на десетична дроб на естествено число и на десетична дроб.
 -- Две задачи с избор и осем писани, по една точка всяка.
 insert into public.assignments
@@ -877,8 +847,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 23 — превръщане между обикновени и десетични дроби и смесени изрази.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
@@ -904,8 +872,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 24 — текстови задачи и практически пресмятания с десетични дроби.
 -- Две задачи с избор и осем писани, по една точка всяка.
 insert into public.assignments
@@ -931,8 +897,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 25 — понятие за процент, превръщане на процент в дроб и обратно.
 -- Четири задачи с избор и шест писани, по една точка всяка.
 insert into public.assignments
@@ -958,8 +922,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 26 — намиране на процент от число и на число по даден процент.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
@@ -1010,8 +972,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 28 — лице на произволен триъгълник, височина и страна.
 -- Четири задачи с избор и шест писани, по една точка всяка.
 insert into public.assignments
@@ -1037,8 +997,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 29 — успоредник и ромб: свойства, периметър и лице.
 -- Четири задачи с избор и шест писани, по една точка всяка.
 insert into public.assignments
@@ -1064,8 +1022,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 30 — трапец: свойства, елементи, периметър и лице.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
@@ -1091,8 +1047,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 31 — правоъгълен паралелепипед и куб: елементи, развивка и повърхнина.
 -- Четири задачи с избор и шест писани, по една точка всяка.
 insert into public.assignments
@@ -1118,8 +1072,6 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
-
-
 -- 5. клас, седмица 32 — обем на правоъгълен паралелепипед и куб, мерни единици за обем.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
@@ -1133,6 +1085,56 @@ values
    false,
    410,
    32,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+-- 5. клас, седмица 33 — годишен преговор и подготовка за класна работа №2.
+-- Петнайсет задачи през цялата година, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw5-w33',
+   'Домашно — Годишен преговор',
+   'homework',
+   'homework_5_w33.html',
+   15,
+   false,
+   411,
+   33,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+-- 5. клас, седмица 34 — изходно ниво по целия материал на годината.
+-- Двайсет и две задачи по целия материал, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('exit_level_5',
+   'Изходно ниво — 5. клас',
+   'exam',
+   'exit_level_5.html',
+   22,
+   false,
+   31,
+   34,
    (select id from public.subjects where slug = 'matematika'),
    '{5}')
 on conflict (slug) do update set
