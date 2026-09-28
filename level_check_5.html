@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Определяне на нивото — 5. клас · The Light Academy</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Пълно входно ниво по математика за 5. клас — целият материал на 4. клас, с анализ по теми." />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&family=Pacifico&display=swap');
+
+/* The academy's palette, the same split as the homework sheet: amber is a
+   fill colour (1.9:1 on white), so anything written in amber uses the
+   darker --accent-ink instead. */
+:root{
+  --ink:#16233F;
+  --ink-soft:#55658A;
+  --paper:#FFFDF7;
+  --paper-raised:#FFFFFF;
+  --grid:#EFE3CC;
+  --accent:#F7AD19;
+  --accent-ink:#925A08;
+  --accent-soft:#FFF4DC;
+  --pencil:#1B2E52;
+  --pencil-soft:#E7EDFA;
+  --success:#16603A;
+  --success-soft:#E9F7EF;
+  --error:#93231F;
+  --error-soft:#FBEAE9;
+  --shadow: 220 45% 20%;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 42px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/42px 100%,
+    var(--paper);
+  color:var(--ink);
+  font-family:'Nunito', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── the platform bar, written here so this page keeps its own stylesheet ── */
+.tlp-bar{
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; height:64px; padding:0 clamp(14px,4vw,28px);
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 8px 32px hsl(var(--shadow) / 0.07);
+}
+.tlp-bar__left{ display:flex; align-items:center; gap:12px; min-width:0; }
+.tlp-bar__logo{
+  display:flex; align-items:center; gap:10px; flex:none;
+  font-family:'Pacifico', cursive; font-size:1.3rem; line-height:1;
+  color:#8C641B; text-decoration:none; white-space:nowrap;
+}
+.tlp-bar__logo img{ width:34px; height:34px; border-radius:50%; object-fit:cover; display:block; }
+.tlp-bar__sep{ width:1px; height:24px; background:rgba(13,27,54,0.14); flex:none; }
+.tlp-bar__where{
+  font-size:11.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid rgba(146,90,8,0.16);
+  padding:5px 12px; border-radius:999px; white-space:nowrap;
+  /* да се съкрати с многоточие, вместо да излезе върху „Изход“ */
+  min-width:0; overflow:hidden; text-overflow:ellipsis;
+}
+.tlp-bar__out{
+  font-family:'Nunito', sans-serif; font-weight:800; font-size:14px;
+  min-height:36px; padding:6px 16px; border-radius:999px; cursor:pointer;
+  color:var(--ink-soft); background:transparent; border:1px solid rgba(13,27,54,0.18);
+  flex:none;
+}
+.tlp-bar__out:hover{ background:var(--accent-soft); color:var(--accent-ink); }
+.tlp-bar__short{ display:none; }
+/* Three widths of the same bar. Between roughly 430 and 480 the wordmark and
+   the full label together were wider than the screen, so the label shortens
+   first and the wordmark goes next -- the round mark never does. */
+@media (max-width:700px){
+  .tlp-bar__long{ display:none; }
+  .tlp-bar__short{ display:inline; }
+}
+@media (max-width:560px){
+  .tlp-bar{ height:58px; }
+}
+/* "LightSpace" is half the width the old wordmark was, but between 381 and
+   429 it plus the label plus "Изход" were still wider than the bar and the
+   label ran over the button -- measured at 390 on both entrance tests. The
+   wordmark now stands down across that whole band; the round mark stays. */
+@media (max-width:430px){
+  .tlp-bar__name, .tlp-bar__sep{ display:none; }
+}
+
+.wrap{ max-width:760px; margin:0 auto; padding:32px 20px 150px; }
+.screen{ display:none; }
+.screen.active{ display:block; }
+
+/* ── картата по теми ──────────────────────────────────────────────
+   Статусната палитра е фиксирана и не се сменя с темата: good #0ca30c,
+   warning #fab219, weak #d03b3b. Жълтото е 1,79:1 върху хартия — затова
+   всяка лента носи число, дума И знак, а самата лента има тъмен кант,
+   за да се отделя от фона. Цветът е третото потвърждение, не първото. */
+.topics{ margin-top:26px; text-align:left; }
+.topics-h{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:20px; color:var(--ink); }
+.topics-sub{ color:var(--ink-soft); font-size:14px; margin:2px 0 14px; }
+
+.legend{ list-style:none; display:flex; flex-wrap:wrap; gap:6px 18px;
+  margin:0 0 16px; padding:0; font-size:13px; color:var(--ink-soft); font-weight:600; }
+.legend li{ display:flex; align-items:center; gap:6px; }
+.key{ font-size:15px; line-height:1; }
+.key--good{ color:#0a7d0a; } .key--warn{ color:#8A5B0B; } .key--weak{ color:#b32c2c; }
+
+.trow{ margin-bottom:14px; }
+.trow-top{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:5px; padding-right:2px; }
+.trow-name{ font-weight:800; color:var(--ink); }
+.trow-frac{ color:var(--ink-soft); font-size:13px; font-weight:600; }
+.trow-tag{ margin-left:auto; font-size:12.5px; font-weight:800; display:flex; align-items:center; gap:5px; }
+.trow-tag.good{ color:#0a7d0a; } .trow-tag.warn{ color:#8A5B0B; } .trow-tag.weak{ color:#b32c2c; }
+
+/* Лентата: 18px, кант в цвета на хартията отвън и тъмен отвътре, заоблен
+   само в края — началото стои на общата основа, както иска мерната скала. */
+.track{ position:relative; height:18px; border-radius:4px;
+  background:var(--grid-soft, #EEF1F6); overflow:hidden; }
+.bar{ position:absolute; inset:0 auto 0 0; border-radius:0 4px 4px 0;
+  min-width:3px; transition:width .5s ease; }
+.bar.good{ background:#0ca30c; box-shadow:inset 0 0 0 1px #0a7d0a; }
+.bar.warn{ background:#fab219; box-shadow:inset 0 0 0 1px #8A5B0B; }
+.bar.weak{ background:#d03b3b; box-shadow:inset 0 0 0 1px #9e2626; }
+.trow-pct{ font-variant-numeric:tabular-nums; font-weight:800; color:var(--ink); }
+
+ /* НЕ .verdict — този клас вече значи „Вярно/Грешно“ под всяка задача и
+    стои display:none, докато задачата не бъде оценена. Първият вариант се
+    казваше така и изводът просто не се появяваше. */
+.summary{ margin-top:18px; padding:14px 16px; border-radius:14px;
+  background:var(--paper); border:1px solid var(--grid);
+  color:var(--ink-soft); font-size:14.5px; line-height:1.7; text-align:left; }
+.summary p{ margin:0 0 6px; color:var(--ink-soft); }
+.summary p:last-child{ margin-bottom:0; }
+.summary b{ color:var(--ink); }
+
+.send{ margin-top:18px; padding-top:16px; border-top:1px solid var(--grid); }
+.send-h{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:16px; color:var(--ink); margin-bottom:8px; }
+.send-row{ display:flex; gap:8px; flex-wrap:wrap; }
+.send-row input{ flex:1 1 180px; min-width:0; font:inherit; padding:10px 12px;
+  border:1.5px solid var(--grid); border-radius:12px; background:var(--paper-raised); color:var(--ink); }
+.send-note{ margin-top:10px; font-weight:700; font-size:14px; }
+.send-note.ok{ color:#0a7d0a; } .send-note.no{ color:var(--error); }
+/* .btn е дефиниран по-надолу във файла и при равна специфичност печели
+   той — затова тук се вдига специфичността, вместо да се местят правила. */
+.send .btn--quiet{ background:transparent; border:1.5px solid var(--grid);
+  color:var(--ink); margin-top:10px; }
+.send .btn--quiet:hover{ background:var(--paper); opacity:1; }
+.send .btn--quiet + .btn--quiet{ margin-left:8px; }
+
+@media print{
+  .dock, .send, .result-back, .legend{ display:none !important; }
+  body{ background:#fff; }
+  .topics{ page-break-inside:avoid; }
+}
+
+/* ── before the clock starts ── */
+.intro{
+  background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:18px; padding:clamp(24px,5vw,38px); text-align:center;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--pencil);
+}
+.eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+h1{
+  font-family:'Fredoka', ui-sans-serif, sans-serif; font-weight:700;
+  font-size:clamp(28px,5vw,40px); line-height:1.08; margin:12px 0 6px; text-wrap:balance;
+}
+h1 em{ font-style:normal; color:var(--accent-ink); }
+.subhead{ color:var(--ink-soft); font-size:15.5px; line-height:1.6; margin:0 auto; max-width:52ch; }
+.facts{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin:22px 0 4px; }
+.fact{
+  background:var(--pencil-soft); border-radius:12px; padding:10px 16px; min-width:96px;
+}
+.fact b{ display:block; font-family:'Fredoka'; font-size:22px; color:var(--pencil); line-height:1.1; }
+.fact span{ font-size:12.5px; color:var(--ink-soft); }
+.rules{
+  text-align:left; max-width:44ch; margin:22px auto 0; padding:0; list-style:none;
+  color:var(--ink-soft); font-size:14.5px; line-height:1.7;
+}
+.rules li::before{ content:'·'; color:var(--accent-ink); font-weight:800; margin-right:8px; }
+.btn{
+  font-family:'Fredoka'; font-weight:600; font-size:15.5px; border:none;
+  border-radius:11px; padding:12px 26px; cursor:pointer;
+  color:#2D1F0E; background:var(--accent);
+  transition:transform .1s ease, opacity .15s ease;
+}
+.btn:hover{ opacity:.92; }
+.btn:active{ transform:scale(.97); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+.btn--ghost{ background:transparent; color:var(--ink-soft); border:1.5px solid var(--grid); }
+.btn--big{ margin-top:24px; padding:14px 34px; font-size:17px; }
+
+/* ── the paper ── */
+header.ex{ display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+.qcard{
+  background:var(--paper-raised); border:1px solid var(--grid); border-radius:16px;
+  padding:20px 22px 18px; box-shadow:0 1px 0 hsl(var(--shadow) / 0.04);
+}
+.qcard + .qcard{ margin-top:16px; }
+.qcard.correct{ border-color:var(--success); box-shadow:0 0 0 3px var(--success-soft); }
+.qcard.wrong{ border-color:var(--error); box-shadow:0 0 0 3px var(--error-soft); }
+.qtop{ display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+.qnum{
+  font-family:'Fredoka'; font-weight:600; font-size:14px;
+  color:var(--pencil); background:var(--pencil-soft); border-radius:999px;
+  width:26px; height:26px; display:flex; align-items:center; justify-content:center; flex:none;
+}
+.qtag{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px; font-weight:700;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft);
+}
+.qpts{ margin-left:auto; font-size:12.5px; font-weight:700; color:var(--ink-soft); white-space:nowrap; }
+.qexpr{
+  font-family:'JetBrains Mono', monospace; font-weight:700;
+  font-size:clamp(16px,3vw,19px); line-height:1.7; font-variant-numeric:tabular-nums;
+  margin:2px 0 16px; color:var(--ink);
+}
+.qexpr.prose{ font-family:'Nunito', sans-serif; font-weight:700; font-size:clamp(15.5px,2.8vw,17px); }
+
+/* a proper stacked fraction, for questions 4 and 5 */
+.frac{
+  display:inline-flex; flex-direction:column; align-items:center;
+  vertical-align:middle; margin:0 4px; line-height:1.25;
+}
+.frac .num{ padding:0 6px 2px; }
+.frac .den{ padding:2px 6px 0; border-top:2px solid currentColor; }
+
+.choices{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+@media (max-width:460px){ .choices{ grid-template-columns:1fr; } }
+.choice{
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border-radius:11px; border:1.5px solid var(--grid); background:transparent;
+  color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px;
+  cursor:pointer; text-align:left;
+  transition:border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.choice:hover{ border-color:var(--pencil); background:var(--pencil-soft); }
+.choice:active{ transform:scale(.98); }
+.choice .lab{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13px;
+  color:var(--pencil); background:var(--pencil-soft); border-radius:7px;
+  width:22px; height:22px; flex:none; display:flex; align-items:center; justify-content:center;
+}
+.choice.selected{ border-color:var(--pencil); background:var(--pencil-soft); }
+.choice.selected .lab{ background:var(--pencil); color:var(--paper-raised); }
+.qcard.graded .choice{ cursor:default; pointer-events:none; }
+.qcard.graded .choice.is-correct{ border-color:var(--success); background:var(--success-soft); }
+.qcard.graded .choice.is-correct .lab{ background:var(--success); color:#fff; }
+.qcard.graded .choice.is-wrong-pick{ border-color:var(--error); background:var(--error-soft); }
+.qcard.graded .choice.is-wrong-pick .lab{ background:var(--error); color:#fff; }
+
+.fields{ display:grid; gap:10px; }
+.field{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.field label{
+  font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+  color:var(--pencil); min-width:34px;
+}
+/* The proportion in question 7 is the question, not a hint about what to
+   type, so it sits beside the field rather than inside it as a placeholder. */
+.fexpr{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:15px;
+  color:var(--ink); white-space:nowrap;
+}
+.field input{
+  flex:1 1 140px; font:inherit; font-family:'JetBrains Mono', monospace; font-weight:700;
+  font-size:15px; color:var(--ink); padding:10px 14px;
+  border:1.5px solid var(--grid); border-radius:11px; background:var(--paper-raised);
+}
+.field input:focus{ outline:3px solid rgba(27,46,82,0.16); outline-offset:1px; border-color:var(--pencil); }
+.qcard.graded .field input{ pointer-events:none; }
+.hint{ font-size:12.5px; color:var(--ink-soft); margin:8px 0 0; }
+
+.verdict{ margin-top:10px; font-size:13.5px; font-weight:700; display:none; }
+.qcard.graded .verdict{ display:block; }
+.verdict.ok{ color:var(--success); }
+.verdict.no{ color:var(--error); }
+
+/* ── the dock: clock, progress, hand-in ── */
+/* `hidden` alone does not hide a flex element -- display:flex outranks the
+   browser's own [hidden] rule -- and the clock kept sitting on the result. */
+.dock[hidden]{ display:none; }
+.dock{
+  position:fixed; left:0; right:0; bottom:0; display:flex; justify-content:center;
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top, var(--paper) 55%, transparent);
+  pointer-events:none; z-index:40;
+}
+.dock-inner{
+  pointer-events:auto; width:100%; max-width:760px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:16px; padding:12px 16px;
+  box-shadow:0 8px 30px hsl(var(--shadow) / 0.18);
+}
+.clock{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:20px;
+  font-variant-numeric:tabular-nums; color:var(--pencil);
+  background:var(--pencil-soft); border-radius:11px; padding:6px 14px;
+}
+.clock.warn{ color:var(--error); background:var(--error-soft); }
+.dock-score{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13.5px;
+  color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+.dock-fill{ flex:1; }
+
+/* ── after the hand-in ── */
+.result-panel{
+  border-radius:18px; padding:26px 24px; background:var(--paper-raised);
+  border:1px solid var(--grid); text-align:center; position:relative; overflow:hidden;
+  margin-bottom:22px;
+}
+#confetti{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.result-title{ font-family:'Fredoka'; font-weight:700; font-size:24px; margin:6px 0 4px; position:relative; }
+.result-sub{ color:var(--ink-soft); font-size:14.5px; position:relative; margin:0 0 4px; }
+.mark{
+  display:inline-block; margin-top:14px; padding:8px 20px; border-radius:999px;
+  font-family:'Fredoka'; font-weight:600; font-size:17px;
+  background:var(--accent-soft); color:var(--accent-ink); position:relative;
+}
+canvas.gauge{ position:relative; }
+.saved-note{
+  margin:18px 0 0; padding:10px 14px; border-radius:11px;
+  background:var(--accent-soft); color:var(--accent-ink);
+  font-size:14px; font-weight:700; position:relative;
+}
+.saved-note[hidden]{ display:none; }
+.result-back{
+  display:inline-flex; align-items:center; justify-content:center; margin-top:16px;
+  padding:12px 24px; border-radius:11px; font-family:'Fredoka'; font-weight:600;
+  font-size:15.5px; background:var(--accent); color:#2D1F0E; text-decoration:none;
+  position:relative;
+}
+.scale{
+  margin-top:22px; border-top:1px dashed var(--grid); padding-top:16px;
+  font-size:13px; color:var(--ink-soft); text-align:left;
+}
+.scale table{ width:100%; border-collapse:collapse; margin-top:8px; font-family:'JetBrains Mono', monospace; }
+.scale td{ padding:5px 6px; border-bottom:1px solid var(--grid); }
+.scale tr.is-yours td{ background:var(--accent-soft); color:var(--accent-ink); font-weight:700; }
+
+.gate{
+  max-width:520px; margin:80px auto; padding:22px 24px;
+  background:var(--paper-raised); border:1px solid var(--grid); border-radius:16px;
+  text-align:center; color:var(--ink-soft); font-size:15px; line-height:1.6;
+}
+.gate[hidden]{ display:none; }
+
+@media (prefers-reduced-motion: reduce){
+  .btn, .choice{ transition:none; }
+}
+
+/* The one legal line these self-contained sheets carry instead of the
+   site's footer. */
+.page-legal{
+  margin:2.25rem auto 1.5rem;
+  padding:0 1rem;
+  text-align:center;
+  font-size:12px;
+  color:var(--ink-soft);
+}
+</style>
+</head>
+<body>
+
+<header class="tlp-bar">
+  <div class="tlp-bar__left">
+    <a href="index.html" class="tlp-bar__logo">
+      <img src="theLightAcademyLogo.png" alt="" />
+      <span class="tlp-bar__name">LightSpace</span>
+    </a>
+    <span class="tlp-bar__sep" aria-hidden="true"></span>
+    <span class="tlp-bar__where">
+      <span class="tlp-bar__long">Определяне на нивото · 5. клас</span>
+      <span class="tlp-bar__short">Входно ниво</span>
+    </span>
+  </div>
+  <button type="button" class="tlp-bar__out" id="signOutBtn">Изход</button>
+</header>
+
+<p class="gate" id="gate" hidden></p>
+
+<div class="wrap" id="app" hidden>
+
+  <!-- 1. преди часовника -->
+  <section class="screen active" id="introScreen">
+    <div class="intro">
+      <div class="eyebrow"><span class="dot"></span>5. клас · седмица 3</div>
+      <h1>Определяне на <em>нивото</em></h1>
+      <p class="subhead">
+        Двайсет и шест задачи по целия материал на 4. клас, подредени по осем
+        теми. Целта не е оценка, а карта: кое върви и къде трябва работа.
+        Накрая се получава анализ по теми, който може да се изпрати на родителя.
+      </p>
+      <div class="facts">
+        <div class="fact"><b>26</b><span>задачи</span></div>
+        <div class="fact"><b>8</b><span>теми</span></div>
+        <div class="fact"><b>без</b><span>ограничение</span></div>
+      </div>
+      <ul class="rules">
+        <li><b>Няма часовник.</b> Решавайте спокойно — обикновено стигат около 60 минути.</li>
+        <li>Не тръгвайте по ред. Ако някоя задача спъне детето, минете нататък и се върнете.</li>
+        <li>Задачите с празно поле се пишат с отговор — само числото, без мерната единица.</li>
+        <li>Дроб се пише с наклонена черта: 3/5. Час се пише във вида 11:15.</li>
+        <li>Оставено празно поле се брои за сгрешено — по-добре е детето да опита.</li>
+      </ul>
+      <button type="button" class="btn btn--big" id="startBtn">Започни</button>
+    </div>
+  </section>
+
+  <!-- 2. задачите -->
+  <section class="screen" id="examScreen">
+    <header class="ex">
+      <div class="eyebrow"><span class="dot"></span>6. клас · седмица 3</div>
+    </header>
+    <div id="questions"></div>
+  </section>
+
+  <!-- 3. резултатът -->
+  <section class="screen" id="resultScreen">
+    <div class="result-panel">
+      <canvas id="confetti"></canvas>
+      <canvas class="gauge" id="gauge" width="140" height="140"></canvas>
+      <div class="result-title" id="resultTitle"></div>
+      <p class="result-sub" id="resultSub"></p>
+      <div class="mark" id="resultMark"></div>
+      <p class="saved-note" id="savedNote" hidden></p>
+      <a class="result-back" href="portal.html">Към моя профил</a>
+      <!-- Картата по теми. Цветът НИКОГА не носи смисъл сам: всяка лента
+           има число, дума и знак, защото жълтото е 1,79:1 върху хартията
+           и защото един на всеки дванайсет мъже бърка зелено и червено. -->
+      <section class="topics" id="topics" hidden>
+        <h2 class="topics-h">Карта по теми</h2>
+        <p class="topics-sub">Колко от задачите по всяка тема са решени вярно.</p>
+        <ul class="legend">
+          <li><span class="key key--good" aria-hidden="true">●</span> силна тема — 80% и нагоре</li>
+          <li><span class="key key--warn" aria-hidden="true">◐</span> средна тема — от 50 до 79%</li>
+          <li><span class="key key--weak" aria-hidden="true">○</span> за работа — под 50%</li>
+        </ul>
+        <div id="topicBars"></div>
+
+        <div class="summary" id="summary"></div>
+
+        <div class="send">
+          <h3 class="send-h">Изпратете анализа на родителя</h3>
+          <div class="send-row">
+            <input type="text" id="childName" placeholder="Име на детето" autocomplete="off" />
+            <input type="email" id="parentMail" placeholder="Имейл на родителя" autocomplete="email" />
+            <button type="button" class="btn" id="sendBtn">Изпрати</button>
+          </div>
+          <p class="send-note" id="sendNote" hidden></p>
+          <button type="button" class="btn btn--quiet" id="copyBtn">Копирай текста</button>
+          <button type="button" class="btn btn--quiet" id="printBtn">Разпечатай</button>
+        </div>
+      </section>
+
+      <div class="scale">
+        Как се чете резултатът:
+        <table id="scaleTable"></table>
+      </div>
+    </div>
+    <div id="review"></div>
+  </section>
+</div>
+
+<div class="dock" id="dock" hidden>
+  <div class="dock-inner">
+    <span class="dock-score" id="answered">0 / 26 решени</span>
+    <span class="dock-fill"></span>
+    <button type="button" class="btn" id="submitBtn">Предай</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/email-check.js"></script>
+<script>
+/* =========================================================
+   ВХОДНО НИВО — 6. КЛАС, седмица 3 (5–9 окт. 2026)
+
+   Проверява материала, който седмици 1 и 2 преговарят:
+   действия с обикновени и десетични дроби, намиране на част
+   от число и процент, геометрични фигури от 5. клас.
+
+   Всеки отговор е пресметнат отделно:
+
+     1  б)  0,45 е най-голямото от 0,405; 0,45; 0,0450; 0,4005
+     2  б)  3,6 − 1,25 + 0,4 = 2,75
+     3      0,25 · 1,2 = 0,3  ;  4,8 : 0,6 = 8
+     4  б)  2/3 + 1/4 = 8/12 + 3/12 = 11/12
+     5  б)  3 1/2 − 1 3/4 = 14/4 − 7/4 = 7/4 = 1 3/4
+     6      3/5 · 10/9 = 30/45 = 2/3  ;  3/4 : 6/5 = 3/4 · 5/6 = 15/24 = 5/8
+     7  в)  3/8 от 120 = 120 : 8 · 3 = 45
+     8  в)  15% от 240 = 240 · 0,15 = 36
+     9      12 е 20% от x  →  x = 12 : 0,2 = 60
+    10      P = 2 · (8 + 5) = 26 см  ;  S = 8 · 5 = 40 см²
+    11  б)  S = 12 · 7 : 2 = 42 см²
+    12      V = 5 · 4 · 3 = 60 см³
+    13      момичета: 40% от 25 = 10  →  момчета: 25 − 10 = 15
+
+   Оценява се изцяло от страницата. Отговорите с дроб се
+   сравняват като числа, не като изписване: 2/3, 4/6 и 30/45
+   са един и същ отговор.
+========================================================= */
+
+/* Няма часовник. Това е разговор с дете, което го виждаме за пръв път —
+   броенето назад мери стрес, не знания. */
+const LABELS = ["а", "б", "в", "г"];
+
+const QUESTIONS = [
+  /* Входно ниво за 5. клас: целият материал на 4. клас, по осем теми.
+     Всяка задача е по 1 точка — за диагностика всяко попадение е едно
+     свидетелство и не бива да тежи повече от друго. Темата (tag) е това,
+     по което накрая се смята диаграмата, затова се пише точно. */
+
+  /* ── Числа до 1 000 000 ── */
+  { points:1, tag:'Числа до 1 000 000', type:'mc',
+    text:'Кое число се състои от 4 стотици хиляди, 7 хиляди и 3 единици?',
+    choices:['470 003','407 003','40 703','407 300'], correct:1 },
+
+  { points:1, tag:'Числа до 1 000 000', type:'mc',
+    text:'Най-голямото от числата 89 999, 90 001, 9 999 и 89 990 е:',
+    choices:['89 999','90 001','9 999','89 990'], correct:1 },
+
+  { points:1, tag:'Числа до 1 000 000', type:'text',
+    hint:'Пиши числото без интервали: 47000',
+    text:'Закръглете 47 382 до хиляди.',
+    fields:[ { label:'Отговор:', expr:'≈', answer:'47000', accepts:['47000','47 000'] } ] },
+
+  /* ── Събиране и изваждане ── */
+  { points:1, tag:'Събиране и изваждане', type:'text',
+    hint:'Пиши числото без интервали.',
+    text:'Пресметнете: 25 640 + 8 375',
+    fields:[ { label:'Отговор:', expr:'=', answer:'34015', accepts:['34015','34 015'] } ] },
+
+  { points:1, tag:'Събиране и изваждане', type:'text',
+    hint:'Пиши числото без интервали.',
+    text:'Пресметнете: 60 000 − 23 458',
+    fields:[ { label:'Отговор:', expr:'=', answer:'36542', accepts:['36542','36 542'] } ] },
+
+  { points:1, tag:'Събиране и изваждане', type:'mc',
+    text:'Намерете неизвестното число: x + 1 250 = 4 000',
+    choices:['5 250','2 750','2 850','3 750'], correct:1 },
+
+  /* ── Умножение и деление ── */
+  { points:1, tag:'Умножение и деление', type:'text',
+    text:'Пресметнете: 304 · 6',
+    fields:[ { label:'Отговор:', expr:'=', answer:'1824', accepts:['1824','1 824'] } ] },
+
+  { points:1, tag:'Умножение и деление', type:'text',
+    text:'Пресметнете: 2 184 : 8',
+    fields:[ { label:'Отговор:', expr:'=', answer:'273' } ] },
+
+  { points:1, tag:'Умножение и деление', type:'text',
+    text:'Пресметнете: 45 · 20',
+    fields:[ { label:'Отговор:', expr:'=', answer:'900' } ] },
+
+  { points:1, tag:'Умножение и деление', type:'mc',
+    text:'Частното 7 200 : 90 е равно на:',
+    choices:['8','80','800','90'], correct:1 },
+
+  /* ── Ред на действията ── */
+  { points:1, tag:'Ред на действията', type:'text',
+    hint:'Първо умножение, после изваждане.',
+    text:'Пресметнете: 120 − 4 · 15',
+    fields:[ { label:'Отговор:', expr:'=', answer:'60' } ] },
+
+  { points:1, tag:'Ред на действията', type:'text',
+    text:'Пресметнете: (36 + 24) : 6',
+    fields:[ { label:'Отговор:', expr:'=', answer:'10' } ] },
+
+  { points:1, tag:'Ред на действията', type:'mc',
+    text:'Стойността на израза 5 · (18 − 12) + 7 е:',
+    choices:['37','42','67','30'], correct:0 },
+
+  /* ── Дроби ── */
+  { points:1, tag:'Дроби', type:'mc',
+    html:'Колко е <span class="frac"><span class="num">1</span><span class="den">4</span></span> от 48?',
+    plain:'Колко е 1/4 от 48?',
+    choices:['4','12','16','24'], correct:1 },
+
+  { points:1, tag:'Дроби', type:'text',
+    hint:'Пиши само числото.',
+    html:'Колко е <span class="frac"><span class="num">3</span><span class="den">5</span></span> от 200?',
+    plain:'Колко е 3/5 от 200?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'120' } ] },
+
+  { points:1, tag:'Дроби', type:'mc',
+    html:'Коя дроб е по-голяма — <span class="frac"><span class="num">1</span><span class="den">3</span></span> или <span class="frac"><span class="num">1</span><span class="den">5</span></span>?',
+    plain:'Коя дроб е по-голяма — 1/3 или 1/5?',
+    choices:['1/3','1/5','равни са','не може да се каже'], correct:0 },
+
+  /* ── Мерни единици ── */
+  { points:1, tag:'Мерни единици', type:'text',
+    hint:'Пиши само числото, без cm.',
+    text:'Колко сантиметра са 3 m и 40 cm?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'340' } ] },
+
+  { points:1, tag:'Мерни единици', type:'text',
+    hint:'Пиши само числото, без g.',
+    text:'Колко грама са 2 kg и 500 g?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'2500', accepts:['2500','2 500'] } ] },
+
+  { points:1, tag:'Мерни единици', type:'mc',
+    text:'1 час и 15 минути са:',
+    choices:['65 минути','75 минути','115 минути','90 минути'], correct:1 },
+
+  /* ── Геометрия ── */
+  { points:1, tag:'Геометрия', type:'text',
+    hint:'Пиши само числото, без cm.',
+    text:'Правоъгълник има страни 12 cm и 5 cm. Колко е обиколката му?',
+    fields:[ { label:'Отговор:', expr:'P =', answer:'34' } ] },
+
+  { points:1, tag:'Геометрия', type:'text',
+    hint:'Пиши само числото, без cm².',
+    text:'Същият правоъгълник — колко е лицето му?',
+    fields:[ { label:'Отговор:', expr:'S =', answer:'60' } ] },
+
+  { points:1, tag:'Геометрия', type:'mc',
+    text:'Обиколката на квадрат е 36 cm. Колко е страната му?',
+    choices:['6 cm','9 cm','12 cm','18 cm'], correct:1 },
+
+  /* ── Текстови задачи ── */
+  { points:1, tag:'Текстови задачи', type:'text',
+    hint:'Пиши само числото, без кг.',
+    text:'В склад има 1 250 кг брашно. Изразходвали са 3 чувала по 80 кг. Колко килограма остават?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'1010', accepts:['1010','1 010'] } ] },
+
+  { points:1, tag:'Текстови задачи', type:'text',
+    hint:'Помисли на колко равни части се дели общото. Пиши само числото.',
+    text:'Мария има 5 пъти повече стикери от Иван. Заедно имат 240 стикера. Колко стикера има Иван?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'40' } ] },
+
+  { points:1, tag:'Текстови задачи', type:'text',
+    hint:'Пиши часа във вида 11:15',
+    text:'Влак тръгва в 8:45 ч. и пътува 2 часа и 30 минути. В колко часа пристига?',
+    fields:[ { label:'Отговор:', expr:'в', answer:'11:15', accepts:['11:15','11.15','11 и 15'] } ] },
+
+  { points:1, tag:'Текстови задачи', type:'mc',
+    text:'Една тетрадка струва 2 лв. Най-много колко тетрадки може да купи Петя с 15 лв.?',
+    choices:['6','7','7 и остава 1 лв.','8'], correct:2 }
+];
+
+const TOTAL = QUESTIONS.reduce((s, q) => s + q.points, 0);
+
+/* Половин точка се пише 1,5 — както се пишат числата навсякъде другаде тук. */
+const num = v => String(v).replace('.', ',');
+
+/* 25 точки, разделени по същия начин както на изпита за 7. клас:
+   под една пета е слаб, над четири пети е отличен. */
+/* Не оценки. Това е карта, а не контролно — думите казват какво следва,
+   не колко струва детето. */
+const SCALE = [
+  { min:22, mark:'Много уверено',   range:'от 22 до 26' },
+  { min:17, mark:'Стабилна основа', range:'от 17 до 21' },
+  { min:11, mark:'Има какво да се навакса', range:'от 11 до 16' },
+  { min:0,  mark:'Тръгваме от основите',   range:'до 10' }
+];
+
+/* Прагове за темите. Три ленти, а не непрекъсната скала: родителят чете
+   „тук е добре, тук трябва работа“, а не нюанс на цвят. */
+const BANDS = [
+  { min:80, key:'good', word:'силна тема',    sign:'\u25CF', advice:'върви стабилно' },
+  { min:50, key:'warn', word:'средна тема',   sign:'\u25D0', advice:'има какво да се затвърди' },
+  { min:0,  key:'weak', word:'за работа',     sign:'\u25CB', advice:'тук започваме' }
+];
+function bandOf(pct){ return BANDS.find(b => pct >= b.min); }
+
+const state = QUESTIONS.map(q => q.type === 'mc' ? null : q.fields.map(() => ''));
+let graded = false, saved = false, lastScore = 0;
+
+const $ = id => document.getElementById(id);
+
+/* ---- рисуване на задачите ---- */
+function render(){
+  $('questions').innerHTML = QUESTIONS.map((q, qi) => {
+    const body = q.type === 'mc'
+      ? `<div class="choices">${q.choices.map((c, ci) => `
+          <button type="button" class="choice" data-q="${qi}" data-c="${ci}">
+            <span class="lab">${LABELS[ci]}</span><span>${c}</span>
+          </button>`).join('')}</div>`
+      : `<div class="fields">${q.fields.map((f, fi) => `
+          <div class="field">
+            <label for="f-${qi}-${fi}">${f.label}</label>
+            ${f.expr ? `<span class="fexpr">${f.expr}</span>` : ''}
+            <input id="f-${qi}-${fi}" type="text" inputmode="text"
+                   data-q="${qi}" data-f="${fi}"
+                   placeholder="${f.prompt || 'отговор'}" autocomplete="off" />
+          </div>`).join('')}</div>
+         <p class="hint">${q.hint || 'Пиши само числото, с запетая за десетичните дроби.'}</p>`;
+
+    return `<div class="qcard" id="card-${qi}">
+      <div class="qtop">
+        <span class="qnum">${qi + 1}</span>
+        <span class="qtag">${q.tag}</span>
+        <span class="qpts">${q.points} т.</span>
+      </div>
+      <div class="qexpr${q.prose ? ' prose' : ''}">${q.html || q.text}</div>
+      ${body}
+      <div class="verdict" id="verdict-${qi}"></div>
+    </div>`;
+  }).join('');
+
+  $('questions').addEventListener('click', e => {
+    const btn = e.target.closest('.choice');
+    if (!btn || graded) return;
+    const qi = +btn.dataset.q;
+    state[qi] = +btn.dataset.c;
+    document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updateProgress();
+  });
+  $('questions').addEventListener('input', e => {
+    const inp = e.target.closest('input[data-q]');
+    if (!inp || graded) return;
+    state[+inp.dataset.q][+inp.dataset.f] = inp.value;
+    updateProgress();
+  });
+}
+
+function isAnswered(qi){
+  const s = state[qi];
+  return QUESTIONS[qi].type === 'mc'
+    ? s !== null
+    : s.some(v => String(v).trim() !== '');
+}
+
+function updateProgress(){
+  const n = QUESTIONS.filter((q, i) => isAnswered(i)).length;
+  $('answered').textContent = `${n} / ${QUESTIONS.length} решени`;
+}
+
+/* ---- часовникът ---- */
+function startClock(){
+
+}
+
+/* ---- проверка ----
+   Числото се сравнява, не изписването му: махат се интервалите,
+   точката става запетая, а "x =" отпред се пренебрегва. */
+function norm(v){
+  return String(v == null ? '' : v)
+    .trim().toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[−–—]/g, '-')
+    .replace(/^[a-zа-я]=/, '')
+    .replace(/^=/, '')
+    .replace(/\./g, ',')
+    .replace(/,$/, '');
+}
+
+/* Мерната единица не е част от числото: „40 см²“ и „40“ са един
+   отговор, а и „%“ след число не бива да проваля сравнението. */
+function stripUnit(v){
+  return String(v == null ? '' : v)
+    .replace(/[  ]/g, ' ')
+    /* полето се казва „P =“, затова ученик пише и „P = 26“ */
+    .replace(/^\s*[a-zа-я]\s*=\s*/i, '')
+    .replace(/(см|cm|м|m|мм|mm|дм|dm)\s*(²|³|2|3)?\.?$/i, '')
+    .replace(/%$/, '')
+    .trim();
+}
+
+/* Отговор с дроб се чете като число, а не като низ: 2/3, 4/6, 30/45
+   и 0,75 срещу 3/4 се сравняват по стойност. Ученик, който не е
+   съкратил дробта, е решил задачата. */
+function parseRational(raw){
+  let t = stripUnit(raw)
+    .replace(/[−–—]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (t === '') return null;
+
+  /* смесено число: „1 3/4“ */
+  let m = t.match(/^(-?\d+) (\d+)\s*\/\s*(\d+)$/);
+  if (m){
+    const w = Number(m[1]), n = Number(m[2]), d = Number(m[3]);
+    if (d === 0) return null;
+    const sign = t[0] === '-' ? -1 : 1;
+    return { n: sign * (Math.abs(w) * d + n), d: d };
+  }
+
+  /* обикновена дроб: „5/8“ */
+  m = t.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m){
+    const d = Number(m[2]);
+    if (d === 0) return null;
+    return { n: Number(m[1]), d: d };
+  }
+
+  /* цяло или десетично число: „60“, „0,3“ */
+  const dec = t.replace(',', '.');
+  if (!/^-?\d+(\.\d+)?$/.test(dec)) return null;
+  const dot = dec.indexOf('.');
+  if (dot === -1) return { n: Number(dec), d: 1 };
+  const places = dec.length - dot - 1;
+  return { n: Math.round(Number(dec) * Math.pow(10, places)), d: Math.pow(10, places) };
+}
+
+function ratEq(a, b){
+  return !!a && !!b && a.n * b.d === b.n * a.d;
+}
+
+/* Първо по стойност; списъкът accepts остава за отговорите, които
+   не са само число. */
+function fieldIsRight(f, raw){
+  if (String(raw).trim() === '') return false;
+  const given = parseRational(raw), want = parseRational(f.answer);
+  if (given && want && ratEq(given, want)) return true;
+  const list = f.accepts || [f.answer];
+  return list.map(norm).indexOf(norm(raw)) !== -1;
+}
+
+function grade(){
+  if (graded) return;
+  graded = true;
+  $('dock').hidden = true;
+
+  let score = 0;
+  const records = [];
+
+  QUESTIONS.forEach((q, qi) => {
+    const card = $(`card-${qi}`);
+    card.classList.add('graded');
+    const verdict = $(`verdict-${qi}`);
+
+    if (q.type === 'mc'){
+      const pick = state[qi];
+      const right = pick === q.correct;
+      if (right) score += q.points;
+      card.classList.add(right ? 'correct' : 'wrong');
+      document.querySelectorAll(`.choice[data-q="${qi}"]`).forEach(b => {
+        const ci = +b.dataset.c;
+        if (ci === q.correct) b.classList.add('is-correct');
+        if (ci === pick && !right) b.classList.add('is-wrong-pick');
+      });
+      verdict.className = 'verdict ' + (right ? 'ok' : 'no');
+      verdict.textContent = right
+        ? `Вярно — ${num(q.points)} т.`
+        : (pick === null
+            ? `Без отговор — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`
+            : `Грешно — верният е ${LABELS[q.correct]}) ${q.choices[q.correct]}`);
+
+      records.push({
+        id: String(qi + 1), kind:'mc', points:q.points, earned: right ? q.points : 0,
+        correct: right, text: q.plain || q.text, options: q.choices,
+        correctIndex: q.correct, chosenIndex: (pick == null ? null : pick),
+        explanation: 'Тема: ' + q.tag
+      });
+    } else {
+      /* всяко поле носи равен дял от точките на задачата */
+      const per = q.points / q.fields.length;
+      let got = 0;
+      const given = [], expected = [];
+      q.fields.forEach((f, fi) => {
+        const raw = String(state[qi][fi] || '').trim();
+        const right = fieldIsRight(f, raw);
+        if (right) got += per;
+        given.push(`${f.label} ${raw || '(без отговор)'}`);
+        expected.push(`${f.label} ${f.answer}`);
+        const inp = document.querySelector(`input[data-q="${qi}"][data-f="${fi}"]`);
+        if (inp) inp.style.borderColor = right ? 'var(--success)' : 'var(--error)';
+      });
+      score += got;
+      const all = got === q.points;
+      card.classList.add(all ? 'correct' : 'wrong');
+      verdict.className = 'verdict ' + (all ? 'ok' : 'no');
+      verdict.textContent = all
+        ? `Вярно — ${num(q.points)} т.`
+        : `${num(got)} от ${num(q.points)} т. — верният отговор е ${expected.join('; ')}`;
+
+      records.push({
+        id: String(qi + 1), kind:'free', points:q.points, earned: got, correct: all,
+        prompt: q.text, studentAnswer: given.join('; '), referenceAnswer: expected.join('; '),
+        explanation: 'Тема: ' + q.tag
+      });
+    }
+  });
+
+  showResult(score);
+  saveToPortal(score, records);
+}
+
+/* ── картата по теми ─────────────────────────────────────────────
+   Смята се от самите въпроси, а не от преписан списък: темата е tag-ът
+   на задачата, затова добавена задача влиза в диаграмата сама. */
+let topicStats = [];
+
+function computeTopics(){
+  const by = {};
+  QUESTIONS.forEach((q, qi) => {
+    const t = q.tag || 'Друго';
+    if (!by[t]) by[t] = { name:t, right:0, total:0 };
+    by[t].total++;
+    if (wasRight(qi)) by[t].right++;
+  });
+  topicStats = Object.keys(by).map(k => {
+    const o = by[k];
+    o.pct = Math.round(o.right / o.total * 100);
+    o.band = bandOf(o.pct);
+    return o;
+  });
+  /* Подредба по резултат: окото тръгва отгоре, а най-силното отгоре
+     значи, че разговорът започва с това, което детето може. */
+  topicStats.sort((a, b) => b.pct - a.pct || a.name.localeCompare(b.name, 'bg'));
+  return topicStats;
+}
+
+/* Вярно ли е решена задача qi — същата сметка, която ползва и grade(). */
+function wasRight(qi){
+  const q = QUESTIONS[qi];
+  if (q.type === 'mc') return state[qi] === q.correct;
+  return q.fields.every((f, fi) => fieldIsRight(f, String(state[qi][fi] || '').trim()));
+}
+
+function renderTopics(){
+  const list = computeTopics();
+  $('topicBars').innerHTML = list.map(t => `
+    <div class="trow">
+      <div class="trow-top">
+        <span class="trow-name">${t.name}</span>
+        <span class="trow-frac">${t.right} от ${t.total}</span>
+        <span class="trow-tag ${t.band.key}">${t.band.sign} ${t.band.word} · <span class="trow-pct">${t.pct}%</span></span>
+      </div>
+      <div class="track" role="img" aria-label="${t.name}: ${t.pct}% — ${t.band.word}">
+        <div class="bar ${t.band.key}" style="width:${Math.max(t.pct, 2)}%"></div>
+      </div>
+    </div>`).join('');
+
+  const strong = list.filter(t => t.band.key === 'good');
+  const weak   = list.filter(t => t.band.key === 'weak');
+  const mid    = list.filter(t => t.band.key === 'warn');
+  const names  = a => a.map(t => t.name).join(', ');
+
+  let html = '';
+  html += strong.length
+    ? `<p><b>Върви стабилно:</b> ${names(strong)}.</p>`
+    : `<p><b>Засега няма тема над 80%.</b> Започваме от основите и вдигаме постепенно.</p>`;
+  if (mid.length)  html += `<p><b>Има какво да се затвърди:</b> ${names(mid)}.</p>`;
+  if (weak.length) html += `<p><b>Тук започваме работа:</b> ${names(weak)}.</p>`;
+  html += `<p>Общо: <b>${num(lastScore)} от ${TOTAL}</b> задачи решени вярно.</p>`;
+  $('summary').innerHTML = html;
+  $('topics').hidden = false;
+}
+
+/* Същият анализ, но с думи — за имейла до родителя и за копирането. */
+function analysisText(child){
+  const list = topicStats.length ? topicStats : computeTopics();
+  const lines = [];
+  lines.push('Определяне на нивото по математика — вход за 5. клас');
+  if (child) lines.push('Ученик: ' + child);
+  lines.push('Резултат: ' + num(lastScore) + ' от ' + TOTAL + ' задачи · ' + markFor(lastScore).mark);
+  lines.push('');
+  lines.push('По теми:');
+  list.forEach(t => {
+    lines.push('  ' + t.name + ' — ' + t.right + '/' + t.total +
+               ' (' + t.pct + '%) · ' + t.band.word);
+  });
+  lines.push('');
+  const weak = list.filter(t => t.band.key === 'weak').map(t => t.name);
+  const mid  = list.filter(t => t.band.key === 'warn').map(t => t.name);
+  const good = list.filter(t => t.band.key === 'good').map(t => t.name);
+  if (good.length) lines.push('Силни страни: ' + good.join(', ') + '.');
+  if (mid.length)  lines.push('За затвърждаване: ' + mid.join(', ') + '.');
+  if (weak.length) lines.push('Започваме работа по: ' + weak.join(', ') + '.');
+  lines.push('');
+  lines.push('The Light Academy · 0885 501 283');
+  return lines.join('\n');
+}
+
+function markFor(score){
+  return SCALE.find(s => score >= s.min);
+}
+
+function showResult(score){
+  lastScore = score;
+  $('examScreen').classList.remove('active');
+  $('resultScreen').classList.add('active');
+
+  const pct = score / TOTAL;
+  const m = markFor(score);
+  $('resultTitle').textContent = `${num(score)} / ${TOTAL} точки`;
+  $('resultSub').textContent = 'Готово. Отдолу е картата по теми.';
+  $('resultMark').textContent = m.mark;
+
+  renderTopics();
+
+  $('scaleTable').innerHTML = SCALE.slice().reverse().map(s => `
+    <tr class="${s === m ? 'is-yours' : ''}"><td>${s.range} т.</td><td>${s.mark}</td></tr>
+  `).join('');
+
+  /* прегледът е самите задачи, вече оценени */
+  $('review').appendChild($('questions'));
+
+  drawGauge(pct);
+  if (pct >= 0.6) burstConfetti();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ---- стрелката с процента ---- */
+function drawGauge(pct){
+  const canvas = $('gauge'), ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1, size = 140;
+  canvas.width = size * dpr; canvas.height = size * dpr;
+  canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+  ctx.scale(dpr, dpr);
+  const cx = size / 2, cy = size / 2, r = 54;
+  const styles = getComputedStyle(document.documentElement);
+  const track = styles.getPropertyValue('--pencil-soft').trim();
+  const ink = styles.getPropertyValue('--ink').trim();
+  /* дъгата е за четене, не украса — жълтото е 1,9:1 на бяло */
+  const arc = pct >= 0.6 ? styles.getPropertyValue('--success').trim()
+                         : styles.getPropertyValue('--accent-ink').trim();
+  const t0 = performance.now(), duration = 700;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function frame(now){
+    const e = reduce ? 1 : Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - e, 3);
+    ctx.clearRect(0, 0, size, size);
+    ctx.lineWidth = 12; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = track; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * pct * eased);
+    ctx.strokeStyle = arc; ctx.stroke();
+    ctx.fillStyle = ink; ctx.font = "700 22px 'Fredoka', sans-serif";
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(pct * 100 * eased) + '%', cx, cy);
+    if (e < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function burstConfetti(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const canvas = $('confetti'), panel = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const w = panel.clientWidth, h = panel.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  const colors = ['#F7AD19','#1B2E52','#16603A','#FFD98A','#6E86B5'];
+  const parts = Array.from({ length:70 }, () => ({
+    x: w / 2 + (Math.random() - 0.5) * 40, y: h * 0.35,
+    vx: (Math.random() - 0.5) * 6, vy: -Math.random() * 6 - 3,
+    g: 0.18 + Math.random() * 0.08, size: 4 + Math.random() * 4,
+    rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.3,
+    color: colors[Math.floor(Math.random() * colors.length)], life: 0
+  }));
+  const start = performance.now();
+  function frame(now){
+    ctx.clearRect(0, 0, w, h);
+    let alive = false;
+    parts.forEach(p => {
+      p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      if (p.y < h + 20) alive = true;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - p.life / 140);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    if (alive && now - start < 3000) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, w, h);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---- записване в платформата ---- */
+async function saveToPortal(score, records){
+  const note = $('savedNote');
+  if (typeof TLA === 'undefined' || !TLA.isConfigured() || saved) return;
+  saved = true;
+  try{
+    await TLA.saveAttempt('level_check_5', {
+      autoScore: score, autoMax: TOTAL, manualMax: null,
+      records: records, part2: null
+    });
+    note.textContent = '✓ Резултатът е записан в профила ти.';
+    note.hidden = false;
+  } catch (err) {
+    saved = false;
+    note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
+    note.hidden = false;
+  }
+}
+
+/* ---- начало ---- */
+$('startBtn').addEventListener('click', () => {
+  $('introScreen').classList.remove('active');
+  $('examScreen').classList.add('active');
+  $('dock').hidden = false;
+  updateProgress();
+  startClock();
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+$('submitBtn').addEventListener('click', () => grade());
+/* ── изпращане до родителя ────────────────────────────────────────
+   Същият похват, който сайтът вече ползва: Formspree. Ако не мине,
+   текстът пак е на екрана и има бутон за копиране — грешката пада в
+   безобидната посока. */
+const ANALYSIS_ENDPOINT = 'https://formspree.io/f/mnpawlbd';
+
+$('sendBtn').addEventListener('click', async () => {
+  const note = $('sendNote');
+  const child = $('childName').value.trim();
+  const mail  = $('parentMail').value.trim();
+  note.hidden = true;
+
+  if (!child){ note.textContent = 'Въведете името на детето.'; note.className = 'send-note no'; note.hidden = false; $('childName').focus(); return; }
+  /* Същата проверка като на другите форми — виж assets/email-check.js. */
+  if (typeof TLAEmail !== 'undefined'){
+    const v = TLAEmail.check(mail);
+    if (!v.ok){ note.textContent = v.message; note.className = 'send-note no'; note.hidden = false; $('parentMail').focus(); return; }
+  } else if (!mail.includes('@')){
+    note.textContent = 'Въведете имейл на родителя.'; note.className = 'send-note no'; note.hidden = false; return;
+  }
+
+  const btn = $('sendBtn');
+  btn.disabled = true; btn.textContent = 'Изпращане…';
+  try{
+    const body = new FormData();
+    body.append('Дете', child);
+    body.append('Имейл на родителя', mail);
+    body.append('Анализ', analysisText(child));
+    body.append('_replyto', mail);
+    body.append('_subject', '📊 Определяне на нивото — ' + child);
+    const res = await fetch(ANALYSIS_ENDPOINT, { method:'POST', headers:{ Accept:'application/json' }, body });
+    if (!res.ok) throw new Error('Код ' + res.status);
+    note.textContent = 'Изпратено на ' + mail + '.';
+    note.className = 'send-note ok';
+  } catch (err){
+    note.textContent = 'Не се изпрати (' + (err.message || err) +
+      '). Текстът е тук — копирайте го и го пратете на ръка.';
+    note.className = 'send-note no';
+  }
+  note.hidden = false;
+  btn.disabled = false; btn.textContent = 'Изпрати';
+});
+
+$('copyBtn').addEventListener('click', async function (){
+  const txt = analysisText($('childName').value.trim());
+  try{
+    await navigator.clipboard.writeText(txt);
+    this.textContent = 'Копирано ✓';
+    setTimeout(() => { this.textContent = 'Копирай текста'; }, 2000);
+  } catch (e){
+    /* Някои браузъри отказват clipboard извън https — тогава показваме
+       текста, за да може да се маркира на ръка. */
+    const box = document.createElement('textarea');
+    box.value = txt; box.rows = 14;
+    box.style.cssText = 'width:100%;margin-top:10px;font:inherit;padding:10px;border-radius:12px;border:1.5px solid var(--grid);';
+    this.parentNode.appendChild(box); box.select();
+    this.textContent = 'Маркирайте и копирайте ↑';
+  }
+});
+
+$('printBtn').addEventListener('click', () => window.print());
+
+$('signOutBtn').addEventListener('click', () => TLA.signOut());
+
+/* Изпитът е за влезли ученици: без сесия requireAuth() праща към
+   екрана за вход и се връща тук след това. */
+(async function(){
+  const gate = $('gate');
+  if (typeof TLA === 'undefined' || !TLA.isConfigured()){
+    gate.textContent = 'Няма връзка с платформата, затова изпитът не може да запише резултат. Опитайте по-късно.';
+    gate.hidden = false;
+    return;
+  }
+  const auth = await TLA.requireAuth();
+  if (!auth) return;
+  $('app').hidden = false;
+  render();
+})();
+</script>
+<p class="page-legal">© 2026 The Light Academy. Всички права запазени.</p>
+</body>
+</html>
