@@ -129,6 +129,7 @@
         <button class="tlp__tab" role="tab" type="button" id="tab-res"  aria-controls="panel-res"  aria-selected="false" tabindex="-1">Резултати</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-fb"   aria-controls="panel-fb"   aria-selected="false" tabindex="-1">Обратна връзка</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-ai"   aria-controls="panel-ai"   aria-selected="false" tabindex="-1">AI анализ</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-race" aria-controls="panel-race" aria-selected="false" tabindex="-1">Формула 1</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-me"   aria-controls="panel-me"   aria-selected="false" tabindex="-1">Парола</button>
       </div>
 
@@ -161,6 +162,53 @@
 
       <div class="tlp__panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" tabindex="0" hidden>
         <div id="aiBody"></div>
+      </div>
+
+      <!-- Състезанието. Същата картина, която вижда и преподавателят в
+           таблото си — рисува се от assets/race.js. Разликата е откъде
+           идват числата: тук от public.my_race(), защото ученикът не
+           вижда чужди редове в базата и това си остава така. -->
+      <div class="tlp__panel" role="tabpanel" id="panel-race" aria-labelledby="tab-race" tabindex="0" hidden>
+        <div class="tlp__card">
+          <h2 class="tlp__h2">Състезание Формула 1</h2>
+          <p class="tlp__card-m">
+            Ти и съучениците ти по един и същи предмет, при един и същи
+            преподавател. Най-близо до финала е първият.
+          </p>
+
+          <div class="tla-filters" id="raceGroupWrap" hidden>
+            <label for="raceGroup">Група:</label>
+            <select id="raceGroup"></select>
+          </div>
+
+          <p class="tlp__note" id="raceEmpty" hidden></p>
+
+          <h3 class="tla-race__h">Резултати:</h3>
+          <div class="tla-race" id="raceScene" aria-hidden="true"></div>
+          <p class="tlp__card-m" id="raceNote" style="margin-top:0.6rem;"></p>
+
+          <ol class="tla-grid" id="raceStandings"></ol>
+
+          <details class="tla-help" style="margin-top:1rem;">
+            <summary>Как се смятат точките и звездите</summary>
+            <p>
+              <strong>Точки</strong> — всичко, което си събрал от предадените
+              задания по този предмет. Всяко предадено задание добавя точките
+              си към сбора, затова класирането расте през цялата година.
+            </p>
+            <p>
+              <strong>Звезди</strong> — колко точно си решавал: делът на
+              спечелените точки от всички възможни. Пет звезди при 90% и
+              нагоре, четири при 75%, три при 60%, две при 40%, една под
+              това. Звездите не зависят от броя задания — ако си предал
+              по-малко, но по-точно, пак светиш.
+            </p>
+            <p>
+              Подреждането е по точки. При равни точки напред минава този с
+              по-висок процент.
+            </p>
+          </details>
+        </div>
       </div>
 
       <!-- Смяна на паролата. Академията задава първата; оттук нататък тя е
@@ -204,6 +252,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/supabase-config.js"></script>
   <script src="assets/auth.js"></script>
+  <script src="assets/race.js"></script>
   <script>
     /* The student's screen. Everything here is read-only: the numbers are
        derived in the browser from the two queries below, and nothing is
@@ -339,6 +388,9 @@
           $(t.getAttribute('aria-controls')).hidden = !on;
         });
         if (tab.id === 'tab-ai') loadAi();
+        /* Скрит елемент не анимира нищо, затова финалът се изиграва в
+           мига, в който разделът се отвори — не преди това. */
+        if (tab.id === 'tab-race') loadRace();
       }
 
       tabs.forEach(function (tab, i) {
@@ -996,6 +1048,107 @@
 
       $('aiBody').addEventListener('click', toggleGroup);
       $('fbBody').addEventListener('click', toggleGroup);
+
+      /* ---- Състезание Формула 1 --------------------------------------
+         Числата идват от public.my_race(): всички от моята група — същият
+         клас, същият предмет, същият преподавател. Картината я рисува
+         assets/race.js, същата, която вижда и преподавателят. */
+
+      var raceRows = null, raceGroups = [], raceKey = '', raceWide = null;
+
+      function raceSay(msg) {
+        $('raceEmpty').hidden = false;
+        $('raceEmpty').textContent = msg;
+        $('raceGroupWrap').hidden = true;
+        $('raceScene').hidden = true;
+        $('raceScene').innerHTML = '';
+        $('raceStandings').innerHTML = '';
+        $('raceNote').textContent = '';
+        document.querySelector('#panel-race .tla-race__h').hidden = true;
+      }
+
+      async function loadRace() {
+        if (raceRows) { renderRace(); return; }
+        var rows;
+        try {
+          rows = await TLA.myRace();
+        } catch (e) {
+          /* Най-вероятната причина е, че supabase/schema-v5.sql още не е
+             пуснат. На детето това не му говори нищо, затова съобщението
+             е човешко, а подробността отива в конзолата за нас. */
+          console.warn('my_race:', e && (e.message || e));
+          raceSay('Състезанието още не е включено. Кажи на преподавателя си.');
+          return;
+        }
+        raceRows = rows;
+
+        var byKey = {};
+        rows.forEach(function (r) {
+          var k = r.subject_id + '|' + r.teacher_id;
+          if (!byKey[k]) {
+            byKey[k] = { key: k, subject: r.subject_name, teacher: r.teacher_name,
+                         grade: r.grade, rows: [] };
+          }
+          byKey[k].rows.push(r);
+        });
+        raceGroups = Object.keys(byKey).map(function (k) { return byKey[k]; })
+          .sort(function (a, b) { return b.rows.length - a.rows.length; });
+
+        if (!raceGroups.length) {
+          raceSay('Още нямаш група, с която да се състезаваш. Появява се, щом ' +
+                  'поне още един ученик от твоя клас учи същия предмет при същия преподавател.');
+          return;
+        }
+
+        raceKey = raceGroups[0].key;
+        /* Менюто се показва само ако наистина има какво да се избира. */
+        if (raceGroups.length > 1) {
+          $('raceGroupWrap').hidden = false;
+          $('raceGroup').innerHTML = raceGroups.map(function (g) {
+            return '<option value="' + esc(g.key) + '">' +
+              esc(g.subject + ' · ' + g.teacher) + '</option>';
+          }).join('');
+        }
+        renderRace();
+      }
+
+      function renderRace() {
+        var group = raceGroups.filter(function (g) { return g.key === raceKey; })[0];
+        if (!group) return;
+        $('raceEmpty').hidden = true;
+        $('raceScene').hidden = false;
+        document.querySelector('#panel-race .tla-race__h').hidden = false;
+
+        var rows = TLARace.build(group.rows.map(function (r) {
+          return { name: r.student_name, points: Number(r.points || 0),
+                   max: Number(r.max_points || 0),
+                   done: Number(r.max_points || 0) > 0, mine: r.is_me };
+        }));
+
+        raceWide = TLARace.onTrack();
+        $('raceScene').innerHTML = TLARace.scene(rows);
+        TLARace.play($('raceScene'));
+        $('raceStandings').innerHTML = TLARace.standings(rows);
+        $('raceNote').textContent = TLARace.note(rows,
+          TLA.gradeLabel(group.grade).toLowerCase() + ', ' + group.subject.toLowerCase());
+      }
+
+      $('raceGroup').addEventListener('change', function () {
+        raceKey = this.value; renderRace();
+      });
+
+      /* Само когато екранът смени ширината си дотолкова, че броят коли да
+         се промени — иначе всяко завъртане би пускало финала наново. */
+      var raceTimer = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(raceTimer);
+        raceTimer = setTimeout(function () {
+          var now = TLARace.onTrack();
+          if (now === raceWide || !raceRows) return;
+          raceWide = now;
+          if (!$('panel-race').hidden) renderRace();
+        }, 220);
+      });
 
       $('signOutBtn').addEventListener('click', function () { TLA.signOut(); });
 
