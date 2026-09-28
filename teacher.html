@@ -1539,7 +1539,10 @@
 
       async function loadCalendar() {
         var res = await TLA.client.from('assignments')
-          .select('id, slug, title, kind, published, week, grades')
+          /* url се чете, защото редът в календара вика previewLink(), а тя
+             връща празно без него — точно заради това бутонът „Отвори“ го
+             нямаше тук, докато в „Задания“ си беше на място. */
+          .select('id, slug, title, kind, url, published, week, grades')
           .order('sort_order', { ascending: true });
         if (res.error) { calWeekColumn = false; calAll = []; renderCalendar(); return; }
         calAll = res.data || [];
