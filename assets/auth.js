@@ -497,6 +497,30 @@
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     },
 
+    /* Сменя паролата на влезлия в момента. Старата се иска не за проформа:
+       ако дете забрави да излезе от чужд компютър, следващият би могъл да
+       му смени паролата и да му вземе профила. Проверката е истинско
+       влизане със старата парола — Supabase няма друг начин да я потвърди. */
+    changeMyPassword: async function (currentPassword, newPassword) {
+      if (!client) throw new Error(notConfiguredMessage());
+      if (!newPassword || newPassword.length < 8) {
+        throw new Error('Новата парола трябва да е поне 8 знака.');
+      }
+      var session = await TLA.getSession();
+      if (!session || !session.user || !session.user.email) {
+        throw new Error('Няма активна сесия. Влезте отново.');
+      }
+      var check = await client.auth.signInWithPassword({
+        email: session.user.email,
+        password: currentPassword
+      });
+      if (check.error) throw new Error('Сегашната парола не е вярна.');
+
+      var res = await client.auth.updateUser({ password: newPassword });
+      if (res.error) throw res.error;
+      return true;
+    },
+
     /* Текстът на задача може да съдържа малко HTML — дробите се пишат
        като <span class="frac"><span class="num">5</span>… Ако мине през
        escapeHtml, учителят вижда самите тагове; ако мине суров, отваря се

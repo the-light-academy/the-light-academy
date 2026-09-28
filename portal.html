@@ -129,6 +129,7 @@
         <button class="tlp__tab" role="tab" type="button" id="tab-res"  aria-controls="panel-res"  aria-selected="false" tabindex="-1">Резултати</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-fb"   aria-controls="panel-fb"   aria-selected="false" tabindex="-1">Обратна връзка</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-ai"   aria-controls="panel-ai"   aria-selected="false" tabindex="-1">AI анализ</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-me"   aria-controls="panel-me"   aria-selected="false" tabindex="-1">Парола</button>
       </div>
 
       <div class="tlp__panel" role="tabpanel" id="panel-hw" aria-labelledby="tab-hw" tabindex="0">
@@ -160,6 +161,36 @@
 
       <div class="tlp__panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" tabindex="0" hidden>
         <div id="aiBody"></div>
+      </div>
+
+      <!-- Смяна на паролата. Академията задава първата; оттук нататък тя е
+           твоя. Старата се иска, за да не може някой да ти вземе профила
+           от компютър, на който си забравил да излезеш. -->
+      <div class="tlp__panel" role="tabpanel" id="panel-me" aria-labelledby="tab-me" tabindex="0" hidden>
+        <div class="tlp__card">
+          <h2 class="tlp__h2">Смени си паролата</h2>
+          <p class="tlp__card-m">Академията ти даде първата парола. Тук можеш да я
+             смениш с такава, която само ти знаеш. Поне 8 знака.</p>
+          <div class="tlp__note" id="pwErr" hidden></div>
+          <div class="tlp__note" id="pwOk" hidden></div>
+          <!-- novalidate: браузърът иначе спира формата със свой балон на
+                 английски и по-неясен от нашето съобщение. -->
+            <form id="pwForm" novalidate style="margin-top:0.8rem;max-width:26rem;">
+            <div class="tlp__field">
+              <label for="pwOld">Сегашната парола</label>
+              <input type="password" id="pwOld" autocomplete="current-password" required />
+            </div>
+            <div class="tlp__field">
+              <label for="pwNew">Нова парола</label>
+              <input type="password" id="pwNew" autocomplete="new-password" minlength="8" required />
+            </div>
+            <div class="tlp__field">
+              <label for="pwNew2">Новата парола още веднъж</label>
+              <input type="password" id="pwNew2" autocomplete="new-password" minlength="8" required />
+            </div>
+            <button type="submit" class="tla-btn" id="pwBtn">Запази новата парола</button>
+          </form>
+        </div>
       </div>
     </div>
   </main>
@@ -785,6 +816,35 @@
         }).join('') +
         '<p class="tlp__disclaim">Тези бележки са от AI и са предварителни. ' +
           'Преподавателят ги преглежда и може да промени точките — тогава статусът става „Оценено“.</p>';
+      }
+
+      /* ---- смяна на паролата ------------------------------------------ */
+      var pwForm = $('pwForm');
+      if (pwForm) {
+        pwForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          var err = $('pwErr'), ok = $('pwOk'), btn = $('pwBtn');
+          err.hidden = true; ok.hidden = true;
+          var oldPw = $('pwOld').value;
+          var a = $('pwNew').value, b2 = $('pwNew2').value;
+
+          if (!oldPw) { err.textContent = 'Въведи сегашната си парола.'; err.hidden = false; $('pwOld').focus(); return; }
+          if (a.length < 8) { err.textContent = 'Новата парола трябва да е поне 8 знака.'; err.hidden = false; $('pwNew').focus(); return; }
+          if (a !== b2) { err.textContent = 'Двете нови пароли не съвпадат.'; err.hidden = false; $('pwNew2').focus(); return; }
+          if (a === oldPw) { err.textContent = 'Новата парола е същата като сегашната.'; err.hidden = false; $('pwNew').focus(); return; }
+
+          btn.disabled = true; btn.textContent = 'Запазване…';
+          try {
+            await TLA.changeMyPassword(oldPw, a);
+            ok.textContent = 'Готово. Следващия път влизаш с новата парола.';
+            ok.hidden = false;
+            pwForm.reset();
+          } catch (ex) {
+            err.textContent = ex.message || String(ex);
+            err.hidden = false;
+          }
+          btn.disabled = false; btn.textContent = 'Запази новата парола';
+        });
       }
 
       /* ---- one attempt in full ---------------------------------------- */

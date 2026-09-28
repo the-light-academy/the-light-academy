@@ -158,7 +158,9 @@
         </form>
         <p class="tla-muted">
           Паролата се показва само сега — запишете си я и я дайте на ученика.
-          Той може да я смени по-късно. Класът се записва заедно с учебната
+          Той може да си я смени сам от своя профил, раздел „Парола“, а ако
+          я забрави — бутонът „Нова парола“ на неговия ред отдолу задава друга.
+          Класът се записва заедно с учебната
           година, в която го задавате, и оттам нататък се вдига сам всеки
           1 септември — няма нужда да се пипа отново.
         </p>
@@ -981,6 +983,7 @@
             '<td>' + ((isTeacher || !state.isAdmin) ? '' :
               '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-toggle="' + esc(p.id) + '">' +
                 (p.active ? 'Спри достъпа' : 'Върни достъпа') + '</button> ' +
+              '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-pw="' + esc(p.id) + '">Нова парола</button> ' +
               '<button type="button" class="tla-btn tla-btn--danger tla-btn--sm" data-del="' + esc(p.id) + '">Изтрий</button>'
             ) + '</td>' +
           '</tr>';
@@ -1025,6 +1028,53 @@
           if (rpc.error) { say('err', rpc.error.message); return; }
           say('ok', 'Класът е зададен.');
           await loadRoster();
+          return;
+        }
+
+        /* Семейство забравя паролата по-често от всичко друго тук. Без
+           това единственият път е администрацията на Supabase. Полето се
+           отваря на самия ред, вместо в прозорец — confirm() и prompt()
+           не работят навсякъде, а и тук трябва да се ВЪВЕДЕ нещо. */
+        var pw = e.target.closest('[data-pw]');
+        if (pw) {
+          var pid = pw.getAttribute('data-pw');
+          var row = pw.closest('tr');
+          if (row.nextElementSibling && row.nextElementSibling.dataset.pwrow === pid) {
+            row.nextElementSibling.remove(); return;
+          }
+          var extra = document.createElement('tr');
+          extra.dataset.pwrow = pid;
+          extra.innerHTML = '<td colspan="7">' +
+            '<div class="tla-pickrow">' +
+              '<label for="pwnew-' + esc(pid) + '" class="tla-muted">Нова парола за ' +
+                esc((state.profiles[pid] || {}).full_name || 'ученика') + ':</label> ' +
+              '<input type="text" id="pwnew-' + esc(pid) + '" class="tla-sel" ' +
+                'minlength="8" placeholder="поне 8 знака" style="min-width:12rem;" /> ' +
+              '<button type="button" class="tla-btn tla-btn--sm" data-pwsave="' + esc(pid) + '">Задай</button>' +
+            '</div>' +
+            '<p class="tla-muted" style="margin:0.4rem 0 0;">Запишете си я — показва се само сега. ' +
+              'Ученикът може да си я смени от своя профил.</p>' +
+          '</td>';
+          row.insertAdjacentElement('afterend', extra);
+          document.getElementById('pwnew-' + pid).focus();
+          return;
+        }
+
+        var pwsave = e.target.closest('[data-pwsave]');
+        if (pwsave) {
+          var sid2 = pwsave.getAttribute('data-pwsave');
+          var fld = document.getElementById('pwnew-' + sid2);
+          var val = fld ? fld.value : '';
+          if (val.length < 8) { say('err', 'Паролата трябва да е поне 8 знака.'); if (fld) fld.focus(); return; }
+          pwsave.disabled = true;
+          try {
+            var out = await adminCall('PATCH', { user_id: sid2, password: val });
+            say('ok', 'Паролата на ' + ((out && out.name) || 'ученика') +
+                      ' е сменена. Дайте му я — показва се само сега.');
+            var r2 = pwsave.closest('tr');
+            if (r2) r2.remove();
+          } catch (err) { say('err', String(err.message || err)); }
+          pwsave.disabled = false;
           return;
         }
 

@@ -1033,6 +1033,10 @@ body.tlp-space { background: #05070F; }
 .tlp-space .tlp__h1,
 .tlp-space .tlp__h2,
 .tlp-space .tla-p__title { color: #F1F5FF; }
+/* ...но заглавие ВЪТРЕ в бяла карта не стои на небето. Без този ред то е
+   бяло върху бяло и просто изчезва — което стана с „Смени си паролата“. */
+.tlp-space .tlp__card .tlp__h2 { color: var(--tlp-navy); }
+
 .tlp-space .tla-p__sub,
 .tlp-space .tlp__login-head .tlp__hello-sub,
 .tlp-space .tlp__login-note { color: #AFBDDA; }
@@ -1202,3 +1206,10 @@ body.tlp-space { background: #05070F; }
 .tla-subjrow .tla-sel--sm { margin: 0.25rem 0 0 1.75rem; max-width: calc(100% - 1.75rem); }
 .tla-sel--sm { font-size: 0.82rem; padding: 0.28rem 0.5rem; min-width: 9rem; }
 .tla-sel--sm:disabled { opacity: 0.45; }
+
+/* Съобщенията в панела за парола: зелено за успех, топло за грешка.
+   Наследяват tlp__note, затова тук е само цветът и фонът. */
+#pwErr { background: rgba(232,88,10,.12); color: #FFB394;
+         border-radius: 12px; padding: 0.6rem 0.85rem; font-weight: 700; }
+#pwOk  { background: rgba(22,96,58,.18);  color: #7BD6A4;
+         border-radius: 12px; padding: 0.6rem 0.85rem; font-weight: 700; }
