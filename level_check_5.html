@@ -103,6 +103,8 @@ body{
 .screen{ display:none; }
 .screen.active{ display:block; }
 
+.figure{ display:block; margin:12px 0 2px; max-width:100%; height:auto; }
+
 /* ── картата по теми ──────────────────────────────────────────────
    Статусната палитра е фиксирана и не се сменя с темата: good #0ca30c,
    warning #fab219, weak #d03b3b. Жълтото е 1,79:1 върху хартия — затова
@@ -591,21 +593,32 @@ const QUESTIONS = [
     choices:['37','42','67','30'], correct:0 },
 
   /* ── Дроби ── */
+  /* Дробите в 4. клас свършват дотук: разпознаване на картинка, имената
+     на двете числа, и сравняване САМО при еднакви знаменатели. Действия
+     с дроби няма — те идват в 5. клас, а това е вход КЪМ 5. клас. */
   { points:1, tag:'Дроби', type:'mc',
-    html:'Колко е <span class="frac"><span class="num">1</span><span class="den">4</span></span> от 48?',
-    plain:'Колко е 1/4 от 48?',
-    choices:['4','12','16','24'], correct:1 },
-
-  { points:1, tag:'Дроби', type:'text',
-    hint:'Пиши само числото.',
-    html:'Колко е <span class="frac"><span class="num">3</span><span class="den">5</span></span> от 200?',
-    plain:'Колко е 3/5 от 200?',
-    fields:[ { label:'Отговор:', expr:'=', answer:'120' } ] },
+    html:'Каква част от фигурата е оцветена?' +
+      '<svg class="figure" viewBox="0 0 240 60" width="240" height="60" role="img" ' +
+        'aria-label="Правоъгълник, разделен на четири равни части, три от които са оцветени">' +
+        '<rect x="1" y="1" width="58" height="58" fill="#F7AD19" stroke="#16233F" stroke-width="2"/>' +
+        '<rect x="61" y="1" width="58" height="58" fill="#F7AD19" stroke="#16233F" stroke-width="2"/>' +
+        '<rect x="121" y="1" width="58" height="58" fill="#F7AD19" stroke="#16233F" stroke-width="2"/>' +
+        '<rect x="181" y="1" width="58" height="58" fill="#FFFFFF" stroke="#16233F" stroke-width="2"/>' +
+      '</svg>',
+    plain:'Каква част от фигурата е оцветена? (правоъгълник, разделен на 4 равни части, 3 от тях оцветени)',
+    choices:['1/4','3/4','4/3','3'], correct:1 },
 
   { points:1, tag:'Дроби', type:'mc',
-    html:'Коя дроб е по-голяма — <span class="frac"><span class="num">1</span><span class="den">3</span></span> или <span class="frac"><span class="num">1</span><span class="den">5</span></span>?',
-    plain:'Коя дроб е по-голяма — 1/3 или 1/5?',
-    choices:['1/3','1/5','равни са','не може да се каже'], correct:0 },
+    html:'В дробта <span class="frac"><span class="num">3</span><span class="den">8</span></span> ' +
+         'числото 8 се нарича:',
+    plain:'В дробта 3/8 числото 8 се нарича:',
+    choices:['числител','знаменател','дробна черта','остатък'], correct:1 },
+
+  { points:1, tag:'Дроби', type:'mc',
+    html:'Коя дроб е по-голяма — <span class="frac"><span class="num">3</span><span class="den">5</span></span> ' +
+         'или <span class="frac"><span class="num">2</span><span class="den">5</span></span>?',
+    plain:'Коя дроб е по-голяма — 3/5 или 2/5?',
+    choices:['3/5','2/5','равни са','не може да се каже'], correct:0 },
 
   /* ── Мерни единици ── */
   { points:1, tag:'Мерни единици', type:'text',
