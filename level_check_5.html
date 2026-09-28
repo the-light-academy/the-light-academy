@@ -162,10 +162,77 @@ body{
 .send .btn--quiet:hover{ background:var(--paper); opacity:1; }
 .send .btn--quiet + .btn--quiet{ margin-left:8px; }
 
+.send-hint{ color:var(--ink-soft); font-size:13.5px; margin:0 0 10px; }
+
+/* Шапката на PDF-а: на екрана я няма, защото там всичко това вече стои
+   отгоре. Показва се само при печат. */
+.pdfhead{ display:none; }
+
+/* ── ПЕЧАТ ─────────────────────────────────────────────────────────
+   В листа влизат САМО шапката, резултатът и картата по теми. Всичко
+   останало се скрива поименно, а не с хитрост, за да няма изненада.
+   Застъпване се избягва по два начина: нищо в печатния изглед не е
+   position:absolute освен лентата, която си има собствена релса; и
+   всеки ред носи page-break-inside:avoid, за да не се среже наполовина
+   между две страници. */
 @media print{
-  .dock, .send, .result-back, .legend{ display:none !important; }
-  body{ background:#fff; }
-  .topics{ page-break-inside:avoid; }
+  @page{ size:A4 portrait; margin:14mm 12mm; }
+
+  html, body{ background:#fff !important; }
+  body{ font-size:11pt; }
+
+  /* всичко извън резултата изчезва */
+  .tlp-bar, .dock, .screen:not(.active), .intro, .questions, .review,
+  .result-back, .scale, .saved-note, .send, .legend,
+  #questions, .figure, .page-legal,
+  /* платното е absolute върху цялата карта: конфетите замръзват там,
+     където са спрели, и се печатат върху лентите */
+  #confetti{ display:none !important; }
+
+  .result-title, .result-sub, .mark{ display:none !important; }
+
+  .wrap{ padding:0 !important; max-width:none !important; }
+  .screen.active{ display:block !important; padding:0 !important; }
+  /* класът е .result-panel, не .result-card -- сгрешеното име оставяше
+     рамката, сянката и подложката в PDF-а и го изтикваше на втора страница */
+  .result-panel{ box-shadow:none !important; border:none !important;
+    padding:0 !important; margin:0 !important; background:#fff !important;
+    overflow:visible !important; }
+
+  /* Разстоянията долу са мерени, не подбрани на око: отчетът трябва да
+     свърши в рамките на един лист A4 (≈1017 px при 96 dpi и полета 14/12 mm),
+     иначе изводът пада сам на втора страница. */
+  canvas.gauge{ width:116px !important; height:116px !important; }
+  .pdfhead{ display:block; margin-bottom:6mm; }
+  .pdfhead-brand{ font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size:11pt; color:#B9701A; letter-spacing:.02em; }
+  .pdfhead-t{ font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size:18pt; color:#16233F; margin-top:1mm; }
+  .pdfhead-sub{ font-size:10.5pt; color:#55658A; margin-top:1mm; }
+  .pdfhead-row{ display:flex; justify-content:space-between; gap:8mm;
+    margin-top:3mm; font-size:11pt; color:#16233F; }
+  .pdfhead-score{ margin-top:2mm; font-size:13pt; color:#16233F; }
+  .pdfhead-score b{ font-size:16pt; }
+
+  .topics{ margin-top:0 !important; }
+  .topics-h{ font-size:14pt; margin:0 0 1mm; }
+  .topics-sub{ font-size:10pt; margin-bottom:4mm; }
+
+  /* един ред не се реже между две страници */
+  .trow{ page-break-inside:avoid; break-inside:avoid; margin-bottom:4mm; }
+  .trow-top{ margin-bottom:3px; }
+  .trow-name{ font-size:11.5pt; }
+  .track{ height:6mm; background:#EEF1F6 !important; }
+  /* Изводът е последният блок и не се реже — ако не се побере, скача цял
+     на втора страница. Затова тук се печели запасът за по-дълго име или
+     един пренесен ред повече. */
+  .summary{ page-break-inside:avoid; break-inside:avoid; margin-top:5mm;
+    padding:4mm 5mm; font-size:10pt; line-height:1.55;
+    background:#FFFDF7 !important; border:1px solid #DDE3EE !important; }
+
+  /* цветовете на лентите трябва да оцелеят — иначе PDF-ът излиза сив */
+  .bar, .track, .summary, .trow-tag{
+    -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 }
 
 /* ── before the clock starts ── */
@@ -408,7 +475,7 @@ canvas.gauge{ position:relative; }
       <p class="subhead">
         Двайсет и шест задачи по целия материал на 4. клас, подредени по осем
         теми. Целта не е оценка, а карта: кое върви и къде трябва работа.
-        Накрая се получава анализ по теми, който може да се изпрати на родителя.
+        Накрая се получава анализ по теми, който може да се свали като PDF.
       </p>
       <div class="facts">
         <div class="fact"><b>26</b><span>задачи</span></div>
@@ -429,7 +496,7 @@ canvas.gauge{ position:relative; }
   <!-- 2. задачите -->
   <section class="screen" id="examScreen">
     <header class="ex">
-      <div class="eyebrow"><span class="dot"></span>6. клас · седмица 3</div>
+      <div class="eyebrow"><span class="dot"></span>5. клас · входно ниво</div>
     </header>
     <div id="questions"></div>
   </section>
@@ -448,6 +515,19 @@ canvas.gauge{ position:relative; }
            има число, дума и знак, защото жълтото е 1,79:1 върху хартията
            и защото един на всеки дванайсет мъже бърка зелено и червено. -->
       <section class="topics" id="topics" hidden>
+        <!-- Вижда се само при печат: на екрана всичко това вече го пише
+             отгоре, а в PDF-а го няма, защото останалото се скрива. -->
+        <div class="pdfhead" aria-hidden="true">
+          <div class="pdfhead-brand">The Light Academy</div>
+          <div class="pdfhead-t">Определяне на нивото по математика</div>
+          <div class="pdfhead-sub">Вход за 5. клас · материал от 4. клас</div>
+          <div class="pdfhead-row">
+            <span id="pdfChild"></span>
+            <span id="pdfDate"></span>
+          </div>
+          <div class="pdfhead-score"><b id="pdfScore"></b> <span id="pdfMark"></span></div>
+        </div>
+
         <h2 class="topics-h">Карта по теми</h2>
         <p class="topics-sub">Колко от задачите по всяка тема са решени вярно.</p>
         <ul class="legend">
@@ -460,15 +540,15 @@ canvas.gauge{ position:relative; }
         <div class="summary" id="summary"></div>
 
         <div class="send">
-          <h3 class="send-h">Изпратете анализа на родителя</h3>
+          <h3 class="send-h">Изтеглете като PDF</h3>
+          <p class="send-hint">Името влиза в заглавието на файла. В PDF-а
+             влизат само резултатът и картата по теми — нищо друго.</p>
           <div class="send-row">
             <input type="text" id="childName" placeholder="Име на детето" autocomplete="off" />
-            <input type="email" id="parentMail" placeholder="Имейл на родителя" autocomplete="email" />
-            <button type="button" class="btn" id="sendBtn">Изпрати</button>
+            <button type="button" class="btn" id="pdfBtn">Изтегли PDF</button>
           </div>
           <p class="send-note" id="sendNote" hidden></p>
           <button type="button" class="btn btn--quiet" id="copyBtn">Копирай текста</button>
-          <button type="button" class="btn btn--quiet" id="printBtn">Разпечатай</button>
         </div>
       </section>
 
@@ -1125,47 +1205,37 @@ $('startBtn').addEventListener('click', () => {
   window.scrollTo({ top:0, behavior:'smooth' });
 });
 $('submitBtn').addEventListener('click', () => grade());
-/* ── изпращане до родителя ────────────────────────────────────────
-   Същият похват, който сайтът вече ползва: Formspree. Ако не мине,
-   текстът пак е на екрана и има бутон за копиране — грешката пада в
-   безобидната посока. */
-const ANALYSIS_ENDPOINT = 'https://formspree.io/f/mnpawlbd';
+/* ── PDF ───────────────────────────────────────────────────────────
+   През печата на браузъра, а не с външна библиотека. Три причини:
+   кирилицата излиза вярна, защото я рисува самият браузър (jsPDF без
+   вграден шрифт дава квадратчета); текстът остава вектор и се маркира;
+   и няма чужд CDN, който да не отговори — точно това счупи един деплой
+   преди време. В диалога изберете „Save as PDF“.
 
-$('sendBtn').addEventListener('click', async () => {
-  const note = $('sendNote');
+   Какво влиза: шапката, резултатът и картата по теми. Всичко останало
+   се скрива от @media print по-долу — включително самите задачи. */
+$('pdfBtn').addEventListener('click', () => {
   const child = $('childName').value.trim();
-  const mail  = $('parentMail').value.trim();
-  note.hidden = true;
+  const note = $('sendNote');
 
-  if (!child){ note.textContent = 'Въведете името на детето.'; note.className = 'send-note no'; note.hidden = false; $('childName').focus(); return; }
-  /* Същата проверка като на другите форми — виж assets/email-check.js. */
-  if (typeof TLAEmail !== 'undefined'){
-    const v = TLAEmail.check(mail);
-    if (!v.ok){ note.textContent = v.message; note.className = 'send-note no'; note.hidden = false; $('parentMail').focus(); return; }
-  } else if (!mail.includes('@')){
-    note.textContent = 'Въведете имейл на родителя.'; note.className = 'send-note no'; note.hidden = false; return;
-  }
+  $('pdfChild').textContent = child ? ('Ученик: ' + child) : 'Ученик: —';
+  $('pdfDate').textContent  = new Date().toLocaleDateString('bg-BG',
+    { day:'numeric', month:'long', year:'numeric' });
+  $('pdfScore').textContent = num(lastScore) + ' от ' + TOTAL + ' задачи';
+  $('pdfMark').textContent  = '· ' + markFor(lastScore).mark;
 
-  const btn = $('sendBtn');
-  btn.disabled = true; btn.textContent = 'Изпращане…';
-  try{
-    const body = new FormData();
-    body.append('Дете', child);
-    body.append('Имейл на родителя', mail);
-    body.append('Анализ', analysisText(child));
-    body.append('_replyto', mail);
-    body.append('_subject', '📊 Определяне на нивото — ' + child);
-    const res = await fetch(ANALYSIS_ENDPOINT, { method:'POST', headers:{ Accept:'application/json' }, body });
-    if (!res.ok) throw new Error('Код ' + res.status);
-    note.textContent = 'Изпратено на ' + mail + '.';
-    note.className = 'send-note ok';
-  } catch (err){
-    note.textContent = 'Не се изпрати (' + (err.message || err) +
-      '). Текстът е тук — копирайте го и го пратете на ръка.';
-    note.className = 'send-note no';
-  }
+  /* Името на файла идва от заглавието на документа — браузърът го ползва
+     за предложеното име при „Save as PDF“. Връща се обратно след това,
+     за да не остане сменено в раздела. */
+  const was = document.title;
+  document.title = 'Определяне на нивото' + (child ? ' — ' + child : '');
+
+  note.textContent = 'В диалога изберете „Съхрани като PDF“ (Save as PDF).';
+  note.className = 'send-note ok';
   note.hidden = false;
-  btn.disabled = false; btn.textContent = 'Изпрати';
+
+  window.addEventListener('afterprint', () => { document.title = was; }, { once:true });
+  window.print();
 });
 
 $('copyBtn').addEventListener('click', async function (){
@@ -1184,8 +1254,6 @@ $('copyBtn').addEventListener('click', async function (){
     this.textContent = 'Маркирайте и копирайте ↑';
   }
 });
-
-$('printBtn').addEventListener('click', () => window.print());
 
 $('signOutBtn').addEventListener('click', () => TLA.signOut());
 
