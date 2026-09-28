@@ -72,9 +72,12 @@
 
         <form id="loginForm" novalidate>
           <div class="tlp__field">
-            <label for="email">Имейл</label>
+            <!-- „или потребителско име“, защото на по-малките деца
+                 академията измисля адрес, който не е истинска поща. Ако
+                 тук пише само „Имейл“, детето се чуди дали е сбъркало. -->
+            <label for="email">Потребителско име или имейл</label>
             <input type="email" id="email" name="email" autocomplete="username"
-                   required placeholder="ime@example.com" />
+                   required placeholder="ivan.petrov@lightspace.bg" />
           </div>
           <div class="tlp__field">
             <label for="password">Парола</label>
