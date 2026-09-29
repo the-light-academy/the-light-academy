@@ -78,6 +78,12 @@
       var pct = max > 0 ? (points / max) : 0;
       var done = r.done === undefined ? (max > 0 || points > 0) : !!r.done;
       return { name: r.name || '—', short: shortName(r.name), mine: !!r.mine,
+               /* Класът е готов надпис („6. клас“), а не число: в общото
+                  класиране на академията той стои до името, защото инак
+                  не се вижда срещу кого се мери детето. В състезанието
+                  по групи всички са от един клас и полето остава празно
+                  — един и същ надпис на всеки ред е шум, не сведение. */
+               grade: r.grade ? String(r.grade) : '',
                points: points, max: max, pct: pct, stars: starsFor(pct, done), done: done };
     });
     /* Цветът се раздава по азбучен ред, не по класиране: така едно
@@ -302,7 +308,8 @@
       var rr = on[i], uu = U[i], ss = uu * size;
       var cx = VX + lanes[i] * rW(uu), cy = rY(uu) - 119 * ss;
       var l1 = pos(i + 1) + ' · ' + rr.name + (rr.mine ? ' (ти)' : '');
-      var l2 = starsText(rr.stars) + '  ·  ' + num(rr.points) + ' т.';
+      var l2 = starsText(rr.stars) + (rr.grade ? '  ·  ' + rr.grade : '') +
+               '  ·  ' + num(rr.points) + ' т.';
       var w = Math.max(l1.length * 7.6, l2.length * 7.2) + 26;
       var box = placeTag(placed, cx - w / 2, cy - 44, w, 36);
       placed.push(box);
@@ -361,6 +368,7 @@
         '<span class="tla-grid__dot" style="background:' + esc(r.color) + '"></span>' +
         '<span class="tla-grid__name">' + esc(r.name) +
           (r.mine ? ' <span class="tla-grid__me">ти</span>' : '') + '</span>' +
+        (r.grade ? '<span class="tla-grid__grade">' + esc(r.grade) + '</span>' : '') +
         '<span class="tla-grid__stars" title="' + r.stars + ' от 5">' +
           esc(starsText(r.stars)) + '</span>' +
         '<span class="tla-grid__pts">' + esc(num(r.points)) + ' т.</span>' +

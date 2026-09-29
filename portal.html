@@ -171,13 +171,13 @@
       <div class="tlp__panel" role="tabpanel" id="panel-race" aria-labelledby="tab-race" tabindex="0" hidden>
         <div class="tlp__card">
           <h2 class="tlp__h2">Състезание Формула 1</h2>
-          <p class="tlp__card-m">
+          <p class="tlp__card-m" id="raceIntro">
             Ти и съучениците ти по един и същи предмет, при един и същи
             преподавател. Най-близо до финала е първият.
           </p>
 
           <div class="tla-filters" id="raceGroupWrap" hidden>
-            <label for="raceGroup">Група:</label>
+            <label for="raceGroup">Класиране:</label>
             <select id="raceGroup"></select>
           </div>
 
@@ -206,6 +206,13 @@
             <p>
               Подреждането е по точки. При равни точки напред минава този с
               по-висок процент.
+            </p>
+            <p>
+              <strong>Цялата академия</strong> — същата сметка, но с всички
+              ученици накуп, без значение в кой клас са и при кого учат. До
+              всяко име пише класът. Само че различните класове решават
+              различни задания, затова това класиране показва кой колко е
+              работил, а не кой знае повече.
             </p>
           </details>
         </div>
@@ -1055,6 +1062,9 @@
          assets/race.js, същата, която вижда и преподавателят. */
 
       var raceRows = null, raceGroups = [], raceKey = '', raceWide = null;
+      /* Общото класиране идва от друга функция (academy_race) и се пази
+         отделно: едната може да липсва в базата, без другата да падне. */
+      var academyRows = null, raceLoaded = false;
 
       function raceSay(msg) {
         $('raceEmpty').hidden = false;
@@ -1067,23 +1077,26 @@
         document.querySelector('#panel-race .tla-race__h').hidden = true;
       }
 
+      /* Двете класирания се искат заедно и поотделно: ако едната функция
+         още не е пусната в базата, другата трябва да се покаже, а не
+         цялата страница да каже „няма състезание“. Затова всяка грешка се
+         лови на място. Подробността отива в конзолата за нас — на детето
+         тя не му говори нищо. */
       async function loadRace() {
-        if (raceRows) { renderRace(); return; }
-        var rows;
-        try {
-          rows = await TLA.myRace();
-        } catch (e) {
-          /* Най-вероятната причина е, че supabase/schema-v5.sql още не е
-             пуснат. На детето това не му говори нищо, затова съобщението
-             е човешко, а подробността отива в конзолата за нас. */
-          console.warn('my_race:', e && (e.message || e));
-          raceSay('Състезанието още не е включено. Кажи на преподавателя си.');
-          return;
-        }
-        raceRows = rows;
+        if (raceLoaded) { renderRace(); return; }
+        var both = await Promise.all([
+          TLA.myRace().catch(function (e) {
+            console.warn('my_race:', e && (e.message || e)); return null;
+          }),
+          TLA.academyRace().catch(function (e) {
+            console.warn('academy_race:', e && (e.message || e)); return null;
+          })
+        ]);
+        raceLoaded = true;
+        raceRows = both[0]; academyRows = both[1];
 
         var byKey = {};
-        rows.forEach(function (r) {
+        (raceRows || []).forEach(function (r) {
           var k = r.subject_id + '|' + r.teacher_id;
           if (!byKey[k]) {
             byKey[k] = { key: k, subject: r.subject_name, teacher: r.teacher_name,
@@ -1094,30 +1107,65 @@
         raceGroups = Object.keys(byKey).map(function (k) { return byKey[k]; })
           .sort(function (a, b) { return b.rows.length - a.rows.length; });
 
-        if (!raceGroups.length) {
-          raceSay('Още нямаш група, с която да се състезаваш. Появява се, щом ' +
-                  'поне още един ученик от твоя клас учи същия предмет при същия преподавател.');
+        var opts = raceGroups.map(function (g) {
+          return { v: g.key, t: g.subject + ' · ' + g.teacher };
+        });
+        /* Сам със себе си не е класиране — затова общото се предлага само
+           когато в академията наистина има срещу кого. */
+        if (academyRows && academyRows.length > 1) {
+          opts.push({ v: 'academy', t: 'Цялата академия' });
+        }
+
+        if (!opts.length) {
+          raceSay(raceRows === null && academyRows === null
+            ? 'Състезанието още не е включено. Кажи на преподавателя си.'
+            : 'Още нямаш с кого да се състезаваш. Появява се, щом има още ' +
+              'един ученик при същия преподавател по същия предмет.');
           return;
         }
 
-        raceKey = raceGroups[0].key;
+        raceKey = opts[0].v;
         /* Менюто се показва само ако наистина има какво да се избира. */
-        if (raceGroups.length > 1) {
+        if (opts.length > 1) {
           $('raceGroupWrap').hidden = false;
-          $('raceGroup').innerHTML = raceGroups.map(function (g) {
-            return '<option value="' + esc(g.key) + '">' +
-              esc(g.subject + ' · ' + g.teacher) + '</option>';
+          $('raceGroup').innerHTML = opts.map(function (o) {
+            return '<option value="' + esc(o.v) + '">' + esc(o.t) + '</option>';
           }).join('');
         }
         renderRace();
       }
 
+      /* Всички в академията, с класа до името. Преподавател не се пише:
+         в общо класиране той не значи нищо. */
+      function renderAcademyRace() {
+        $('raceEmpty').hidden = true;
+        $('raceScene').hidden = false;
+        document.querySelector('#panel-race .tla-race__h').hidden = false;
+        $('raceIntro').textContent = 'Всички ученици в академията, без значение ' +
+          'в кой клас са и при кого учат. Класът пише до името. ' +
+          'Най-близо до финала е първият.';
+
+        var rows = TLARace.build((academyRows || []).map(function (r) {
+          return { name: r.student_name, grade: TLA.gradeLabel(r.grade),
+                   points: Number(r.points || 0), max: Number(r.max_points || 0),
+                   done: Number(r.max_points || 0) > 0, mine: r.is_me };
+        }));
+        raceWide = TLARace.onTrack();
+        $('raceScene').innerHTML = TLARace.scene(rows);
+        TLARace.play($('raceScene'));
+        $('raceStandings').innerHTML = TLARace.standings(rows);
+        $('raceNote').textContent = TLARace.note(rows, 'цялата академия');
+      }
+
       function renderRace() {
+        if (raceKey === 'academy') { renderAcademyRace(); return; }
         var group = raceGroups.filter(function (g) { return g.key === raceKey; })[0];
         if (!group) return;
         $('raceEmpty').hidden = true;
         $('raceScene').hidden = false;
         document.querySelector('#panel-race .tla-race__h').hidden = false;
+        $('raceIntro').textContent = 'Ти и съучениците ти по един и същи предмет, ' +
+          'при един и същи преподавател. Най-близо до финала е първият.';
 
         var rows = TLARace.build(group.rows.map(function (r) {
           return { name: r.student_name, points: Number(r.points || 0),
@@ -1144,7 +1192,7 @@
         clearTimeout(raceTimer);
         raceTimer = setTimeout(function () {
           var now = TLARace.onTrack();
-          if (now === raceWide || !raceRows) return;
+          if (now === raceWide || !raceLoaded) return;
           raceWide = now;
           if (!$('panel-race').hidden) renderRace();
         }, 220);
