@@ -2043,3 +2043,381 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 7 — умножение на многочлен с многочлен.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w07',
+   'Домашно 7 — Умножение на многочлен с многочлен',
+   'homework',
+   'homework_7_w07.html',
+   10,
+   false,
+   107,
+   7,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 8 — квадрат на сбор и на разлика.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w08',
+   'Домашно 8 — Квадрат на сбор и на разлика',
+   'homework',
+   'homework_7_w08.html',
+   10,
+   false,
+   108,
+   8,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 9 — разлика на квадрати.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w09',
+   'Домашно 9 — Разлика на квадрати',
+   'homework',
+   'homework_7_w09.html',
+   10,
+   false,
+   109,
+   9,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 10 — разлагане чрез изнасяне на общ множител.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w10',
+   'Домашно 10 — Разлагане: изнасяне на общ множител',
+   'homework',
+   'homework_7_w10.html',
+   10,
+   false,
+   110,
+   10,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 11 — разлагане чрез групиране.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w11',
+   'Домашно 11 — Разлагане чрез групиране',
+   'homework',
+   'homework_7_w11.html',
+   10,
+   false,
+   111,
+   11,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 12 — разлагане чрез формулите за съкратено умножение.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w12',
+   'Домашно 12 — Разлагане чрез формулите',
+   'homework',
+   'homework_7_w12.html',
+   10,
+   false,
+   112,
+   12,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 13 — обобщение — тъждествени преобразувания.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w13',
+   'Домашно 13 — Тъждествени преобразувания (обобщение)',
+   'homework',
+   'homework_7_w13.html',
+   10,
+   false,
+   113,
+   13,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 14 — линейно уравнение.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w14',
+   'Домашно 14 — Линейно уравнение',
+   'homework',
+   'homework_7_w14.html',
+   10,
+   false,
+   114,
+   14,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 15 — уравнения със скоби и с дроби.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w15',
+   'Домашно 15 — Уравнения със скоби и с дроби',
+   'homework',
+   'homework_7_w15.html',
+   10,
+   false,
+   115,
+   15,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 16 — текстови задачи с уравнения — числа и възраст.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w16',
+   'Домашно 16 — Текстови задачи: числа и възраст',
+   'homework',
+   'homework_7_w16.html',
+   10,
+   false,
+   116,
+   16,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 17 — текстови задачи за движение.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w17',
+   'Домашно 17 — Текстови задачи: движение',
+   'homework',
+   'homework_7_w17.html',
+   10,
+   false,
+   117,
+   17,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 18 — обобщение на първия срок.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w18',
+   'Домашно 18 — Обобщение на първия срок',
+   'homework',
+   'homework_7_w18.html',
+   10,
+   false,
+   118,
+   18,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 19 — успоредни прави и ъгли.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w19',
+   'Домашно 19 — Успоредни прави и ъгли',
+   'homework',
+   'homework_7_w19.html',
+   10,
+   false,
+   119,
+   19,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 20 — сбор на ъглите в триъгълник и външен ъгъл.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw7-w20',
+   'Домашно 20 — Сбор на ъглите в триъгълник. Външен ъгъл',
+   'homework',
+   'homework_7_w20.html',
+   10,
+   false,
+   120,
+   20,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
