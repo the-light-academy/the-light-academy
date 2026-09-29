@@ -1324,6 +1324,14 @@ body.tlp-space { background: #05070F; }
 .tla-grid__pos--3 { color: #8A5326; }
 .tla-grid__dot { width: 12px; height: 12px; border-radius: 3px; flex: none; }
 .tla-grid__name { font-weight: 700; color: var(--dark); flex: 1 1 auto; min-width: 0; }
+/* Класът — само в общото класиране на академията. Там едно име без клас
+   не значи нищо: четвъртокласник и седмокласник се гонят по една писта.
+   Тихо сиво-синьо, не цветно: това е сведение, не отличие. */
+.tla-grid__grade {
+  flex: none; white-space: nowrap; font-size: 0.78rem; font-weight: 700;
+  color: var(--navy-2); background: rgba(13,27,54,0.07);
+  border-radius: 999px; padding: 0.1rem 0.5rem;
+}
 /* Тъмното кехлибарено на сайта, а не светлото: звездите са текст и
    трябва да минат 4,5:1 — и върху бялото, и върху кремавия първи ред.
    (#A17522 дава само 3,9:1 на крем.) */
@@ -1355,6 +1363,7 @@ body.tlp-space { background: #05070F; }
 @media (max-width: 560px) {
   .tla-grid__row { flex-wrap: wrap; gap: 0.35rem 0.6rem; }
   .tla-grid__name { flex: 1 1 100%; order: 3; }
+  .tla-grid__grade { order: 4; }
   .tla-grid__stars { order: 4; }
   .tla-grid__pts { order: 5; margin-left: auto; }
 }

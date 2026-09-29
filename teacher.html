@@ -294,18 +294,22 @@
     <section class="tla-panel" id="panelRace" hidden>
       <div class="tla-card">
         <h2 class="tla-card__title">Състезание Формула 1</h2>
-        <p class="tla-muted" style="margin-bottom:1rem;">
-          Състезават се учениците от един и същи клас, по един и същи предмет,
-          при един и същи преподавател. Най-близо до финала е първият.
-        </p>
+        <p class="tla-muted" style="margin-bottom:1rem;" id="raceIntro"></p>
 
         <div class="tla-filters">
-          <label for="raceGrade">Клас:</label>
-          <select id="raceGrade"></select>
-          <label for="raceSubject">Предмет:</label>
-          <select id="raceSubject"></select>
-          <label for="raceTeacher">Преподавател:</label>
-          <select id="raceTeacher"></select>
+          <label for="raceScope">Класиране:</label>
+          <select id="raceScope">
+            <option value="group">По групи</option>
+            <option value="academy">Цялата академия</option>
+          </select>
+          <span id="raceGroupPickers">
+            <label for="raceGrade">Клас:</label>
+            <select id="raceGrade"></select>
+            <label for="raceSubject">Предмет:</label>
+            <select id="raceSubject"></select>
+            <label for="raceTeacher">Преподавател:</label>
+            <select id="raceTeacher"></select>
+          </span>
         </div>
 
         <p class="tla-empty" id="raceEmpty" hidden></p>
@@ -338,6 +342,15 @@
           <p>
             В сбора влизат заданията по този предмет и общите задания без
             предмет. Незавършените работи не носят точки.
+          </p>
+          <p>
+            <strong>Цялата академия</strong> — същата сметка, но без нито
+            един филтър: всеки действащ ученик, с всичко, което е предал по
+            всички предмети, и класът до името му. Преподавател не се
+            изписва: в общо класиране той не е нито обяснение, нито
+            заслуга. Имайте предвид, че различните класове решават
+            различни задания — общото класиране показва кой колко е
+            работил, а не кой е по-добър от кого.
           </p>
         </details>
       </div>
@@ -2726,6 +2739,10 @@
           .order('submitted_at', { ascending: false });
         if (res.error) { say('err', res.error.message); return; }
         state.attempts = res.data || [];
+        /* Общото класиране е снимка от базата, а тя току-що се смени:
+           след поправена работа точките са други. Изхвърля се, за да се
+           вземе наново, вместо да показва вчерашното класиране. */
+        academy.rows = null; academy.err = null;
         renderAttempts();
       }
 
@@ -2796,7 +2813,16 @@
          преподавателят ще гледат различни числа за едно и също нещо.
          ================================================================== */
 
-      var raceSel = { grade: '', subject: '', teacher: '' };
+      var raceSel = { scope: 'group', grade: '', subject: '', teacher: '' };
+
+      /* Общото класиране НЕ се смята тук, а се пита базата. Причината е,
+         че таблото вижда толкова, колкото политиките дават на влезлия: на
+         администратора — всичко, на преподавател — само неговите ученици.
+         Сметнато от заредените данни, „цялата академия“ би значело
+         различно нещо за различни хора, и то без да си личи. През
+         academy_race() и детето, и преподавателят гледат едно и също.
+         Виж supabase/schema-v6.sql. */
+      var academy = { rows: null, err: null, busy: false };
 
       /* Колко е събрал един ученик по един предмет. Броят се публикуваните
          задания на този предмет и общите без предмет — точно тези, които
@@ -2897,26 +2923,95 @@
         return inSubj.filter(function (g) { return g.teacher === raceSel.teacher; })[0] || null;
       }
 
+      /* Надписът над филтрите — казва точно кое класиране се гледа. */
+      function raceIntro() {
+        document.getElementById('raceIntro').textContent = raceSel.scope === 'academy'
+          ? 'Всички ученици в академията, без значение от клас и преподавател. ' +
+            'Класът е до името. Най-близо до финала е първият.'
+          : 'Състезават се учениците от един и същи клас, по един и същи предмет, ' +
+            'при един и същи преподавател. Най-близо до финала е първият.';
+      }
+
+      function raceBoxes() {
+        return {
+          scene: document.getElementById('raceScene'),
+          list:  document.getElementById('raceStandings'),
+          empty: document.getElementById('raceEmpty'),
+          note:  document.getElementById('raceNote'),
+          head:  document.querySelector('#panelRace .tla-race__h'),
+          pick:  document.getElementById('raceGroupPickers')
+        };
+      }
+
+      /* Едно място за „няма какво да се покаже“: иначе всеки от трите
+         случая крие по нещо различно и някой ред остава да виси. */
+      function raceSay(msg) {
+        var b = raceBoxes();
+        b.empty.hidden = false; b.empty.textContent = msg;
+        b.head.hidden = true; b.scene.hidden = true;
+        b.scene.innerHTML = ''; b.list.innerHTML = ''; b.note.textContent = '';
+      }
+
+      async function renderAcademyRace() {
+        var b = raceBoxes();
+        b.pick.hidden = true;
+
+        if (!academy.rows && !academy.err && !academy.busy) {
+          academy.busy = true;
+          raceSay('Зарежда класирането…');
+          try { academy.rows = await TLA.academyRace(); }
+          catch (e) { academy.err = e; }
+          academy.busy = false;
+        }
+        if (academy.busy) return;
+        if (academy.err) {
+          console.warn('academy_race:', academy.err && (academy.err.message || academy.err));
+          raceSay('Общото класиране още не е включено. Пуснете supabase/schema-v6.sql ' +
+                  'в Supabase — състезанието по групи работи и без него.');
+          return;
+        }
+        var data = academy.rows || [];
+        if (data.length < 2) {
+          raceSay('Общото класиране се нарежда, когато в академията има поне двама ' +
+                  'действащи ученици.');
+          return;
+        }
+
+        b.empty.hidden = true; b.head.hidden = false; b.scene.hidden = false;
+        var rows = TLARace.build(data.map(function (r) {
+          return { name: r.student_name || '—',
+                   grade: TLA.gradeLabel(r.grade === null ? '' : r.grade),
+                   points: Number(r.points || 0), max: Number(r.max_points || 0),
+                   done: Number(r.max_points || 0) > 0 };
+        }));
+        raceWide = TLARace.onTrack();
+        b.scene.innerHTML = TLARace.scene(rows);
+        TLARace.play(b.scene);
+        b.list.innerHTML = TLARace.standings(rows);
+        b.note.textContent = TLARace.note(rows, 'цялата академия');
+      }
+
       function renderRace() {
+        raceIntro();
+        if (raceSel.scope === 'academy') { renderAcademyRace(); return; }
         var scene = document.getElementById('raceScene');
         var list  = document.getElementById('raceStandings');
         var empty = document.getElementById('raceEmpty');
         var note  = document.getElementById('raceNote');
-        var filt  = document.querySelector('#panelRace .tla-filters');
+        var pick  = document.getElementById('raceGroupPickers');
         var head  = document.querySelector('#panelRace .tla-race__h');
         if (!scene) return;
 
         var groups = raceGroups();
         if (!groups.length) {
-          empty.hidden = false;
-          empty.textContent = 'Състезание се нарежда, когато поне двама ученици от един ' +
+          pick.hidden = true;
+          raceSay('Състезание се нарежда, когато поне двама ученици от един ' +
             'и същи клас учат един и същи предмет при един и същи преподавател. ' +
-            'Засега такава група няма — вижте колоната „Предмети“ в раздел Ученици.';
-          filt.hidden = true; head.hidden = true; scene.hidden = true;
-          scene.innerHTML = ''; list.innerHTML = ''; note.textContent = '';
+            'Засега такава група няма — вижте колоната „Предмети“ в раздел Ученици. ' +
+            'Общото класиране на академията работи и без групи: изберете го горе.');
           return;
         }
-        empty.hidden = true; filt.hidden = false; head.hidden = false; scene.hidden = false;
+        empty.hidden = true; pick.hidden = false; head.hidden = false; scene.hidden = false;
 
         var group = raceFillPickers(groups);
         if (!group) { scene.innerHTML = ''; list.innerHTML = ''; return; }
@@ -2948,11 +3043,12 @@
         }, 220);
       });
 
-      ['raceGrade', 'raceSubject', 'raceTeacher'].forEach(function (id) {
+      ['raceScope', 'raceGrade', 'raceSubject', 'raceTeacher'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         el.addEventListener('change', function () {
-          if (id === 'raceGrade') { raceSel.grade = this.value; raceSel.subject = ''; raceSel.teacher = ''; }
+          if (id === 'raceScope') raceSel.scope = this.value;
+          else if (id === 'raceGrade') { raceSel.grade = this.value; raceSel.subject = ''; raceSel.teacher = ''; }
           else if (id === 'raceSubject') { raceSel.subject = this.value; raceSel.teacher = ''; }
           else raceSel.teacher = this.value;
           renderRace();
