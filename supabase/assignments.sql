@@ -1687,3 +1687,111 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 26 — окръжност и кръг, дължина на окръжност и лице на кръг.
+-- Четири задачи с избор и шест писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w26',
+   'Домашно — Окръжност и кръг',
+   'homework',
+   'homework_6_w26.html',
+   10,
+   false,
+   413,
+   26,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 27 — правилен многоъгълник, централен ъгъл, периметър и лице.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w27',
+   'Домашно — Правилен многоъгълник',
+   'homework',
+   'homework_6_w27.html',
+   10,
+   false,
+   414,
+   27,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 28 — права призма: развивка, лице на повърхнина и обем.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w28',
+   'Домашно — Права призма',
+   'homework',
+   'homework_6_w28.html',
+   10,
+   false,
+   415,
+   28,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 29 — правилна пирамида: елементи, лице на повърхнина и обем.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w29',
+   'Домашно — Правилна пирамида',
+   'homework',
+   'homework_6_w29.html',
+   10,
+   false,
+   416,
+   29,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
