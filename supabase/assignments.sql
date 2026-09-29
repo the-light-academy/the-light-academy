@@ -1444,3 +1444,165 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 17 — обобщение на темите от първия срок.
+-- Петнайсет задачи през целия срок, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w17',
+   'Домашно — Обобщение на първия срок',
+   'homework',
+   'homework_6_w17.html',
+   15,
+   false,
+   405,
+   17,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 18 — класна работа за първия срок.
+-- Петнайсет задачи по целия срок, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('exam6_term1',
+   'Класна работа №1 — 6. клас',
+   'exam',
+   'exam6_term1.html',
+   15,
+   false,
+   32,
+   18,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 19 — отношение и пропорция, основно свойство на пропорциите.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w19',
+   'Домашно — Отношение и пропорция',
+   'homework',
+   'homework_6_w19.html',
+   10,
+   false,
+   406,
+   19,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 20 — неизвестен член на пропорция и основна задача от процент.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w20',
+   'Домашно — Процент чрез пропорция',
+   'homework',
+   'homework_6_w20.html',
+   10,
+   false,
+   407,
+   20,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 21 — права и обратна пропорционалност, коефициент на пропорционалност.
+-- Четири задачи с избор и шест писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w21',
+   'Домашно — Права и обратна пропорционалност',
+   'homework',
+   'homework_6_w21.html',
+   10,
+   false,
+   408,
+   21,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 22 — графики на права пропорционалност и мащаб.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w22',
+   'Домашно — Графики и мащаб',
+   'homework',
+   'homework_6_w22.html',
+   10,
+   false,
+   409,
+   22,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
