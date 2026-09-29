@@ -1255,3 +1255,192 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 10 — изваждане на рационални числа и алгебричен сбор.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w10',
+   'Домашно — Изваждане на рационални числа',
+   'homework',
+   'homework_6_w10.html',
+   10,
+   false,
+   398,
+   10,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 11 — умножение на рационални числа и свойства на умножението.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w11',
+   'Домашно — Умножение на рационални числа',
+   'homework',
+   'homework_6_w11.html',
+   10,
+   false,
+   399,
+   11,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 12 — деление на рационални числа и намиране на неизвестно число.
+-- Две задачи с избор и осем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w12',
+   'Домашно — Деление на рационални числа',
+   'homework',
+   'homework_6_w12.html',
+   10,
+   false,
+   400,
+   12,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 13 — правоъгълна координатна система, координати на точка и разстояние.
+-- Пет задачи с избор и пет писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w13',
+   'Домашно — Координатна система',
+   'homework',
+   'homework_6_w13.html',
+   10,
+   false,
+   401,
+   13,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 14 — понятие за уравнение и линейни уравнения от вида ax + b = 0.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w14',
+   'Домашно — Линейни уравнения',
+   'homework',
+   'homework_6_w14.html',
+   10,
+   false,
+   402,
+   14,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 15 — уравнения, които се свеждат до линейни.
+-- Две задачи с избор и осем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w15',
+   'Домашно — Уравнения със скоби',
+   'homework',
+   'homework_6_w15.html',
+   10,
+   false,
+   403,
+   15,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 16 — текстови задачи, решавани с уравнения.
+-- Три задачи с избор и седем писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w16',
+   'Домашно — Текстови задачи с уравнения',
+   'homework',
+   'homework_6_w16.html',
+   10,
+   false,
+   404,
+   16,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
