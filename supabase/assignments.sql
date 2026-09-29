@@ -1903,3 +1903,35 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- ── 6. клас, седмица 3: определяне на нивото ──
+-- Трийсет задачи по целия материал на 5. клас, по десет теми, по 3 задачи
+-- на тема и по 1 точка всяка. БЕЗ часовник — това е първият разговор с
+-- дете, което още не познаваме, а броенето назад мери стрес, не знания.
+-- Накрая дава карта по теми с проценти, която се сваля като PDF на една
+-- страница. Стои редом с „Входно ниво — 6. клас“ и състезателното входно
+-- от същата седмица: то мери за оценка, това — за посока.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('level_check_6',
+   'Определяне на нивото — пълно входно ниво',
+   'exam',
+   'level_check_6.html',
+   30,
+   false,
+   39,
+   3,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.

@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Определяне на нивото — 5. клас · The Light Academy</title>
+<title>Определяне на нивото — 6. клас · The Light Academy</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Пълно входно ниво по математика за 5. клас — целият материал на 4. клас, с анализ по теми." />
+<meta name="description" content="Пълно входно ниво по математика за 6. клас — целият материал на 5. клас, с анализ по теми." />
 <link rel="icon" href="favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -202,8 +202,8 @@ body{
   /* Разстоянията долу са мерени, не подбрани на око: отчетът трябва да
      свърши в рамките на един лист A4 (≈1017 px при 96 dpi и полета 14/12 mm),
      иначе изводът пада сам на втора страница. */
-  canvas.gauge{ width:116px !important; height:116px !important; }
-  .pdfhead{ display:block; margin-bottom:6mm; }
+  canvas.gauge{ width:104px !important; height:104px !important; }
+  .pdfhead{ display:block; margin-bottom:5mm; }
   .pdfhead-brand{ font-family:'Fredoka',sans-serif; font-weight:700;
     font-size:11pt; color:#B9701A; letter-spacing:.02em; }
   .pdfhead-t{ font-family:'Fredoka',sans-serif; font-weight:700;
@@ -219,15 +219,20 @@ body{
   .topics-sub{ font-size:10pt; margin-bottom:4mm; }
 
   /* един ред не се реже между две страници */
-  .trow{ page-break-inside:avoid; break-inside:avoid; margin-bottom:4mm; }
+  /* Тук темите са десет, а не осем като при входното ниво за 5. клас —
+     две ленти повече са ≈76 px и точно те изтикваха отчета на втора
+     страница (мерено: 1066 px при 1017 px на лист). Затова разстоянието
+     между редовете и дебелината на лентата са с по един милиметър
+     по-малки, отколкото там. Числата са мерени, не подбрани на око. */
+  .trow{ page-break-inside:avoid; break-inside:avoid; margin-bottom:3mm; }
   .trow-top{ margin-bottom:3px; }
   .trow-name{ font-size:11.5pt; }
-  .track{ height:6mm; background:#EEF1F6 !important; }
+  .track{ height:5mm; background:#EEF1F6 !important; }
   /* Изводът е последният блок и не се реже — ако не се побере, скача цял
      на втора страница. Затова тук се печели запасът за по-дълго име или
      един пренесен ред повече. */
-  .summary{ page-break-inside:avoid; break-inside:avoid; margin-top:5mm;
-    padding:4mm 5mm; font-size:10pt; line-height:1.55;
+  .summary{ page-break-inside:avoid; break-inside:avoid; margin-top:4mm;
+    padding:3.5mm 5mm; font-size:9.5pt; line-height:1.5;
     background:#FFFDF7 !important; border:1px solid #DDE3EE !important; }
 
   /* цветовете на лентите трябва да оцелеят — иначе PDF-ът излиза сив */
@@ -309,6 +314,8 @@ header.ex{ display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
 }
 .frac .num{ padding:0 6px 2px; }
 .frac .den{ padding:2px 6px 0; border-top:2px solid currentColor; }
+/* „1 1/2“ е едно число и не бива да се пренася между цялото и дробта. */
+.mixed{ white-space:nowrap; }
 
 .choices{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
 @media (max-width:460px){ .choices{ grid-template-columns:1fr; } }
@@ -456,7 +463,7 @@ canvas.gauge{ position:relative; }
     </a>
     <span class="tlp-bar__sep" aria-hidden="true"></span>
     <span class="tlp-bar__where">
-      <span class="tlp-bar__long">Определяне на нивото · 5. клас</span>
+      <span class="tlp-bar__long">Определяне на нивото · 6. клас</span>
       <span class="tlp-bar__short">Входно ниво</span>
     </span>
   </div>
@@ -470,23 +477,23 @@ canvas.gauge{ position:relative; }
   <!-- 1. преди часовника -->
   <section class="screen active" id="introScreen">
     <div class="intro">
-      <div class="eyebrow"><span class="dot"></span>5. клас · седмица 3</div>
+      <div class="eyebrow"><span class="dot"></span>6. клас · седмица 3</div>
       <h1>Определяне на <em>нивото</em></h1>
       <p class="subhead">
-        Двайсет и шест задачи по целия материал на 4. клас, подредени по осем
+        Трийсет задачи по целия материал на 5. клас, подредени по десет
         теми. Целта не е оценка, а карта: кое върви и къде трябва работа.
         Накрая се получава анализ по теми, който може да се свали като PDF.
       </p>
       <div class="facts">
-        <div class="fact"><b>26</b><span>задачи</span></div>
-        <div class="fact"><b>8</b><span>теми</span></div>
+        <div class="fact"><b>30</b><span>задачи</span></div>
+        <div class="fact"><b>10</b><span>теми</span></div>
         <div class="fact"><b>без</b><span>ограничение</span></div>
       </div>
       <ul class="rules">
-        <li><b>Няма часовник.</b> Решавайте спокойно — обикновено стигат около 60 минути.</li>
+        <li><b>Няма часовник.</b> Решавайте спокойно — обикновено стигат около 70 минути.</li>
         <li>Не тръгвайте по ред. Ако някоя задача спъне детето, минете нататък и се върнете.</li>
         <li>Задачите с празно поле се пишат с отговор — само числото, без мерната единица.</li>
-        <li>Дроб се пише с наклонена черта: 3/5. Час се пише във вида 11:15.</li>
+        <li>Дроб се пише с наклонена черта: 3/5. Несъкратена дроб също се приема.</li>
         <li>Оставено празно поле се брои за сгрешено — по-добре е детето да опита.</li>
       </ul>
       <button type="button" class="btn btn--big" id="startBtn">Започни</button>
@@ -496,7 +503,7 @@ canvas.gauge{ position:relative; }
   <!-- 2. задачите -->
   <section class="screen" id="examScreen">
     <header class="ex">
-      <div class="eyebrow"><span class="dot"></span>5. клас · входно ниво</div>
+      <div class="eyebrow"><span class="dot"></span>6. клас · входно ниво</div>
     </header>
     <div id="questions"></div>
   </section>
@@ -520,7 +527,7 @@ canvas.gauge{ position:relative; }
         <div class="pdfhead" aria-hidden="true">
           <div class="pdfhead-brand">The Light Academy</div>
           <div class="pdfhead-t">Определяне на нивото по математика</div>
-          <div class="pdfhead-sub">Вход за 5. клас · материал от 4. клас</div>
+          <div class="pdfhead-sub">Вход за 6. клас · материал от 5. клас</div>
           <div class="pdfhead-row">
             <span id="pdfChild"></span>
             <span id="pdfDate"></span>
@@ -563,7 +570,7 @@ canvas.gauge{ position:relative; }
 
 <div class="dock" id="dock" hidden>
   <div class="dock-inner">
-    <span class="dock-score" id="answered">0 / 26 решени</span>
+    <span class="dock-score" id="answered">0 / 30 решени</span>
     <span class="dock-fill"></span>
     <button type="button" class="btn" id="submitBtn">Предай</button>
   </div>
@@ -575,25 +582,26 @@ canvas.gauge{ position:relative; }
 <script src="assets/email-check.js"></script>
 <script>
 /* =========================================================
-   ОПРЕДЕЛЯНЕ НА НИВОТО — вход за 5. КЛАС, седмица 3
+   ОПРЕДЕЛЯНЕ НА НИВОТО — вход за 6. КЛАС, седмица 3
 
-   Двайсет и шест задачи по целия материал на 4. клас,
-   подредени по осем теми. Всяка задача е по 1 точка: за
-   диагностика всяко попадение е едно свидетелство и не бива
-   да тежи повече от друго.
+   Проверява материала на цялата 5. клас, подреден по десет
+   теми — по три задачи на тема, за да има всяка лента на
+   какво да стъпи. Три попадения на тема е малко за оценка и
+   точно затова е честно за карта: показва посока, не присъда.
 
-   (Този коментар доскоро описваше СЪВСЕМ друг изпит — беше
-   останал от contest_6_entry.html, откъдето е копиран файлът,
-   и изброяваше отговори, които ги няма тук. Отговорите живеят
-   в самите задачи отдолу, на едно място, и това е правилното
-   им място: преписаният списък беше станал невярен още в деня,
-   в който първата задача се смени.)
+   Всяка сметка е пресметната отделно, с точни дроби, преди
+   да влезе тук (scratchpad/lvl6.py). Никъде няма плаваща
+   запетая — 0,1 + 0,2 не е 0,3, а ключ на входно ниво не
+   бива да зависи от това.
 
-   Няма часовник. Това е разговор с дете, което виждаме за
-   пръв път — броенето назад мери стрес, не знания.
+   Отговорите с дроб се сравняват като ЧИСЛА, не като запис:
+   2/3, 4/6 и 30/45 са един и същ отговор. Затова „съкратете“
+   и „запишете като неправилна дроб“ нарочно ги няма като
+   задачи с празно поле — там несъкратеният запис би минал за
+   верен и въпросът би питал едно, а да проверява друго.
 
-   Отговорите с дроб се сравняват като ЧИСЛА, а не като запис:
-   2/3, 4/6 и 30/45 са един и същ отговор.
+   Няма часовник. Това е първият разговор с дете, което още
+   не познаваме — броенето назад мери стрес, не знания.
 ========================================================= */
 
 /* Няма часовник. Това е разговор с дете, което го виждаме за пръв път —
@@ -601,148 +609,143 @@ canvas.gauge{ position:relative; }
 const LABELS = ["а", "б", "в", "г"];
 
 const QUESTIONS = [
-  /* Входно ниво за 5. клас: целият материал на 4. клас, по осем теми.
-     Всяка задача е по 1 точка — за диагностика всяко попадение е едно
-     свидетелство и не бива да тежи повече от друго. Темата (tag) е това,
-     по което накрая се смята диаграмата, затова се пише точно. */
+  /* ── Естествени числа и ред на действията ── */
+  { points:1, tag:'Естествени числа и ред на действията', type:'mc',
+    html:'Стойността на израза 5<sup>2</sup> · 4 − 3<sup>3</sup> е:',
+    plain:'Стойността на израза 5^2 · 4 − 3^3 е:',
+    choices:['73','91','373','13'], correct:0 },
+  { points:1, tag:'Естествени числа и ред на действията', type:'text',
+    hint:'Първо скобата, после делението.',
+    text:'Пресметнете: 120 : (4 + 2 · 3) − 5',
+    fields:[ { label:'Отговор:', expr:'=', answer:'7' } ] },
+  { points:1, tag:'Естествени числа и ред на действията', type:'text',
+    html:'Пресметнете: 3<sup>4</sup> − 2<sup>5</sup>',
+    plain:'Пресметнете: 3^4 − 2^5',
+    fields:[ { label:'Отговор:', expr:'=', answer:'49' } ] },
 
-  /* ── Числа до 1 000 000 ── */
-  { points:1, tag:'Числа до 1 000 000', type:'mc',
-    text:'Кое число се състои от 4 стотици хиляди, 7 хиляди и 3 единици?',
-    choices:['470 003','407 003','40 703','407 300'], correct:1 },
+  /* ── Делимост. НОД и НОК ── */
+  { points:1, tag:'Делимост. НОД и НОК', type:'mc',
+    text:'Кое от числата се дели и на 3, и на 5?',
+    choices:['125','345','213','530'], correct:1 },
+  { points:1, tag:'Делимост. НОД и НОК', type:'text',
+    text:'Намерете най-големия общ делител на 24 и 36.',
+    fields:[ { label:'НОД =', expr:'', answer:'12' } ] },
+  { points:1, tag:'Делимост. НОД и НОК', type:'text',
+    text:'Намерете най-малкото общо кратно на 6 и 8.',
+    fields:[ { label:'НОК =', expr:'', answer:'24' } ] },
 
-  { points:1, tag:'Числа до 1 000 000', type:'mc',
-    text:'Най-голямото от числата 89 999, 90 001, 9 999 и 89 990 е:',
-    choices:['89 999','90 001','9 999','89 990'], correct:1 },
+  /* ── Обикновени дроби и смесени числа ── */
+  { points:1, tag:'Обикновени дроби и смесени числа', type:'mc',
+    html:'Съкратена докрай, дробта <span class="frac"><span class="num">18</span><span class="den">24</span></span> е равна на:',
+    plain:'Съкратена докрай, дробта 18/24 е равна на:',
+    choices:['<span class="frac"><span class="num">2</span><span class="den">3</span></span>','<span class="frac"><span class="num">3</span><span class="den">4</span></span>','<span class="frac"><span class="num">4</span><span class="den">3</span></span>','<span class="frac"><span class="num">1</span><span class="den">2</span></span>'], correct:1 },
+  { points:1, tag:'Обикновени дроби и смесени числа', type:'mc',
+    html:'Коя от дробите е най-голяма?',
+    plain:'Коя от дробите е най-голяма: 5/8, 2/3, 3/4 или 7/12?',
+    choices:['<span class="frac"><span class="num">5</span><span class="den">8</span></span>','<span class="frac"><span class="num">2</span><span class="den">3</span></span>','<span class="frac"><span class="num">3</span><span class="den">4</span></span>','<span class="frac"><span class="num">7</span><span class="den">12</span></span>'], correct:2 },
+  { points:1, tag:'Обикновени дроби и смесени числа', type:'text',
+    hint:'Пиши дробта с наклонена черта: 7/8',
+    html:'Коя дроб е по-голяма — <span class="frac"><span class="num">7</span><span class="den">8</span></span> или <span class="frac"><span class="num">5</span><span class="den">6</span></span>? Запишете я.',
+    plain:'Коя дроб е по-голяма — 7/8 или 5/6? Запишете я.',
+    fields:[ { label:'По-голямата е:', expr:'', answer:'7/8' } ] },
 
-  { points:1, tag:'Числа до 1 000 000', type:'text',
-    hint:'Пиши числото без интервали: 47000',
-    text:'Закръглете 47 382 до хиляди.',
-    fields:[ { label:'Отговор:', expr:'≈', answer:'47000', accepts:['47000','47 000'] } ] },
+  /* ── Събиране и изваждане на дроби ── */
+  { points:1, tag:'Събиране и изваждане на дроби', type:'text',
+    hint:'Пиши дробта с наклонена черта.',
+    html:'Пресметнете: <span class="frac"><span class="num">2</span><span class="den">3</span></span> + <span class="frac"><span class="num">1</span><span class="den">4</span></span>',
+    plain:'Пресметнете: 2/3 + 1/4',
+    fields:[ { label:'Отговор:', expr:'=', answer:'11/12' } ] },
+  { points:1, tag:'Събиране и изваждане на дроби', type:'text',
+    hint:'Пиши дробта с наклонена черта.',
+    html:'Пресметнете: <span class="frac"><span class="num">5</span><span class="den">6</span></span> − <span class="frac"><span class="num">3</span><span class="den">8</span></span>',
+    plain:'Пресметнете: 5/6 − 3/8',
+    fields:[ { label:'Отговор:', expr:'=', answer:'11/24' } ] },
+  { points:1, tag:'Събиране и изваждане на дроби', type:'mc',
+    html:'Пресметнете: <span class="mixed">1 <span class="frac"><span class="num">1</span><span class="den">2</span></span></span> + <span class="mixed">2 <span class="frac"><span class="num">3</span><span class="den">4</span></span></span>',
+    plain:'Пресметнете: 1 1/2 + 2 3/4',
+    choices:['<span class="mixed">4 <span class="frac"><span class="num">1</span><span class="den">4</span></span></span>','<span class="mixed">3 <span class="frac"><span class="num">1</span><span class="den">4</span></span></span>','<span class="mixed">3 <span class="frac"><span class="num">4</span><span class="den">6</span></span></span>','<span class="mixed">4 <span class="frac"><span class="num">4</span><span class="den">6</span></span></span>'], correct:0 },
 
-  /* ── Събиране и изваждане ── */
-  { points:1, tag:'Събиране и изваждане', type:'text',
-    hint:'Пиши числото без интервали.',
-    text:'Пресметнете: 25 640 + 8 375',
-    fields:[ { label:'Отговор:', expr:'=', answer:'34015', accepts:['34015','34 015'] } ] },
+  /* ── Умножение и деление на дроби ── */
+  { points:1, tag:'Умножение и деление на дроби', type:'text',
+    hint:'Съкращавай преди да умножаваш.',
+    html:'Пресметнете: <span class="frac"><span class="num">3</span><span class="den">5</span></span> · <span class="frac"><span class="num">10</span><span class="den">9</span></span>',
+    plain:'Пресметнете: 3/5 · 10/9',
+    fields:[ { label:'Отговор:', expr:'=', answer:'2/3' } ] },
+  { points:1, tag:'Умножение и деление на дроби', type:'text',
+    hint:'Делението на дроб е умножение по обратната ѝ.',
+    html:'Пресметнете: <span class="frac"><span class="num">3</span><span class="den">4</span></span> : <span class="frac"><span class="num">6</span><span class="den">5</span></span>',
+    plain:'Пресметнете: 3/4 : 6/5',
+    fields:[ { label:'Отговор:', expr:'=', answer:'5/8' } ] },
+  { points:1, tag:'Умножение и деление на дроби', type:'text',
+    html:'Колко е <span class="frac"><span class="num">3</span><span class="den">8</span></span> от 120?',
+    plain:'Колко е 3/8 от 120?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'45' } ] },
 
-  { points:1, tag:'Събиране и изваждане', type:'text',
-    hint:'Пиши числото без интервали.',
-    text:'Пресметнете: 60 000 − 23 458',
-    fields:[ { label:'Отговор:', expr:'=', answer:'36542', accepts:['36542','36 542'] } ] },
+  /* ── Десетични дроби ── */
+  { points:1, tag:'Десетични дроби', type:'mc',
+    text:'Най-голямото от числата 0,405; 0,45; 0,0450 и 0,4005 е:',
+    choices:['0,405','0,45','0,0450','0,4005'], correct:1 },
+  { points:1, tag:'Десетични дроби', type:'text',
+    text:'Пресметнете: 3,6 − 1,25 + 0,4',
+    fields:[ { label:'Отговор:', expr:'=', answer:'2,75' } ] },
+  { points:1, tag:'Десетични дроби', type:'text',
+    text:'Пресметнете:',
+    fields:[ { label:'0,25 · 1,2 =', expr:'', answer:'0,3' }, { label:'4,8 : 0,6 =', expr:'', answer:'8' } ] },
 
-  { points:1, tag:'Събиране и изваждане', type:'mc',
-    text:'Намерете неизвестното число: x + 1 250 = 4 000',
-    choices:['5 250','2 750','2 850','3 750'], correct:1 },
-
-  /* ── Умножение и деление ── */
-  { points:1, tag:'Умножение и деление', type:'text',
-    text:'Пресметнете: 304 · 6',
-    fields:[ { label:'Отговор:', expr:'=', answer:'1824', accepts:['1824','1 824'] } ] },
-
-  { points:1, tag:'Умножение и деление', type:'text',
-    text:'Пресметнете: 2 184 : 8',
-    fields:[ { label:'Отговор:', expr:'=', answer:'273' } ] },
-
-  { points:1, tag:'Умножение и деление', type:'text',
-    text:'Пресметнете: 45 · 20',
-    fields:[ { label:'Отговор:', expr:'=', answer:'900' } ] },
-
-  { points:1, tag:'Умножение и деление', type:'mc',
-    text:'Частното 7 200 : 90 е равно на:',
-    choices:['8','80','800','90'], correct:1 },
-
-  /* ── Ред на действията ── */
-  { points:1, tag:'Ред на действията', type:'text',
-    hint:'Първо умножение, после изваждане.',
-    text:'Пресметнете: 120 − 4 · 15',
+  /* ── Проценти ── */
+  { points:1, tag:'Проценти', type:'mc',
+    text:'Колко е 15% от 240?',
+    choices:['36','24','16','360'], correct:0 },
+  { points:1, tag:'Проценти', type:'text',
+    text:'Числото 12 е 20% от кое число?',
     fields:[ { label:'Отговор:', expr:'=', answer:'60' } ] },
+  { points:1, tag:'Проценти', type:'text',
+    hint:'Пиши само числото, без лв.',
+    text:'Яке струва 90 лв. Намаляват цената с 20%. Колко лева ще платим?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'72' } ] },
 
-  { points:1, tag:'Ред на действията', type:'text',
-    text:'Пресметнете: (36 + 24) : 6',
-    fields:[ { label:'Отговор:', expr:'=', answer:'10' } ] },
-
-  { points:1, tag:'Ред на действията', type:'mc',
-    text:'Стойността на израза 5 · (18 − 12) + 7 е:',
-    choices:['37','42','67','30'], correct:0 },
-
-  /* ── Дроби ── */
-  /* Дробите в 4. клас свършват дотук: разпознаване на картинка, имената
-     на двете числа, и сравняване САМО при еднакви знаменатели. Действия
-     с дроби няма — те идват в 5. клас, а това е вход КЪМ 5. клас. */
-  { points:1, tag:'Дроби', type:'mc',
-    html:'Каква част от фигурата е оцветена?' +
-      '<svg class="figure" viewBox="0 0 240 60" width="240" height="60" role="img" ' +
-        'aria-label="Правоъгълник, разделен на четири равни части, три от които са оцветени">' +
-        '<rect x="1" y="1" width="58" height="58" fill="#F7AD19" stroke="#16233F" stroke-width="2"/>' +
-        '<rect x="61" y="1" width="58" height="58" fill="#F7AD19" stroke="#16233F" stroke-width="2"/>' +
-        '<rect x="121" y="1" width="58" height="58" fill="#F7AD19" stroke="#16233F" stroke-width="2"/>' +
-        '<rect x="181" y="1" width="58" height="58" fill="#FFFFFF" stroke="#16233F" stroke-width="2"/>' +
-      '</svg>',
-    plain:'Каква част от фигурата е оцветена? (правоъгълник, разделен на 4 равни части, 3 от тях оцветени)',
-    choices:['1/4','3/4','4/3','3'], correct:1 },
-
-  { points:1, tag:'Дроби', type:'mc',
-    html:'В дробта <span class="frac"><span class="num">3</span><span class="den">8</span></span> ' +
-         'числото 8 се нарича:',
-    plain:'В дробта 3/8 числото 8 се нарича:',
-    choices:['числител','знаменател','дробна черта','остатък'], correct:1 },
-
-  { points:1, tag:'Дроби', type:'mc',
-    html:'Коя дроб е по-голяма — <span class="frac"><span class="num">3</span><span class="den">5</span></span> ' +
-         'или <span class="frac"><span class="num">2</span><span class="den">5</span></span>?',
-    plain:'Коя дроб е по-голяма — 3/5 или 2/5?',
-    choices:['3/5','2/5','равни са','не може да се каже'], correct:0 },
-
-  /* ── Мерни единици ── */
-  { points:1, tag:'Мерни единици', type:'text',
-    hint:'Пиши само числото, без cm.',
-    text:'Колко сантиметра са 3 m и 40 cm?',
-    fields:[ { label:'Отговор:', expr:'=', answer:'340' } ] },
-
-  { points:1, tag:'Мерни единици', type:'text',
-    hint:'Пиши само числото, без g.',
-    text:'Колко грама са 2 kg и 500 g?',
-    fields:[ { label:'Отговор:', expr:'=', answer:'2500', accepts:['2500','2 500'] } ] },
-
-  { points:1, tag:'Мерни единици', type:'mc',
-    text:'1 час и 15 минути са:',
-    choices:['65 минути','75 минути','115 минути','90 минути'], correct:1 },
-
-  /* ── Геометрия ── */
-  { points:1, tag:'Геометрия', type:'text',
-    hint:'Пиши само числото, без cm.',
-    text:'Правоъгълник има страни 12 cm и 5 cm. Колко е обиколката му?',
-    fields:[ { label:'Отговор:', expr:'P =', answer:'34' } ] },
-
-  { points:1, tag:'Геометрия', type:'text',
+  /* ── Триъгълник, успоредник и трапец ── */
+  { points:1, tag:'Триъгълник, успоредник и трапец', type:'text',
     hint:'Пиши само числото, без cm².',
-    text:'Същият правоъгълник — колко е лицето му?',
-    fields:[ { label:'Отговор:', expr:'S =', answer:'60' } ] },
+    html:'Триъгълник има основа 12 cm и височина към нея 7 cm. Колко е лицето му?<svg class="figure" viewBox="0 0 260 110" width="260" height="110" role="img" aria-label="Триъгълник с основа 12 сантиметра и височина 7 сантиметра към нея"><polygon points="20,90 240,90 150,20" fill="#FFF4DC" stroke="#16233F" stroke-width="2"/><line x1="150" y1="20" x2="150" y2="90" stroke="#925A08" stroke-width="2" stroke-dasharray="5 4"/><polyline points="138,90 138,78 150,78" fill="none" stroke="#925A08" stroke-width="2"/><text x="130" y="105" font-size="13" fill="#16233F" font-family="Nunito">12 cm</text><text x="157" y="58" font-size="13" fill="#925A08" font-family="Nunito">7 cm</text></svg>',
+    plain:'Триъгълник има основа 12 cm и височина към нея 7 cm. Колко е лицето му?',
+    fields:[ { label:'S =', expr:'', answer:'42' } ] },
+  { points:1, tag:'Триъгълник, успоредник и трапец', type:'text',
+    hint:'Пиши само числото, без cm².',
+    text:'Успоредник има страна 9 cm и височина към нея 6 cm. Колко е лицето му?',
+    fields:[ { label:'S =', expr:'', answer:'54' } ] },
+  { points:1, tag:'Триъгълник, успоредник и трапец', type:'text',
+    hint:'Пиши само числото, без cm².',
+    html:'Трапец има основи 12 cm и 8 cm и височина 5 cm. Колко е лицето му?<svg class="figure" viewBox="0 0 260 110" width="260" height="110" role="img" aria-label="Трапец с основи 12 и 8 сантиметра и височина 5 сантиметра"><polygon points="20,90 240,90 190,25 70,25" fill="#FFF4DC" stroke="#16233F" stroke-width="2"/><line x1="120" y1="25" x2="120" y2="90" stroke="#925A08" stroke-width="2" stroke-dasharray="5 4"/><polyline points="108,90 108,78 120,78" fill="none" stroke="#925A08" stroke-width="2"/><text x="115" y="105" font-size="13" fill="#16233F" font-family="Nunito">12 cm</text><text x="118" y="18" font-size="13" fill="#16233F" font-family="Nunito">8 cm</text><text x="127" y="62" font-size="13" fill="#925A08" font-family="Nunito">5 cm</text></svg>',
+    plain:'Трапец има основи 12 cm и 8 cm и височина 5 cm. Колко е лицето му?',
+    fields:[ { label:'S =', expr:'', answer:'50' } ] },
 
-  { points:1, tag:'Геометрия', type:'mc',
-    text:'Обиколката на квадрат е 36 cm. Колко е страната му?',
-    choices:['6 cm','9 cm','12 cm','18 cm'], correct:1 },
+  /* ── Паралелепипед и куб ── */
+  { points:1, tag:'Паралелепипед и куб', type:'text',
+    hint:'Пиши само числото, без cm³.',
+    text:'Правоъгълен паралелепипед има измерения 5 cm, 4 cm и 3 cm. Колко е обемът му?',
+    fields:[ { label:'V =', expr:'', answer:'60' } ] },
+  { points:1, tag:'Паралелепипед и куб', type:'text',
+    hint:'Кубът има шест еднакви стени. Пиши само числото.',
+    text:'Колко е лицето на повърхнината на куб с ръб 4 cm?',
+    fields:[ { label:'S =', expr:'', answer:'96' } ] },
+  { points:1, tag:'Паралелепипед и куб', type:'mc',
+    text:'Обемът на куб с ръб 3 dm е:',
+    choices:['27 dm³','9 dm³','54 dm³','12 dm³'], correct:0 },
 
   /* ── Текстови задачи ── */
   { points:1, tag:'Текстови задачи', type:'text',
-    hint:'Пиши само числото, без кг.',
-    text:'В склад има 1 250 кг брашно. Изразходвали са 3 чувала по 80 кг. Колко килограма остават?',
-    fields:[ { label:'Отговор:', expr:'=', answer:'1010', accepts:['1010','1 010'] } ] },
-
+    text:'В клас има 25 ученици. 40% от тях са момичета. Колко са момчетата?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'15' } ] },
   { points:1, tag:'Текстови задачи', type:'text',
-    hint:'Помисли на колко равни части се дели общото. Пиши само числото.',
-    text:'Мария има 5 пъти повече стикери от Иван. Заедно имат 240 стикера. Колко стикера има Иван?',
-    fields:[ { label:'Отговор:', expr:'=', answer:'40' } ] },
-
+    hint:'Пиши само числото.',
+    html:'Книга има 240 страници. Иван е прочел <span class="frac"><span class="num">3</span><span class="den">8</span></span> от нея. Колко страници му остават?',
+    plain:'Книга има 240 страници. Иван е прочел 3/8 от нея. Колко страници му остават?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'150' } ] },
   { points:1, tag:'Текстови задачи', type:'text',
-    hint:'Пиши часа във вида 11:15',
-    text:'Влак тръгва в 8:45 ч. и пътува 2 часа и 30 минути. В колко часа пристига?',
-    fields:[ { label:'Отговор:', expr:'в', answer:'11:15', accepts:['11:15','11.15','11 и 15'] } ] },
-
-  { points:1, tag:'Текстови задачи', type:'mc',
-    text:'Една тетрадка струва 2 лв. Най-много колко тетрадки може да купи Петя с 15 лв.?',
-    choices:['6','7','7 и остава 1 лв.','8'], correct:2 }
+    hint:'Пиши само числото, без km.',
+    text:'Колоездач изминава 12,5 km за един час. Колко километра ще измине за 2,4 часа?',
+    fields:[ { label:'Отговор:', expr:'=', answer:'30' } ] }
 ];
 
 const TOTAL = QUESTIONS.reduce((s, q) => s + q.points, 0);
@@ -750,15 +753,15 @@ const TOTAL = QUESTIONS.reduce((s, q) => s + q.points, 0);
 /* Половин точка се пише 1,5 — както се пишат числата навсякъде другаде тук. */
 const num = v => String(v).replace('.', ',');
 
-/* 25 точки, разделени по същия начин както на изпита за 7. клас:
-   под една пета е слаб, над четири пети е отличен. */
+/* Същите дялове както при входното ниво за 5. клас — 85%, 65%, 40% —
+   само че върху 30 точки: 25, 19 и 12. */
 /* Не оценки. Това е карта, а не контролно — думите казват какво следва,
    не колко струва детето. */
 const SCALE = [
-  { min:22, mark:'Много уверено',   range:'от 22 до 26' },
-  { min:17, mark:'Стабилна основа', range:'от 17 до 21' },
-  { min:11, mark:'Има какво да се навакса', range:'от 11 до 16' },
-  { min:0,  mark:'Тръгваме от основите',   range:'до 10' }
+  { min:25, mark:'Много уверено',   range:'от 25 до 30' },
+  { min:19, mark:'Стабилна основа', range:'от 19 до 24' },
+  { min:12, mark:'Има какво да се навакса', range:'от 12 до 18' },
+  { min:0,  mark:'Тръгваме от основите',   range:'до 11' }
 ];
 
 /* Прагове за темите. Три ленти, а не непрекъсната скала: родителят чете
@@ -1051,7 +1054,7 @@ function renderTopics(){
 function analysisText(child){
   const list = topicStats.length ? topicStats : computeTopics();
   const lines = [];
-  lines.push('Определяне на нивото по математика — вход за 5. клас');
+  lines.push('Определяне на нивото по математика — вход за 6. клас');
   if (child) lines.push('Ученик: ' + child);
   lines.push('Резултат: ' + num(lastScore) + ' от ' + TOTAL + ' задачи · ' + markFor(lastScore).mark);
   lines.push('');
@@ -1176,7 +1179,7 @@ async function saveToPortal(score, records){
   if (typeof TLA === 'undefined' || !TLA.isConfigured() || saved) return;
   saved = true;
   try{
-    await TLA.saveAttempt('level_check_5', {
+    await TLA.saveAttempt('level_check_6', {
       autoScore: score, autoMax: TOTAL, manualMax: null,
       records: records, part2: null
     });
