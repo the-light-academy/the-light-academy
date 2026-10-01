@@ -3792,3 +3792,111 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 31 — цена, количество и стойност.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w31',
+   'Домашно — Цена, количество, стойност',
+   'homework',
+   'homework_4_w31.html',
+   10,
+   false,
+   431,
+   31,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 32 — задачи за движение.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w32',
+   'Домашно — Движение',
+   'homework',
+   'homework_4_w32.html',
+   10,
+   false,
+   432,
+   32,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 33 — годишен преговор на числата и действията.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w33',
+   'Домашно — Годишен преговор: числа и действия',
+   'homework',
+   'homework_4_w33.html',
+   10,
+   false,
+   433,
+   33,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 34 — годишен преговор на мерките, геометрията и задачите.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w34',
+   'Домашно — Годишен преговор: мерки, геометрия, задачи',
+   'homework',
+   'homework_4_w34.html',
+   10,
+   false,
+   434,
+   34,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
