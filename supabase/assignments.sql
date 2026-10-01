@@ -2826,3 +2826,165 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 5 — диагностика 1 — материал от седмици 1–5.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag7-01',
+   'Диагностика 1 — седмици 1–5 (с време)',
+   'exam',
+   'diag_7_01.html',
+   20,
+   false,
+   105,
+   5,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 10 — диагностика 2 — материал от седмици 6–10.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag7-02',
+   'Диагностика 2 — седмици 6–10 (с време)',
+   'exam',
+   'diag_7_02.html',
+   20,
+   false,
+   110,
+   10,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 15 — диагностика 3 — материал от седмици 11–15.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag7-03',
+   'Диагностика 3 — седмици 11–15 (с време)',
+   'exam',
+   'diag_7_03.html',
+   20,
+   false,
+   115,
+   15,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 20 — диагностика 4 — материал от седмици 16–20.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag7-04',
+   'Диагностика 4 — седмици 16–20 (с време)',
+   'exam',
+   'diag_7_04.html',
+   20,
+   false,
+   120,
+   20,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 25 — диагностика 5 — материал от седмици 21–25.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag7-05',
+   'Диагностика 5 — седмици 21–25 (с време)',
+   'exam',
+   'diag_7_05.html',
+   20,
+   false,
+   125,
+   25,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 7. клас, седмица 30 — диагностика 6 — материал от седмици 26–30.
+-- Десет задачи, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag7-06',
+   'Диагностика 6 — седмици 26–30 (с време)',
+   'exam',
+   'diag_7_06.html',
+   20,
+   false,
+   130,
+   30,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
