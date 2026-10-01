@@ -272,6 +272,25 @@
        the mock shows a figure we have no data for, this page shows one we
        do rather than inventing it. */
     (function () {
+      /* ═══ СМЯНА НА ПАРОЛАТА ОТ УЧЕНИКА ═══════════════════════════
+         false → разделът „Парола“ го няма за учениците (сегашното)
+         true  → връща се, без нищо друго да се пипа
+
+         Кодът остава цял: формата, проверките и TLA.changeMyPassword()
+         си стоят по местата. Скрито, не махнато — за да се включи с
+         една дума, когато потрябва.
+
+         Две неща, които трябва да се знаят, за да не се разчита на
+         това като на защита:
+
+         · Разделът се МАХА от страницата, а не само се скрива с CSS.
+           Инак бутонът оставаше в списъка и се стигаше до него със
+           стрелките на клавиатурата — скрит за окото, но не за ръката.
+         · Самата възможност обаче не изчезва. Ученик, който знае
+           конзолата на браузъра, може да извика Supabase направо.
+           Това е решение за интерфейса, не ключалка. */
+      var SHOW_PASSWORD_TAB = false;
+
       var esc = TLA.escapeHtml;
       var rich = TLA.richText;
       var byId = {};                 /* assignment id -> assignment */
@@ -384,6 +403,16 @@
       }
 
       /* ---- tabs ------------------------------------------------------ */
+
+      /* Махат се ТУК, преди списъкът долу да се състави: инак бутонът
+         остава в него и стрелките на клавиатурата водят до раздел,
+         който не се вижда. */
+      if (!SHOW_PASSWORD_TAB) {
+        ['tab-me', 'panel-me'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+        });
+      }
 
       var tabs = Array.prototype.slice.call(document.querySelectorAll('.tlp__tab'));
 
