@@ -1136,14 +1136,19 @@
         raceGroups = Object.keys(byKey).map(function (k) { return byKey[k]; })
           .sort(function (a, b) { return b.rows.length - a.rows.length; });
 
-        var opts = raceGroups.map(function (g) {
-          return { v: g.key, t: g.subject + ' · ' + g.teacher };
-        });
-        /* Сам със себе си не е класиране — затова общото се предлага само
+        /* Цялата академия стои ПЪРВА и затова се отваря по подразбиране:
+           състезанието е на академията, а не на всяка стая поотделно.
+           Групата остава втора, за който иска да се види и там.
+
+           Сам със себе си не е класиране — затова общото се предлага само
            когато в академията наистина има срещу кого. */
+        var opts = [];
         if (academyRows && academyRows.length > 1) {
           opts.push({ v: 'academy', t: 'Цялата академия' });
         }
+        opts = opts.concat(raceGroups.map(function (g) {
+          return { v: g.key, t: g.subject + ' · ' + g.teacher };
+        }));
 
         if (!opts.length) {
           raceSay(raceRows === null && academyRows === null
