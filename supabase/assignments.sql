@@ -2988,3 +2988,84 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 1 — начален преговор до 1000.
+-- Десет задачи с избор и писани, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w01',
+   'Домашно — Начален преговор: числата до 1000',
+   'homework',
+   'homework_4_w01.html',
+   10,
+   false,
+   401,
+   1,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 2 — събиране и изваждане до 1000.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w02',
+   'Домашно — Събиране и изваждане до 1000',
+   'homework',
+   'homework_4_w02.html',
+   10,
+   false,
+   402,
+   2,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 3 — умножение и деление с едноцифрено число.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w03',
+   'Домашно — Умножение и деление с едноцифрено число',
+   'homework',
+   'homework_4_w03.html',
+   10,
+   false,
+   403,
+   3,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
