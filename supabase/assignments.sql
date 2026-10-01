@@ -3069,3 +3069,163 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+-- 4. клас, седмица 4 — числата над 1000.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w04',
+   'Домашно — Числата над 1000',
+   'homework',
+   'homework_4_w04.html',
+   10,
+   false,
+   404,
+   4,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 5 — числата до милион.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w05',
+   'Домашно — Числата до 1 000 000',
+   'homework',
+   'homework_4_w05.html',
+   10,
+   false,
+   405,
+   5,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 6 — сравняване и закръгляне.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w06',
+   'Домашно — Сравняване и закръгляне',
+   'homework',
+   'homework_4_w06.html',
+   10,
+   false,
+   406,
+   6,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 7 — събиране на многоцифрени числа.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w07',
+   'Домашно — Събиране на многоцифрени числа',
+   'homework',
+   'homework_4_w07.html',
+   10,
+   false,
+   407,
+   7,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 8 — изваждане на многоцифрени числа.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w08',
+   'Домашно — Изваждане на многоцифрени числа',
+   'homework',
+   'homework_4_w08.html',
+   10,
+   false,
+   408,
+   8,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 4. клас, седмица 9 — текстови задачи със събиране и изваждане.
+-- Десет задачи, по 1 точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw4-w09',
+   'Домашно — Текстови задачи със събиране и изваждане',
+   'homework',
+   'homework_4_w09.html',
+   10,
+   false,
+   409,
+   9,
+   (select id from public.subjects where slug = 'matematika'),
+   '{4}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
