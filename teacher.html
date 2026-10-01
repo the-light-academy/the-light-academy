@@ -209,8 +209,8 @@
         <div class="tla-filters">
           <label for="raceScope">Класиране:</label>
           <select id="raceScope">
-            <option value="group">По групи</option>
             <option value="academy">Цялата академия</option>
+            <option value="group">По групи</option>
           </select>
           <span id="raceGroupPickers">
             <label for="raceGrade">Клас:</label>
@@ -2497,7 +2497,10 @@
          преподавателят ще гледат различни числа за едно и също нещо.
          ================================================================== */
 
-      var raceSel = { scope: 'group', grade: '', subject: '', teacher: '' };
+      /* Отваря се на ЦЯЛАТА АКАДЕМИЯ. Класирането по групи остава на един
+         клик, но то не е първото, което се вижда: състезанието е на
+         академията, а не на всяка стая поотделно. */
+      var raceSel = { scope: 'academy', grade: '', subject: '', teacher: '' };
 
       /* Общото класиране НЕ се смята тук, а се пита базата. Причината е,
          че таблото вижда толкова, колкото политиките дават на влезлия: на
