@@ -1395,9 +1395,9 @@ body.tlp-space { background: #05070F; }
      никой не вижда. Затова под преливката вече стои background-color.
    · Нищо не мига. Небето трепка много бавно и само по прозрачност, а
      при prefers-reduced-motion спира съвсем.
-   · Космонавтите се рисуват БЕЗ градиент с id — преливката е тук, от
-     --c1 и --c2. Инак дванайсетте рисунки на една страница си бият
-     id-тата.
+   · Космонавтите са готови рисунки в assets/avatars/, кръгли от ръб до
+     ръб. Под тях стои плътен тъмен цвят, защото файлът е маскиран два
+     пиксела навътре и през тях инак би прозирала страницата.
    ===================================================================== */
 
 /* ── знакът до поздрава ── */
@@ -1408,16 +1408,26 @@ body.tlp-space { background: #05070F; }
 .tlp__who-ava { width: 58px; height: 58px; }
 
 /* ── космонавтът, навсякъде ──
-   Кръг с преливка и рисунка върху нея. Размерът идва отвън, за да може
-   един и същ космонавт да е 54px в избора и 104px в шапката. */
+   Готова рисунка от assets/avatars/, кръгла от ръб до ръб. Размерът идва
+   отвън, за да може един и същ космонавт да е 72px в избора и 104px в
+   шапката.
+
+   Тъмният фон под картинката не е украса: файлът е маскиран два пиксела
+   навътре, та по ръба да няма ивица от изходния фон, и тези два пиксела
+   са прозрачни. Без цвят отдолу през тях би прозирала страницата. */
 .sc__ava {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 54px; height: 54px; flex-shrink: 0;
-  border-radius: 50%;
-  background: linear-gradient(145deg, var(--c1, #8EA7D6), var(--c2, #1B2E52));
-  box-shadow: 0 6px 16px rgba(13,27,54,0.18), inset 0 1px 0 rgba(255,255,255,0.35);
+  /* 88px в избора: петима са, място има, а по-голяма мишена се улучва
+     и от най-малките ръце. */
+  width: 88px; height: 88px; flex-shrink: 0;
+  border-radius: 50%; overflow: hidden;
+  background: #16244A;
+  box-shadow: 0 6px 16px rgba(13,27,54,0.18);
 }
-.sc__ava > svg { width: 78%; height: 78%; display: block; }
+.sc__ava > img {
+  width: 100%; height: 100%; display: block; object-fit: cover;
+  border-radius: 50%; user-select: none; -webkit-user-drag: none;
+}
 .sc__ava--lg { width: 104px; height: 104px; }
 .sc__ava--none {
   background: rgba(255,255,255,0.12);
@@ -1491,32 +1501,29 @@ body.tlp-space { background: #05070F; }
 .sc__m { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0.3rem 0 0.9rem; }
 
 /* ── изборът на знак ── */
-/* Дванайсет космонавта искат делител на дванайсет, инак последният
-   остава сам на нов ред: 3 на телефон, 4 на таблет, 6 на широк екран. */
-.sc__avas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-@media (min-width: 560px) { .sc__avas { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 880px) { .sc__avas { grid-template-columns: repeat(6, 1fr); } }
+/* Подредба в центриран ред, а не в мрежа с брой колони. Космонавтите са
+   пет; при всяка мрежа последният ред остава наполовина и изглежда като
+   грешка. Центрираният ред се справя с пет, с шест и със седем. */
+.sc__avas { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
 .sc__pickava {
-  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-  background: #fff; border: 1.5px solid var(--tlp-line); border-radius: 14px;
-  padding: 0.7rem 0.35rem 0.55rem; cursor: pointer; font: inherit;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 1.5px solid var(--tlp-line); border-radius: 50%;
+  padding: 0.4rem; cursor: pointer; font: inherit;
   transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 .sc__pickava:hover { border-color: rgba(13,27,54,0.28); transform: translateY(-2px); }
 .sc__pickava:focus-visible { outline: 3px solid var(--tlp-accent-deep); outline-offset: 2px; }
-.sc__pickava-n { font-size: 0.72rem; font-weight: 700; color: var(--tlp-ink-soft); text-align: center; line-height: 1.3; }
 .sc__pickava.is-on {
   border-color: var(--tlp-navy); background: #F7F9FF;
-  box-shadow: 0 0 0 3px rgba(13,27,54,0.08);
+  box-shadow: 0 0 0 3px rgba(13,27,54,0.12);
 }
-.sc__pickava.is-on .sc__pickava-n { color: var(--tlp-navy); }
 /* Избраният космонавт носи отметка, не само рамка: цветът сам по себе си
    не е съобщение за дете, което го различава трудно. */
 .sc__pickava.is-on::after {
-  content: '✓'; position: absolute; top: 0.35rem; right: 0.35rem;
-  width: 1.25rem; height: 1.25rem; border-radius: 50%;
-  background: var(--tlp-navy); color: #fff;
-  font-size: 0.72rem; font-weight: 800; line-height: 1.25rem; text-align: center;
+  content: '✓'; position: absolute; top: -0.2rem; right: -0.2rem;
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: var(--tlp-navy); color: #fff; border: 2px solid #fff;
+  font-size: 0.78rem; font-weight: 800; line-height: 1.15rem; text-align: center;
 }
 .sc__pickava { position: relative; }
 
@@ -1612,7 +1619,8 @@ body.tlp-space { background: #05070F; }
 
 @media (max-width: 560px) {
   .sc__hero-in { gap: 0.9rem; }
-  .sc__ava--lg { width: 76px; height: 76px; }
+  .sc__ava--lg { width: 84px; height: 84px; }
+  .sc__ava { width: 64px; height: 64px; }
   .tlp__who-ava { width: 46px; height: 46px; }
   .sc__foot { position: static; }
 }
