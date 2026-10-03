@@ -518,6 +518,50 @@
       return res.data || [];
     },
 
+    /* ---- звездната карта (разделът „Профил“) ----------------------
+       Един ред на дете в public.star_cards, който никой друг не чете —
+       ни съученик, ни преподавател. Правата са в supabase/schema-v7.sql
+       и смисълът им е точно този: мястото е безопасно, защото е само
+       твое, а не защото страницата не го показва.
+
+       Няма ред още → null, не грешка: дете, което отваря раздела за
+       пръв път, вижда празна карта, а не съобщение за проблем. */
+    myCard: async function () {
+      if (!client) return null;
+      var session = await TLA.getSession();
+      if (!session) return null;
+      var res = await client
+        .from('star_cards')
+        .select('avatar, interests, answers, updated_at')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+      if (res.error) throw res.error;
+      return res.data || null;
+    },
+
+    /* Записва картата. upsert, защото user_id е първичният ключ: първият
+       запис я създава, следващите я подменят, и няма как да се появят
+       две карти на едно дете.
+
+       user_id се слага ТУК, от сесията, а не идва от страницата. Така и
+       да се сбърка нещо по-нагоре, редът пак е на правилното дете — а
+       политиката with check в базата е второто, независимо препятствие
+       срещу чуждо user_id. */
+    saveMyCard: async function (card) {
+      if (!client) throw new Error('Няма връзка с базата.');
+      var session = await TLA.getSession();
+      if (!session) throw new Error('Няма сесия.');
+      var row = {
+        user_id: session.user.id,
+        avatar: card && card.avatar ? String(card.avatar) : null,
+        interests: (card && Array.isArray(card.interests)) ? card.interests : [],
+        answers: (card && card.answers && typeof card.answers === 'object') ? card.answers : {}
+      };
+      var res = await client.from('star_cards').upsert(row, { onConflict: 'user_id' });
+      if (res.error) throw res.error;
+      return true;
+    },
+
     /* ---- small shared helpers ------------------------------------- */
 
     escapeHtml: function (value) {
