@@ -74,10 +74,15 @@
 
       <!-- greeting + progress ring -->
       <section class="tlp__band">
+        <!-- Знакът от звездната карта. Стои празен, докато детето не си
+             избере — и се сменя веднага, без презареждане, щом избере. -->
+        <div class="tlp__who">
+          <span id="helloAva" class="tlp__who-a"></span>
         <div>
           <p class="tlp__hello" id="hello">Здравей 👋<span class="tlp__grade" id="helloGrade" hidden></span></p>
           <p class="tlp__hello-sub" id="helloSub">Зареждане…</p>
           <p class="tlp__hello-sub" id="helloTeacher" hidden></p>
+        </div>
         </div>
         <div>
           <div class="tlp__ring" id="ring" role="img" aria-label="Прогрес">
@@ -130,6 +135,7 @@
         <button class="tlp__tab" role="tab" type="button" id="tab-fb"   aria-controls="panel-fb"   aria-selected="false" tabindex="-1">Обратна връзка</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-ai"   aria-controls="panel-ai"   aria-selected="false" tabindex="-1">AI анализ</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-race" aria-controls="panel-race" aria-selected="false" tabindex="-1">Формула 1</button>
+        <button class="tlp__tab" role="tab" type="button" id="tab-card" aria-controls="panel-card" aria-selected="false" tabindex="-1">Профил</button>
         <button class="tlp__tab" role="tab" type="button" id="tab-me"   aria-controls="panel-me"   aria-selected="false" tabindex="-1">Парола</button>
       </div>
 
@@ -218,6 +224,18 @@
         </div>
       </div>
 
+      <!-- Звездната карта. Единственото място в платформата, където детето
+           ПИШЕ за себе си, а не училището за него — затова и единственото,
+           което никой друг не чете: нито съученик, нито преподавател,
+           нито администраторът. Правата са в supabase/schema-v7.sql.
+
+           Рисува се от assets/starcard.js. Тук стои само кутията, защото
+           каталогът на знаците и темите е дълъг и мястото му не е в
+           страницата. -->
+      <div class="tlp__panel" role="tabpanel" id="panel-card" aria-labelledby="tab-card" tabindex="0" hidden>
+        <div id="cardBody"></div>
+      </div>
+
       <!-- Смяна на паролата. Академията задава първата; оттук нататък тя е
            твоя. Старата се иска, за да не може някой да ти вземе профила
            от компютър, на който си забравил да излезеш. -->
@@ -260,6 +278,7 @@
   <script src="assets/supabase-config.js"></script>
   <script src="assets/auth.js"></script>
   <script src="assets/race.js"></script>
+  <script src="assets/starcard.js"></script>
   <script>
     /* The student's screen. Everything here is read-only: the numbers are
        derived in the browser from the two queries below, and nothing is
@@ -414,6 +433,39 @@
         });
       }
 
+      /* ---- звездната карта ------------------------------------------
+         Редът е един и се чете веднъж: веднага при отварянето, за да
+         може знакът да застане до поздрава, и после същият отговор
+         обслужва и самия раздел. Инак детето вижда знака си чак след
+         като влезе в „Профил“, а той е точно нещото, което трябва да се
+         вижда отвън. */
+      var cardOnce = null;
+
+      function myCardOnce() {
+        if (!cardOnce) cardOnce = TLA.myCard();
+        return cardOnce;
+      }
+
+      function paintHeaderAvatar(id) {
+        var box = $('helloAva');
+        if (!box) return;
+        box.innerHTML = id ? TLA.StarCard.avatarHtml(id, 'tlp__who-ava') : '';
+      }
+
+      var cardMounted = false;
+
+      function loadCard() {
+        if (cardMounted) return;
+        cardMounted = true;
+        TLA.StarCard.mount($('cardBody'), {
+          load: myCardOnce,
+          save: TLA.saveMyCard,
+          name: myName,
+          grade: myGradeLabel,
+          onAvatar: paintHeaderAvatar
+        });
+      }
+
       var tabs = Array.prototype.slice.call(document.querySelectorAll('.tlp__tab'));
 
       function selectTab(tab) {
@@ -427,6 +479,9 @@
         /* Скрит елемент не анимира нищо, затова финалът се изиграва в
            мига, в който разделът се отвори — не преди това. */
         if (tab.id === 'tab-race') loadRace();
+        /* Картата се сглобява при първото отваряне на раздела — редът ѝ
+           вече е прочетен, така че няма второ чакане. */
+        if (tab.id === 'tab-card') loadCard();
       }
 
       tabs.forEach(function (tab, i) {
@@ -445,6 +500,10 @@
 
       var myGrade = null;
       var myTeachers = [];
+      /* Пълното име и класът — картата ги показва в своята шапка, за да
+         не ги чете втори път от базата. */
+      var myName = '';
+      var myGradeLabel = '';
 
       function renderHeader(profile, session) {
         var name = (profile && profile.full_name) || (session && session.user.email) || '';
@@ -455,11 +514,14 @@
 
         /* The class is worked out from the year the student was entered, so
            it is right on its own every September without anyone touching it. */
+        myName = String(name || '').trim();
         myGrade = TLA.currentGrade(profile);
         if (myGrade !== null && myGrade >= -1 && myGrade <= 12) {
-          badge.textContent = TLA.gradeLabel(myGrade);
+          myGradeLabel = TLA.gradeLabel(myGrade);
+          badge.textContent = myGradeLabel;
           badge.hidden = false;
         } else {
+          myGradeLabel = '';
           badge.hidden = true;
         }
       }
@@ -1250,6 +1312,14 @@
 
         renderHeader(auth.profile, auth.session);
         if (auth.profile && auth.profile.role === 'teacher') $('teacherLink').hidden = false;
+
+        /* Знакът до поздрава. Не се чака: ако редът го няма още (дете,
+           което не си е правило карта) или файлът в базата не е пуснат,
+           шапката просто остава без знак — това не е повод цялата
+           страница да спира. Самият раздел казва какво не е наред. */
+        myCardOnce()
+          .then(function (card) { paintHeaderAvatar(card && card.avatar); })
+          .catch(function () { paintHeaderAvatar(null); });
 
         /* Кой ми преподава. Идва от SECURITY DEFINER функция, така че
            ученикът научава името, без да може да чете чужди профили. */

@@ -1374,3 +1374,250 @@ body.tlp-space { background: #05070F; }
   .tla-race__car { opacity: 1; transform: none; }
   .tla-race__star { opacity: .8; }
 }
+
+/* =====================================================================
+   ЗВЕЗДНАТА КАРТА — разделът „Профил“ на ученика
+   ---------------------------------------------------------------------
+   Единственото място в платформата, което е на детето, не на училището.
+   Затова и единственото, което си позволява цвят: шестте съзвездия имат
+   по свой цвят, знаците са дванайсет преливки, а шапката е нощно небе.
+
+   Три правила, които цветът не отменя:
+
+   · Текст върху цвят се МЕРИ, не се предполага. Измереното: светнат чип
+     (бяло върху дълбокия цвят на групата) 7,5:1 до 11,6:1; заглавие на
+     група (дълбокият цвят върху тинтата) 6,8:1 до 10,2:1; надписите в
+     нощната шапка 10,2:1 до 15,3:1. Най-ниското на целия раздел е 5,2:1
+     при прага 4,5:1.
+
+     Първата сметка излъга: шапката нямаше плътен цвят под преливката,
+     проверката се провря нагоре до белия панел и отчете числа, които
+     никой не вижда. Затова под преливката вече стои background-color.
+   · Нищо не мига. Небето трепка много бавно и само по прозрачност, а
+     при prefers-reduced-motion спира съвсем.
+   · Знакът се рисува БЕЗ градиент с id — преливката е тук, от --c1 и
+     --c2. Инак дванайсетте знака на една страница си бият id-тата.
+   ===================================================================== */
+
+/* ── знакът до поздрава ── */
+/* Знакът застава до ИМЕТО. С align-items:center той увисваше срещу
+   втория ред и изглеждаше, че е на реда за преподавателя. */
+.tlp__who { display: flex; align-items: flex-start; gap: 0.9rem; }
+.tlp__who-a:empty { display: none; }
+.tlp__who-ava { width: 58px; height: 58px; }
+
+/* ── знакът, навсякъде ──
+   Кръг с преливка и рисунка върху нея. Размерът идва отвън, за да може
+   един и същ знак да е 44px в избора и 104px в шапката. */
+.sc__ava {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px; flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--c1, #8EA7D6), var(--c2, #1B2E52));
+  box-shadow: 0 6px 16px rgba(13,27,54,0.18), inset 0 1px 0 rgba(255,255,255,0.35);
+}
+.sc__ava > svg { width: 78%; height: 78%; display: block; }
+.sc__ava--lg { width: 104px; height: 104px; }
+.sc__ava--none {
+  background: rgba(255,255,255,0.12);
+  border: 2px dashed rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.75); font-size: 1.6rem; box-shadow: none;
+}
+.tlp__who-ava.sc__ava--none { background: rgba(13,27,54,0.05); border-color: rgba(13,27,54,0.2); color: var(--tlp-ink-soft); }
+
+/* ── шапката: нощно небе ── */
+.sc { display: block; }
+.sc__hero {
+  position: relative; overflow: hidden;
+  border-radius: var(--tlp-r);
+  /* Плътният цвят е ПОД преливката, не вместо нея. Две причини: ако
+     преливката не се нарисува, белият текст пакляга на тъмно; и всяка
+     проверка на контраста има какво да измери, вместо да се провре
+     нагоре до белия панел и да отчете число, което никой не вижда. */
+  background-color: #15234A;
+  background-image: linear-gradient(135deg, #0B1730 0%, #1B2E52 48%, #3B2A6B 100%);
+  padding: clamp(1.1rem, 3vw, 1.6rem) clamp(1.2rem, 3vw, 1.8rem);
+  box-shadow: 0 18px 44px rgba(13,27,54,0.22);
+}
+/* Звездите са нарисувани с радиални преливки, не с елементи: един слой
+   вместо шейсет кутии, които браузърът да подрежда. */
+.sc__sky {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(1.7px 1.7px at 8% 18%,  rgba(255,255,255,0.95), transparent),
+    radial-gradient(1.4px 1.4px at 23% 62%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(2px 2px   at 38% 12%,   rgba(255,241,204,0.95), transparent),
+    radial-gradient(1.3px 1.3px at 52% 78%, rgba(255,255,255,0.7),  transparent),
+    radial-gradient(1.6px 1.6px at 66% 28%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(1.2px 1.2px at 74% 68%, rgba(255,255,255,0.6),  transparent),
+    radial-gradient(2.1px 2.1px at 87% 38%, rgba(255,241,204,0.9),  transparent),
+    radial-gradient(1.4px 1.4px at 94% 76%, rgba(255,255,255,0.7),  transparent),
+    radial-gradient(1.2px 1.2px at 16% 88%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(closest-side at 78% 85%, rgba(167,139,250,0.22), transparent);
+  animation: scSky 7s ease-in-out infinite alternate;
+}
+@keyframes scSky { from { opacity: 0.75; } to { opacity: 1; } }
+
+.sc__hero-in { position: relative; z-index: 1; display: flex; align-items: center; gap: clamp(1rem, 3vw, 1.5rem); flex-wrap: wrap; }
+.sc__hero-txt { flex: 1 1 14rem; min-width: 0; }
+.sc__eyebrow {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #FFD98A; margin: 0 0 0.25rem;
+}
+.sc__name { font-size: clamp(1.15rem, 2.6vw, 1.5rem); font-weight: 800; color: #fff; margin: 0; }
+.sc__grade {
+  display: inline-block; vertical-align: middle; margin-left: 0.4rem;
+  font-size: 0.72rem; font-weight: 800; color: #0D1B36;
+  background: #FFD98A; border-radius: 999px; padding: 0.14rem 0.6rem;
+}
+.sc__sign { font-size: 0.88rem; color: rgba(255,255,255,0.85); margin: 0.3rem 0 0.7rem; }
+.sc__sign strong { color: #fff; }
+.sc__meter { height: 9px; border-radius: 999px; background: rgba(255,255,255,0.18); overflow: hidden; max-width: 22rem; }
+.sc__meter > span {
+  display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #FFD98A, #F7AD19);
+  transition: width 0.7s cubic-bezier(0.22,0.61,0.36,1);
+}
+.sc__meter-t { font-size: 0.78rem; color: rgba(255,255,255,0.8); margin: 0.4rem 0 0; }
+.sc__meter-t strong { color: #FFD98A; }
+
+/* ── блокове ── */
+.sc__block {
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 1.1rem 1.2rem; margin-top: 0.75rem;
+}
+.sc__h { font-size: 1rem; font-weight: 800; color: var(--tlp-navy); margin: 0; }
+.sc__m { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0.3rem 0 0.9rem; }
+
+/* ── изборът на знак ── */
+/* Дванайсет знака искат делител на дванайсет, инак последният остава
+   сам на нов ред: 3 на телефон, 4 на таблет, 6 на широк екран. */
+.sc__avas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+@media (min-width: 560px) { .sc__avas { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 880px) { .sc__avas { grid-template-columns: repeat(6, 1fr); } }
+.sc__pickava {
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  background: #fff; border: 1.5px solid var(--tlp-line); border-radius: 14px;
+  padding: 0.7rem 0.35rem 0.55rem; cursor: pointer; font: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.sc__pickava:hover { border-color: rgba(13,27,54,0.28); transform: translateY(-2px); }
+.sc__pickava:focus-visible { outline: 3px solid var(--tlp-accent-deep); outline-offset: 2px; }
+.sc__pickava-n { font-size: 0.72rem; font-weight: 700; color: var(--tlp-ink-soft); text-align: center; line-height: 1.3; }
+.sc__pickava.is-on {
+  border-color: var(--tlp-navy); background: #F7F9FF;
+  box-shadow: 0 0 0 3px rgba(13,27,54,0.08);
+}
+.sc__pickava.is-on .sc__pickava-n { color: var(--tlp-navy); }
+/* Избраният знак носи отметка, не само рамка: цветът сам по себе си не
+   е съобщение за дете, което го различава трудно. */
+.sc__pickava.is-on::after {
+  content: '✓'; position: absolute; top: 0.35rem; right: 0.35rem;
+  width: 1.25rem; height: 1.25rem; border-radius: 50%;
+  background: var(--tlp-navy); color: #fff;
+  font-size: 0.72rem; font-weight: 800; line-height: 1.25rem; text-align: center;
+}
+.sc__pickava { position: relative; }
+
+/* ── съзвездията ──
+   Шестте групи, всяка със свой цвят. --tint е фонът на заглавието,
+   --deep е цветът на светнатия чип и на надписа върху тинтата. */
+.sc__grp + .sc__grp { margin-top: 1rem; }
+.sc__grp { --tint: #EEF3FB; --deep: #26406F; }
+.sc__grp:nth-of-type(1) { --tint: #E8F3FF; --deep: #1E3A5F; }
+.sc__grp:nth-of-type(2) { --tint: #FDECF7; --deep: #7A1B52; }
+.sc__grp:nth-of-type(3) { --tint: #EEEAFE; --deep: #3D2A7A; }
+.sc__grp:nth-of-type(4) { --tint: #E8F7F1; --deep: #14543A; }
+.sc__grp:nth-of-type(5) { --tint: #FFF3E0; --deep: #7A4A05; }
+.sc__grp:nth-of-type(6) { --tint: #F2F7E8; --deep: #3F5A14; }
+
+.sc__grp-h {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--deep); background: var(--tint);
+  border-radius: 999px; padding: 0.35rem 0.85rem; margin: 0 0 0.6rem;
+  width: fit-content;
+}
+.sc__grp-e { font-size: 1rem; line-height: 1; }
+.sc__grp-n {
+  font-size: 0.72rem; font-weight: 800; color: #fff; background: var(--deep);
+  border-radius: 999px; min-width: 1.3rem; padding: 0 0.35rem; text-align: center;
+}
+.sc__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.sc__chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font: inherit; font-size: 0.86rem; font-weight: 700; color: var(--tlp-ink);
+  background: #fff; border: 1.5px solid var(--tlp-line);
+  border-radius: 999px; padding: 0.42rem 0.8rem; cursor: pointer;
+  transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease, transform 0.14s ease;
+}
+.sc__chip:hover { background: var(--tint); border-color: var(--deep); transform: translateY(-1px); }
+.sc__chip:focus-visible { outline: 3px solid var(--tlp-accent-deep); outline-offset: 2px; }
+.sc__chip-e { font-size: 1.05rem; line-height: 1; }
+.sc__chip.is-on { background: var(--deep); border-color: var(--deep); color: #fff; }
+/* „+“ значи „тази тема пита и по още нещо“. */
+.sc__chip-q {
+  font-size: 0.72rem; font-weight: 800; line-height: 1;
+  width: 1.05rem; height: 1.05rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--tint); color: var(--deep);
+}
+.sc__chip.is-on .sc__chip-q { background: rgba(255,255,255,0.28); color: #fff; }
+.sc__chip-q--inline { background: rgba(13,27,54,0.08); color: var(--tlp-navy); vertical-align: middle; }
+
+/* ── „разкажи още“ ── */
+.sc__asks { display: grid; gap: 0.85rem; }
+.sc__ask { background: #FBFCFF; border: 1px solid var(--tlp-line); border-radius: 12px; padding: 0.75rem 0.85rem; }
+.sc__ask > label {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.78rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--tlp-ink-soft); margin-bottom: 0.45rem;
+}
+.sc__ask-e { font-size: 1rem; }
+.sc__ask input[type="text"] {
+  width: 100%; font: inherit; color: var(--tlp-ink); padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(13,27,54,0.16); border-radius: 10px; background: #fff;
+}
+.sc__ask input[type="text"]:focus { outline: 3px solid rgba(13,27,54,0.16); outline-offset: 1px; border-color: var(--tlp-navy); }
+.sc__ask--wide { background: var(--tlp-accent-wash); border-color: rgba(247,173,25,0.4); }
+.sc__ask--wide > label { color: var(--tlp-accent-deep); }
+
+.sc__opts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.sc__opt {
+  font: inherit; font-size: 0.84rem; font-weight: 700; color: var(--tlp-ink);
+  background: #fff; border: 1.5px solid var(--tlp-line);
+  border-radius: 999px; padding: 0.36rem 0.75rem; cursor: pointer;
+  transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+}
+.sc__opt:hover { border-color: var(--tlp-navy); background: #F3F6FD; }
+.sc__opt:focus-visible { outline: 3px solid var(--tlp-accent-deep); outline-offset: 2px; }
+.sc__opt.is-on { background: var(--tlp-navy); border-color: var(--tlp-navy); color: #fff; }
+
+/* ── долната лента ── */
+.sc__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.8rem; flex-wrap: wrap; margin-top: 0.75rem;
+  background: var(--tlp-surface); border: 1px solid var(--tlp-line);
+  border-radius: var(--tlp-r-sm); padding: 0.85rem 1.2rem;
+  position: sticky; bottom: 0.5rem;
+  box-shadow: 0 10px 28px rgba(13,27,54,0.10);
+}
+.sc__count { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0; }
+.sc__count strong { color: var(--tlp-navy); }
+.sc__foot-r { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.sc__state { font-size: 0.82rem; font-weight: 700; color: var(--tlp-ink-soft); }
+.sc__state.is-ok { color: var(--tlp-good); }
+.sc__state.is-bad { color: var(--tlp-bad); }
+
+@media (max-width: 560px) {
+  .sc__hero-in { gap: 0.9rem; }
+  .sc__ava--lg { width: 76px; height: 76px; }
+  .tlp__who-ava { width: 46px; height: 46px; }
+  .sc__foot { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc__sky { animation: none; }
+  .sc__meter > span { transition: none; }
+  .sc__chip, .sc__pickava { transition: none; }
+  .sc__chip:hover, .sc__pickava:hover { transform: none; }
+}
