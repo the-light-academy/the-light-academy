@@ -39,8 +39,8 @@
   }
 
   /* ═══ ЕКИПАЖЪТ ══════════════════════════════════════════════════════
-     Пет готови рисунки в assets/avatars/ — момче, пудел, мече, зайче и
-     пингвинче, всичките в скафандър с логото на LightSpace.
+     Седем готови рисунки в assets/avatars/ — две момичета, момче, пудел,
+     мече, зайче и пингвинче, всичките в скафандър с логото на LightSpace.
 
      Защо файлове, а не рисувано в кода: рисунките са илюстрации, не
      фигури. Докато бяха svg, бяха толкова добри, колкото може да се
@@ -54,13 +54,17 @@
      · id-то трябва да е по формата, която базата приема — малки букви,
        цифри и долна черта. Пазачът долу се обажда, ако не е.
      · Имена НЕ се показват. Надписът под рисунката го няма нарочно;
-       за екранните четци остава „Космонавт N“ — номер, не име.         */
+       за екранните четци остава „Космонавт N“ — номер, не име.
+     · Редът в списъка е редът на екрана. Децата са първи, животните
+       след тях.         */
   var AVATARS = [
-    { id: 'momche',  file: 'momche.webp' },
-    { id: 'pudel',   file: 'pudel.webp' },
-    { id: 'meche',   file: 'meche.webp' },
-    { id: 'zaiche',  file: 'zaiche.webp' },
-    { id: 'pingvin', file: 'pingvin.webp' }
+    { id: 'momiche_ruso', file: 'momiche_ruso.webp' },
+    { id: 'momiche_kok',  file: 'momiche_kok.webp' },
+    { id: 'momche',       file: 'momche.webp' },
+    { id: 'pudel',        file: 'pudel.webp' },
+    { id: 'meche',        file: 'meche.webp' },
+    { id: 'zaiche',       file: 'zaiche.webp' },
+    { id: 'pingvin',      file: 'pingvin.webp' }
   ];
 
   var AVATAR_BY_ID = {};
@@ -410,7 +414,7 @@
       return '' +
       '<section class="sc__block">' +
         '<h3 class="sc__h">Избери си космонавт</h3>' +
-        '<p class="sc__m">Петима от екипажа на LightSpace. Онзи, когото избереш, ' +
+        '<p class="sc__m">Седмина от екипажа на LightSpace. Онзи, когото избереш, ' +
           'ще стои до името ти в профила.</p>' +
         '<div class="sc__avas" role="radiogroup" aria-label="Космонавт за профила">' +
           cells + '</div>' +
