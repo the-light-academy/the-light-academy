@@ -326,6 +326,37 @@
 
     <!-- ── ASSIGNMENTS ────────────────────────────────────────── -->
     <section class="tla-panel" id="panelAssign" hidden>
+      <!-- Анализ на сгрешеното. Таблото казва КОЛКО е сгрешил всеки;
+           това казва КАКВО — по вида на задачата, разпознат от условието
+           ѝ (assets/analysis.js). Стои в „Задания“, защото оттук се
+           решава какво да се даде следващата седмица. -->
+      <div class="tla-card">
+        <h2 class="tla-card__title">Анализ на сгрешените задачи</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;" id="anaIntro">
+          Избери клас, седмица и едно или няколко деца. „Анализ“ минава през
+          предадените им работи, събира сгрешените задачи и ги подрежда по вид.
+          Темите, в които грешат <strong>повече от едно</strong> дете, излизат
+          най-отгоре — те казват какво да се преговаря с всички, а не с един.
+        </p>
+        <div class="tla-filters">
+          <label for="anaGrade">Клас:</label>
+          <select id="anaGrade"></select>
+          <label for="anaWeek">Седмица:</label>
+          <select id="anaWeek"><option value="">всички седмици</option></select>
+        </div>
+        <fieldset class="tla-ana__who">
+          <legend>Ученици</legend>
+          <div id="anaStudents" class="tla-ana__chips">
+            <p class="tla-muted">Избери клас.</p>
+          </div>
+        </fieldset>
+        <div class="tla-ana__go">
+          <button type="button" class="tla-btn" id="anaRun">Анализ</button>
+          <span class="tla-muted" id="anaHint"></span>
+        </div>
+        <div id="anaOut"></div>
+      </div>
+
       <div class="tla-card">
         <h2 class="tla-card__title">Задания</h2>
         <p class="tla-muted" style="margin-bottom:1rem;" id="assignIntro">
@@ -359,6 +390,7 @@
   <script src="assets/supabase-config.js"></script>
   <script src="assets/auth.js"></script>
   <script src="assets/race.js"></script>
+  <script src="assets/analysis.js"></script>
   <script>
     (function () {
       var esc = TLA.escapeHtml;
@@ -2307,6 +2339,275 @@
           '<option value="none">без предмет</option>';
       }
 
+      /* ═══ АНАЛИЗ НА СГРЕШЕНИТЕ ЗАДАЧИ ════════════════════════════════
+         Таблото показва колко задачи е сгрешил всеки. Това показва какви
+         са били — по вида, разпознат от условието (assets/analysis.js).
+
+         Записите на отговорите НЕ се носят от loadResults(): те са
+         най-обемното нещо в една работа и се четат чак когато някой
+         натисне „Анализ“, и то само за избраните деца. Таблото се
+         отваря за един човек с десет ученика; записите на всичките им
+         работи са мегабайти, които никой не е поискал.                  */
+
+      var ana = { grade: '', week: '', picked: {}, busy: false };
+
+      function anaProgramme() { return programmeFor(ana.grade); }
+
+      /* Темата на седмица n от програмата: намира блока, в който пада, и
+         взима реда ѝ вътре. Връща празно, ако седмицата е извън всичко. */
+      function anaTheme(prog, n) {
+        if (!prog) return '';
+        var hit = '';
+        prog.themes.forEach(function (t) {
+          var to = t.from + t.weeks.length - 1;
+          if (n >= t.from && n <= to) hit = t.weeks[n - t.from];
+        });
+        return hit;
+      }
+
+      function anaStudentsOfGrade() {
+        return state.roster.filter(function (p) {
+          return p.role === 'student' && p.active &&
+                 String(gradeOf(p)) === String(ana.grade);
+        });
+      }
+
+      /* В списъка влизат САМО седмиците, в които има дадено задание за
+         този клас. Седмица без домашно няма какво да покаже и само би
+         удължила менюто. */
+      function anaWeeksWithWork() {
+        var prog = anaProgramme();
+        if (!prog) return [];
+        var seen = {};
+        calAll.forEach(function (a) {
+          if (a.week && assignmentIsForGrade(a, ana.grade)) seen[a.week] = true;
+        });
+        return Object.keys(seen).map(Number).sort(function (x, y) { return x - y; });
+      }
+
+      function fillAnaGrade() {
+        var sel = document.getElementById('anaGrade');
+        if (!sel) return;
+        /* само класовете, в които наистина има деца — празен клас в
+           менюто води до празен анализ и нищо повече */
+        var have = {};
+        state.roster.forEach(function (p) {
+          if (p.role === 'student' && p.active) {
+            var g = gradeOf(p);
+            if (g != null) have[g] = true;
+          }
+        });
+        var list = Object.keys(have).map(Number).sort(function (a, b) { return a - b; });
+        if (!list.length) {
+          sel.innerHTML = '<option value="">няма ученици</option>';
+          return;
+        }
+        sel.innerHTML = list.map(function (g) {
+          return '<option value="' + g + '">' + esc(TLA.gradeLabel(g)) + '</option>';
+        }).join('');
+        if (!ana.grade || list.indexOf(Number(ana.grade)) === -1) ana.grade = String(list[0]);
+        sel.value = ana.grade;
+      }
+
+      function fillAnaWeeks() {
+        var sel = document.getElementById('anaWeek');
+        if (!sel) return;
+        var prog = anaProgramme();
+        var weeks = anaWeeksWithWork();
+        var opts = ['<option value="">всички седмици</option>'];
+        weeks.forEach(function (n) {
+          var theme = anaTheme(prog, n);
+          /* номер · дати · тема — трите неща, по които се познава коя е */
+          var label = 'Седмица ' + n +
+            (prog ? ' · ' + weekLabel(prog, n) : '') +
+            (theme ? ' · ' + theme : '');
+          opts.push('<option value="' + n + '">' + esc(label) + '</option>');
+        });
+        sel.innerHTML = opts.join('');
+        sel.value = (weeks.indexOf(Number(ana.week)) === -1) ? '' : String(ana.week);
+        ana.week = sel.value;
+      }
+
+      function fillAnaStudents() {
+        var box = document.getElementById('anaStudents');
+        if (!box) return;
+        var kids = anaStudentsOfGrade();
+        if (!kids.length) {
+          box.innerHTML = '<p class="tla-muted">В този клас няма действащи ученици.</p>';
+          return;
+        }
+        box.innerHTML = kids.map(function (p) {
+          var on = !!ana.picked[p.id];
+          return '<label class="tla-ana__chip' + (on ? ' is-on' : '') + '">' +
+            '<input type="checkbox" data-ana-kid="' + esc(p.id) + '"' +
+            (on ? ' checked' : '') + ' /> ' + esc(p.full_name) + '</label>';
+        }).join('');
+      }
+
+      function anaPickedIds() {
+        return Object.keys(ana.picked).filter(function (id) { return ana.picked[id]; });
+      }
+
+      function anaHint(msg) {
+        var el = document.getElementById('anaHint');
+        if (el) el.textContent = msg || '';
+      }
+
+      /* Работите на избраните деца, с записите. Политиките пускат само
+         своите ученици — тук не се проверява повторно, защото проверката
+         в страницата не е защита; тя е в базата. */
+      async function anaFetch(ids) {
+        var res = await TLA.client.from('attempts')
+          .select('id, user_id, assignment_id, status, records, submitted_at')
+          .in('user_id', ids)
+          .order('submitted_at', { ascending: false });
+        if (res.error) throw res.error;
+        return (res.data || []).filter(function (t) { return t.status !== 'in_progress'; });
+      }
+
+      function anaAssignmentsForWeek() {
+        var ok = {};
+        calAll.forEach(function (a) {
+          if (!assignmentIsForGrade(a, ana.grade)) return;
+          if (ana.week && String(a.week) !== String(ana.week)) return;
+          ok[a.id] = a;
+        });
+        return ok;
+      }
+
+      async function runAnalysis() {
+        if (ana.busy) return;
+        var ids = anaPickedIds();
+        var out = document.getElementById('anaOut');
+        if (!ids.length) { anaHint('Избери поне едно дете.'); out.innerHTML = ''; return; }
+
+        ana.busy = true; anaHint('Чете работите…');
+        var btn = document.getElementById('anaRun');
+        if (btn) btn.disabled = true;
+
+        try {
+          var rows = await anaFetch(ids);
+          var allowed = anaAssignmentsForWeek();
+          var wrong = [], seen = 0, works = 0;
+
+          rows.forEach(function (t) {
+            var a = allowed[t.assignment_id];
+            if (!a) return;                       /* друг клас или друга седмица */
+            works++;
+            (Array.isArray(t.records) ? t.records : []).forEach(function (r) {
+              seen++;
+              if (r && r.correct === false) {
+                wrong.push({
+                  student: (state.profiles[t.user_id] || {}).full_name || '—',
+                  title: a.title,
+                  text: r.text || '',
+                  given: (r.kind === 'free')
+                    ? r.chosenAnswer
+                    : (r.chosenIndex == null ? '(без отговор)'
+                       : ((r.options || [])[r.chosenIndex])),
+                  correct: (r.kind === 'free')
+                    ? r.correctAnswer
+                    : ((r.options || [])[r.correctIndex])
+                });
+              }
+            });
+          });
+
+          renderAnalysis(wrong, { works: works, seen: seen, kids: ids.length });
+          anaHint('');
+        } catch (err) {
+          out.innerHTML = '<p class="tla-empty">Данните не се прочетоха: ' +
+            esc(String(err.message || err)) + '</p>';
+          anaHint('');
+        }
+        ana.busy = false;
+        if (btn) btn.disabled = false;
+      }
+
+      function anaBar(n, max) {
+        var w = max ? Math.round(100 * n / max) : 0;
+        return '<span class="tla-ana__bar"><span style="width:' + w + '%"></span></span>';
+      }
+
+      function renderAnalysis(wrong, info) {
+        var out = document.getElementById('anaOut');
+        if (!out) return;
+
+        if (!info.works) {
+          out.innerHTML = '<p class="tla-empty">За тази седмица няма предадени работи ' +
+            'от избраните деца.</p>';
+          return;
+        }
+        if (!wrong.length) {
+          out.innerHTML = '<p class="tla-empty">В ' + info.works +
+            ' предадени работи няма нито една сгрешена задача.</p>';
+          return;
+        }
+
+        var s = TLA.Analysis.summarise(wrong);
+        var max = s.kinds.length ? s.kinds[0].count : 1;
+        var many = s.kinds.filter(function (k) {
+          return Object.keys(k.students).length > 1;
+        });
+
+        /* Изводът, написан с думи. Първо темите, в които грешат повече
+           от едно дете — те са за преговор с целия клас. */
+        var lead;
+        if (many.length) {
+          lead = 'Общото е в: <strong>' +
+            many.slice(0, 3).map(function (k) { return esc(k.name.toLowerCase()); }).join('</strong>, <strong>') +
+            '</strong>. Там греши повече от едно дете, значи е за преговор с всички.';
+        } else {
+          lead = 'Няма тема, в която да грешат двама — всеки има свои пропуски, ' +
+            'затова и работата е поотделно.';
+        }
+
+        var html = '<div class="tla-ana__sum">' +
+          '<p class="tla-ana__lead">' + lead + '</p>' +
+          '<p class="tla-muted">' + wrong.length + ' сгрешени от ' + info.seen +
+          ' решени задачи в ' + info.works + ' работи · ' +
+          Object.keys(s.students).map(function (n) {
+            return esc(n) + ' — ' + s.students[n];
+          }).join(' · ') + '</p></div>';
+
+        html += '<ol class="tla-ana__list">';
+        s.kinds.forEach(function (k) {
+          var who = Object.keys(k.students).map(function (n) {
+            return esc(n.split(' ')[0]) + ' ' + k.students[n];
+          }).join(', ');
+          var shared = Object.keys(k.students).length > 1;
+          html += '<li class="tla-ana__row' + (shared ? ' is-shared' : '') + '">' +
+            '<div class="tla-ana__head">' +
+              '<span class="tla-ana__n">' + k.count + '</span>' +
+              '<span class="tla-ana__name">' + esc(k.name) +
+                (shared ? ' <span class="tla-ana__flag">у повече от един</span>' : '') +
+              '</span>' +
+              '<span class="tla-ana__kids">' + who + '</span>' +
+            '</div>' + anaBar(k.count, max) +
+            '<details class="tla-ana__ex"><summary>Кои задачи</summary><ul>' +
+            k.examples.map(function (e) {
+              return '<li><span class="tla-ana__q">' + esc(e.text) + '</span>' +
+                '<span class="tla-ana__a">' + esc(e.student.split(' ')[0]) + ': ' +
+                esc(e.given == null ? '(без отговор)' : e.given) +
+                ' → вярно: ' + esc(e.correct == null ? '—' : e.correct) + '</span></li>';
+            }).join('') + '</ul></details></li>';
+        });
+        html += '</ol>';
+
+        if (s.blanks.length) {
+          html += '<p class="tla-ana__note"><strong>' + s.blanks.length +
+            '</strong> задачи са оставени без отговор. Това не е същото като ' +
+            'сгрешена задача — детето не е стигнало дотам или се е отказало.</p>';
+        }
+        if (s.unknown) {
+          html += '<p class="tla-ana__note">' + s.unknown + ' задачи не се разпознаха по вид ' +
+            'и стоят в „Неразпознат вид“ с условията си. Разпознаването е по ключови ' +
+            'думи в условието и не покрива всичко — по-добре да ги видите, отколкото ' +
+            'да бъдат натикани в най-близката тема.</p>';
+        }
+        out.innerHTML = html;
+      }
+
       async function loadAssignments() {
         var list = await TLA.listAssignments();
         state.assignments = {};
@@ -2483,6 +2784,39 @@
       document.getElementById('calGradeFilter').addEventListener('change', async function () {
         filters.calGrade = this.value; await loadCalendar();
       });
+
+      /* ---- анализ: слушателите ---------------------------------------- */
+      (function () {
+        var g = document.getElementById('anaGrade');
+        var w = document.getElementById('anaWeek');
+        var box = document.getElementById('anaStudents');
+        var btn = document.getElementById('anaRun');
+        if (!g || !w || !box || !btn) return;
+
+        g.addEventListener('change', function () {
+          ana.grade = this.value;
+          /* Отметките се изчистват при смяна на класа. Дете от 6. клас,
+             останало избрано, докато се гледа 5., дава анализ на хора,
+             които не са на екрана. */
+          ana.picked = {};
+          fillAnaWeeks();
+          fillAnaStudents();
+          document.getElementById('anaOut').innerHTML = '';
+        });
+        w.addEventListener('change', function () {
+          ana.week = this.value;
+          document.getElementById('anaOut').innerHTML = '';
+        });
+        box.addEventListener('change', function (e) {
+          var id = e.target && e.target.dataset && e.target.dataset.anaKid;
+          if (!id) return;
+          ana.picked[id] = e.target.checked;
+          var lab = e.target.closest('.tla-ana__chip');
+          if (lab) lab.classList.toggle('is-on', e.target.checked);
+          anaHint('');
+        });
+        btn.addEventListener('click', runAnalysis);
+      })();
 
       /* ==================================================================
          Състезание Формула 1
@@ -2790,6 +3124,9 @@
         await loadResults();
         fillNewStudentPickers();
         renderAssignAdmin();
+        /* Менютата на анализа чакат и трите неща: класовете идват от
+           списъка с ученици, седмиците — от заданията с week. */
+        fillAnaGrade(); fillAnaWeeks(); fillAnaStudents();
         renderRace();
         if (state.isAdmin) renderTeachers();
       })();

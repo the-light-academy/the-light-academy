@@ -1630,3 +1630,59 @@ body.tlp-space { background: #05070F; }
   .sc__chip, .sc__pickava { transition: none; }
   .sc__chip:hover, .sc__pickava:hover { transform: none; }
 }
+
+/* =====================================================================
+   АНАЛИЗ НА СГРЕШЕНИТЕ ЗАДАЧИ — в раздела „Задания“ на таблото
+   ---------------------------------------------------------------------
+   Подредбата е по важност, не по брой: темата, в която греши повече от
+   едно дете, носи знаме и лява ивица, защото тя е за преговор с всички,
+   а не с един. Лентата е дял от най-честата тема и е само ориентир —
+   числото отпред е истината.
+   ===================================================================== */
+.tla-ana__who { border: 1px solid var(--tlp-line); border-radius: 12px; padding: 0.7rem 0.9rem 0.9rem; margin: 0.9rem 0; }
+.tla-ana__who legend { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tlp-ink-soft); padding: 0 0.35rem; }
+.tla-ana__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.tla-ana__chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.88rem; font-weight: 700; color: var(--tlp-ink);
+  background: #fff; border: 1.5px solid var(--tlp-line);
+  border-radius: 999px; padding: 0.35rem 0.8rem; cursor: pointer;
+}
+.tla-ana__chip:hover { border-color: var(--tlp-navy); background: #F4F7FD; }
+.tla-ana__chip.is-on { background: var(--tlp-navy); border-color: var(--tlp-navy); color: #fff; }
+.tla-ana__chip input { accent-color: var(--tlp-accent-deep); }
+.tla-ana__chip:focus-within { outline: 3px solid var(--tlp-accent-deep); outline-offset: 2px; }
+
+/* Менюто за седмицата носи номер, дати И тема, затова е най-широкото
+   нещо в реда. Без таван то разпъва филтрите през целия екран. */
+#anaWeek { max-width: min(100%, 36rem); }
+.tla-ana__go { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+
+.tla-ana__sum { background: var(--tlp-accent-wash); border: 1px solid rgba(247,173,25,0.4); border-radius: 12px; padding: 0.85rem 1rem; margin-bottom: 0.9rem; }
+.tla-ana__lead { margin: 0 0 0.35rem; font-size: 0.95rem; color: var(--tlp-ink); line-height: 1.6; }
+.tla-ana__lead strong { color: var(--tlp-accent-deep); }
+
+.tla-ana__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.tla-ana__row { border: 1px solid var(--tlp-line); border-radius: 12px; padding: 0.7rem 0.85rem; background: #fff; }
+/* Ивицата отляво значи „тук греши повече от едно дете“ — същото, което
+   казва и знамето. Цветът не е единственото съобщение. */
+.tla-ana__row.is-shared { border-left: 4px solid var(--tlp-accent); background: #FFFDF5; }
+.tla-ana__head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.tla-ana__n { font-size: 1.15rem; font-weight: 800; color: var(--tlp-navy); font-variant-numeric: tabular-nums; min-width: 1.6rem; }
+.tla-ana__name { font-weight: 800; color: var(--tlp-ink); flex: 1 1 12rem; }
+.tla-ana__flag { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--tlp-accent-deep); background: var(--tlp-accent-wash); border-radius: 999px; padding: 0.12rem 0.5rem; vertical-align: middle; }
+.tla-ana__kids { font-size: 0.82rem; color: var(--tlp-ink-soft); }
+.tla-ana__bar { display: block; height: 6px; border-radius: 999px; background: rgba(13,27,54,0.08); margin-top: 0.5rem; overflow: hidden; }
+.tla-ana__bar > span { display: block; height: 100%; border-radius: 999px; background: var(--tlp-accent); }
+.tla-ana__ex { margin-top: 0.5rem; }
+.tla-ana__ex summary { font-size: 0.82rem; font-weight: 700; color: var(--tlp-accent-deep); cursor: pointer; }
+.tla-ana__ex ul { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.4rem; }
+.tla-ana__ex li { background: #F8FAFF; border-radius: 8px; padding: 0.45rem 0.6rem; }
+.tla-ana__q { display: block; font-size: 0.86rem; color: var(--tlp-ink); }
+.tla-ana__a { display: block; font-size: 0.8rem; color: var(--tlp-ink-soft); margin-top: 0.15rem; }
+.tla-ana__note { font-size: 0.84rem; line-height: 1.6; color: var(--tlp-ink-soft); margin-top: 0.75rem; }
+
+@media (max-width: 560px) {
+  .tla-ana__head { gap: 0.4rem; }
+  .tla-ana__name { flex-basis: 100%; }
+}
