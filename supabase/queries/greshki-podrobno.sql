@@ -41,8 +41,17 @@ zadachi as (
          a.title,
          p.submitted_at,
          coalesce((r->>'correct')::boolean, false) as vyarno,
-         -- условието идва с html (дробите са таблички) — тук пада
-         btrim(regexp_replace(replace(r->>'text', E'\n', ' '), '<[^>]+>', '', 'g')) as uslovie,
+         -- Условието идва с html: дробите в листовете са числител над
+         -- знаменател. Ако html-ът просто се махне, „4/5 · 3/7“ става
+         -- „45 · 37“ — две безсмислени числа, а задачата става
+         -- неразпознаваема. Затова дробите ПЪРВО стават „n/d“ и чак
+         -- после падат останалите етикети.
+         btrim(regexp_replace(
+           regexp_replace(
+             replace(r->>'text', E'\n', ' '),
+             '<span class="frac"><span class="num">(.*?)</span><span class="den">(.*?)</span></span>',
+             '\1/\2', 'g'),
+           '<[^>]+>', '', 'g')) as uslovie,
          case
            when r->>'kind' = 'free'       then r->>'chosenAnswer'
            when r->>'chosenIndex' is null  then '(без отговор)'
