@@ -442,6 +442,7 @@
         </fieldset>
         <div class="tla-ana__go">
           <button type="button" class="tla-btn" id="anaRun">Анализ</button>
+          <button type="button" class="tla-btn tla-btn--ghost" id="anaCopy" hidden>Копирай</button>
           <span class="tla-muted" id="anaHint"></span>
         </div>
         <div id="anaOut"></div>
@@ -2840,6 +2841,87 @@
         if (btn) btn.disabled = false;
       }
 
+      /* Последният анализ, както е на екрана. Пази се, за да може
+         „Копирай“ да даде СЪЩОТО, а не да сметне наново нещо, което
+         междувременно се е променило. */
+      var anaLast = null;
+
+      /* Текстът, който излиза от „Копирай“.
+
+         Пише се за четене от човек ИЛИ от езиков модел, затова е прост
+         текст без таблици и без html: заглавия с решетка, тирета за
+         списък. Най-важното в него не са бройките, а ЦЕЛИЯТ списък от
+         сгрешени задачи с отговора на детето до верния — по тях се
+         вижда как точно греши, а това не личи от едно число.
+
+         Най-отгоре стои и какво се иска, за да е достатъчно да се
+         подаде текстът, без да се обяснява отделно. */
+      function anaText() {
+        if (!anaLast) return '';
+        var s = anaLast.summary, info = anaLast.info;
+        var L = [];
+        L.push('# Анализ на сгрешените задачи — LightSpace');
+        L.push('');
+        L.push('Клас: ' + anaLast.gradeLabel);
+        L.push('Седмица: ' + anaLast.weekLabel);
+        L.push('Ученици: ' + Object.keys(s.students).map(function (n) {
+          return n + ' (' + s.students[n] + ' сгрешени)';
+        }).join(', '));
+        L.push('Общо: ' + s.total + ' сгрешени от ' + info.seen +
+               ' решени задачи в ' + info.works + ' предадени работи');
+        /* Кои домашни са засегнати. При „всички седмици“ иначе не се
+           вижда откъде идва коя грешка, а темата на листа казва какво е
+           било преподадено преди нея. */
+        if (anaLast.titles && anaLast.titles.length) {
+          L.push('Домашни: ' + anaLast.titles.map(function (t) {
+            return t.title + ' (' + t.n + ')';
+          }).join(', '));
+        }
+        L.push('Извлечено: ' + TLA.formatDate(new Date().toISOString()));
+        L.push('');
+        L.push('## Какво искам');
+        L.push('Направи подготовка за следващия урок, в която да покрием тези');
+        L.push('пропуски: кое да се обясни наново, в какъв ред, и по колко задачи');
+        L.push('за всяко. Гледай не само колко са сгрешени, а КАК са сгрешени —');
+        L.push('по отговорите долу си личи дали грешката е в правилото, или в');
+        L.push('невнимание.');
+        L.push('');
+        L.push('## Видове задачи, подредени по важност');
+        L.push('(първо темите, в които греши повече от едно дете)');
+        L.push('');
+
+        s.kinds.forEach(function (k, i) {
+          var shared = Object.keys(k.students).length > 1;
+          L.push((i + 1) + '. ' + k.name + ' — ' + k.count +
+                 (k.count === 1 ? ' задача' : ' задачи') +
+                 ' · ' + Object.keys(k.students).map(function (n) {
+                   return n + ' ' + k.students[n];
+                 }).join(', ') + (shared ? '  [общо за повече от едно дете]' : ''));
+          k.examples.forEach(function (e) {
+            L.push('   - [' + e.student + '] ' + e.text);
+            L.push('     дал: ' + (e.given == null || e.given === '' ? '(без отговор)' : e.given) +
+                   '  |  вярно: ' + (e.correct == null ? '—' : e.correct));
+          });
+          L.push('');
+        });
+
+        if (s.blanks.length) {
+          L.push('## Оставени без отговор (' + s.blanks.length + ')');
+          L.push('Не е същото като сгрешена задача — детето не е стигнало дотам.');
+          s.blanks.forEach(function (b) { L.push('   - [' + b.student + '] ' + b.text); });
+          L.push('');
+        }
+        if (s.unknown) {
+          L.push('## Неразпознати по вид (' + s.unknown + ')');
+          L.push('Разпознаването е по ключови думи в условието и не покрива всичко.');
+          L.push('');
+        }
+        L.push('## Откъде идва това');
+        L.push('Таблото на LightSpace, раздел „Задания“ → „Анализ“. Видът на всяка');
+        L.push('задача е разпознат по условието ѝ, не е записан предварително.');
+        return L.join('\n');
+      }
+
       function anaBar(n, max) {
         var w = max ? Math.round(100 * n / max) : 0;
         return '<span class="tla-ana__bar"><span style="width:' + w + '%"></span></span>';
@@ -2848,6 +2930,11 @@
       function renderAnalysis(wrong, info) {
         var out = document.getElementById('anaOut');
         if (!out) return;
+        var copyBtn = document.getElementById('anaCopy');
+        /* Няма резултат — няма какво да се копира. Бутон, който копира
+           празно, е по-лош от липсващ бутон. */
+        anaLast = null;
+        if (copyBtn) { copyBtn.hidden = true; copyBtn.textContent = 'Копирай'; }
 
         if (!info.works) {
           out.innerHTML = '<p class="tla-empty">За тази седмица няма предадени работи ' +
@@ -2862,6 +2949,21 @@
 
         var s = TLA.Analysis.summarise(wrong);
         var max = s.kinds.length ? s.kinds[0].count : 1;
+
+        var gsel = document.getElementById('anaGrade');
+        var wsel = document.getElementById('anaWeek');
+        var tcount = {};
+        wrong.forEach(function (w) { tcount[w.title] = (tcount[w.title] || 0) + 1; });
+        anaLast = {
+          summary: s, info: info,
+          titles: Object.keys(tcount).map(function (t) { return { title: t, n: tcount[t] }; })
+            .sort(function (a, b) { return b.n - a.n; }),
+          gradeLabel: gsel && gsel.selectedIndex >= 0
+            ? gsel.options[gsel.selectedIndex].text : '',
+          weekLabel: wsel && wsel.selectedIndex >= 0
+            ? wsel.options[wsel.selectedIndex].text : 'всички седмици'
+        };
+        if (copyBtn) copyBtn.hidden = false;
         var many = s.kinds.filter(function (k) {
           return Object.keys(k.students).length > 1;
         });
@@ -2901,12 +3003,17 @@
               '<span class="tla-ana__kids">' + who + '</span>' +
             '</div>' + anaBar(k.count, max) +
             '<details class="tla-ana__ex"><summary>Кои задачи</summary><ul>' +
-            k.examples.map(function (e) {
+            k.examples.slice(0, 4).map(function (e) {
               return '<li><span class="tla-ana__q">' + esc(e.text) + '</span>' +
                 '<span class="tla-ana__a">' + esc(e.student.split(' ')[0]) + ': ' +
                 esc(e.given == null ? '(без отговор)' : e.given) +
                 ' → вярно: ' + esc(e.correct == null ? '—' : e.correct) + '</span></li>';
-            }).join('') + '</ul></details></li>';
+            }).join('') +
+            (k.examples.length > 4
+              ? '<li class="tla-ana__more">… и още ' + (k.examples.length - 4) +
+                '. Всичките са в текста на бутона „Копирай“.</li>'
+              : '') +
+            '</ul></details></li>';
         });
         html += '</ol>';
 
@@ -3132,6 +3239,31 @@
           anaHint('');
         });
         btn.addEventListener('click', runAnalysis);
+
+        var copy = document.getElementById('anaCopy');
+        if (copy) copy.addEventListener('click', async function () {
+          var txt = anaText();
+          if (!txt) return;
+          try {
+            await navigator.clipboard.writeText(txt);
+            this.textContent = 'Копирано ✓';
+            var self = this;
+            setTimeout(function () { self.textContent = 'Копирай'; }, 2000);
+          } catch (e) {
+            /* Някои браузъри отказват достъп до клипборда — тогава
+               текстът се показва маркиран, за да се вземе на ръка. */
+            var box = document.getElementById('anaCopyBox');
+            if (!box) {
+              box = document.createElement('textarea');
+              box.id = 'anaCopyBox';
+              box.className = 'tla-ana__box';
+              box.rows = 12;
+              document.getElementById('anaOut').parentNode.appendChild(box);
+            }
+            box.value = txt; box.hidden = false; box.select();
+            this.textContent = 'Маркирай и копирай ↓';
+          }
+        });
       })();
 
       /* ==================================================================

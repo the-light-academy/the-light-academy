@@ -1686,3 +1686,6 @@ body.tlp-space { background: #05070F; }
   .tla-ana__head { gap: 0.4rem; }
   .tla-ana__name { flex-basis: 100%; }
 }
+.tla-ana__more { font-size: 0.8rem; color: var(--tlp-ink-soft); background: transparent !important; padding-left: 0.6rem !important; }
+/* Резервният път, когато браузърът откаже достъп до клипборда. */
+.tla-ana__box { width: 100%; margin-top: 0.75rem; font: inherit; font-size: 0.82rem; padding: 0.7rem 0.85rem; border: 1.5px solid var(--tlp-line); border-radius: 12px; }
