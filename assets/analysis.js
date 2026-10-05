@@ -206,10 +206,13 @@
       b.count++;
       b.students[r.student] = (b.students[r.student] || 0) + 1;
       students[r.student] = (students[r.student] || 0) + 1;
-      if (b.examples.length < 4) {
-        b.examples.push({ student: r.student, text: plain(r.text),
-                          given: r.given, correct: r.correct });
-      }
+      /* ВСИЧКИ задачи от този вид, не първите няколко. Екранът показва
+         само част от тях, но бутонът „Копирай“ дава целия списък — и
+         точно по него се вижда КАК греши детето: премества запетаята в
+         грешната посока, смята отляво надясно, обръща готовата дроб.
+         Няколко примера не стигат за такъв извод. */
+      b.examples.push({ student: r.student, title: r.title,
+                        text: plain(r.text), given: r.given, correct: r.correct });
       if (blank(r.given)) blanks.push({ student: r.student, text: plain(r.text) });
     });
 
