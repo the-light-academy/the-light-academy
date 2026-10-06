@@ -345,7 +345,7 @@
       if (!client) return [];
       var res = await client
         .from('assignments')
-        .select('id, slug, title, kind, url, max_points, published, due_at, sort_order, week, subject_id, grades')
+        .select('id, slug, title, kind, url, max_points, published, due_at, sort_order, week, subject_id, grades, track, section')
         .order('sort_order', { ascending: true })
         .order('title', { ascending: true });
       if (res.error) throw res.error;

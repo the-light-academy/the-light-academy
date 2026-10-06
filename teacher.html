@@ -358,6 +358,15 @@
         <div id="anaOut"></div>
       </div>
 
+      <!-- Разделите вътре в един предмет. Показват се и празните: там е
+           мястото, което чака да се напълни. Каталогът им е в
+           assets/tracks.js, а кое задание в кой раздел е — в базата. -->
+      <div class="tla-card">
+        <h2 class="tla-card__title">Раздели в предметите</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;" id="trackIntro"></p>
+        <div id="trackBoard"></div>
+      </div>
+
       <div class="tla-card">
         <h2 class="tla-card__title">Задания</h2>
         <p class="tla-muted" style="margin-bottom:1rem;" id="assignIntro">
@@ -392,6 +401,7 @@
   <script src="assets/auth.js"></script>
   <script src="assets/race.js"></script>
   <script src="assets/analysis.js"></script>
+  <script src="assets/tracks.js"></script>
   <script>
     (function () {
       var esc = TLA.escapeHtml;
@@ -1713,7 +1723,7 @@
           /* url се чете, защото редът в календара вика previewLink(), а тя
              връща празно без него — точно заради това бутонът „Отвори“ го
              нямаше тук, докато в „Задания“ си беше на място. */
-          .select('id, slug, title, kind, url, published, week, grades')
+          .select('id, slug, title, kind, url, published, week, grades, track, section')
           .order('sort_order', { ascending: true });
         if (res.error) { calWeekColumn = false; calAll = []; renderCalendar(); return; }
         calAll = res.data || [];
@@ -1961,6 +1971,102 @@
         return a.grades.indexOf(Number(g)) !== -1;
       }
 
+      /* Разделите като опции за едно задание: „без раздел“ и после всеки
+         кръг с пълното си име. Стойността носи и двете имена наведнъж
+         („olimpiada/obshtinski“), за да е един избор, а не два. */
+      function sectionOptions(a) {
+        var now = (a.track || '') + (a.section ? '/' + a.section : '');
+        var out = ['<option value=""' + (now ? '' : ' selected') + '>без раздел</option>'];
+        TLA.Tracks.all.forEach(function (t) {
+          out.push('<option value="' + esc(t.id) + '"' +
+            (now === t.id ? ' selected' : '') + '>' + esc(t.title) + ' — всичко</option>');
+          (t.sections || []).forEach(function (sec) {
+            var v = t.id + '/' + sec.id;
+            out.push('<option value="' + esc(v) + '"' + (now === v ? ' selected' : '') +
+              '>' + esc(t.title) + ' · ' + esc(sec.title) + '</option>');
+          });
+        });
+        /* Задание, сочещо към раздел, какъвто вече го няма: показва се,
+           вместо да се превърне тихо в „без раздел“ при първото запазване. */
+        if (now && !TLA.Tracks.byId(a.track)) {
+          out.push('<option value="' + esc(now) + '" selected>непознат раздел: ' +
+            esc(now) + '</option>');
+        }
+        return out.join('');
+      }
+
+      /* Таблото на разделите. Чертае ВСЕКИ раздел от каталога с всичките
+         му подраздели, пълни или празни — празният кръг е мястото, в
+         което предстои да се сложи лист, и трябва да се вижда. */
+      function renderTrackBoard() {
+        var el = document.getElementById('trackBoard');
+        var intro = document.getElementById('trackIntro');
+        if (!el) return;
+
+        var all = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
+        var html = '';
+
+        TLA.Tracks.all.forEach(function (t) {
+          var subj = state.subjects.filter(function (sb) { return sb.slug === t.subject; })[0];
+          /* Раздел за предмет, какъвто го няма в базата, не се крие —
+             казва се какво липсва, инак разделът просто не се появява и
+             никой не разбира защо. */
+          if (!subj) {
+            html += '<div class="tla-track">' +
+              '<h3 class="tla-track__h">' + esc(t.title) + '</h3>' +
+              '<p class="tla-empty">Предметът „' + esc(t.subject) + '“ още го няма в базата. ' +
+              'Пусни supabase/subjects.sql и разделът ще се появи.</p></div>';
+            return;
+          }
+
+          var mine = all.filter(function (a) {
+            return a.subject_id === subj.id && assignmentIsForGrade(a, t.grade);
+          });
+          var g = TLA.Tracks.group(mine, t.subject, t.grade);
+          var box = g.tracks[0];
+          var total = box.sections.reduce(function (n, sg) { return n + sg.items.length; }, 0) +
+                      box.loose.length;
+
+          html += '<div class="tla-track">' +
+            '<h3 class="tla-track__h">' + esc(t.title) +
+              ' <span class="tla-track__sub">' + esc(subj.name) + ' · ' +
+              esc(TLA.gradeLabel(t.grade)) + '</span>' +
+              '<span class="tla-track__n">' + total + '</span></h3>' +
+            (t.note ? '<p class="tla-muted tla-track__note">' + esc(t.note) + '</p>' : '') +
+            '<div class="tla-track__grid">';
+
+          box.sections.forEach(function (sg) {
+            html += '<div class="tla-round' + (sg.items.length ? '' : ' is-empty') + '">' +
+              '<p class="tla-round__h">' + esc(sg.section.title) +
+                '<span class="tla-round__n">' + sg.items.length + '</span></p>' +
+              (sg.section.note ? '<p class="tla-round__note">' + esc(sg.section.note) + '</p>' : '') +
+              (sg.items.length
+                ? '<ul class="tla-round__list">' + sg.items.map(function (a) {
+                    return '<li>' + esc(a.title) +
+                      (a.published ? '' : ' <span class="tla-round__draft">чернова</span>') + '</li>';
+                  }).join('') + '</ul>'
+                : '<p class="tla-round__none">Още няма листове. Сложи ги оттук долу — ' +
+                  'в „Клас и предмет“ на всеки лист има избор на раздел.</p>') +
+            '</div>';
+          });
+
+          html += '</div>';
+          if (box.loose.length) {
+            html += '<p class="tla-muted tla-track__loose">В раздела, но без кръг: ' +
+              box.loose.map(function (a) { return esc(a.title); }).join(', ') + '.</p>';
+          }
+          html += '</div>';
+        });
+
+        el.innerHTML = html || '<p class="tla-empty">Няма описани раздели.</p>';
+        if (intro) {
+          intro.textContent = TLA.Tracks.all.length === 1
+            ? 'Един раздел: ' + TLA.Tracks.all[0].title + ' — ' +
+              (TLA.Tracks.all[0].sections || []).length + ' подраздела.'
+            : TLA.Tracks.all.length + ' раздела.';
+        }
+      }
+
       function renderAssignAdmin() {
         var el = document.getElementById('assignAdmin');
         var all = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
@@ -2018,12 +2124,19 @@
                         esc(sb.name) + '</option>';
                     }).join('') +
                   '</select>' +
+                  /* Разделът е третото нещо в същия ред и се пази със
+                     същия бутон: класът, предметът и мястото в предмета
+                     се менят заедно. */
+                  '<select class="tla-sel" data-section="' + esc(a.id) + '" aria-label="Раздел">' +
+                    sectionOptions(a) +
+                  '</select>' +
                   '<button type="button" class="tla-btn tla-btn--sm" data-scope-save="' +
                     esc(a.id) + '">Запази</button>' +
                 '</div>' +
                 '<p class="tla-muted" style="margin:0.5rem 0 0;">' +
                   'Без предмет заданието стига до всеки в избрания клас. С предмет ' +
-                  'го виждат само записаните в него.</p>' +
+                  'го виждат само записаните в него. Разделът подрежда листа вътре ' +
+                  'в предмета — например в кой кръг на олимпиадата е.</p>' +
               '</details>' : '') +
               /* The address lives in the database, so renaming a file in the
                  repository leaves the old one behind. Editing it here beats
@@ -2101,15 +2214,20 @@
             return;
           }
           var subjSel = document.querySelector('[data-subject="' + aid + '"]');
+          var secSel = document.querySelector('[data-section="' + aid + '"]');
+          var pair = (secSel ? secSel.value : '').split('/');
           scopeBtn.disabled = true;
           var upd = await TLA.client.from('assignments').update({
             grades: allBox.checked ? null : picked,
-            subject_id: subjSel.value || null
+            subject_id: subjSel.value || null,
+            track: pair[0] || null,
+            section: pair[1] || null
           }).eq('id', aid);
           scopeBtn.disabled = false;
           if (upd.error) { say('err', upd.error.message); return; }
           say('ok', 'Записано: ' + (allBox.checked ? 'всички класове' : TLA.gradesLabel(picked)) +
-                    ' · ' + (subjSel.value ? subjSel.options[subjSel.selectedIndex].text : 'без предмет') + '.');
+                    ' · ' + (subjSel.value ? subjSel.options[subjSel.selectedIndex].text : 'без предмет') +
+                    ' · ' + (pair[0] ? TLA.Tracks.label(pair[0], pair[1]) : 'без раздел') + '.');
           await loadAssignments();
           await loadCalendar();
           return;
@@ -2720,6 +2838,7 @@
         state.assignments = {};
         list.forEach(function (a) { state.assignments[a.id] = a; });
         renderAssignAdmin();
+        renderTrackBoard();
       }
 
       async function loadRoster() {
@@ -3256,6 +3375,7 @@
         await loadResults();
         fillNewStudentPickers();
         renderAssignAdmin();
+        renderTrackBoard();
         /* Менютата на анализа чакат и трите неща: класовете идват от
            списъка с ученици, седмиците — от заданията с week. */
         fillAnaGrade(); fillAnaWeeks(); fillAnaStudents();

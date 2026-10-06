@@ -279,6 +279,7 @@
   <script src="assets/auth.js"></script>
   <script src="assets/race.js"></script>
   <script src="assets/starcard.js"></script>
+  <script src="assets/tracks.js"></script>
   <script>
     /* The student's screen. Everything here is read-only: the numbers are
        derived in the browser from the two queries below, and nothing is
@@ -668,8 +669,29 @@
           : empty('📚', 'Още няма домашни',
               'Преподавателят ще ги отвори тук, щом са готови. Ще ги видиш веднага след като влезеш.');
 
+        /* Изпитите, които са в раздел (например кръговете на олимпиадата),
+           се подреждат по него. Показват се САМО кръговете, в които има
+           нещо: за ученика празен кръг е обещание, което никой не му е
+           давал. Таблото на преподавателя показва и празните — там те са
+           мястото, което чака да се напълни. */
+        var grouped = TLA.Tracks ? TLA.Tracks.groupPresent(ex) : { tracks: [], rest: ex };
+        var exHtml = grouped.tracks.map(function (g) {
+          return '<section class="tlp__track">' +
+            '<h3 class="tlp__track-h">' + esc(g.track.title) + '</h3>' +
+            (g.track.note ? '<p class="tlp__track-n">' + esc(g.track.note) + '</p>' : '') +
+            g.sections.map(function (sg) {
+              return '<div class="tlp__round">' +
+                '<p class="tlp__round-h">' + esc(sg.section.title) +
+                  '<span class="tlp__round-n">' + sg.items.length + '</span></p>' +
+                sg.items.map(assignmentCard).join('') +
+              '</div>';
+            }).join('') +
+            (g.loose.length ? g.loose.map(assignmentCard).join('') : '') +
+          '</section>';
+        }).join('') + grouped.rest.map(assignmentCard).join('');
+
         $('exList').innerHTML = ex.length
-          ? ex.map(assignmentCard).join('') +
+          ? exHtml +
             '<p class="tlp__note">Всеки пробен изпит се отваря в собствена страница със свой ' +
             'таймер, точно както на истинското НВО. Резултатът се връща тук.</p>'
           : empty('⏱️', 'Още няма пробни изпити',
