@@ -112,11 +112,15 @@
           <span id="calIntro"></span>
           Ваканциите не са извадени — седмиците са учебни и са номерирани както
           в програмата. Изберете клас, за да видите само неговата, и отворете
-          тема, за да видите седмиците ѝ.
+          тема, за да видите седмиците ѝ. Предметът отсява кои листове се
+          виждат в седмиците; програмата по теми е на математиката, затова
+          при друг предмет остават само седмиците и датите.
         </p>
         <div class="tla-filters">
           <label for="calGradeFilter">Клас:</label>
           <select id="calGradeFilter"><option value="">всички</option></select>
+          <label for="calSubjFilter">Предмет:</label>
+          <select id="calSubjFilter"><option value="">всички</option></select>
         </div>
         <div id="calendar"><p class="tla-empty">Зареждане…</p></div>
       </div>
@@ -416,7 +420,8 @@
         enrollments: [],   /* which student studies which subject */
         releases: []       /* which sheets have been given to which students */
       };
-      var filters = { rosterGrade: '', assignGrade: '', assignSubject: '', calGrade: '' };
+      var filters = { rosterGrade: '', assignGrade: '', assignSubject: '',
+                      calGrade: '', calSubject: '' };
 
       /* The class a student is in right now, worked out from the class they
          were entered in and the school year that was. The same arithmetic as
@@ -1428,6 +1433,10 @@
       var PROGRAMMES = [
         {
           grade: 7,
+          /* Програмата по седмици е на МАТЕМАТИКАТА. Друг предмет си има
+             свой ред и свои листове; филтърът долу не бива да показва
+             тези теми под чуждо име. */
+          subject: 'matematika',
           weeks: 36,
           start: new Date(2026, 8, 28),   /* понеделник, 28.09.2026 */
           themes: [
@@ -1489,6 +1498,10 @@
         },
         {
           grade: 6,
+          /* Програмата по седмици е на МАТЕМАТИКАТА. Друг предмет си има
+             свой ред и свои листове; филтърът долу не бива да показва
+             тези теми под чуждо име. */
+          subject: 'matematika',
           weeks: 34,
           start: new Date(2026, 8, 21),   /* понеделник, 21.09.2026 */
           themes: [
@@ -1546,6 +1559,10 @@
         },
         {
           grade: 5,
+          /* Програмата по седмици е на МАТЕМАТИКАТА. Друг предмет си има
+             свой ред и свои листове; филтърът долу не бива да показва
+             тези теми под чуждо име. */
+          subject: 'matematika',
           weeks: 34,
           start: new Date(2026, 8, 21),   /* понеделник, 21.09.2026 */
           themes: [
@@ -1601,6 +1618,10 @@
         },
         {
           grade: 4,
+          /* Програмата по седмици е на МАТЕМАТИКАТА. Друг предмет си има
+             свой ред и свои листове; филтърът долу не бива да показва
+             тези теми под чуждо име. */
+          subject: 'matematika',
           weeks: 34,
           start: new Date(2026, 8, 21),   /* понеделник, 21.09.2026 */
           themes: [
@@ -1680,6 +1701,16 @@
         return items.slice(0, -1).join(', ') + ' и ' + items[items.length - 1];
       }
 
+      function subjectSlugById(id) {
+        var hit = state.subjects.filter(function (sb) { return sb.id === id; });
+        return hit.length ? hit[0].slug : '';
+      }
+
+      function subjectNameBySlug(slug) {
+        var hit = state.subjects.filter(function (sb) { return sb.slug === slug; });
+        return hit.length ? hit[0].name : '';
+      }
+
       function programmeFor(grade) {
         var hit = PROGRAMMES.filter(function (p) { return p.grade === Number(grade); });
         return hit.length ? hit[0] : null;
@@ -1723,7 +1754,7 @@
           /* url се чете, защото редът в календара вика previewLink(), а тя
              връща празно без него — точно заради това бутонът „Отвори“ го
              нямаше тук, докато в „Задания“ си беше на място. */
-          .select('id, slug, title, kind, url, published, week, grades, track, section')
+          .select('id, slug, title, kind, url, published, week, grades, track, section, subject_id')
           .order('sort_order', { ascending: true });
         if (res.error) { calWeekColumn = false; calAll = []; renderCalendar(); return; }
         calAll = res.data || [];
@@ -1733,9 +1764,19 @@
       /* What is pinned where, for one class. `week` carries no class of its
          own, so the class comes from the assignment's own grades -- and one
          set for every class shows up in every programme, which is right. */
+      /* Задание ли е това за избрания предмет. „всички“ пропуска всичко;
+         „без предмет“ са листовете, които стигат до всеки в класа. */
+      function calSubjectOk(a) {
+        if (filters.calSubject === '') return true;
+        if (filters.calSubject === 'none') return !a.subject_id;
+        return a.subject_id === filters.calSubject;
+      }
+
       function calBucket(grade) {
         var byWeek = {}, spare = [];
-        calAll.filter(function (a) { return assignmentIsForGrade(a, grade); })
+        calAll.filter(function (a) {
+          return assignmentIsForGrade(a, grade) && calSubjectOk(a);
+        })
           .forEach(function (a) {
             if (a.week) { (byWeek[a.week] = byWeek[a.week] || []).push(a); }
             else { spare.push(a); }
@@ -1745,7 +1786,7 @@
 
       function calHwSlot(prog, n, bucket) {
         if (!calWeekColumn) {
-          return '<div class="tlc__hw"><p class="tlc__hw-k">Домашно за седмицата</p>' +
+          return '<div class="tlc__hw"><p class="tlc__hw-k">Задание за седмицата</p>' +
             '<p class="tlc__hw-none">За да закачате домашни към седмици, добавете ' +
             'колоната <code>week</code> в таблица <code>assignments</code> — редът е ' +
             'готов в supabase/schema.sql.</p></div>';
@@ -1771,13 +1812,15 @@
            gets one quiet line rather than a heading and an empty box. */
         if (!mine.length) {
           return '<div class="tlc__hw tlc__hw--empty">' +
-            '<span class="tlc__hw-k">Домашно</span>' +
+            /* „Задание“, не „Домашно“: в слота може да стои и пробен
+               изпит — по състезателна математика там стоят точно такива. */
+            '<span class="tlc__hw-k">Задание</span>' +
             '<span class="tlc__hw-none">още няма</span>' +
             pick +
           '</div>';
         }
 
-        return '<div class="tlc__hw"><p class="tlc__hw-k">Домашно за седмицата</p>' +
+        return '<div class="tlc__hw"><p class="tlc__hw-k">Задание за седмицата</p>' +
           mine.map(function (a) {
             return '<div class="tlc__hw-row">' +
               '<span class="tla-badge tla-badge--' + a.kind + '">' +
@@ -1810,6 +1853,38 @@
       }
 
       /* One class's year: term headings, collapsible themes, a week each. */
+      /* Седмиците наред, без теми: изгледът за предмет, който още няма
+         своя програма. Всички седмици са тук, не само онези с листове —
+         инак няма къде да се закачи нов лист. */
+      function renderWeeksFlat(prog, bucket, now) {
+        var what = (filters.calSubject === 'none')
+          ? 'задания без предмет'
+          : subjectName(filters.calSubject);
+        var n = 0;
+        var weeks = '';
+        for (var i = 1; i <= prog.weeks; i++) {
+          n++;
+          weeks += '<div class="tlc__week' + (i === now ? ' is-now' : '') + '">' +
+            '<div class="tlc__week-top">' +
+              '<span class="tlc__week-n">Седмица ' + i + '</span>' +
+              '<span class="tlc__week-d">' + esc(weekLabel(prog, i)) + '</span>' +
+              (i === now ? '<span class="tlc__now">тази седмица</span>' : '') +
+            '</div>' +
+            calHwSlot(prog, i, bucket) +
+          '</div>';
+        }
+        var mine = Object.keys(bucket.byWeek).reduce(function (k, w) {
+          return k + bucket.byWeek[w].length;
+        }, 0);
+        return '<p class="tla-muted tlc__alien">Програмата по седмици е на ' +
+            esc(subjectNameBySlug(prog.subject) || 'математиката') +
+            ' и затова темите не се показват тук. Остават седмиците на учебната ' +
+            'година и листовете по ' + esc(what) + ' — ' +
+            (mine ? (mine === 1 ? 'един закачен лист' : mine + ' закачени листа')
+                  : 'още няма закачен нито един') + '.</p>' +
+          '<div class="tlc__flat">' + weeks + '</div>';
+      }
+
       function renderProgramme(prog, withHeading) {
         var now = currentWeek(prog);
         var bucket = calBucket(prog.grade);
@@ -1817,6 +1892,16 @@
         var html = withHeading
           ? '<h2 class="tlc__prog">Програма — ' + esc(TLA.gradeLabel(prog.grade)) + '</h2>'
           : '';
+
+        /* Темите по седмици са на МАТЕМАТИКАТА. Избере ли се друг предмет,
+           целият акордеон пада — не само текстът на седмицата, а и
+           заглавията на темите, защото и те са нейни. Остават седмиците
+           и датите (учебната година е една) и листовете по избрания
+           предмет. Полуизлъганият изглед е по-лош от честния празен. */
+        var mySubject = subjectSlugById(filters.calSubject);
+        if (filters.calSubject !== '' && mySubject !== prog.subject) {
+          return html + renderWeeksFlat(prog, bucket, now);
+        }
 
         prog.themes.forEach(function (theme) {
           if (theme.term !== lastTerm) {
@@ -2450,12 +2535,18 @@
              Without it the panel still works, just without a subject. */
           state.subjects = [];
         }
-        var sel = document.getElementById('assignSubjFilter');
-        sel.innerHTML = '<option value="">всички</option>' +
+        var opts = '<option value="">всички</option>' +
           state.subjects.map(function (sb) {
             return '<option value="' + esc(sb.id) + '">' + esc(sb.name) + '</option>';
           }).join('') +
           '<option value="none">без предмет</option>';
+
+        var sel = document.getElementById('assignSubjFilter');
+        if (sel) sel.innerHTML = opts;
+        /* Същите възможности и в календара — един списък, за да няма как
+           двете менюта да се разминат. */
+        var cal = document.getElementById('calSubjFilter');
+        if (cal) { cal.innerHTML = opts; cal.value = filters.calSubject; }
       }
 
       /* ═══ АНАЛИЗ НА СГРЕШЕНИТЕ ЗАДАЧИ ════════════════════════════════
@@ -3009,6 +3100,13 @@
       });
       document.getElementById('calGradeFilter').addEventListener('change', async function () {
         filters.calGrade = this.value; await loadCalendar();
+      });
+
+      /* Предметът не иска ново четене от базата: заданията вече са тук,
+         мени се само какво от тях се показва. */
+      document.getElementById('calSubjFilter').addEventListener('change', function () {
+        filters.calSubject = this.value;
+        renderCalendar();
       });
 
       /* ---- анализ: слушателите ---------------------------------------- */
