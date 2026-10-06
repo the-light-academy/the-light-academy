@@ -1724,3 +1724,7 @@ body.tlp-space { background: #05070F; }
 .tlp__round { margin-bottom: 0.8rem; }
 .tlp__round-h { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tlp-ink-soft); margin: 0 0 0.45rem; }
 .tlp__round-n { font-size: 0.72rem; font-weight: 800; color: var(--tlp-accent-deep); background: var(--tlp-accent-wash); border-radius: 999px; min-width: 1.3rem; padding: 0.08rem 0.4rem; text-align: center; }
+
+/* Календарът при предмет без своя програма: седмиците наред, без теми. */
+.tlc__alien { margin: 0 0 0.9rem; font-size: 0.88rem; line-height: 1.6; }
+.tlc__flat { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
