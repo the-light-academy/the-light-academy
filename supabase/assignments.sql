@@ -3900,3 +3900,49 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- ---------------------------------------------------------------------
+-- Подготовка за олимпиада, 4. клас — общински кръг.
+-- Двата пробни теста са самостоятелни страници: отварят се, работят и
+-- без интернет и се проверяват сами. Резултатът от тях НЕ влиза в
+-- платформата — заданието беше файловете да са офлайн и без вход.
+-- Тук стоят само за да се появят в раздела „Общински кръг“.
+-- ---------------------------------------------------------------------
+
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, subject_id, grades, track, section)
+values
+  ('probna-obshtinski-2018-4',
+   'Пробен общински кръг — 2018',
+   'exam',
+   'probni_testove/probna_obshtinski_2018_4klas.html',
+   21,
+   false,
+   4018,
+   (select id from public.subjects where slug = 'sastezatelna-matematika'),
+   '{4}',
+   'olimpiada',
+   'obshtinski'),
+  ('probna-obshtinski-2020-4',
+   'Пробен общински кръг — 2020',
+   'exam',
+   'probni_testove/probna_obshtinski_2020_4klas.html',
+   21,
+   false,
+   4020,
+   (select id from public.subjects where slug = 'sastezatelna-matematika'),
+   '{4}',
+   'olimpiada',
+   'obshtinski')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades,
+  track       = excluded.track,
+  section     = excluded.section;
+  -- published нарочно липсва тук: то се управлява от таблото.

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Пробни тестове — общински кръг, 4. клас</title>
+<meta name="description" content="Пробни интерактивни теми за общинския кръг на олимпиадата по математика, 4. клас." />
+<style>
+:root{
+  --bg:#F6F3FF; --card:#fff; --ink:#1F2340; --soft:#5A6183;
+  --line:rgba(31,35,64,.12);
+  --sun:#F7AD19; --sun-d:#8A5505; --sun-w:#FFF3DC;
+  --good:#15643C; --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.65; font-size:18px;
+  background-image:
+    radial-gradient(closest-side at 12% 8%, rgba(247,173,25,.16), transparent 70%),
+    radial-gradient(closest-side at 88% 20%, rgba(90,97,131,.12), transparent 70%);
+  background-attachment:fixed;
+}
+.wrap{max-width:900px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:clamp(1.4rem,3.4vw,2rem);font-weight:800;line-height:1.25}
+h2{font-size:1.15rem;font-weight:800;line-height:1.3}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px 20px;box-shadow:0 10px 30px rgba(31,35,64,.07)}
+.card+.card{margin-top:14px}
+.muted{color:var(--soft);font-size:.95rem}
+.badge{display:inline-block;background:var(--sun-w);color:var(--sun-d);
+  border-radius:999px;padding:.25rem .8rem;font-size:.78rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em}
+.list{display:grid;gap:14px;margin-top:18px}
+.one{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;box-shadow:0 10px 30px rgba(31,35,64,.07);
+  text-decoration:none;color:inherit;transition:transform .15s ease,box-shadow .15s ease}
+.one:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(31,35,64,.12)}
+.one__y{flex:0 0 auto;width:84px;height:84px;border-radius:50%;
+  background:linear-gradient(140deg,#FFF3DC,#FFE2AE);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:1.15rem;color:var(--sun-d)}
+.one__t{flex:1 1 260px;min-width:0}
+.one__go{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  min-height:48px;padding:.5rem 1.2rem;border-radius:999px;
+  background:var(--sun);color:#3A2A05;font-weight:800}
+ul{margin:.5rem 0 0 1.1rem}
+li{margin:.15rem 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><span class="badge">Общински кръг · IV клас</span></p>
+  <h1 style="margin-top:.5rem">Пробни теми по математика</h1>
+  <p class="muted" style="margin-top:.4rem">
+    Истински теми от минали години, разписани като интерактивен тест: с часовник,
+    с проверка на отговорите и с решения стъпка по стъпка.
+  </p>
+
+  <div class="list">
+    <a class="one" href="probna_obshtinski_2018_4klas.html">
+      <span class="one__y">2018</span>
+      <span class="one__t">
+        <h2>Пробен общински кръг — 2018</h2>
+        <span class="muted">Темата от 15.12.2018 г. · три задачи по 7 точки · 21 общо</span>
+      </span>
+      <span class="one__go">Отвори</span>
+    </a>
+    <a class="one" href="probna_obshtinski_2020_4klas.html">
+      <span class="one__y">2020</span>
+      <span class="one__t">
+        <h2>Пробен общински кръг — 2020</h2>
+        <span class="muted">Темата от 16.01.2021 г. · три задачи по 7 точки · 21 общо</span>
+      </span>
+      <span class="one__go">Отвори</span>
+    </a>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h2>Как се работи</h2>
+    <ul>
+      <li>Избира се време: като на олимпиадата (4 часа), тренировка (60 минути) или свое.</li>
+      <li>Пише се само крайният отговор, с цифри. Междинните полета не са задължителни,
+          но носят точки, ако крайният отговор е сбъркан.</li>
+      <li>Проверка има чак след предаване. Тогава излизат и решенията.</li>
+      <li>Ако страницата се затвори по средата, при следващото отваряне
+          предлага да се продължи оттам.</li>
+      <li>Файловете работят и без интернет — свалят се и се отварят с двоен клик.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

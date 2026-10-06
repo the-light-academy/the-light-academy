@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Пробен общински кръг 2018 — математика, 4. клас</title>
+<meta name="description" content="Интерактивна пробна тема за общинския кръг на олимпиадата по математика, 4. клас — темата от 15.12.2018 г. с таймер, проверка на отговорите и анимирани решения." />
+<!-- =====================================================================
+     Пробен общински кръг 2018 — математика, 4. клас
+     ---------------------------------------------------------------------
+     Един файл, който работи сам: без интернет, без външни ресурси, с
+     двоен клик. Всичко — стил, двигател, условия и анимации — е вътре.
+
+     Файлът е СГЛОБЕН от scripts/build_probni.py. Не го редактирай тук:
+     следващото сглобяване ще изтрие промяната. Частите са в
+     scripts/probni/ — engine.css, engine.js и по един файл с условията
+     за всяка година.
+
+     Отговорите са кодирани (base64), за да не се четат с поглед в кода.
+     Това не е ключалка — дете с конзола ще ги намери. Това е да не
+     лъснат случайно, докато листът е отворен пред класа.
+     ===================================================================== -->
+<style>
+/* ── основи ───────────────────────────────────────────────────────── */
+:root{
+  --bg:#F6F3FF; --card:#fff; --ink:#1F2340; --soft:#5A6183;
+  --line:rgba(31,35,64,.12);
+  --sun:#F7AD19; --sun-d:#8A5505; --sun-w:#FFF3DC;
+  --navy:#0D1B36; --good:#15643C; --good-w:#E6F6EE;
+  --bad:#9B2226; --bad-w:#FCEBEA; --mid:#8A5505;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.65;
+  font-size:18px;
+  background-image:
+    radial-gradient(closest-side at 12% 8%, rgba(247,173,25,.16), transparent 70%),
+    radial-gradient(closest-side at 88% 20%, rgba(90,97,131,.12), transparent 70%);
+  background-attachment:fixed;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 60px}
+h1,h2,h3{line-height:1.25}
+h1{font-size:clamp(1.4rem,3.4vw,2rem);font-weight:800}
+h2{font-size:1.2rem;font-weight:800}
+button{font:inherit}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px 20px;box-shadow:0 10px 30px rgba(31,35,64,.07)}
+.card+.card{margin-top:14px}
+.muted{color:var(--soft);font-size:.95rem}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  min-height:48px;padding:.5rem 1.2rem;border-radius:999px;border:2px solid transparent;
+  background:var(--sun);color:#3A2A05;font-weight:800;cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(247,173,25,.35)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn--ghost{background:transparent;border-color:rgba(31,35,64,.2);color:var(--ink)}
+.btn--ghost:hover{background:#F1EEFF;box-shadow:none}
+.btn--navy{background:var(--navy);color:#fff}
+.btn--sm{min-height:38px;padding:.3rem .9rem;font-size:.9rem}
+.btn:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--sun-d);outline-offset:2px}
+
+/* ── начален екран ────────────────────────────────────────────────── */
+.hero{text-align:center;padding:26px 20px}
+.hero__badge{display:inline-block;background:var(--sun-w);color:var(--sun-d);
+  font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.3rem .9rem;border-radius:999px;margin-bottom:.8rem}
+.hero__sub{color:var(--soft);margin-top:.5rem}
+.field{margin:16px auto;max-width:420px;text-align:left}
+.field label{display:block;font-weight:800;font-size:.85rem;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--soft);margin-bottom:.35rem}
+.field input,.field select{width:100%;font:inherit;padding:.65rem .85rem;
+  border:1.5px solid rgba(31,35,64,.18);border-radius:12px;background:#fff}
+.modes{display:grid;gap:10px;max-width:520px;margin:0 auto;text-align:left}
+.mode{display:flex;gap:.7rem;align-items:flex-start;border:2px solid var(--line);
+  border-radius:14px;padding:.7rem .9rem;cursor:pointer;background:#fff}
+.mode:hover{border-color:rgba(13,27,54,.3)}
+.mode.is-on{border-color:var(--navy);background:#F7F8FF}
+.mode input{margin-top:.35rem}
+.mode b{display:block}
+.mode span{font-size:.9rem;color:var(--soft)}
+.rules{text-align:left;max-width:560px;margin:18px auto 0;background:var(--sun-w);
+  border-radius:14px;padding:.9rem 1.1rem}
+.rules li{margin-left:1.1rem}
+
+/* ── лента с таймера ──────────────────────────────────────────────── */
+.bar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  padding:8px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar__who{font-weight:800}
+.bar__prog{font-size:.88rem;color:var(--soft)}
+.bar__sp{margin-left:auto}
+.clock{display:flex;align-items:center;gap:.6rem}
+.clock__ring{width:54px;height:54px;flex:none}
+.clock__ring circle{fill:none;stroke-width:6}
+.clock__bg{stroke:rgba(31,35,64,.1)}
+.clock__fg{stroke:var(--good);stroke-linecap:round;
+  transition:stroke-dashoffset .9s linear,stroke .4s ease}
+.clock__t{font-variant-numeric:tabular-nums;font-weight:800;font-size:1.3rem}
+.clock.is-warn .clock__fg{stroke:var(--sun)} .clock.is-warn .clock__t{color:var(--sun-d)}
+.clock.is-hot .clock__fg{stroke:var(--bad)} .clock.is-hot .clock__t{color:var(--bad)}
+.clock.is-hot{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+
+/* ── навигация по задачи ──────────────────────────────────────────── */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.tab{background:#fff;border:2px solid var(--line);border-radius:16px;padding:.8rem .6rem;
+  cursor:pointer;text-align:center;font-weight:800;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.tab:hover{border-color:rgba(13,27,54,.3)}
+.tab.is-on{border-color:var(--navy);background:#F7F8FF}
+.tab__pts{font-size:.78rem;font-weight:700;color:var(--soft)}
+.tab__ok{font-size:.9rem;color:var(--good)}
+
+/* ── задача ───────────────────────────────────────────────────────── */
+.prob__h{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+.prob__n{font-size:1.25rem;font-weight:800}
+.prob__p{font-size:.8rem;font-weight:800;color:var(--sun-d);background:var(--sun-w);
+  border-radius:999px;padding:.15rem .6rem}
+.prob__text{font-size:1.05rem;margin:.4rem 0 .2rem}
+.fig{margin:14px 0;text-align:center}
+.fig svg{max-width:100%;height:auto}
+.part{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.part__l{display:inline-block;font-weight:800;background:#EEF0FF;border-radius:8px;
+  padding:.05rem .45rem;margin-right:.35rem}
+.ans{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:10px}
+.ans__box{display:flex;flex-direction:column;gap:.2rem}
+.ans__lab{font-size:.82rem;font-weight:700;color:var(--soft)}
+.ans__row{display:flex;align-items:center;gap:.35rem}
+.ans input{font:inherit;font-size:1.05rem;width:7.5rem;padding:.45rem .6rem;
+  border:1.5px solid rgba(31,35,64,.2);border-radius:10px;text-align:center;background:#fff}
+.ans input.sm{width:3.2rem}
+.ans__u{font-weight:700;color:var(--soft)}
+.ans--hint{background:#FBFAFF;border:1px dashed var(--line);border-radius:12px;padding:.6rem .7rem}
+.ans--hint .ans__lab::after{content:" · незадължително";font-weight:400;opacity:.8}
+.draft{margin-top:12px}
+.draft textarea{width:100%;min-height:72px;font:inherit;font-size:.95rem;padding:.6rem .7rem;
+  border:1.5px dashed var(--line);border-radius:12px;background:#FCFCFF;resize:vertical}
+
+/* ── резултати ────────────────────────────────────────────────────── */
+.score{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.score__ring{width:132px;height:132px;position:relative;flex:none}
+.score__ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score__ring circle{fill:none;stroke-width:11}
+.score__bg{stroke:rgba(31,35,64,.1)}
+.score__fg{stroke:var(--sun);stroke-linecap:round;
+  transition:stroke-dashoffset 1.2s cubic-bezier(.22,.61,.36,1)}
+.score__num{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-weight:800;line-height:1.1}
+.score__num b{font-size:2rem}
+.score__num span{font-size:.8rem;color:var(--soft)}
+.score__msg{flex:1 1 16rem;min-width:0}
+/* без това [hidden] не работи върху бутоните: .btn има display:inline-flex */
+[hidden]{display:none !important}
+.tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:.95rem}
+.tbl th,.tbl td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);
+  vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--soft)}
+.tbl td.mark{white-space:nowrap;font-weight:800}
+.tbl tr.is-ok{background:var(--good-w)}
+.tbl tr.is-part{background:var(--sun-w)}
+.tbl tr.is-bad{background:var(--bad-w)}
+.mark{font-weight:800}
+
+/* ── решения ──────────────────────────────────────────────────────── */
+.sol{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-top:12px;background:#fff}
+.sol__h{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.steps{margin-top:12px;display:grid;gap:8px}
+.step{background:#F8F7FF;border-radius:12px;padding:.6rem .8rem;
+  animation:stepIn .32s cubic-bezier(.22,.61,.36,1) both}
+.step b{color:var(--sun-d)}
+.step__p{float:right;font-size:.78rem;font-weight:800;color:var(--sun-d);
+  background:var(--sun-w);border-radius:999px;padding:.05rem .5rem}
+@keyframes stepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stage{margin-top:12px;min-height:40px}
+
+/* ── дребни ───────────────────────────────────────────────────────── */
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;
+  display:grid;gap:8px;width:min(92vw,420px)}
+.toast{background:var(--navy);color:#fff;border-radius:14px;padding:.7rem 1rem;
+  box-shadow:0 14px 34px rgba(13,27,54,.3);animation:tIn .3s ease both;font-size:.95rem}
+@keyframes tIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;
+  background:rgba(13,27,54,.45);padding:18px}
+.modal__box{background:#fff;border-radius:var(--r);padding:20px;max-width:440px;width:100%;
+  box-shadow:0 24px 60px rgba(13,27,54,.3)}
+.modal__btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+#conf{position:fixed;inset:0;pointer-events:none;z-index:50}
+.locked{opacity:.65}
+
+@media (max-width:760px){
+  body{font-size:17px}
+  .tabs{grid-template-columns:1fr}
+  .bar{gap:10px}
+  .score__ring{width:108px;height:108px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+@media print{
+  .bar,.tabs,.btn,.draft,.toast-wrap,#conf{display:none !important}
+  body{background:#fff;font-size:12pt}
+  .card{box-shadow:none;border:1px solid #bbb;break-inside:avoid}
+  .sol{break-inside:avoid}
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* Темата от 15.12.2018 г. — условия, отговори, критерии и анимации.
+   Отговорите тук се пишат четимо, в полето ans; build_probni.py ги
+   кодира, преди да влязат в готовия файл. */
+var TEST = {
+  id: 'obshtinski-2018-4',
+  title: 'Пробен общински кръг — 2018',
+  originalDate: '15.12.2018 г.',
+  officialMinutes: 240,
+  passThreshold: 16,
+  thresholdNote: '',
+  problems: [
+    {
+      n: 1, points: 7, figure: null,
+      parts: [
+        { key: 'p1a', label: 'а)', points: 2,
+          textHtml: 'Пресметнете стойността на израза ' +
+            '<b>2018 − (12 · 7 + 13 · 7 + 75 · 7 + 219 : 3)</b>',
+          inputs: [ { key: '1a', label: 'Отговор', unit: '', points: 2, final: true, enc: 'MTI0NQ==' } ],
+          solutionSteps: [
+            { label: 'а)', points: 0, anim: 'g7', k: 0,
+              html: 'И трите произведения са по 7. Затова се групират: 12 · 7 + 13 · 7 + 75 · 7 = <b>7 · (12 + 13 + 75)</b>.' },
+            { label: 'а)', points: 1, anim: 'g7', k: 1,
+              html: '12 + 13 + 75 = 100, значи 7 · 100 = <b>700</b>.' },
+            { label: 'а)', points: 0, anim: 'g7', k: 2,
+              html: '219 : 3 = 73. В скобите става 700 + 73 = <b>773</b>.' },
+            { label: 'а)', points: 1, anim: 'g7', k: 3,
+              html: '2018 − 773 = <b>1245</b>.' }
+          ] },
+        { key: 'p1b', label: 'б)', points: 2,
+          textHtml: 'Ако <i>a</i> е цифрата на десетохилядите, <i>b</i> — на хилядите, ' +
+            '<i>c</i> — на стотиците, а <i>d</i> — на десетиците на числото <b>305714</b>, ' +
+            'намерете <b>b · c − a · d</b>.',
+          inputs: [
+            { key: '1b_d', label: 'Цифрите', kind: 'digits', boxes: ['a =', 'b =', 'c =', 'd ='],
+              points: 1, final: false, enc: 'MCw1LDcsMQ==' },
+            /* 1 точка за цифрите + 1 за сметката = 2. Верният краен
+               отговор сам по себе си дава пълните 2 (виж scorePart). */
+            { key: '1b', label: 'b · c − a · d', unit: '', points: 1, final: true, enc: 'MzU=' }
+          ],
+          solutionSteps: [
+            { label: 'б)', points: 1, anim: 'digits', k: 0,
+              html: 'Разредите на 305714 отдясно наляво: единици 4, десетици 1, стотици 7, хиляди 5, десетохиляди 0, стотици хиляди 3.' },
+            { label: 'б)', points: 0, anim: 'digits', k: 1,
+              html: 'Значи <b>a = 0</b>, <b>b = 5</b>, <b>c = 7</b>, <b>d = 1</b>.' },
+            { label: 'б)', points: 1, anim: 'digits', k: 2,
+              html: 'b · c − a · d = 5 · 7 − 0 · 1 = 35 − 0 = <b>35</b>.' }
+          ] },
+        { key: 'p1v', label: 'в)', points: 3,
+          textHtml: 'Намерете неизвестното число <i>x</i> в равенството <b>(73 − x) · 5 − 16 = 344</b>.',
+          inputs: [ { key: '1v', label: 'x =', unit: '', points: 3, final: true, enc: 'MQ==' } ],
+          solutionSteps: [
+            { label: 'в)', points: 1, anim: 'chain', k: 0,
+              html: 'Връщаме се по обратния път. Последното действие е „− 16“, значи (73 − x) · 5 = 344 + 16 = <b>360</b>.' },
+            { label: 'в)', points: 1, anim: 'chain', k: 1,
+              html: 'Преди него е „· 5“, значи 73 − x = 360 : 5 = <b>72</b>.' },
+            { label: 'в)', points: 1, anim: 'chain', k: 2,
+              html: 'Остава 73 − x = 72, тоест <b>x = 1</b>. Проверка: (73 − 1) · 5 − 16 = 360 − 16 = 344. ✓' }
+          ] }
+      ]
+    },
+    {
+      n: 2, points: 7,
+      introHtml: 'В софийски квартал правят нова детска площадка. Тя е с правоъгълна форма, ' +
+        'като <b>дължината ѝ е три пъти по-голяма от широчината</b>. ' +
+        'Обиколката на площадката е <b>336 метра</b>.',
+      figure: "<svg viewBox=\"0 0 520 210\" width=\"100%\" style=\"max-width:520px\" role=\"img\" aria-label=\"Правоъгълна площадка, дължината е три пъти по-голяма от широчината. По дългата ѝ страна има храсти — първите три и последният.\"><rect x=\"40\" y=\"20\" width=\"420\" height=\"140\" rx=\"10\" fill=\"#FFF9EC\" stroke=\"#8A5505\" stroke-width=\"3\"/><g fill=\"#1F2340\"><circle cx=\"40\" cy=\"160\" r=\"8\"/><circle cx=\"76\" cy=\"160\" r=\"8\"/><circle cx=\"112\" cy=\"160\" r=\"8\"/><circle cx=\"460\" cy=\"160\" r=\"8\"/></g><g fill=\"#9AA1BD\"><circle cx=\"260\" cy=\"160\" r=\"5\"/><circle cx=\"286\" cy=\"160\" r=\"5\"/><circle cx=\"312\" cy=\"160\" r=\"5\"/></g><text x=\"250\" y=\"192\" text-anchor=\"middle\" font-size=\"15\" fill=\"#5A6183\">храстите са на 2 метра един от друг</text></svg>",
+      parts: [
+        { key: 'p2a', label: 'а)', points: 5.5,
+          textHtml: 'Намерете с колко метра дължината на площадката е по-дълга от нейната широчина.',
+          inputs: [
+            { key: '2a_w', label: 'Широчина', unit: 'м', points: 4.5, final: false, enc: 'NDI=' },
+            { key: '2a_l', label: 'Дължина', unit: 'м', points: 0.5, final: false, enc: 'MTI2' },
+            { key: '2a', label: 'Разлика', unit: 'м', points: 0.5, final: true, enc: 'ODQ=' }
+          ],
+          solutionSteps: [
+            { label: 'а)', points: 2, anim: 'rect', k: 0,
+              html: 'Широчината е една част, дължината — три такива части. Обиколката е широчина + дължина + широчина + дължина, тоест <b>8 части</b>.' },
+            { label: 'а)', points: 2.5, anim: 'rect', k: 1,
+              html: '336 : 8 = <b>42</b> метра — това е широчината.' },
+            { label: 'а)', points: 0.5, anim: 'rect', k: 2,
+              html: 'Дължината е 42 · 3 = <b>126</b> метра.' },
+            { label: 'а)', points: 0.5, anim: 'rect', k: 3,
+              html: '126 − 42 = <b>84 метра</b> е разликата.' }
+          ] },
+        { key: 'p2b', label: 'б)', points: 1.5,
+          textHtml: 'Покрай едната от по-дългите страни служителите засаждат храсти на ' +
+            'разстояние <b>2 метра</b> един от друг. На картинката са показани първите три ' +
+            'и последният храст. Общо колко храста трябва да бъдат засадени?',
+          inputs: [
+            { key: '2b_d', label: 'Брой разстояния', unit: '', points: 0.5, final: false, enc: 'NjM=' },
+            { key: '2b', label: 'Брой храсти', unit: '', points: 1, final: true, enc: 'NjQ=' }
+          ],
+          solutionSteps: [
+            { label: 'б)', points: 0.5, anim: 'bushes', k: 0,
+              html: 'По дългата страна от 126 метра разстоянията по 2 метра са 126 : 2 = <b>63</b>.' },
+            { label: 'б)', points: 1, anim: 'bushes', k: 1,
+              html: 'Храстите са с един повече от разстоянията между тях — има храст и в двата края: 63 + 1 = <b>64 храста</b>.' }
+          ] }
+      ]
+    },
+    {
+      n: 3, points: 7,
+      introHtml: 'Мама, татко и Тони отидоха в сладкарницата. Мама си поръча <b>кафе и торта</b>, ' +
+        'татко — <b>кафе и сандвич</b>, а Тони — <b>сандвич и торта</b>. Сервитьорът донесе ' +
+        'сметката на всеки поотделно: мама — 6 лева и 60 стотинки, татко — 5 лева и 5 стотинки, ' +
+        'а Тони — 9 лева и 25 стотинки.',
+      figure: null,
+      parts: [
+        { key: 'p3a', label: 'а)', points: 1.5,
+          textHtml: 'Колко стотинки е сметката на тримата общо?',
+          inputs: [ { key: '3a', label: 'Общо', unit: 'ст.', points: 1.5, final: true, enc: 'MjA5MA==' } ],
+          solutionSteps: [
+            { label: 'а)', points: 1.5, anim: 'bills', k: 0,
+              html: '6 лв. 60 ст. = 660 ст., 5 лв. 5 ст. = 505 ст., 9 лв. 25 ст. = 925 ст. ' +
+                    'Сборът е 660 + 505 + 925 = <b>2090 стотинки</b>.' }
+          ] },
+        { key: 'p3b', label: 'б)', points: 5.5,
+          textHtml: 'Колко струват кафето, сандвичът и тортата поотделно?',
+          inputs: [
+            { key: '3b_one', label: 'Кафе + сандвич + торта', unit: 'ст.', points: 1, final: false, enc: 'MTA0NQ==' },
+            { key: '3b_k', label: 'Кафе', kind: 'money', points: 1.5, final: true, enc: 'MTIw' },
+            { key: '3b_s', label: 'Сандвич', kind: 'money', points: 1.5, final: true, enc: 'Mzg1' },
+            { key: '3b_t', label: 'Торта', kind: 'money', points: 1.5, final: true, enc: 'NTQw' }
+          ],
+          solutionSteps: [
+            { label: 'б)', points: 1, anim: 'bills', k: 1,
+              html: 'В трите сметки всеки продукт е броен по <b>два пъти</b>: 2 кафета, 2 сандвича и 2 торти. ' +
+                    'Значи едно кафе + един сандвич + една торта струват 2090 : 2 = <b>1045 ст.</b>' },
+            { label: 'б)', points: 1.5, anim: 'bills', k: 2,
+              html: 'Махаме сметката на мама (кафе + торта): сандвичът е 1045 − 660 = <b>385 ст. = 3 лв. 85 ст.</b>' },
+            { label: 'б)', points: 1.5, anim: 'bills', k: 3,
+              html: 'Махаме сметката на Тони (сандвич + торта): кафето е 1045 − 925 = <b>120 ст. = 1 лв. 20 ст.</b>' },
+            { label: 'б)', points: 1.5, anim: 'bills', k: 4,
+              html: 'Махаме сметката на татко (кафе + сандвич): тортата е 1045 − 505 = <b>540 ст. = 5 лв. 40 ст.</b> ' +
+                    'Проверка: 120 + 540 = 660 ✓, 120 + 385 = 505 ✓, 385 + 540 = 925 ✓' }
+          ] }
+      ]
+    }
+  ]
+};
+
+/* Анимираните решения за 2018. Всяка функция рисува СЪСТОЯНИЕТО на
+   стъпка k — не разликата спрямо предишната. Така редът няма значение
+   и повторното рисуване е безопасно. */
+var ANIM = (function () {
+  function box(h) { return '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">' + h + '</div>'; }
+  function chip(t, bg, fg) {
+    return '<span style="display:inline-block;background:' + (bg || '#EEF0FF') + ';color:' + (fg || '#1F2340') +
+      ';border-radius:12px;padding:.35rem .7rem;font-weight:800;font-size:1.05rem">' + t + '</span>';
+  }
+  var GOLD = '#FFF3DC', GOLDF = '#8A5505', GREEN = '#E6F6EE', GREENF = '#15643C';
+
+  return {
+    /* 1а — трите произведения се сливат в 7 · 100 */
+    g7: function (host, k) {
+      var h = '';
+      if (k === 0) {
+        h = box(chip('12 · 7') + chip('+') + chip('13 · 7') + chip('+') + chip('75 · 7')) +
+            '<p class="muted" style="margin-top:.5rem">И трите са „нещо · 7“.</p>';
+      } else if (k === 1) {
+        h = box(chip('7 · (12 + 13 + 75)', GOLD, GOLDF) + chip('=') + chip('7 · 100', GOLD, GOLDF) +
+                chip('=') + chip('700', GREEN, GREENF));
+      } else if (k === 2) {
+        h = box(chip('700') + chip('+') + chip('219 : 3 = 73') + chip('=') + chip('773', GOLD, GOLDF));
+      } else {
+        h = box(chip('2018') + chip('−') + chip('773') + chip('=') + chip('1245', GREEN, GREENF)) +
+            '<p class="muted" style="margin-top:.5rem">Отговор: <b>1245</b>.</p>';
+      }
+      host.innerHTML = h;
+    },
+
+    /* 1б — таблица на разредите с буквите отгоре */
+    digits: function (host, k) {
+      var names = ['стотици хиляди', 'десетохиляди', 'хиляди', 'стотици', 'десетици', 'единици'];
+      var ds = ['3', '0', '5', '7', '1', '4'];
+      var letters = ['', 'a', 'b', 'c', 'd', ''];
+      var cells = ds.map(function (d, i) {
+        var lit = (k >= 1 && letters[i]);
+        return '<td style="text-align:center;padding:.3rem .5rem;border:1px solid rgba(31,35,64,.15);' +
+          (lit ? 'background:' + GOLD : '') + '">' +
+          '<div style="font-size:.7rem;color:#5A6183">' + names[i] + '</div>' +
+          '<div style="font-size:1.5rem;font-weight:800">' + d + '</div>' +
+          '<div style="font-weight:800;color:' + GOLDF + ';min-height:1.2em">' +
+            (lit ? letters[i] : '&nbsp;') + '</div></td>';
+      }).join('');
+      host.innerHTML = '<table style="border-collapse:collapse;margin:0 auto"><tr>' + cells + '</tr></table>' +
+        (k >= 2 ? '<p style="margin-top:.6rem;text-align:center">' +
+          chip('5 · 7', GOLD, GOLDF) + ' <b>−</b> ' + chip('0 · 1', GOLD, GOLDF) + ' <b>=</b> ' +
+          chip('35', GREEN, GREENF) + '</p>' : '');
+    },
+
+    /* 1в — веригата се развива наобратно */
+    chain: function (host, k) {
+      var fwd = box(chip('x') + chip('→ 73 − x') + chip('→ · 5') + chip('→ − 16') + chip('= 344', GOLD, GOLDF));
+      var rows = [
+        '<b>+ 16</b> → (73 − x) · 5 = ' + chip('360', GOLD, GOLDF),
+        '<b>: 5</b> → 73 − x = ' + chip('72', GOLD, GOLDF),
+        '<b>73 − 72</b> → x = ' + chip('1', GREEN, GREENF)
+      ].slice(0, k + 1);
+      host.innerHTML = fwd + '<div style="margin-top:.6rem;display:grid;gap:6px">' +
+        rows.map(function (r) {
+          return '<div style="background:#F8F7FF;border-radius:10px;padding:.4rem .7rem">' + r + '</div>';
+        }).join('') + '</div>';
+    },
+
+    /* 2а — правоъгълникът, разделен на 8 равни части */
+    rect: function (host, k) {
+      var W = 480, H = 160, x0 = 20, y0 = 20, w = 420, h = 140;
+      var seg = w / 3;                       /* дължината е 3 части */
+      var marks = '';
+      if (k >= 1) {
+        for (var i = 1; i < 3; i++) {
+          marks += '<line x1="' + (x0 + seg * i) + '" y1="' + y0 + '" x2="' + (x0 + seg * i) +
+            '" y2="' + (y0 + h) + '" stroke="#F7AD19" stroke-width="2" stroke-dasharray="5 4"/>';
+        }
+      }
+      var labels = '<text x="' + (x0 + w / 2) + '" y="' + (y0 + h + 22) + '" text-anchor="middle" ' +
+          'font-size="15" font-weight="700" fill="#1F2340">дължина = 3 части' +
+          (k >= 2 ? ' = 126 м' : '') + '</text>' +
+        '<text x="' + (x0 - 8) + '" y="' + (y0 + h / 2) + '" text-anchor="end" font-size="15" ' +
+          'font-weight="700" fill="#1F2340">' + (k >= 1 ? '42 м' : '1 част') + '</text>';
+      host.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + (H + 40) + '" width="100%" style="max-width:520px">' +
+        '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="8" ' +
+          'fill="#FFF9EC" stroke="#8A5505" stroke-width="2.5"/>' + marks + labels + '</svg>' +
+        (k >= 1 ? '<p style="margin-top:.4rem;text-align:center">' +
+          chip('336 : 8', GOLD, GOLDF) + ' <b>=</b> ' + chip('42 м', GREEN, GREENF) + '</p>' : '') +
+        (k >= 3 ? '<p style="margin-top:.4rem;text-align:center">' +
+          chip('126 − 42', GOLD, GOLDF) + ' <b>=</b> ' + chip('84 м', GREEN, GREENF) + '</p>' : '');
+    },
+
+    /* 2б — храстите се засаждат по дългата страна */
+    bushes: function (host, k) {
+      var n = 9, W = 520, y = 46, x0 = 30, step = (W - 2 * x0) / (n - 1);
+      var dots = '', gaps = '';
+      for (var i = 0; i < n; i++) {
+        var x = x0 + step * i;
+        dots += '<circle cx="' + x + '" cy="' + y + '" r="9" fill="#2F7A4F"/>' +
+                '<rect x="' + (x - 2) + '" y="' + y + '" width="4" height="12" fill="#7A5A3A"/>';
+        if (i < n - 1 && k >= 1) {
+          gaps += '<text x="' + (x + step / 2) + '" y="' + (y - 16) + '" text-anchor="middle" ' +
+            'font-size="12" fill="#8A5505">2 м</text>';
+        }
+      }
+      host.innerHTML = '<svg viewBox="0 0 ' + W + ' 86" width="100%" style="max-width:560px">' +
+        '<line x1="' + x0 + '" y1="' + (y + 14) + '" x2="' + (W - x0) + '" y2="' + (y + 14) +
+          '" stroke="#C9B48F" stroke-width="5" stroke-linecap="round"/>' + gaps + dots +
+        '<text x="' + (W / 2) + '" y="80" text-anchor="middle" font-size="13" fill="#5A6183">' +
+          '… и така до края на 126-те метра …</text></svg>' +
+        (k >= 1 ? '<p style="margin-top:.4rem;text-align:center">' +
+          chip('126 : 2 = 63 разстояния', GOLD, GOLDF) + ' <b>→</b> ' +
+          chip('63 + 1 = 64 храста', GREEN, GREENF) + '</p>' +
+          '<p class="muted" style="text-align:center;margin-top:.3rem">' +
+          'Има храст и в двата края, затова храстите са с един повече от разстоянията.</p>' : '');
+    },
+
+    /* 3 — трите сметки се събират, делят на две и се вадят една по една */
+    bills: function (host, k) {
+      function bill(who, what, sum, dim) {
+        return '<div style="flex:0 0 150px;background:#fff;border:1.5px dashed #C9B48F;border-radius:12px;' +
+          'padding:.6rem;text-align:center;' + (dim ? 'opacity:.4;' : '') + '">' +
+          '<div style="font-size:.8rem;color:#5A6183">' + who + '</div>' +
+          '<div style="font-size:1.6rem;line-height:1.3">' + what + '</div>' +
+          '<div style="font-weight:800">' + sum + ' ст.</div></div>';
+      }
+      var three = box(bill('мама', '☕🍰', 660, k >= 2) + bill('татко', '☕🥪', 505, k >= 2) +
+                      bill('Тони', '🥪🍰', 925, k >= 2));
+      var h = three;
+      if (k >= 0 && k < 1) {
+        h += '<p style="margin-top:.5rem;text-align:center">' +
+          chip('660 + 505 + 925 = 2090 ст.', GOLD, GOLDF) + '</p>';
+      }
+      if (k >= 1) {
+        h += '<p style="margin-top:.5rem;text-align:center">' +
+          chip('2 · ☕ + 2 · 🥪 + 2 · 🍰 = 2090', GOLD, GOLDF) + ' <b>→</b> ' +
+          chip('☕ + 🥪 + 🍰 = 1045', GREEN, GREENF) + '</p>';
+      }
+      var lines = [
+        ['1045 − 660 (мама: ☕🍰)', '🥪 = 385 ст. = 3 лв. 85 ст.'],
+        ['1045 − 925 (Тони: 🥪🍰)', '☕ = 120 ст. = 1 лв. 20 ст.'],
+        ['1045 − 505 (татко: ☕🥪)', '🍰 = 540 ст. = 5 лв. 40 ст.']
+      ].slice(0, Math.max(0, k - 1));
+      if (lines.length) {
+        h += '<div style="margin-top:.6rem;display:grid;gap:6px">' + lines.map(function (r) {
+          return '<div style="background:#F8F7FF;border-radius:10px;padding:.4rem .7rem">' +
+            r[0] + ' <b>→</b> ' + chip(r[1], GREEN, GREENF) + '</div>';
+        }).join('') + '</div>';
+      }
+      host.innerHTML = h;
+    }
+  };
+})();
+
+</script>
+<script>
+/* =====================================================================
+   Двигателят на пробния тест
+   ---------------------------------------------------------------------
+   Един и същ за всички години. Темата (условия, отговори, критерии,
+   анимации) идва отвън, в обекта TEST, и двигателят не знае нищо за
+   съдържанието ѝ. Нова година значи нов файл с данни и нищо друго.
+
+   Три неща, които се правят нарочно така:
+
+   · Времето се мери с Date.now(), а не с броене на тиктакания. Таб,
+     който е бил на заден план, не „дължи“ секунди — браузърът спира
+     таймерите му, а часовникът на олимпиадата не спира.
+   · Отговорите са кодирани. Не е ключалка, а предпазване от случайно
+     лъсване, докато листът е отворен пред класа.
+   · Проверка има САМО след предаване. По време на теста няма зелено и
+     червено — иначе детето решава по сигналите, а не по задачата.
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  /* ── дребни помощници ─────────────────────────────────────────────*/
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function dec(s) {
+    try { return decodeURIComponent(escape(atob(s))); } catch (e) { return ''; }
+  }
+  /* 5,5 → „5,5“; 5 → „5“. Точките са половинки, затова не се закръглят. */
+  function pts(n) {
+    var r = Math.round(n * 2) / 2;
+    return (r === Math.floor(r)) ? String(r) : String(r).replace('.', ',');
+  }
+  function plural(n, a, b, c) { return n === 1 ? a : (n < 5 ? b : c); }
+
+  /* ── нормализиране на въведеното ──────────────────────────────────
+     Детето пише „42 м“, „42м“, „ 42 “ или „42,0“ — всичко това е 42.
+     Мерните единици се махат, защото са изписани до полето; запетаята
+     и точката са едно и също; интервалите вътре в числото също падат,
+     за да мине „1 045“. */
+  function normalizeInput(raw) {
+    var t = String(raw == null ? '' : raw).trim().toLowerCase();
+    if (!t) return '';
+    t = t.replace(/[а-я.]*$/u, function (m) {
+      /* маха само мерна единица накрая, не цифри */
+      return /^[а-я.\s]*$/u.test(m) ? '' : m;
+    });
+    t = t.replace(/\s+/g, '').replace(/,/g, '.');
+    if (!/^-?\d+(\.\d+)?$/.test(t)) return t;        /* не е число — връща се както е */
+    var n = parseFloat(t);
+    if (isNaN(n)) return t;
+    /* 42.0 и 42 са едно и също */
+    return String(Math.round(n * 1000) / 1000);
+  }
+  function sameNum(a, b) { return a !== '' && normalizeInput(a) === normalizeInput(b); }
+
+  /* ── състояние ────────────────────────────────────────────────────*/
+  var KEY = 'tla-probna-' + TEST.id;
+  var S = {
+    name: '', mode: 'train', minutes: 60,
+    startedAt: 0, endsAt: 0, paused: false, pausedAt: 0,
+    answers: {}, drafts: {}, submitted: false, usedMs: 0, result: null,
+    screen: 'start', tab: 0, shown: {}
+  };
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        name: S.name, mode: S.mode, minutes: S.minutes, startedAt: S.startedAt,
+        endsAt: S.endsAt, paused: S.paused, pausedAt: S.pausedAt,
+        answers: S.answers, drafts: S.drafts, submitted: S.submitted, usedMs: S.usedMs
+      }));
+    } catch (e) { /* без localStorage тестът пак работи, просто не оцелява презареждане */ }
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function wipe() { try { localStorage.removeItem(KEY); } catch (e) {} }
+
+  /* ── известия и модални прозорци ──────────────────────────────────*/
+  var toastWrap;
+  function toast(msg, ms) {
+    if (!toastWrap) { toastWrap = el('div', 'toast-wrap'); document.body.appendChild(toastWrap); }
+    var t = el('div', 'toast', esc(msg));
+    toastWrap.appendChild(t);
+    setTimeout(function () { t.remove(); }, ms || 4200);
+  }
+  function ask(title, text, okLabel, onOk) {
+    var m = el('div', 'modal');
+    m.innerHTML = '<div class="modal__box" role="dialog" aria-modal="true">' +
+      '<h2>' + esc(title) + '</h2><p class="muted" style="margin-top:.4rem">' + esc(text) + '</p>' +
+      '<div class="modal__btns">' +
+        '<button type="button" class="btn btn--ghost" data-no>Не, връщам се</button>' +
+        '<button type="button" class="btn" data-yes>' + esc(okLabel) + '</button>' +
+      '</div></div>';
+    document.body.appendChild(m);
+    m.querySelector('[data-yes]').focus();
+    m.addEventListener('click', function (e) {
+      if (e.target.closest('[data-yes]')) { m.remove(); onOk(); }
+      else if (e.target.closest('[data-no]') || e.target === m) m.remove();
+    });
+  }
+
+  /* ── таймерът ─────────────────────────────────────────────────────*/
+  var tick = null, flags = {};
+  function msLeft() {
+    if (S.paused) return Math.max(0, S.endsAt - S.pausedAt);
+    return Math.max(0, S.endsAt - Date.now());
+  }
+  function fmt(ms) {
+    var s = Math.floor(ms / 1000), h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60), q = s % 60;
+    return h + ':' + ('0' + m).slice(-2) + ':' + ('0' + q).slice(-2);
+  }
+  function startClock() {
+    stopClock();
+    tick = setInterval(paintClock, 250);
+    paintClock();
+  }
+  function stopClock() { if (tick) { clearInterval(tick); tick = null; } }
+
+  function paintClock() {
+    var box = $('clock');
+    if (!box) return;
+    var left = msLeft(), total = S.minutes * 60000;
+    var frac = total ? left / total : 0;
+    $('clockT').textContent = fmt(left);
+    var ring = $('clockFg');
+    var C = 2 * Math.PI * 24;
+    ring.setAttribute('stroke-dasharray', C);
+    ring.setAttribute('stroke-dashoffset', String(C * (1 - frac)));
+    box.className = 'clock' + (left <= 300000 ? ' is-hot' : (frac <= 0.25 ? ' is-warn' : ''));
+
+    if (!flags.half && left <= total / 2 && left > total / 2 - 2000) {
+      flags.half = true; toast('Половината време мина.');
+    }
+    if (!flags.ten && left <= 600000) { flags.ten = true; toast('Остават 10 минути.'); }
+    if (!flags.one && left <= 60000) { flags.one = true; toast('Остава 1 минута!'); }
+    if (left <= 0) { stopClock(); submit(true); }
+  }
+
+  /* ── събиране на отговорите от екрана ─────────────────────────────*/
+  function inputId(pk, k, i) { return 'in-' + pk + '-' + k + (i == null ? '' : '-' + i); }
+
+  /* На екрана стои само отворената задача — полетата на другите две ги
+     няма в DOM-а. Затова се чете САМО онова, което наистина е на екрана:
+     иначе смяната на раздел би изтрила вече попълнените отговори. */
+  function readInputs() {
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) {
+        pt.inputs.forEach(function (inp) {
+          if (inp.kind === 'money') {
+            var lv = $(inputId(pt.key, inp.key, 'lv')), st = $(inputId(pt.key, inp.key, 'st'));
+            if (!lv && !st) return;
+            S.answers[inp.key] = [lv ? lv.value : '', st ? st.value : ''];
+          } else if (inp.kind === 'digits') {
+            if (!$(inputId(pt.key, inp.key, 0))) return;
+            S.answers[inp.key] = inp.boxes.map(function (b, i) {
+              var e = $(inputId(pt.key, inp.key, i));
+              return e ? e.value : '';
+            });
+          } else {
+            var e2 = $(inputId(pt.key, inp.key));
+            if (!e2) return;
+            S.answers[inp.key] = e2.value;
+          }
+        });
+      });
+      var d = $('draft-' + pr.n);
+      if (d) S.drafts['p' + pr.n] = d.value;
+    });
+  }
+
+  /* Колко полета са попълнени — само крайните броят за прогреса, защото
+     междинните са по желание. */
+  function progress() {
+    var done = 0, all = 0;
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) {
+        pt.inputs.forEach(function (inp) {
+          if (!inp.final) return;
+          all++;
+          if (filled(inp)) done++;
+        });
+      });
+    });
+    return { done: done, all: all };
+  }
+  function filled(inp) {
+    var v = S.answers[inp.key];
+    if (v == null) return false;
+    if (inp.kind === 'money') return String(v[0] || '').trim() !== '' || String(v[1] || '').trim() !== '';
+    if (inp.kind === 'digits') return v.every(function (x) { return String(x).trim() !== ''; });
+    return String(v).trim() !== '';
+  }
+
+  /* ── оценяване ────────────────────────────────────────────────────
+     Правилото е едно: верни ВСИЧКИ крайни полета → пълните точки за
+     подточката. Инак — сборът от точките на верните полета (и крайни,
+     и междинни), без да надхвърля пълните. */
+  function inputCorrect(inp) {
+    var v = S.answers[inp.key];
+    if (v == null) return false;
+    if (inp.kind === 'money') {
+      var lv = normalizeInput(v[0]) === '' ? 0 : parseFloat(normalizeInput(v[0]));
+      var st = normalizeInput(v[1]) === '' ? 0 : parseFloat(normalizeInput(v[1]));
+      if (isNaN(lv) || isNaN(st)) return false;
+      if (String(v[0]).trim() === '' && String(v[1]).trim() === '') return false;
+      return (lv * 100 + st) === parseFloat(dec(inp.enc));
+    }
+    if (inp.kind === 'digits') {
+      var want = dec(inp.enc).split(',');
+      return v.length === want.length && want.every(function (w, i) { return sameNum(v[i], w); });
+    }
+    return sameNum(v, dec(inp.enc));
+  }
+
+  function scorePart(pt) {
+    var finals = pt.inputs.filter(function (i) { return i.final; });
+    var allFinal = finals.length > 0 && finals.every(inputCorrect);
+    if (allFinal) return { got: pt.points, full: true };
+    var sum = 0;
+    pt.inputs.forEach(function (i) { if (inputCorrect(i)) sum += i.points || 0; });
+    return { got: Math.min(sum, pt.points), full: false };
+  }
+
+  function scoreTest() {
+    var rows = [], total = 0;
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) {
+        var r = scorePart(pt);
+        total += r.got;
+        rows.push({ pr: pr.n, label: pt.label, points: pt.points, got: r.got, part: pt });
+      });
+    });
+    return { rows: rows, total: Math.round(total * 2) / 2 };
+  }
+
+  /* ── екран: начало ────────────────────────────────────────────────*/
+  function screenStart(resume) {
+    var modes = [
+      { id: 'real', t: 'Като на олимпиадата', s: '4 часа, без пауза — точно както е на истинската.', m: TEST.officialMinutes },
+      { id: 'train', t: 'Тренировка', s: '60 минути, с бутон „Пауза“.', m: 60 },
+      { id: 'mine', t: 'Мое време', s: 'Избираш сам между 10 и 240 минути.', m: 60 }
+    ];
+    var app = $('app');
+    app.innerHTML = '<div class="wrap"><div class="card hero">' +
+      '<span class="hero__badge">Общински кръг · IV клас</span>' +
+      '<h1>' + esc(TEST.title) + '</h1>' +
+      '<p class="hero__sub">По темата от ' + esc(TEST.originalDate) +
+        ' · три задачи по 7 точки, общо 21.</p>' +
+      (resume ? '<div class="rules" style="background:var(--good-w)"><b>Има започнат тест.</b> ' +
+        'Можеш да продължиш оттам, където си спрял.' +
+        '<div style="margin-top:.7rem;display:flex;gap:10px;flex-wrap:wrap">' +
+        '<button class="btn" id="goOn">Продължи започнатия тест</button>' +
+        '<button class="btn btn--ghost" id="goNew">Започни отначало</button></div></div>' : '') +
+      '<div class="field"><label for="nm">Име</label>' +
+        '<input id="nm" type="text" placeholder="напиши името си" value="' + esc(S.name) + '" /></div>' +
+      '<div class="modes">' + modes.map(function (m) {
+        return '<label class="mode' + (S.mode === m.id ? ' is-on' : '') + '" data-mode="' + m.id + '">' +
+          '<input type="radio" name="mode" value="' + m.id + '"' +
+            (S.mode === m.id ? ' checked' : '') + ' />' +
+          '<span><b>' + esc(m.t) + '</b><span>' + esc(m.s) + '</span></span></label>';
+      }).join('') + '</div>' +
+      '<div class="field" id="mineWrap" ' + (S.mode === 'mine' ? '' : 'hidden') + '>' +
+        '<label for="mins">Колко минути</label>' +
+        '<input id="mins" type="number" min="10" max="240" value="' + (S.minutes || 60) + '" /></div>' +
+      '<div class="rules"><b>Как се работи</b><ul>' +
+        '<li>Три задачи по 7 точки — общо 21.</li>' +
+        '<li>В полетата пиши само крайния отговор, с цифри.</li>' +
+        '<li>Има и полета „междинен резултат“ — те не са задължителни, но носят точки, ако крайният отговор е сбъркан.</li>' +
+        '<li>Ползвай хартия за чернова. Има и място за бележки под всяка задача.</li>' +
+        '<li>Проверка има чак след предаване.</li>' +
+      '</ul></div>' +
+      '<p style="margin-top:18px"><button class="btn" id="go">Започни</button></p>' +
+      '<p class="muted" style="margin-top:.6rem">Прагът за областен кръг е ' +
+        TEST.passThreshold + ' точки' + (TEST.thresholdNote ? ' (' + esc(TEST.thresholdNote) + ')' : '') + '.</p>' +
+      '</div></div>';
+
+    app.addEventListener('change', onStartChange);
+    app.addEventListener('click', onStartClick);
+  }
+  function onStartChange(e) {
+    var m = e.target.closest('[name="mode"]');
+    if (m) {
+      S.mode = m.value;
+      Array.prototype.forEach.call(document.querySelectorAll('.mode'), function (l) {
+        l.classList.toggle('is-on', l.dataset.mode === S.mode);
+      });
+      $('mineWrap').hidden = (S.mode !== 'mine');
+    }
+  }
+  function onStartClick(e) {
+    if (e.target.closest('#goOn')) { resumeRun(); return; }
+    if (e.target.closest('#goNew')) { wipe(); S.submitted = false; S.answers = {}; screenStart(false); return; }
+    if (!e.target.closest('#go')) return;
+    S.name = ($('nm').value || '').trim();
+    var mins = S.mode === 'real' ? TEST.officialMinutes : (S.mode === 'train' ? 60 : Number($('mins').value || 60));
+    if (S.mode === 'mine') mins = Math.max(10, Math.min(240, mins || 60));
+    S.minutes = mins;
+    S.startedAt = Date.now();
+    S.endsAt = S.startedAt + mins * 60000;
+    S.paused = false; S.submitted = false; S.answers = {}; S.drafts = {}; flags = {};
+    save();
+    screenTest();
+  }
+  function resumeRun() {
+    var d = load();
+    if (!d) { screenStart(false); return; }
+    S.name = d.name; S.mode = d.mode; S.minutes = d.minutes;
+    S.startedAt = d.startedAt; S.endsAt = d.endsAt;
+    S.paused = !!d.paused; S.pausedAt = d.pausedAt || 0;
+    S.answers = d.answers || {}; S.drafts = d.drafts || {};
+    if (msLeft() <= 0) { S.submitted = true; screenTest(); submit(true); return; }
+    screenTest();
+  }
+
+  /* ── екран: тестът ────────────────────────────────────────────────*/
+  function screenTest() {
+    S.screen = 'test';
+    var app = $('app');
+    app.innerHTML =
+      '<div class="bar">' +
+        '<span class="bar__who">' + (S.name ? esc(S.name) : 'Пробен тест') + '</span>' +
+        '<span class="bar__prog" id="prog"></span>' +
+        '<span class="bar__sp"></span>' +
+        '<span class="clock" id="clock">' +
+          '<svg class="clock__ring" viewBox="0 0 54 54" aria-hidden="true">' +
+            '<circle class="clock__bg" cx="27" cy="27" r="24"></circle>' +
+            '<circle class="clock__fg" id="clockFg" cx="27" cy="27" r="24" ' +
+              'transform="rotate(-90 27 27)"></circle></svg>' +
+          '<span class="clock__t" id="clockT">0:00:00</span>' +
+        '</span>' +
+        (S.mode === 'train' ? '<button class="btn btn--ghost btn--sm" id="pause">Пауза</button>' : '') +
+        '<button class="btn btn--sm" id="send">Предай теста</button>' +
+      '</div>' +
+      '<div class="wrap">' +
+        '<div class="tabs" id="tabs"></div>' +
+        '<div id="probBox"></div>' +
+      '</div>';
+    paintTabs();
+    paintProblem();
+    startClock();
+    app.addEventListener('input', onTestInput);
+    app.addEventListener('click', onTestClick);
+    window.addEventListener('beforeunload', guard);
+  }
+  function guard(e) {
+    if (S.screen === 'test' && !S.submitted) { e.preventDefault(); e.returnValue = ''; }
+  }
+  function paintTabs() {
+    $('tabs').innerHTML = TEST.problems.map(function (pr, i) {
+      var done = pr.parts.every(function (pt) {
+        return pt.inputs.filter(function (x) { return x.final; }).every(filled);
+      });
+      return '<button class="tab' + (i === S.tab ? ' is-on' : '') + '" data-tab="' + i + '">' +
+        '<span>Задача ' + pr.n + '</span>' +
+        '<span class="tab__pts">' + pr.points + ' точки</span>' +
+        '<span class="tab__ok">' + (done ? '✓ попълнена' : '&nbsp;') + '</span></button>';
+    }).join('');
+    var p = progress();
+    $('prog').textContent = 'Попълнени ' + p.done + ' от ' + p.all + ' ' +
+      plural(p.all, 'поле', 'полета', 'полета');
+  }
+
+  function inputHtml(pt, inp) {
+    if (inp.kind === 'money') {
+      return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
+        '<span class="ans__lab">' + esc(inp.label) + '</span>' +
+        '<span class="ans__row">' +
+          '<input class="sm" id="' + inputId(pt.key, inp.key, 'lv') + '" inputmode="numeric" />' +
+          '<span class="ans__u">лв.</span>' +
+          '<input class="sm" id="' + inputId(pt.key, inp.key, 'st') + '" inputmode="numeric" />' +
+          '<span class="ans__u">ст.</span>' +
+        '</span></div>';
+    }
+    if (inp.kind === 'digits') {
+      return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
+        '<span class="ans__lab">' + esc(inp.label) + '</span>' +
+        '<span class="ans__row">' + inp.boxes.map(function (b, i) {
+          return '<span class="ans__u">' + esc(b) + '</span>' +
+            '<input class="sm" id="' + inputId(pt.key, inp.key, i) + '" inputmode="numeric" maxlength="1" />';
+        }).join('') + '</span></div>';
+    }
+    return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
+      '<span class="ans__lab">' + esc(inp.label) + '</span>' +
+      '<span class="ans__row">' +
+        '<input id="' + inputId(pt.key, inp.key) + '" inputmode="numeric" />' +
+        (inp.unit ? '<span class="ans__u">' + esc(inp.unit) + '</span>' : '') +
+      '</span></div>';
+  }
+
+  function paintProblem() {
+    var pr = TEST.problems[S.tab];
+    $('probBox').innerHTML = '<div class="card">' +
+      '<div class="prob__h"><span class="prob__n">Задача ' + pr.n + '</span>' +
+        '<span class="prob__p">' + pr.points + ' точки</span></div>' +
+      (pr.introHtml ? '<p class="prob__text">' + pr.introHtml + '</p>' : '') +
+      (pr.figure ? '<div class="fig">' + pr.figure + '</div>' : '') +
+      pr.parts.map(function (pt) {
+        return '<div class="part">' +
+          '<p class="prob__text"><span class="part__l">' + esc(pt.label) + '</span>' + pt.textHtml + '</p>' +
+          '<div class="ans">' + pt.inputs.map(function (inp) { return inputHtml(pt, inp); }).join('') + '</div>' +
+        '</div>';
+      }).join('') +
+      '<div class="draft"><label class="ans__lab" for="draft-' + pr.n + '">Чернова (не се оценява)</label>' +
+        '<textarea id="draft-' + pr.n + '"></textarea></div>' +
+    '</div>';
+    /* стойностите се връщат през .value, а не в html-а */
+    TEST.problems[S.tab].parts.forEach(function (pt) {
+      pt.inputs.forEach(function (inp) {
+        var v = S.answers[inp.key];
+        if (v == null) return;
+        if (inp.kind === 'money') {
+          var a = $(inputId(pt.key, inp.key, 'lv')), b = $(inputId(pt.key, inp.key, 'st'));
+          if (a) a.value = v[0] || ''; if (b) b.value = v[1] || '';
+        } else if (inp.kind === 'digits') {
+          v.forEach(function (x, i) { var e = $(inputId(pt.key, inp.key, i)); if (e) e.value = x || ''; });
+        } else {
+          var e3 = $(inputId(pt.key, inp.key)); if (e3) e3.value = v;
+        }
+      });
+    });
+    var d = $('draft-' + pr.n);
+    if (d) d.value = S.drafts['p' + pr.n] || '';
+    if (S.submitted) lockFields();
+  }
+  function lockFields() {
+    Array.prototype.forEach.call(document.querySelectorAll('#probBox input, #probBox textarea'),
+      function (e) { e.disabled = true; });
+    var b = $('probBox'); if (b) b.classList.add('locked');
+  }
+
+  function onTestInput() { readInputs(); save(); paintTabs(); }
+  function onTestClick(e) {
+    var t = e.target.closest('[data-tab]');
+    if (t) { readInputs(); S.tab = Number(t.dataset.tab); paintTabs(); paintProblem(); return; }
+    if (e.target.closest('#pause')) {
+      if (S.paused) { S.endsAt += Date.now() - S.pausedAt; S.paused = false; $('pause').textContent = 'Пауза'; }
+      else { S.paused = true; S.pausedAt = Date.now(); $('pause').textContent = 'Продължи'; }
+      save(); paintClock(); return;
+    }
+    if (e.target.closest('#send')) {
+      readInputs();
+      var p = progress();
+      ask('Да предам ли теста?',
+          'Попълнени са ' + p.done + ' от ' + p.all + '. След предаване полетата се заключват и излиза резултатът.',
+          'Да, предавам', function () { submit(false); });
+    }
+  }
+
+  /* ── предаване и резултат ─────────────────────────────────────────*/
+  function submit(auto) {
+    if (S.submitted) return;
+    readInputs();
+    S.submitted = true;
+    S.usedMs = Math.max(0, Math.min(S.minutes * 60000, (S.paused ? S.pausedAt : Date.now()) - S.startedAt));
+    stopClock();
+    S.result = scoreTest();
+    save();
+    if (auto) toast('Времето изтече! Тестът е предаден.', 6000);
+    screenResults();
+  }
+
+  function screenResults() {
+    S.screen = 'result';
+    var r = S.result, max = 21;
+    var passed = r.total >= TEST.passThreshold;
+    var msg = passed
+      ? (r.total === max ? 'Всичко вярно. Това е пълен резултат.'
+                         : 'Над прага — с този резултат се продължава към областния кръг.')
+      : (r.total >= TEST.passThreshold - 4
+          ? 'Малко остава до прага. Виж решенията — обикновено е един пропуснат детайл.'
+          : 'Още има какво да се навакса. Решенията отдолу вървят стъпка по стъпка.');
+
+    $('app').innerHTML = '<div class="wrap">' +
+      '<div class="card">' +
+        '<h1>Резултат</h1>' +
+        '<p class="muted">' + esc(TEST.title) + (S.name ? ' · ' + esc(S.name) : '') +
+          ' · използвано време ' + fmt(S.usedMs) + ' от ' + S.minutes + ' мин.</p>' +
+        '<div class="score" style="margin-top:14px">' +
+          '<div class="score__ring"><svg viewBox="0 0 120 120" aria-hidden="true">' +
+            '<circle class="score__bg" cx="60" cy="60" r="52"></circle>' +
+            '<circle class="score__fg" id="scoreFg" cx="60" cy="60" r="52"></circle></svg>' +
+            '<span class="score__num"><b id="scoreN">0</b><span>от ' + max + ' точки</span></span></div>' +
+          '<div class="score__msg"><h2>' + esc(msg) + '</h2>' +
+            '<p class="muted" style="margin-top:.4rem">Прагът е ' + TEST.passThreshold + ' точки' +
+            (TEST.thresholdNote ? ' (' + esc(TEST.thresholdNote) + ')' : '') + '. ' +
+            'Ти имаш ' + pts(r.total) + '.</p>' +
+          '</div>' +
+        '</div>' +
+        resultTable(r) +
+        '<p style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' +
+          '<button class="btn btn--ghost" id="again">Опитай отново</button>' +
+          '<button class="btn btn--ghost" id="print">Принтирай резултата</button>' +
+        '</p>' +
+      '</div>' +
+      '<h2 style="margin:22px 0 8px">Решения</h2>' +
+      TEST.problems.map(solBlock).join('') +
+    '</div><canvas id="conf"></canvas>';
+
+    var C = 2 * Math.PI * 52, fg = $('scoreFg');
+    fg.setAttribute('stroke-dasharray', C);
+    fg.setAttribute('stroke-dashoffset', String(C));
+    setTimeout(function () {
+      fg.setAttribute('stroke-dashoffset', String(C * (1 - r.total / max)));
+      fg.setAttribute('stroke', passed ? 'var(--good)' : 'var(--sun)');
+    }, 60);
+    countTo($('scoreN'), r.total, 1100);
+    if (passed) confetti();
+
+    $('app').addEventListener('click', onResultClick);
+  }
+
+  function resultTable(r) {
+    return '<table class="tbl"><thead><tr><th>Задача</th><th>Твоят отговор</th>' +
+      '<th>Верен отговор</th><th>Точки</th></tr></thead><tbody>' +
+      r.rows.map(function (row) {
+        var cls = row.got === row.points ? 'is-ok' : (row.got > 0 ? 'is-part' : 'is-bad');
+        var mark = row.got === row.points ? '✓' : (row.got > 0 ? '◐' : '✕');
+        var mine = row.part.inputs.filter(function (i) { return i.final; })
+          .map(function (i) { return showAnswer(i, S.answers[i.key]); })
+          .filter(function (x) { return x !== ''; }).join(' · ') || '—';
+        var right = row.part.inputs.filter(function (i) { return i.final; })
+          .map(function (i) { return showCorrect(i); }).join(' · ');
+        return '<tr class="' + cls + '"><td><b>' + row.pr + row.label.replace(')', '') + '</b></td>' +
+          '<td>' + esc(mine) + '</td><td>' + esc(right) + '</td>' +
+          '<td class="mark">' + mark + ' ' + pts(row.got) + ' / ' + pts(row.points) + '</td></tr>';
+      }).join('') +
+      '<tr><td colspan="3"><b>Общо</b></td><td class="mark"><b>' + pts(r.total) + ' / 21</b></td></tr>' +
+      '</tbody></table>';
+  }
+  function showAnswer(inp, v) {
+    if (v == null) return '';
+    if (inp.kind === 'money') {
+      if (String(v[0]).trim() === '' && String(v[1]).trim() === '') return '';
+      return inp.label + ': ' + (v[0] || '0') + ' лв. ' + (v[1] || '0') + ' ст.';
+    }
+    if (inp.kind === 'digits') {
+      if (!v.some(function (x) { return String(x).trim() !== ''; })) return '';
+      return inp.boxes.map(function (b, i) { return b + (v[i] || '—'); }).join(' ');
+    }
+    return String(v).trim() === '' ? '' : (String(v) + (inp.unit ? ' ' + inp.unit : ''));
+  }
+  function showCorrect(inp) {
+    var d = dec(inp.enc);
+    if (inp.kind === 'money') {
+      var n = parseFloat(d);
+      return inp.label + ': ' + Math.floor(n / 100) + ' лв. ' + (n % 100) + ' ст.';
+    }
+    if (inp.kind === 'digits') {
+      return inp.boxes.map(function (b, i) { return b + d.split(',')[i]; }).join(' ');
+    }
+    return d + (inp.unit ? ' ' + inp.unit : '');
+  }
+
+  function countTo(node, to, ms) {
+    var from = 0, t0 = performance.now();
+    (function step(t) {
+      var k = Math.min(1, (t - t0) / ms);
+      node.textContent = pts(Math.round((from + (to - from) * k) * 2) / 2);
+      if (k < 1) requestAnimationFrame(step); else node.textContent = pts(to);
+    })(t0);
+  }
+
+  /* ── решенията ────────────────────────────────────────────────────*/
+  function solBlock(pr) {
+    return '<div class="sol" id="sol-' + pr.n + '">' +
+      '<div class="sol__h"><h2>Задача ' + pr.n + '</h2>' +
+        '<button class="btn btn--sm btn--ghost" data-sol="' + pr.n + '">Покажи решението</button>' +
+        '<button class="btn btn--sm" data-next="' + pr.n + '" hidden>Следваща стъпка</button>' +
+        '<span class="muted" data-cnt="' + pr.n + '"></span></div>' +
+      '<div class="stage" id="stage-' + pr.n + '"></div>' +
+      '<div class="steps" id="steps-' + pr.n + '"></div></div>';
+  }
+  function allSteps(pr) {
+    var out = [];
+    pr.parts.forEach(function (pt) {
+      (pt.solutionSteps || []).forEach(function (s) {
+        out.push({ label: pt.label, html: s.html, points: s.points, anim: s.anim, k: s.k });
+      });
+    });
+    return out;
+  }
+  function onResultClick(e) {
+    var s = e.target.closest('[data-sol]');
+    if (s) { S.shown[s.dataset.sol] = 0; stepOn(Number(s.dataset.sol)); s.hidden = true; return; }
+    var n = e.target.closest('[data-next]');
+    if (n) { stepOn(Number(n.dataset.next)); return; }
+    if (e.target.closest('#again')) {
+      ask('Отначало?', 'Отговорите и времето се изтриват и тестът започва наново.', 'Да, отначало',
+        function () { wipe(); location.reload(); });
+      return;
+    }
+    if (e.target.closest('#print')) window.print();
+  }
+  function stepOn(n) {
+    var pr = TEST.problems.filter(function (p) { return p.n === n; })[0];
+    var steps = allSteps(pr);
+    var i = S.shown[n] || 0;
+    if (i >= steps.length) return;
+    var st = steps[i];
+    var box = $('steps-' + n);
+    box.appendChild(el('div', 'step',
+      (st.points ? '<span class="step__p">' + pts(st.points) + ' т.</span>' : '') +
+      '<b>' + esc(st.label) + '</b> ' + st.html));
+    if (st.anim && typeof ANIM[st.anim] === 'function') {
+      try { ANIM[st.anim]($('stage-' + n), st.k == null ? 0 : st.k); }
+      catch (err) { if (window.console) console.error('анимация ' + st.anim + ':', err); }
+    }
+    S.shown[n] = i + 1;
+    var next = document.querySelector('[data-next="' + n + '"]');
+    var cnt = document.querySelector('[data-cnt="' + n + '"]');
+    next.hidden = (S.shown[n] >= steps.length);
+    cnt.textContent = 'стъпка ' + S.shown[n] + ' от ' + steps.length;
+  }
+
+  /* ── конфети ──────────────────────────────────────────────────────*/
+  function confetti() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var c = $('conf'); if (!c) return;
+    var x = c.getContext('2d');
+    c.width = innerWidth; c.height = innerHeight;
+    var cols = ['#F7AD19', '#15643C', '#0D1B36', '#E86A6A', '#7C5CD6'];
+    var ps = [];
+    for (var i = 0; i < 110; i++) {
+      ps.push({ x: Math.random() * c.width, y: -20 - Math.random() * c.height / 2,
+        r: 4 + Math.random() * 5, s: 1.6 + Math.random() * 2.4,
+        a: Math.random() * Math.PI, c: cols[i % cols.length] });
+    }
+    var t0 = performance.now();
+    (function draw(t) {
+      x.clearRect(0, 0, c.width, c.height);
+      ps.forEach(function (p) {
+        p.y += p.s; p.a += 0.05; p.x += Math.sin(p.a) * 0.9;
+        x.fillStyle = p.c;
+        x.fillRect(p.x, p.y, p.r, p.r * 1.7);
+      });
+      if (t - t0 < 4200) requestAnimationFrame(draw); else x.clearRect(0, 0, c.width, c.height);
+    })(t0);
+  }
+
+  /* ── тръгване ─────────────────────────────────────────────────────*/
+  var old = load();
+  if (old && old.startedAt && !old.submitted) {
+    S.name = old.name || ''; S.mode = old.mode || 'train'; S.minutes = old.minutes || 60;
+    screenStart(true);
+  } else {
+    screenStart(false);
+  }
+})();
+
+</script>
+</body>
+</html>
