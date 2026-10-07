@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>НВО 7 · Урок 1 — от числата към буквите</title>
+<meta name="description" content="Интерактивен урок за 7. клас, седмица 2: три учебни часа — преговор на рационални числа и степени, уравнения, пропорции и проценти, и първата нова тема „числена стойност на израз и едночлени“." />
+<!-- =====================================================================
+     НВО 7 · Урок 1 — от числата към буквите
+     ---------------------------------------------------------------------
+     Урокът е за ПРЕПОДАВАТЕЛЯ: вижда се планът по минути, отговорите на
+     всички задачи и бележките за работата с двете деца. Затова стои в
+     библиотеката, а не се дава на учениците.
+
+     Страницата работи и без интернет — шрифтовете са единственото, което
+     се тегли отвън, и без тях текстът пак е четим.
+     ===================================================================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* основите, които страницата имаше в claude.ai */
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}
+img{max-width:100%}
+[hidden]:not([hidden=until-found i]){display:none!important}
+</style>
+<style>
+/* Layout: school graph-paper notebook — ink-blue text, highlighter accents, one column of hour tabs + phase timeline + tappable task cards */
+:root{
+  --bg:#f6f8fb; --grid:#dfe7f1; --paper:#ffffff; --ink:#1b2a4a; --muted:#5a6a86;
+  --line:#d3dceb; --accent:#2f5bea; --hi:#ffe45c; --hi-ink:#3a3000;
+  --ok:#1f9d63; --bad:#d6453d; --chip:#eaf0ff;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-math:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10172a; --grid:#1a2440; --paper:#161f38; --ink:#e7ecf8; --muted:#9aa8c6;
+  --line:#2a3658; --accent:#7f9dff; --hi:#ffe45c; --hi-ink:#2b2400;
+  --ok:#43c98a; --bad:#ff7a70; --chip:#1f2a4d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10172a; --grid:#1a2440; --paper:#161f38; --ink:#e7ecf8; --muted:#9aa8c6;
+  --line:#2a3658; --accent:#7f9dff; --hi:#ffe45c; --hi-ink:#2b2400;
+  --ok:#43c98a; --bad:#ff7a70; --chip:#1f2a4d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:18px}
+header h1{font-family:var(--f-display);font-weight:700;font-size:clamp(1.5rem,5vw,2.3rem);line-height:1.15;margin:0;text-wrap:balance}
+header h1 mark{background:var(--hi);color:var(--hi-ink);padding:0 .2em;border-radius:3px}
+.sub{color:var(--muted);margin:.4rem 0 0;max-width:65ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:var(--chip);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:500}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding-block:6px;background:var(--bg)}
+.tab{font-family:var(--f-display);font-size:.8rem;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;line-height:1.25}
+.tab small{display:block;font-family:var(--f-body);font-size:.72rem;color:var(--muted);font-weight:500}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.tab[aria-selected="true"] small{color:var(--paper);opacity:.8}
+.tab:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.panel{display:flex;flex-direction:column;gap:16px}
+h2{font-family:var(--f-display);font-size:1.15rem;margin:0}
+.goal{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.goal b{color:var(--accent)}
+/* timer */
+.timer{background:var(--ink);color:var(--paper);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.timer .now{min-width:0}
+.timer .now span{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.timer .now strong{font-size:1rem}
+.clock{font-family:var(--f-math);font-size:2.2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.clock.low{color:var(--hi)}
+.tbtns{display:flex;gap:8px}
+.tbtns button{font:inherit;font-weight:700;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;background:var(--hi);color:var(--hi-ink)}
+.tbtns button.ghost{background:transparent;color:var(--paper);border:1px solid currentColor}
+/* phases */
+.phases{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.phase{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.phase.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.phase .mins{font-family:var(--f-math);font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;font-size:.9rem}
+.phase .mins small{display:block;color:var(--muted);font-weight:500;font-size:.72rem}
+.phase h3{margin:0 0 2px;font-size:1rem}
+.phase p{margin:0;color:var(--muted);font-size:.92rem}
+.phase .tag{display:inline-block;font-size:.72rem;font-weight:700;background:var(--hi);color:var(--hi-ink);padding:1px 8px;border-radius:4px;margin-left:6px;vertical-align:1px}
+/* tasks */
+.tasks{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.task{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.task .n{font-family:var(--f-math);font-size:.75rem;color:var(--muted)}
+.task .q{font-family:var(--f-math);font-size:1rem;line-height:1.55;overflow-wrap:anywhere}
+.task .q.txt{font-family:var(--f-body)}
+.task button{align-self:flex-start;font:inherit;font-size:.85rem;font-weight:700;background:var(--chip);color:var(--accent);border:0;border-radius:6px;padding:5px 10px;cursor:pointer}
+.ans{font-family:var(--f-math);font-size:.9rem;border-top:1px dashed var(--line);padding-top:8px}
+.ans b{background:var(--hi);color:var(--hi-ink);padding:0 4px;border-radius:3px}
+.lvl{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
+.lvl.l1{color:var(--ok)}.lvl.l2{color:var(--accent)}.lvl.l3{color:var(--bad)}
+/* games */
+.game{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.big{font-family:var(--f-math);font-size:clamp(1.6rem,7vw,2.6rem);font-weight:700;text-align:center;padding:12px 0;overflow-wrap:anywhere}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font:inherit;font-weight:700;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:10px;padding:10px 16px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.no{background:var(--bad);border-color:var(--bad);color:#fff}
+.fb{text-align:center;font-weight:700;min-height:1.5em}
+.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.score{font-family:var(--f-math);text-align:center;color:var(--muted)}
+.locks{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.lock{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.lock.open{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+.lock .q{font-family:var(--f-math);font-size:.95rem}
+.lock input{font:inherit;font-family:var(--f-math);font-size:1.1rem;width:100%;padding:6px 10px;border:2px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.code{display:flex;gap:8px;justify-content:center}
+.code span{width:48px;height:60px;border:2px solid var(--ink);border-radius:8px;display:grid;place-items:center;font-family:var(--f-math);font-size:1.8rem;font-weight:700;background:var(--paper)}
+.code span.on{background:var(--hi);color:var(--hi-ink);border-color:var(--hi)}
+.notes{background:var(--paper);border-left:4px solid var(--hi);border-radius:0 12px 12px 0;padding:12px 16px}
+.notes ul{margin:.3rem 0 0;padding-left:1.1rem}
+.notes li{margin:.2rem 0}
+.sort{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sort button{font-family:var(--f-math);font-size:1rem;border:2px dashed var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+.sort button.y{border-style:solid;border-color:var(--ok);color:var(--ok)}
+.sort button.n{border-style:solid;border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+.pop{animation:pop .35s ease}
+@media (prefers-reduced-motion: reduce){.pop{animation:none}}
+footer{color:var(--muted);font-size:.85rem}
+.team{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:12px 14px}
+.team .tn{min-width:0;flex:1 1 160px}
+.team .tn span{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.team input{font:inherit;font-family:var(--f-display);font-size:1rem;width:100%;border:0;border-bottom:2px dashed var(--line);background:transparent;color:var(--ink);padding:2px 0}
+.team .stars{flex:2 1 220px;display:flex;flex-direction:column;gap:6px}
+.team .bar{height:14px;border-radius:999px;background:var(--chip);overflow:hidden}
+.team .bar i{display:block;height:100%;width:0;background:var(--hi);transition:width .4s ease}
+.team .sc{font-family:var(--f-math);font-size:.9rem;color:var(--muted)}
+.team .sc b{color:var(--ink);font-size:1.2rem}
+.team .btn{padding:6px 12px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <h1>НВО 7 · <mark>Урок 1</mark><br>от числата към буквите</h1>
+  <p class="sub">3 учебни часа × 45 мин. Час 1 и 2 преговарят 6. клас (както училището в началния преговор), час 3 въвежда новата тема от тази седмица: числена стойност на израз и едночлени. Версия за двама ученици, които работят като един отбор: всяка звезда, спечелена от единия, е обща. Отборът събира 30 звезди през трите часа за обща награда.</p>
+  <div class="meta"><span class="chip">2 ученици</span><span class="chip">29 задачи + 3 игри</span><span class="chip">формат НВО</span></div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="t0" aria-selected="true">Час 1<small>Рационални числа и степени</small></button>
+  <button class="tab" role="tab" id="t1" aria-selected="false">Час 2<small>Уравнения, пропорции, %</small></button>
+  <button class="tab" role="tab" id="t2" aria-selected="false">Час 3<small>Изрази и едночлени</small></button>
+</div>
+
+<div class="team" aria-label="Табло на отбора">
+  <div class="tn"><span>Отбор</span><input id="tName" value="Светлите умове" aria-label="Име на отбора"></div>
+  <div class="stars"><div class="bar"><i id="bar"></i></div><div class="sc"><b id="st">0</b> / <span id="goal">30</span> ⭐ до общата награда</div></div>
+  <div class="row"><button class="btn" id="stM">−</button><button class="btn primary" id="stP">+1 ⭐</button></div>
+</div>
+
+<div class="timer" aria-live="polite">
+  <div class="now"><span>Сега</span><strong id="nowName">Избери етап отдолу</strong></div>
+  <div class="clock" id="clock">00:00</div>
+  <div class="tbtns"><button id="play">Старт</button><button class="ghost" id="reset">Нулирай</button></div>
+</div>
+
+<main id="panels"></main>
+
+<footer>Темите следват примерните годишни разпределения по новата програма (от 2024/25): начален преговор → „Цели изрази“. Проверете в кой урок е класът на всяко дете и при нужда разменете час 3 с още преговор.</footer>
+</div>
+
+<script>
+const HOURS = [
+{
+  goal:"<b>Цел:</b> опознаваме групата, виждаме кой къде е, и затвърждаваме знаците и степените — най-честите грешки в НВО.",
+  phases:[
+    [6,"„Математическа визитка“","Всеки казва 3 числа за себе си (рожден ден, номер на фланелка…), другият познава какво значат. После двамата измислят име на отбора и го пишат в таблото."],
+    [6,"Лавина (устни сметки)","Генераторът по-долу. Редуват се, но имат „жокер“: може да попитат партньора. Всеки верен отговор = +1 ⭐ за отбора.","игра"],
+    [18,"Решаваме задачи 1–10","1–3 заедно на дъската. 4–8 „Пилот и навигатор“: единият пише, другият диктува стъпките, на всяка задача се сменят. 9–10: решават поотделно, сравняват и се договарят за общ отговор. Всяка вярна задача = +1 ⭐."],
+    [9,"Вярно или грешно?","Имат 10 сек да се договорят шепнешком и вдигат ЕДНА обща карта (✔ / ✘). Верен отговор = +1 ⭐. Правило: който не е съгласен, трябва да обясни защо.","игра"],
+    [6,"Изходен билет","Единственото самостоятелно: задачи 8 и 10 на листче. С двама можеш веднага да погледнеш и да обясниш грешката на всеки поотделно."]
+  ],
+  tasks:[
+    ["−3,5 + 2¼","= −3,5 + 2,25 = <b>−1,25</b>",1],
+    ["(−2)³ − (−3)²","= −8 − 9 = <b>−17</b>. Капан: (−3)² е +9, но изваждаме го.",1],
+    ["(−1)²⁰²⁶ + (−1)²⁰²⁷","четна степен → 1, нечетна → −1; 1 + (−1) = <b>0</b>",1],
+    ["2⁵ · 2³ : 2⁶","= 2⁵⁺³⁻⁶ = 2² = <b>4</b>",1],
+    ["(−2/3)² · 9/4","= 4/9 · 9/4 = <b>1</b>",2],
+    ["Кое е най-голямо?<br>А) (−0,5)² Б) −0,5³<br>В) (−0,5)³ Г) −(0,5)²","А) 0,25 Б) −0,125 В) −0,125 Г) −0,25 → <b>А</b>",2],
+    ["1,2 : (−0,4) + 3·(−1)⁵","= −3 + 3·(−1) = −3 − 3 = <b>−6</b>",2],
+    ["(−3)² − 3² + (−3)³","= 9 − 9 − 27 = <b>−27</b>. Сравни (−3)² и −3²!",2],
+    ["(5/6 − 1¼) : (−5/12)","5/6 − 5/4 = 10/12 − 15/12 = −5/12; (−5/12):(−5/12) = <b>1</b>",3],
+    ["0,2³ · 5³","= (0,2·5)³ = 1³ = <b>1</b> — умножаваме основите!",3]
+  ],
+  notes:["Най-честата грешка: −3² ≠ (−3)². Нека единият я обясни на другия със свои думи.","Ако единият е по-силен, давай му ролята „навигатор“ по-рядко — той учи най-много, когато обяснява, а другият, когато пише сам.","Похвалявай помощта, не скоростта: „Много добре му обясни“ струва повече от „Браво, пръв си“."]
+},
+{
+  goal:"<b>Цел:</b> уравнения, пропорции и проценти — задачите, които носят най-много точки в НВО и се решават по шаблон.",
+  phases:[
+    [5,"Капанът с процентите","Задача 15 без коментар. Двамата трябва да намерят общо доказателство: единият пробва с 100 €, другият с 50 €. После сравняват — изненадата е обща.","игра"],
+    [17,"Отборна мисия: задачи 11–17","Една дъска, един маркер. Единият решава първия ред, подава маркера, другият продължава. Може да казва „стоп, тук има грешка“. Вярно решена задача = +1 ⭐, без подсказка от теб = +2 ⭐.","игра"],
+    [12,"Геометрия и текстови: 18–20","Работят заедно като един отбор: единият чете и казва какво е x, другият съставя уравнението. На следващата задача се сменят."],
+    [8,"„Грешката на учителя“","Решаваш задача 12 на дъската с нарочна грешка (забравен знак пред скобата). Отборът има 2 минути да я открие заедно: +2 ⭐.","игра"],
+    [3,"Бърз отдих","Станете, протегнете се. Колко звезди остават до наградата?"]
+  ],
+  tasks:[
+    ["2x − 7 = 3(x − 4)","2x − 7 = 3x − 12 → <b>x = 5</b>",1],
+    ["(x+1)/3 − (x−1)/2 = 1","·6: 2x + 2 − 3x + 3 = 6 → −x = 1 → <b>x = −1</b>. Внимание: −3(x−1) = −3x + 3",2],
+    ["x : 12 = 5 : 4","4x = 60 → <b>x = 15</b>",1],
+    ["Якето струва 80 €. Намаление 15%. Нова цена?","80 · 0,85 = <b>68 €</b>",1],
+    ["Цена +20%, после −20%. Какво става с цената?","1,2 · 0,8 = 0,96 → <b>намалява с 4%</b>",2],
+    ["5 работници свършват работа за 12 дни. За колко дни ще я свършат 6?","обратна пропорционалност: 5·12 = 60 → 60 : 6 = <b>10 дни</b>",2],
+    ["|2x − 1| = 5","2x − 1 = 5 → x = 3; 2x − 1 = −5 → x = −2. <b>x = 3 или x = −2</b>",3],
+    ["Ъглите на триъгълник се отнасят 2 : 3 : 4. Намери ги.","2k + 3k + 4k = 180 → k = 20 → <b>40°, 60°, 80°</b>",2],
+    ["Правоъгълен паралелепипед 3 × 4 × 5 см. Обем и повърхнина?","V = 60 см³; S = 2(12 + 15 + 20) = <b>94 см²</b>, <b>V = 60 см³</b>",2],
+    ["Ани е с 3 г. по-голяма от Борис. Сборът от годините им е 29. На колко са?","x + x + 3 = 29 → x = 13 → <b>Борис 13, Ани 16</b>",1]
+  ],
+  notes:["При отборната мисия следи маркерът да сменя ръцете — иначе по-бързият решава сам.","Задача 15 е любим въпрос на родители — помоли децата да я зададат вкъщи.","Ако единият мълчи, питай него: „Съгласен ли си? Защо?“ Така и двамата мислят."]
+},
+{
+  goal:"<b>Цел:</b> първа среща с новия материал от училище — числена стойност на израз, едночлен, нормален вид, подобни едночлени.",
+  phases:[
+    [8,"Едночлен или не?","Сортират картите заедно, но всяка карта изисква съгласие на двамата. Нека сами изведат правилото: само произведение на числа и букви. Всички 10 верни = +3 ⭐.","игра"],
+    [4,"Правилата на дъската","Нормален вид = коефициент отпред + всяка буква веднъж със степен. Степен на едночлен = сбор от степените."],
+    [15,"Решаваме задачи 21–28","21–22 заедно. 23–26 „Учител за 2 минути“: единият решава 23 и я обяснява на другия, после сменят ролите на 24 и т.н. 27–28 заедно на дъската."],
+    [13,"Escape room: 4 ключалки","Отборът срещу часовника: 10 мин за 4-те ключалки. Всеки отключва по 2, но партньорът проверява преди въвеждане. Отворена врата = +5 ⭐.","игра"],
+    [5,"Рефлексия и домашно","Преброявате звездите на отбора. Всеки казва едно нещо, което партньорът му е обяснил добре днес, и едно, което не е ясно. Домашно: 5 задачи + 3 за едночлени."]
+  ],
+  tasks:[
+    ["Стойност на 3a² − 2a + 1 при a = −2","3·4 − 2·(−2) + 1 = 12 + 4 + 1 = <b>17</b>",1],
+    ["Нормален вид: 3x · (−2)xy²","= <b>−6x²y²</b>; коефициент −6, степен 4",1],
+    ["(−2a²b)³","= (−2)³·a⁶·b³ = <b>−8a⁶b³</b>, степен 9",2],
+    ["Кои са подобни: 5xy, −3yx, 2x²y, ½xy? Събери ги.","5xy, −3yx, ½xy → 5 − 3 + 0,5 = <b>2,5xy</b>",1],
+    ["7a²b − 3ba² + a²b","= (7 − 3 + 1)a²b = <b>5a²b</b>",1],
+    ["2x²y − xy² при x = −1, y = 2","2·1·2 − (−1)·4 = 4 + 4 = <b>8</b>",2],
+    ["(−3x²y) · (2xy³)² : (6x³y⁵)","(2xy³)² = 4x²y⁶ → −12x⁴y⁷ : 6x³y⁵ = <b>−2xy²</b>",3],
+    ["Кое е едночлен?<br>а) 3x/y б) −x²/5 в) 2 + x г) 0","<b>б) и г)</b>; а) има делене на буква, в) е сбор",2]
+  ],
+  notes:["Ако в училище още не са стигнали до едночлени — чудесно, ще влязат в час с преднина.","Escape room-ът е последен нарочно: завършваме заедно, с общ успех.","С двама имаш време за кратка бележка за всеки — ще ти трябва при разговора с родителите."]
+}];
+
+/* ---------- Games ---------- */
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function sgn(n){return n<0?"("+n+")":""+n}
+const SUP={"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵"};
+function avalancheQ(){
+  const t=rand(0,3);
+  if(t===0){const a=rand(-9,9)||3,b=rand(-9,9)||-4;return [sgn(a)+" · "+sgn(b),a*b]}
+  if(t===1){const a=rand(-5,-1),e=rand(2,3);return ["("+a+")"+SUP[e],Math.pow(a,e)]}
+  if(t===2){const p=[10,20,25,50][rand(0,3)],n=[20,40,60,80,120,200][rand(0,5)];return [p+"% от "+n,n*p/100]}
+  const a=rand(-12,12)||-7,b=rand(-12,12)||5;return [sgn(a)+" − "+sgn(b),a-b]
+}
+const TF=[
+  ["−3² = 9",false,"−3² = −9; квадратът е само на 3"],
+  ["(−1)¹⁰⁰ = 1",true,"четна степен на −1"],
+  ["2³ · 2² = 4⁵",false,"2³·2² = 2⁵ = 32"],
+  ["0,5 · (−0,4) = −0,2",true,""],
+  ["(2/3)² = 4/6",false,"(2/3)² = 4/9"],
+  ["−(−2)³ = 8",true,"(−2)³ = −8, минусът отпред го прави 8"],
+  ["1/2 + 1/3 = 2/5",false,"= 5/6"],
+  ["5⁰ = 1",true,"всяко ненулево число на степен 0 е 1"]
+];
+const MONO=[["−7a²b",1],["x + 1",0],["½xy³",1],["5",1],["3/x",0],["a² − b²",0],["−m",1],["2(a + b)",0],["0,3x²y",1],["x : y",0]];
+
+function gameHTML(h){
+  if(h===0) return `
+  <div class="game" id="av"><h2>Лавина · устни сметки</h2>
+    <div class="big" id="avQ">Натисни „Нова“</div>
+    <div class="fb" id="avA"></div>
+    <div class="row"><button class="btn primary" id="avNew">Нова</button><button class="btn" id="avShow">Покажи отговора</button></div></div>
+  <div class="game" id="tf"><h2>Вярно или грешно?</h2>
+    <div class="big" id="tfQ"></div><div class="fb" id="tfF"></div>
+    <div class="row"><button class="btn good" data-v="1">Вярно ✋</button><button class="btn no" data-v="0">Грешно ⬇</button></div>
+    <div class="score" id="tfS"></div></div>`;
+  if(h===1) return "";
+  if(h===-1) return `
+  <div class="game"><h2>Щафета · резултат</h2>
+    <div class="row" style="align-items:center">
+      <div style="text-align:center"><div class="score">Отбор А</div><div class="big" id="sA">0</div><div class="row"><button class="btn" data-t="A" data-d="-1">−</button><button class="btn primary" data-t="A" data-d="1">+1</button></div></div>
+      <div style="text-align:center"><div class="score">Отбор Б</div><div class="big" id="sB">0</div><div class="row"><button class="btn" data-t="B" data-d="-1">−</button><button class="btn primary" data-t="B" data-d="1">+1</button></div></div>
+    </div></div>`;
+  return `
+  <div class="game"><h2>Едночлен или не?</h2>
+    <p class="score" style="margin:0">Докосни всяка карта: веднъж = „едночлен“, пак = „не е“. После „Провери“.</p>
+    <div class="sort" id="sort"></div>
+    <div class="row"><button class="btn primary" id="sortChk">Провери</button></div><div class="fb" id="sortF"></div></div>
+  <div class="game"><h2>Escape room · 4 ключалки</h2>
+    <div class="locks" id="locks"></div>
+    <div class="code" id="code"><span>?</span><span>?</span><span>?</span><span>?</span></div>
+    <div class="fb" id="lockF"></div></div>`;
+}
+const LOCKS=[["(−1)⁷ + 2³","7"],["3x + 4 = 19, x = ?","5"],["Степента на −4a³b⁵","8"],["25% от 36","9"]];
+
+function wireGames(h){
+  if(h===0){
+    let cur=null;
+    avNew.onclick=()=>{cur=avalancheQ();avQ.textContent=cur[0];avQ.classList.remove("pop");void avQ.offsetWidth;avQ.classList.add("pop");avA.textContent=""};
+    avShow.onclick=()=>{if(cur)avA.textContent="= "+String(cur[1]).replace(".",",")};
+    let i=0,pts=0;
+    const show=()=>{tfQ.textContent=TF[i%TF.length][0];tfS.textContent=`Точки на групата: ${pts} / ${Math.min(i,TF.length)}`};
+    tf.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{
+      if(i>=TF.length){i=0;pts=0;tfF.textContent="";tfF.className="fb";show();return}
+      const [,v,why]=TF[i],ok=(b.dataset.v==="1")===v; if(ok)pts++;
+      tfF.textContent=(ok?"Точно така! ":"Не съвсем. ")+(why||"");tfF.className="fb "+(ok?"ok":"bad");
+      i++; if(i>=TF.length){tfQ.textContent="Край! 🎉";tfS.textContent=`Точки на групата: ${pts} / ${TF.length} · натисни бутон за нова игра`}else show();
+    });show();
+  }
+  if(h===1){
+    const s={A:0,B:0};
+    document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{const t=b.dataset.t;s[t]=Math.max(0,s[t]+ +b.dataset.d);const el=document.getElementById("s"+t);el.textContent=s[t];el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop")});
+  }
+  if(h===2){
+    const st=MONO.map(()=>0);
+    sort.innerHTML=MONO.map((m,k)=>`<button data-k="${k}">${m[0]}</button>`).join("");
+    sort.querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;st[k]=(st[k]+1)%3;b.className=st[k]===1?"y":st[k]===2?"n":""});
+    sortChk.onclick=()=>{let ok=0;MONO.forEach((m,k)=>{if((st[k]===1&&m[1])||(st[k]===2&&!m[1]))ok++});
+      sortF.textContent=ok===MONO.length?"Всички 10 са верни! Правило: само умножение на числа и букви.":`Верни: ${ok} от 10 — погледнете пак сборовете и деленето на буква.`;sortF.className="fb "+(ok===MONO.length?"ok":"bad")};
+    locks.innerHTML=LOCKS.map((l,k)=>`<div class="lock" id="lk${k}"><div class="q">🔒 ${l[0]}</div><input id="li${k}" inputmode="numeric" aria-label="Отговор на ключалка ${k+1}" placeholder="отговор"></div>`).join("");
+    const digits=[...code.children];
+    LOCKS.forEach((l,k)=>document.getElementById("li"+k).addEventListener("input",e=>{
+      const open=e.target.value.trim()===l[1];const box=document.getElementById("lk"+k);
+      box.classList.toggle("open",open);box.querySelector(".q").textContent=(open?"🔓 ":"🔒 ")+l[0];
+      digits[k].textContent=open?l[1]:"?";digits[k].classList.toggle("on",open);
+      if(digits.every(d=>d.classList.contains("on"))){lockF.textContent="Кодът е 7589 — вратата е отворена! 🎉";lockF.className="fb ok"}else{lockF.textContent="";}
+    }));
+  }
+}
+
+/* ---------- Render ---------- */
+let hour=0, sel=null, left=0, run=false, tick=null;
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function render(){
+  const H=HOURS[hour]; let t=0;
+  panels.innerHTML=`<section class="panel">
+    <div class="goal">${H.goal}</div>
+    <h2>План по минути</h2>
+    <ol class="phases">${H.phases.map((p,k)=>{const a=t;t+=p[0];return `<li><button class="phase" data-k="${k}"><div class="mins">${a}–${t}<small>${p[0]} мин</small></div><div><h3>${p[1]}${p[3]?`<span class="tag">${p[3]}</span>`:""}</h3><p>${p[2]}</p></div></button></li>`}).join("")}</ol>
+    ${gameHTML(hour)}
+    <h2>Задачи</h2>
+    <div class="tasks">${H.tasks.map((q,k)=>{const n=[0,10,20][hour]+k+1;const lv=["","l1","l2","l3"][q[2]],lt=["","лесна","средна","трудна"][q[2]];
+      return `<div class="task"><div class="n">Задача ${n}<span class="lvl ${lv}">${lt}</span></div><div class="q${/[а-я]{4}/i.test(q[0])?" txt":""}">${q[0]}</div><button data-a="${k}">Отговор</button><div class="ans" id="a${hour}_${k}" hidden>${q[1]}</div></div>`}).join("")}</div>
+    <div class="notes"><h2>Бележки за теб</h2><ul>${H.notes.map(n=>`<li>${n}</li>`).join("")}</ul></div>
+  </section>`;
+  panels.querySelectorAll(".phase").forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+  panels.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const el=document.getElementById(`a${hour}_${b.dataset.a}`);el.hidden=!el.hidden;b.textContent=el.hidden?"Отговор":"Скрий"});
+  wireGames(hour);
+}
+function pick(k){
+  sel=k; left=HOURS[hour].phases[k][0]*60; stop();
+  nowName.textContent=HOURS[hour].phases[k][1]; clock.textContent=fmt(left); clock.classList.remove("low");
+  panels.querySelectorAll(".phase").forEach((b,i)=>b.classList.toggle("active",i===k));
+  start();
+}
+function start(){if(sel===null)return;run=true;play.textContent="Пауза";tick=setInterval(()=>{
+  left--; clock.textContent=fmt(Math.max(0,left)); clock.classList.toggle("low",left<=60);
+  if(left<=0){stop(); const nx=sel+1; if(nx<HOURS[hour].phases.length){nowName.textContent="Време е за: "+HOURS[hour].phases[nx][1]}else nowName.textContent="Краят на часа!"}
+},1000)}
+function stop(){run=false;clearInterval(tick);play.textContent="Старт"}
+play.onclick=()=>{if(sel===null){pick(0);return} run?stop():(left>0&&start())};
+reset.onclick=()=>{if(sel!==null)pick(sel),stop()};
+document.querySelectorAll(".tab").forEach((b,i)=>b.onclick=()=>{
+  hour=i; sel=null; stop(); nowName.textContent="Избери етап отдолу"; clock.textContent="00:00";
+  document.querySelectorAll(".tab").forEach((x,j)=>x.setAttribute("aria-selected",j===i)); render();
+});
+let stars=0;const GOAL=30;
+const sc=document.querySelector(".team .sc");
+function drawStars(){bar.style.width=Math.min(100,stars/GOAL*100)+"%";
+  sc.innerHTML=stars>=GOAL?`<b id="st">${stars}</b> ⭐ Наградата е отключена! 🎉`:`<b id="st">${stars}</b> / ${GOAL} ⭐ до общата награда`}
+stP.onclick=()=>{stars++;drawStars();document.getElementById("st").classList.add("pop")};
+stM.onclick=()=>{stars=Math.max(0,stars-1);drawStars()};
+try{const n=localStorage.getItem("nvo7team");if(n)tName.value=n}catch(e){}
+tName.addEventListener("input",()=>{try{localStorage.setItem("nvo7team",tName.value)}catch(e){}});
+render();
+</script>
+
+</body>
+</html>
