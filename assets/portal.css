@@ -186,6 +186,8 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 .tla-badge { display: inline-block; white-space: nowrap; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
   padding: 0.2rem 0.55rem; border-radius: 999px; background: var(--sun-light); color: var(--sun-dark); }
 .tla-badge--exam { background: #E7EDFA; color: #26406F; }
+/* Урокът е кехлибарен: зелено е домашното, синьо — изпитът. */
+.tla-badge--lesson { background: #FFF4DC; color: #925A08; }
 .tla-badge--homework { background: #E9F7EF; color: #1D6B41; }
 .tla-badge--graded { background: #E9F7EF; color: #1D6B41; }
 .tla-badge--submitted { background: var(--sun-light); color: #7A5600; }
@@ -532,6 +534,9 @@ body.tlp-page { background: #FFFDF7; }
   border-radius: var(--tlp-r-sm); padding: 1.1rem 1.2rem;
 }
 .tlp__card + .tlp__card { margin-top: 0.75rem; }
+/* Урокът пред домашното за същата седмица: кехлибарена черта отляво, за
+   да личи, че е друго нещо — гледа се, не се предава. */
+.tlp__card--lesson { border-left: 3px solid var(--tlp-accent); background: #FFFDF7; }
 .tlp__card-row {
   display: flex; align-items: baseline; justify-content: space-between;
   gap: 0.75rem; flex-wrap: wrap;
@@ -555,6 +560,7 @@ body.tlp-page { background: #FFFDF7; }
 /* какъв вид е заданието, до заглавието на групата резултати */
 .tlp__chip--homework { background: #E9F7EF; color: #1D6B41; }
 .tlp__chip--exam     { background: #E7EDFA; color: #26406F; }
+.tlp__chip--lesson   { background: #FFF4DC; color: #925A08; }
 
 .tlp__note { font-size: 0.88rem; line-height: 1.6; color: var(--tlp-ink-soft); margin: 0.9rem 0 0; }
 
@@ -908,6 +914,16 @@ body.tlp-page { background: #FFFDF7; }
 .tlc__hw-row + .tlc__hw-row { margin-top: 0.4rem; }
 .tlc__hw-t { flex: 1 1 180px; min-width: 0; font-weight: 700; font-size: 0.9rem; color: var(--tlp-navy); }
 .tlc__hw-none { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0; }
+
+/* Урокът стои над заданието и се различава на един поглед: кехлибарена
+   черта отляво, за да се вижда докъде свършва той и откъде започва
+   работата за вкъщи. */
+.tlc__hw--lesson {
+  border-top: none; border-left: 3px solid var(--tlp-accent);
+  padding-left: 0.7rem; padding-top: 0;
+  margin-top: 0.7rem;
+}
+.tlc__hw--lesson .tlc__hw-row { background: #FFFBF1; }
 
 /* 35 of the 36 weeks have nothing set yet, so an empty week is one line. */
 .tlc__hw--empty {
