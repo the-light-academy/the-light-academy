@@ -17,6 +17,10 @@
 --                или пълен чужд адрес: 'https://wordwall.net/...'
 --       week   — коя седмица е, и grades — за кой клас
 --  3. Пускаш файла. Урокът влиза като ЧЕРНОВА.
+--
+--  max_points е 0 и остава 0 — урокът не се оценява и базата не го
+--  приема с други точки (ограничението се казва
+--  assignments_lesson_no_points).
 --  4. В таблото: „Сложи в библиотеката“, после „Дай на моите“.
 --
 --  published нарочно липсва в on conflict do update — дали урокът е в
@@ -34,12 +38,13 @@
 -- махни последния ред с where и напиши своето.
 -- ---------------------------------------------------------------------
 insert into public.assignments
-  (slug, title, kind, url, published, sort_order, week, subject_id, grades)
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
 select
   'urok-4-w05',                               -- slug
   'Урок — Деление с едноцифрено число',       -- title
   'lesson',
   'uroci/urok_4_w05.html',                    -- url
+  0,                                          -- max_points: урокът НЕ се оценява, винаги 0
   false,
   10405,                                      -- sort_order: 10000 + клас·100 + седмица
   5,                                          -- week
@@ -50,6 +55,7 @@ on conflict (slug) do update set
   title      = excluded.title,
   kind       = excluded.kind,
   url        = excluded.url,
+  max_points = excluded.max_points,
   sort_order = excluded.sort_order,
   week       = excluded.week,
   subject_id = excluded.subject_id,
