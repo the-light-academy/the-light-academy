@@ -66,6 +66,36 @@ on conflict (slug) do update set
 -- Оттук надолу се редят истинските уроци.
 -- ---------------------------------------------------------------------
 
+-- 7. клас, седмица 2 — три учебни часа: преговор на 6. клас (рационални
+-- числа и степени; уравнения, пропорции, проценти) и първата нова тема
+-- „числена стойност на израз и едночлени“.
+-- Страницата е ЗА ПРЕПОДАВАТЕЛЯ: вижда се планът по минути, отговорите
+-- на всички задачи и бележките за работата с децата.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('urok-7-w02',
+   'Урок 1 — От числата към буквите',
+   'lesson',
+   'uroci/urok_7_w02.html',
+   0,
+   false,
+   10702,
+   2,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title      = excluded.title,
+  kind       = excluded.kind,
+  url        = excluded.url,
+  max_points = excluded.max_points,
+  sort_order = excluded.sort_order,
+  week       = excluded.week,
+  subject_id = excluded.subject_id,
+  grades     = excluded.grades;
+  -- published нарочно липсва: решава се от таблото.
+
+
 
 -- Какво има до момента:
 select kind as вид,
