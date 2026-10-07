@@ -31,8 +31,8 @@ do $$ begin
     values ('v9-hw','Домашно проба','homework','hw.html',false,900);
   insert into public.assignments (slug,title,kind,url,published,sort_order)
     values ('v9-ex','Изпит проба','exam','ex.html',false,901);
-  insert into public.assignments (slug,title,kind,url,published,sort_order)
-    values ('v9-ur','Урок проба','lesson','uroci/u.html',false,902);
+  insert into public.assignments (slug,title,kind,url,max_points,published,sort_order)
+    values ('v9-ur','Урок проба','lesson','uroci/u.html',0,false,902);
   raise notice '   ✓ домашно, изпит и урок влизат';
 end $$;
 
@@ -44,29 +44,35 @@ select pg_temp.must_fail('празен вид',
   $$insert into public.assignments (slug,title,kind,url,sort_order)
     values ('v9-y','Проба','','y.html',904)$$, '23514');
 
--- ── 2. Урокът няма точки, дори да му се напишат ───────────────────────
+-- ── 2. Урокът е с 0 точки и базата не приема други ────────────────────
 do $$
 declare p numeric;
 begin
   select max_points into p from public.assignments where slug = 'v9-ur';
   if p <> 0 then
-    raise exception '   ✗ новият урок влезе с % точки, а трябва 0', p;
+    raise exception '   ✗ урокът влезе с % точки, а трябва 0', p;
   end if;
-  raise notice '   ✓ нов урок влиза с 0 точки, без да се пише';
-
-  update public.assignments set max_points = 50 where slug = 'v9-ur';
-  select max_points into p from public.assignments where slug = 'v9-ur';
-  if p <> 0 then
-    raise exception '   ✗ урокът прие % точки при редакция', p;
-  end if;
-  raise notice '   ✓ и 50 точки, писани на ръка, пак стават 0';
+  raise notice '   ✓ урокът стои с 0 точки';
 
   select max_points into p from public.assignments where slug = 'v9-hw';
   if p <> 100 then
     raise exception '   ✗ домашното изгуби точките си: %', p;
   end if;
-  raise notice '   ✓ домашното си остава със 100 точки — тригерът не го пипа';
+  raise notice '   ✓ домашното си остава със 100 точки — ограничението не го пипа';
 end $$;
+
+select pg_temp.must_fail('урок с точки, писани на ръка',
+  $$update public.assignments set max_points = 50 where slug = 'v9-ur'$$, '23514');
+
+-- Забравено max_points: подразбиращото се е 100, значи редът пада. Така
+-- грешката идва веднага, а не след седмица, когато детето види „0 от 100“.
+select pg_temp.must_fail('урок без изрично max_points',
+  $$insert into public.assignments (slug,title,kind,url,sort_order)
+    values ('v9-ur2','Урок без точки','lesson','uroci/u2.html',905)$$, '23514');
+
+-- Домашното, обърнато на урок, също трябва първо да остави точките си.
+select pg_temp.must_fail('домашно, станало урок, без да остави точките',
+  $$update public.assignments set kind = 'lesson' where slug = 'v9-hw'$$, '23514');
 
 -- ── 3. Върху урок не се пише опит ─────────────────────────────────────
 -- Нужен е ученик с истински id в auth.users, иначе ще спре външният ключ
@@ -146,8 +152,8 @@ begin
   insert into public.assignments (slug,title,kind,url,published,sort_order,subject_id,grades)
     values ('v9-rls-hw','Домашно за RLS','homework','hw3.html',true,960,sb,array[g])
     returning id into hw;
-  insert into public.assignments (slug,title,kind,url,published,sort_order,subject_id,grades)
-    values ('v9-rls-ur','Урок за RLS','lesson','uroci/u3.html',true,961,sb,array[g])
+  insert into public.assignments (slug,title,kind,url,max_points,published,sort_order,subject_id,grades)
+    values ('v9-rls-ur','Урок за RLS','lesson','uroci/u3.html',0,true,961,sb,array[g])
     returning id into ur;
   insert into public.assignment_releases (assignment_id, teacher_id, hidden)
     values (hw, tc, false), (ur, tc, false);
