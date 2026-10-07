@@ -658,14 +658,66 @@
           '<p class="tlp__card-m">' + esc(meta) + '</p>' + bar + foot + '</div>';
       }
 
+      /* Урокът не се предава и не се оценява: няма процент, няма лента,
+         няма „Направи отново“. Само се отваря. */
+      function lessonCard(a) {
+        /* Урокът се отваря в нов раздел: често е чужда страница (игра,
+           видео, упражнение), а порталът трябва да остане отворен зад
+           нея. Домашното, обратно, се отваря на същото място — то е
+           работа тук, не отбивка. */
+        var foot = a.url
+          ? '<div class="tlp__card-foot">' +
+              '<a class="tla-btn tla-btn--sm" href="' + esc(a.url) + '" ' +
+              'target="_blank" rel="noopener">Отвори</a></div>'
+          : '';
+        return '<div class="tlp__card tlp__card--lesson">' +
+          '<div class="tlp__card-row">' +
+            '<p class="tlp__card-t">' + esc(a.title) + '</p>' +
+            '<span class="tlp__chip tlp__chip--lesson">Урок</span>' +
+          '</div>' +
+          '<p class="tlp__card-m">' +
+            (a.week ? 'Седмица ' + a.week + ' · ' : '') +
+            (a.url ? 'Интерактивен урок — гледаш и пробваш, нищо не се предава.'
+                   : 'Урокът още няма отворена страница.') + '</p>' +
+          foot +
+        '</div>';
+      }
+
+      /* Подредбата в „Домашни“: по седмици, а вътре в седмицата урокът е
+         пръв — в часа първо се гледа, после се работи. Каквото няма
+         седмица, остава най-отзад, в реда, в който е дошло (sort_order).
+         Сортировката е по индекс, за да е стабилна: еднаквите остават
+         както са били. */
+      function weekOrder(list) {
+        return list.map(function (a, i) { return { a: a, i: i }; })
+          .sort(function (x, y) {
+            var wx = (x.a.week == null) ? Infinity : x.a.week;
+            var wy = (y.a.week == null) ? Infinity : y.a.week;
+            if (wx !== wy) return wx - wy;
+            var lx = (x.a.kind === 'lesson') ? 0 : 1;
+            var ly = (y.a.kind === 'lesson') ? 0 : 1;
+            if (lx !== ly) return lx - ly;
+            return x.i - y.i;
+          })
+          .map(function (o) { return o.a; });
+      }
+
       function renderAssignments(published) {
         var hw = published.filter(function (a) { return a.kind === 'homework'; });
         var ex = published.filter(function (a) { return a.kind === 'exam'; });
+        var lessons = published.filter(function (a) { return a.kind === 'lesson'; });
 
-        $('hwList').innerHTML = hw.length
-          ? hw.map(assignmentCard).join('') +
-            '<p class="tlp__note">Домашните не се губят между тетрадки и съобщения — ' +
-            'всичко е тук и виждаш какво ти остава.</p>'
+        var hwHtml = weekOrder(hw.concat(lessons)).map(function (a) {
+          return a.kind === 'lesson' ? lessonCard(a) : assignmentCard(a);
+        }).join('');
+
+        $('hwList').innerHTML = (hw.length || lessons.length)
+          ? hwHtml +
+            (hw.length
+              ? '<p class="tlp__note">Домашните не се губят между тетрадки и съобщения — ' +
+                'всичко е тук и виждаш какво ти остава.</p>'
+              : '<p class="tlp__note">Засега тук има само уроци. Домашните ще се появят ' +
+                'под урока за съответната седмица.</p>')
           : empty('📚', 'Още няма домашни',
               'Преподавателят ще ги отвори тук, щом са готови. Ще ги видиш веднага след като влезеш.');
 
@@ -837,7 +889,7 @@
       function groupHead(a, meta, open) {
         return '<button type="button" class="tlp__grp-head" aria-expanded="' + open + '">' +
           (a ? '<span class="tlp__chip tlp__chip--' + esc(a.kind) + '">' +
-                (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' : '') +
+                esc(TLA.kindLabel(a.kind)) + '</span>' : '') +
           '<span class="tlp__grp-t">' + esc(a ? a.title : 'Задание') + '</span>' +
           '<span class="tlp__grp-m">' + meta + '</span>' +
           '<span class="tlp__grp-chev" aria-hidden="true">▾</span>' +
@@ -1371,8 +1423,12 @@
 
         assignments.forEach(function (a) { byId[a.id] = a; });
         var published = assignments.filter(function (a) { return a.published; });
+        /* Пръстенът е „колко от дадената ти работа е зад гърба“. Урокът
+           не е работа за предаване — ако влезеше в сметката, детето щеше
+           да изглежда изостанало заради нещо, което само се гледа. */
+        var gradable = published.filter(TLA.isGradable);
 
-        renderStats(published);
+        renderStats(gradable);
         renderStars(auth.session.user.id);
         renderAssignments(published);
         renderResults();

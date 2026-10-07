@@ -1784,6 +1784,82 @@
         return { byWeek: byWeek, spare: spare };
       }
 
+      function isLesson(a) { return a.kind === 'lesson'; }
+
+      /* Менюто „закачи за тази седмица“. Носи три неща: седмицата,
+         класа — защото две програми може да са на екрана наведнъж и
+         седмица 5 съществува и в двете — и вида, защото уроците и
+         заданията имат по едно меню и инак бутонът на единия намира
+         менюто на другия. */
+      function calPick(prog, n, spare, what) {
+        if (!state.isAdmin || !spare.length) return '';
+        var key = 'data-cal-pick="' + n + '" data-cal-grade="' + prog.grade + '" ' +
+          'data-cal-kind="' + what + '"';
+        var word = (what === 'lesson') ? 'урок' : 'задание';
+        return '<select ' + key + ' aria-label="Закачи ' + word + ' за седмица ' + n + '">' +
+            '<option value="">Закачи ' + word + '…</option>' +
+            spare.map(function (a) {
+              return '<option value="' + esc(a.id) + '">' + esc(a.title) + '</option>';
+            }).join('') +
+          '</select>' +
+          '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+            'data-cal-add="' + n + '" data-cal-grade="' + prog.grade + '" ' +
+            'data-cal-kind="' + what + '">Закачи</button>';
+      }
+
+      /* Един ред в седмицата: вид, име, вратата към листа и бутоните.
+         Урокът и заданието минават по един и същ път — библиотеката е на
+         админа, даването е на всеки преподавател — затова и редът е един. */
+      function calRow(a) {
+        return '<div class="tlc__hw-row">' +
+          '<span class="tla-badge tla-badge--' + a.kind + '">' +
+            esc(TLA.kindLabel(a.kind)) + '</span>' +
+          '<span class="tlc__hw-t">' + esc(a.title) + '</span>' +
+          /* Урокът няма какво да се „предава“, затова се отваря направо,
+             без preview=1. */
+          (isLesson(a) ? openLink(a) : previewLink(a)) +
+          (state.isAdmin
+            ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                'data-cal-pub="' + esc(a.id) + '">' +
+                (a.published ? '✓ В библиотеката' : 'Сложи в библиотеката') + '</button>'
+            : '') +
+          (a.published
+            ? (function () {
+                var rel = releaseOf(a.id);
+                var given = !!(rel && !rel.hidden);
+                return '<button type="button" class="tla-btn tla-btn--sm' +
+                  (given ? ' tla-btn--ghost' : '') + '" data-release="' + esc(a.id) + '" ' +
+                  'data-given="' + (given ? '1' : '0') + '">' +
+                  (given ? 'Скрий от моите' : 'Дай на моите') + '</button>';
+              })()
+            : '<span class="tla-muted">чернова</span>') +
+          (state.isAdmin ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+            'data-cal-off="' + esc(a.id) + '">Откачи</button>' : '') +
+        '</div>';
+      }
+
+      /* Урокът стои НАД заданието: в часа първо се гледа, после се
+         работи. Слотът се показва и празен, за да се вижда къде има къде
+         да се сложи урок. */
+      function calLessonSlot(prog, n, bucket) {
+        if (!calWeekColumn) return '';
+        var mine = (bucket.byWeek[n] || []).filter(isLesson);
+        var pick = calPick(prog, n, bucket.spare.filter(isLesson), 'lesson');
+
+        if (!mine.length) {
+          return '<div class="tlc__hw tlc__hw--lesson tlc__hw--empty">' +
+            '<span class="tlc__hw-k">Интерактивен урок</span>' +
+            '<span class="tlc__hw-none">още няма</span>' +
+            pick +
+          '</div>';
+        }
+        return '<div class="tlc__hw tlc__hw--lesson">' +
+          '<p class="tlc__hw-k">Интерактивен урок</p>' +
+          mine.map(calRow).join('') +
+          (pick ? '<div class="tlc__hw-add">' + pick + '</div>' : '') +
+        '</div>';
+      }
+
       function calHwSlot(prog, n, bucket) {
         if (!calWeekColumn) {
           return '<div class="tlc__hw"><p class="tlc__hw-k">Задание за седмицата</p>' +
@@ -1792,21 +1868,10 @@
             'готов в supabase/schema.sql.</p></div>';
         }
 
-        /* Both attributes, because two programmes can be on screen at once
-           and week 5 exists in each of them. */
-        var key = 'data-cal-pick="' + n + '" data-cal-grade="' + prog.grade + '"';
-        var pick = (state.isAdmin && bucket.spare.length)
-          ? '<select ' + key + ' aria-label="Задание за седмица ' + n + '">' +
-              '<option value="">Закачи задание…</option>' +
-              bucket.spare.map(function (a) {
-                return '<option value="' + esc(a.id) + '">' + esc(a.title) + '</option>';
-              }).join('') +
-            '</select>' +
-            '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
-              'data-cal-add="' + n + '" data-cal-grade="' + prog.grade + '">Закачи</button>'
-          : '';
-
-        var mine = bucket.byWeek[n] || [];
+        var mine = (bucket.byWeek[n] || []).filter(function (a) { return !isLesson(a); });
+        var pick = calPick(prog, n, bucket.spare.filter(function (a) {
+          return !isLesson(a);
+        }), 'work');
 
         /* A week with nothing set is the normal case for most of them, so it
            gets one quiet line rather than a heading and an empty box. */
@@ -1821,33 +1886,7 @@
         }
 
         return '<div class="tlc__hw"><p class="tlc__hw-k">Задание за седмицата</p>' +
-          mine.map(function (a) {
-            return '<div class="tlc__hw-row">' +
-              '<span class="tla-badge tla-badge--' + a.kind + '">' +
-                (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span>' +
-              '<span class="tlc__hw-t">' + esc(a.title) + '</span>' +
-              previewLink(a) +
-              /* В календара стои същата двойка врати, както в „Задания“:
-                 библиотеката е на админа, даването — на всеки преподавател. */
-              (state.isAdmin
-                ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
-                    'data-cal-pub="' + esc(a.id) + '">' +
-                    (a.published ? '✓ В библиотеката' : 'Сложи в библиотеката') + '</button>'
-                : '') +
-              (a.published
-                ? (function () {
-                    var rel = releaseOf(a.id);
-                    var given = !!(rel && !rel.hidden);
-                    return '<button type="button" class="tla-btn tla-btn--sm' +
-                      (given ? ' tla-btn--ghost' : '') + '" data-release="' + esc(a.id) + '" ' +
-                      'data-given="' + (given ? '1' : '0') + '">' +
-                      (given ? 'Скрий от моите' : 'Дай на моите') + '</button>';
-                  })()
-                : '<span class="tla-muted">чернова</span>') +
-              (state.isAdmin ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
-                'data-cal-off="' + esc(a.id) + '">Откачи</button>' : '') +
-            '</div>';
-          }).join('') +
+          mine.map(calRow).join('') +
           (pick ? '<div class="tlc__hw-add">' + pick + '</div>' : '') +
         '</div>';
       }
@@ -1870,6 +1909,7 @@
               '<span class="tlc__week-d">' + esc(weekLabel(prog, i)) + '</span>' +
               (i === now ? '<span class="tlc__now">тази седмица</span>' : '') +
             '</div>' +
+            calLessonSlot(prog, i, bucket) +
             calHwSlot(prog, i, bucket) +
           '</div>';
         }
@@ -1932,6 +1972,7 @@
                     (n === now ? '<span class="tlc__now">тази седмица</span>' : '') +
                   '</div>' +
                   '<p class="tlc__what">' + esc(what) + '</p>' +
+                  calLessonSlot(prog, n, bucket) +
                   calHwSlot(prog, n, bucket) +
                 '</div>';
               }).join('') +
@@ -2030,13 +2071,17 @@
           clearMsgs();
           var wk = Number(add.getAttribute('data-cal-add'));
           var gr = add.getAttribute('data-cal-grade');
+          var kd = add.getAttribute('data-cal-kind') || 'work';
           var pick = document.querySelector(
-            '[data-cal-pick="' + wk + '"][data-cal-grade="' + gr + '"]');
-          if (!pick || !pick.value) { say('err', 'Изберете задание от списъка.'); return; }
+            '[data-cal-pick="' + wk + '"][data-cal-grade="' + gr + '"]' +
+            '[data-cal-kind="' + kd + '"]');
+          var word = (kd === 'lesson') ? 'урок' : 'задание';
+          if (!pick || !pick.value) { say('err', 'Изберете ' + word + ' от списъка.'); return; }
           var r3 = await TLA.client.from('assignments')
             .update({ week: wk }).eq('id', pick.value);
           if (r3.error) { say('err', r3.error.message); return; }
-          say('ok', 'Заданието е закачено за седмица ' + wk + '.');
+          say('ok', (kd === 'lesson' ? 'Урокът е закачен' : 'Заданието е закачено') +
+            ' за седмица ' + wk + '.');
           await loadCalendar();
         }
       });
@@ -2175,7 +2220,7 @@
           return '<li class="tla-item">' +
             '<div class="tla-item__main">' +
               '<span class="tla-badge tla-badge--' + a.kind + '">' +
-                (a.kind === 'homework' ? 'Домашно' : 'Изпит') + '</span> ' +
+                esc(TLA.kindLabel(a.kind)) + '</span> ' +
               '<span class="tla-item__title">' + esc(a.title) + '</span>' +
               '<div class="tla-item__meta">' + esc(a.slug) + ' · ' +
                 esc(subjectName(a.subject_id)) + ' · ' +
@@ -2584,13 +2629,14 @@
 
       /* В списъка влизат САМО седмиците, в които има дадено задание за
          този клас. Седмица без домашно няма какво да покаже и само би
-         удължила менюто. */
+         удължила менюто. Уроците не се броят: те не се предават, значи
+         от тях няма какво да се анализира. */
       function anaWeeksWithWork() {
         var prog = anaProgramme();
         if (!prog) return [];
         var seen = {};
         calAll.forEach(function (a) {
-          if (a.week && assignmentIsForGrade(a, ana.grade)) seen[a.week] = true;
+          if (a.week && TLA.isGradable(a) && assignmentIsForGrade(a, ana.grade)) seen[a.week] = true;
         });
         return Object.keys(seen).map(Number).sort(function (x, y) { return x - y; });
       }
@@ -2678,6 +2724,7 @@
       function anaAssignmentsForWeek() {
         var ok = {};
         calAll.forEach(function (a) {
+          if (!TLA.isGradable(a)) return;
           if (!assignmentIsForGrade(a, ana.grade)) return;
           if (ana.week && String(a.week) !== String(ana.week)) return;
           ok[a.id] = a;
@@ -2990,6 +3037,14 @@
       /* „Отвори“ праща ?preview=1: листът се вижда както го вижда ученикът,
          но без бутон за предаване и без да записва нищо. Правилото живее в
          assets/auth.js, за да важи за всичките осемнайсет листа наведнъж. */
+      /* Вратата към един урок: отваря се както го вижда детето — няма
+         какво да се „гледа без предаване“, защото урокът не се предава. */
+      function openLink(a) {
+        if (!a.url) return '';
+        return '<a class="tla-btn tla-btn--ghost tla-btn--sm" href="' + esc(a.url) + '" ' +
+          'target="_blank" rel="noopener" title="Отваря урока в нов раздел">Отвори</a>';
+      }
+
       function previewLink(a, label) {
         if (!a.url) return '';
         var href = a.url + (a.url.indexOf('?') === -1 ? '?' : '&') + 'preview=1';
