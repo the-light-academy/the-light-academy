@@ -1720,6 +1720,10 @@ body.tlp-space { background: #05070F; }
 .tla-track__n { margin-left: auto; font-size: 0.72rem; font-weight: 800; color: #fff; background: var(--tlp-navy); border-radius: 999px; min-width: 1.4rem; padding: 0.1rem 0.45rem; text-align: center; }
 .tla-track__note { margin: 0.35rem 0 0.8rem; font-size: 0.86rem; }
 .tla-track__grid { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+/* В календара кръговете са един под друг: вътре в тях стоят редове с
+   бутони, а на 14rem колона те се пречупват на четири реда. */
+.tlc__track { margin-bottom: 1.1rem; background: #fff; }
+.tlc__track .tla-track__grid { grid-template-columns: 1fr; }
 .tla-track__loose { margin-top: 0.7rem; font-size: 0.84rem; }
 .tla-round { border: 1px solid var(--tlp-line); border-radius: 12px; padding: 0.7rem 0.8rem; background: #fff; }
 /* Празният кръг е различен на вид, но не изчезва: пунктирът казва
@@ -1729,9 +1733,6 @@ body.tlp-space { background: #05070F; }
 .tla-round__n { margin-left: auto; font-size: 0.72rem; font-weight: 800; color: var(--tlp-accent-deep); background: var(--tlp-accent-wash); border-radius: 999px; min-width: 1.3rem; padding: 0.08rem 0.4rem; text-align: center; }
 .tla-round__note { font-size: 0.78rem; color: var(--tlp-ink-soft); margin: 0.3rem 0 0; line-height: 1.5; }
 .tla-round__none { font-size: 0.78rem; color: var(--tlp-ink-soft); margin: 0.5rem 0 0; line-height: 1.5; }
-.tla-round__list { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; gap: 0.3rem; }
-.tla-round__list li { font-size: 0.84rem; color: var(--tlp-ink); background: #F7F9FF; border-radius: 8px; padding: 0.35rem 0.5rem; }
-.tla-round__draft { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--tlp-ink-soft); }
 
 /* в профила на ученика */
 .tlp__track { margin-bottom: 1rem; }
