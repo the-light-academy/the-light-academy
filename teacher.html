@@ -456,15 +456,6 @@
         <div id="anaOut"></div>
       </div>
 
-      <!-- Разделите вътре в един предмет. Показват се и празните: там е
-           мястото, което чака да се напълни. Каталогът им е в
-           assets/tracks.js, а кое задание в кой раздел е — в базата. -->
-      <div class="tla-card">
-        <h2 class="tla-card__title">Раздели в предметите</h2>
-        <p class="tla-muted" style="margin-bottom:1rem;" id="trackIntro"></p>
-        <div id="trackBoard"></div>
-      </div>
-
       <div class="tla-card">
         <h2 class="tla-card__title">Задания</h2>
         <p class="tla-muted" style="margin-bottom:1rem;" id="assignIntro">
@@ -1905,7 +1896,10 @@
       /* Един ред в седмицата: вид, име, вратата към листа и бутоните.
          Урокът и заданието минават по един и същ път — библиотеката е на
          админа, даването е на всеки преподавател — затова и редът е един. */
-      function calRow(a) {
+      function calRow(a, opts) {
+        /* Листовете в раздел нямат седмица — за тях „Откачи“ няма какво
+           да откачи, затова се подава { noUnpin: true }. */
+        var noUnpin = !!(opts && opts.noUnpin);
         return '<div class="tlc__hw-row">' +
           '<span class="tla-badge tla-badge--' + a.kind + '">' +
             esc(TLA.kindLabel(a.kind)) + '</span>' +
@@ -1928,8 +1922,9 @@
                   (given ? 'Скрий от моите' : 'Дай на моите') + '</button>';
               })()
             : '<span class="tla-muted">чернова</span>') +
-          (state.isAdmin ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
-            'data-cal-off="' + esc(a.id) + '">Откачи</button>' : '') +
+          (state.isAdmin && !noUnpin
+            ? '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+              'data-cal-off="' + esc(a.id) + '">Откачи</button>' : '') +
         '</div>';
       }
 
@@ -1950,9 +1945,74 @@
         }
         return '<div class="tlc__hw tlc__hw--lesson">' +
           '<p class="tlc__hw-k">Интерактивен урок</p>' +
-          mine.map(calRow).join('') +
+          mine.map(function (a) { return calRow(a); }).join('') +
           (pick ? '<div class="tlc__hw-add">' + pick + '</div>' : '') +
         '</div>';
+      }
+
+      /* Разделите на предмета — кръговете на олимпиадата — в календара,
+         над седмиците.
+
+         Защо тук, а не при заданията: листовете в тях нямат седмица и
+         не са част от програмата, но човекът ги търси там, където гледа
+         класа и предмета. Показват се за класа на раздела и когато
+         филтърът е на неговия предмет (или е „всички“).
+
+         Четат се от calAll, защото календарът чете оттам; а празните
+         кръгове не се крият — те са мястото, което чака да се напълни. */
+      function calTrackBoard(prog) {
+        if (!window.TLA || !TLA.Tracks || !TLA.Tracks.all.length) return '';
+        var mySubject = subjectSlugById(filters.calSubject);
+        var tracks = TLA.Tracks.all.filter(function (t) {
+          if (t.grade !== prog.grade) return false;
+          if (filters.calSubject === '') return true;      /* „всички“ */
+          if (filters.calSubject === 'none') return false; /* „без предмет“ */
+          return t.subject === mySubject;
+        });
+        if (!tracks.length) return '';
+
+        return tracks.map(function (t) {
+          var subj = state.subjects.filter(function (sb) { return sb.slug === t.subject; })[0];
+          if (!subj) {
+            return '<div class="tla-track tlc__track">' +
+              '<h3 class="tla-track__h">' + esc(t.title) + '</h3>' +
+              '<p class="tla-empty">Предметът „' + esc(t.subject) + '“ още го няма в базата. ' +
+              'Пусни supabase/subjects.sql и разделът ще се появи.</p></div>';
+          }
+
+          var mine = calAll.filter(function (a) {
+            return a.subject_id === subj.id && assignmentIsForGrade(a, t.grade);
+          });
+          var box = TLA.Tracks.group(mine, t.subject, t.grade).tracks[0];
+          var total = box.sections.reduce(function (n, sg) { return n + sg.items.length; }, 0) +
+                      box.loose.length;
+
+          return '<div class="tla-track tlc__track">' +
+            '<h3 class="tla-track__h">' + esc(t.title) +
+              ' <span class="tla-track__sub">' + esc(subj.name) + ' · ' +
+              esc(TLA.gradeLabel(t.grade)) + '</span>' +
+              '<span class="tla-track__n">' + total + '</span></h3>' +
+            (t.note ? '<p class="tla-muted tla-track__note">' + esc(t.note) + '</p>' : '') +
+            '<div class="tla-track__grid">' +
+              box.sections.map(function (sg) {
+                return '<div class="tla-round' + (sg.items.length ? '' : ' is-empty') + '">' +
+                  '<p class="tla-round__h">' + esc(sg.section.title) +
+                    '<span class="tla-round__n">' + sg.items.length + '</span></p>' +
+                  (sg.section.note ? '<p class="tla-round__note">' + esc(sg.section.note) + '</p>' : '') +
+                  (sg.items.length
+                    ? sg.items.map(function (a) { return calRow(a, { noUnpin: true }); }).join('')
+                    : '<p class="tla-round__none">Още няма листове. Качват се с ' +
+                      '<code>supabase/assignments.sql</code>, а кой лист в кой кръг е се ' +
+                      'избира в „Задания“ → „Клас и предмет“.</p>') +
+                '</div>';
+              }).join('') +
+            '</div>' +
+            (box.loose.length
+              ? '<p class="tla-muted tla-track__loose">В раздела, но без кръг: ' +
+                box.loose.map(function (a) { return esc(a.title); }).join(', ') + '.</p>'
+              : '') +
+          '</div>';
+        }).join('');
       }
 
       function calHwSlot(prog, n, bucket) {
@@ -1981,7 +2041,7 @@
         }
 
         return '<div class="tlc__hw"><p class="tlc__hw-k">Задание за седмицата</p>' +
-          mine.map(calRow).join('') +
+          mine.map(function (a) { return calRow(a); }).join('') +
           (pick ? '<div class="tlc__hw-add">' + pick + '</div>' : '') +
         '</div>';
       }
@@ -2027,6 +2087,9 @@
         var html = withHeading
           ? '<h2 class="tlc__prog">Програма — ' + esc(TLA.gradeLabel(prog.grade)) + '</h2>'
           : '';
+        /* Разделите стоят НАД седмиците: те не са част от програмата по
+           седмици, а са другото, което този клас има по този предмет. */
+        html += calTrackBoard(prog);
 
         /* Темите по седмици са на МАТЕМАТИКАТА. Избере ли се друг предмет,
            целият акордеон пада — не само текстът на седмицата, а и
@@ -2223,75 +2286,6 @@
       /* Таблото на разделите. Чертае ВСЕКИ раздел от каталога с всичките
          му подраздели, пълни или празни — празният кръг е мястото, в
          което предстои да се сложи лист, и трябва да се вижда. */
-      function renderTrackBoard() {
-        var el = document.getElementById('trackBoard');
-        var intro = document.getElementById('trackIntro');
-        if (!el) return;
-
-        var all = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
-        var html = '';
-
-        TLA.Tracks.all.forEach(function (t) {
-          var subj = state.subjects.filter(function (sb) { return sb.slug === t.subject; })[0];
-          /* Раздел за предмет, какъвто го няма в базата, не се крие —
-             казва се какво липсва, инак разделът просто не се появява и
-             никой не разбира защо. */
-          if (!subj) {
-            html += '<div class="tla-track">' +
-              '<h3 class="tla-track__h">' + esc(t.title) + '</h3>' +
-              '<p class="tla-empty">Предметът „' + esc(t.subject) + '“ още го няма в базата. ' +
-              'Пусни supabase/subjects.sql и разделът ще се появи.</p></div>';
-            return;
-          }
-
-          var mine = all.filter(function (a) {
-            return a.subject_id === subj.id && assignmentIsForGrade(a, t.grade);
-          });
-          var g = TLA.Tracks.group(mine, t.subject, t.grade);
-          var box = g.tracks[0];
-          var total = box.sections.reduce(function (n, sg) { return n + sg.items.length; }, 0) +
-                      box.loose.length;
-
-          html += '<div class="tla-track">' +
-            '<h3 class="tla-track__h">' + esc(t.title) +
-              ' <span class="tla-track__sub">' + esc(subj.name) + ' · ' +
-              esc(TLA.gradeLabel(t.grade)) + '</span>' +
-              '<span class="tla-track__n">' + total + '</span></h3>' +
-            (t.note ? '<p class="tla-muted tla-track__note">' + esc(t.note) + '</p>' : '') +
-            '<div class="tla-track__grid">';
-
-          box.sections.forEach(function (sg) {
-            html += '<div class="tla-round' + (sg.items.length ? '' : ' is-empty') + '">' +
-              '<p class="tla-round__h">' + esc(sg.section.title) +
-                '<span class="tla-round__n">' + sg.items.length + '</span></p>' +
-              (sg.section.note ? '<p class="tla-round__note">' + esc(sg.section.note) + '</p>' : '') +
-              (sg.items.length
-                ? '<ul class="tla-round__list">' + sg.items.map(function (a) {
-                    return '<li>' + esc(a.title) +
-                      (a.published ? '' : ' <span class="tla-round__draft">чернова</span>') + '</li>';
-                  }).join('') + '</ul>'
-                : '<p class="tla-round__none">Още няма листове. Сложи ги оттук долу — ' +
-                  'в „Клас и предмет“ на всеки лист има избор на раздел.</p>') +
-            '</div>';
-          });
-
-          html += '</div>';
-          if (box.loose.length) {
-            html += '<p class="tla-muted tla-track__loose">В раздела, но без кръг: ' +
-              box.loose.map(function (a) { return esc(a.title); }).join(', ') + '.</p>';
-          }
-          html += '</div>';
-        });
-
-        el.innerHTML = html || '<p class="tla-empty">Няма описани раздели.</p>';
-        if (intro) {
-          intro.textContent = TLA.Tracks.all.length === 1
-            ? 'Един раздел: ' + TLA.Tracks.all[0].title + ' — ' +
-              (TLA.Tracks.all[0].sections || []).length + ' подраздела.'
-            : TLA.Tracks.all.length + ' раздела.';
-        }
-      }
-
       function renderAssignAdmin() {
         var el = document.getElementById('assignAdmin');
         var all = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
@@ -3296,7 +3290,6 @@
         state.assignments = {};
         list.forEach(function (a) { state.assignments[a.id] = a; });
         renderAssignAdmin();
-        renderTrackBoard();
       }
 
       async function loadRoster() {
@@ -3850,7 +3843,6 @@
         await loadHours();
         fillNewStudentPickers();
         renderAssignAdmin();
-        renderTrackBoard();
         /* Менютата на анализа чакат и трите неща: класовете идват от
            списъка с ученици, седмиците — от заданията с week. */
         fillAnaGrade(); fillAnaWeeks(); fillAnaStudents();
