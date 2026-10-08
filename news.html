@@ -147,6 +147,11 @@
     .article-body-inner p { margin-top: 0.85rem; }
     .article-illustration { display: flex; justify-content: center; margin: 1.1rem 0; padding: 1.4rem; background: linear-gradient(160deg, var(--sun-light) 0%, #ffe3c2 100%); border-radius: 20px; }
     .article-illustration svg { width: 180px; height: 180px; }
+    /* Плакатът на статията. Форматът е висок (4:5), затова не се пуска
+       по цялата широчина — инак изблъсква текста извън екрана. */
+    .article-figure { margin: 0 0 1.3rem; }
+    .article-figure img { display: block; width: 100%; max-width: 340px; height: auto; margin: 0 auto; border-radius: 18px; box-shadow: 0 14px 30px rgba(61, 39, 18, 0.16); }
+
     /* Обобщението в началото на дълга статия: същият текст, но се вижда,
        че е резюме, а не първият абзац. */
     .article-lead { background: var(--sun-light); border-left: 4px solid var(--sun); border-radius: 0 14px 14px 0; padding: 1.1rem 1.3rem; margin-bottom: 0.4rem; }
@@ -414,6 +419,10 @@
         <p class="article-snippet">Математиката не е само за оценки. Тя е тренировка за мозъка. А в света на изкуствения интелект това става още по-важно.</p>
         <div class="article-body">
           <div class="article-body-inner">
+            <figure class="article-figure">
+              <img src="photos/math_superpower.webp" width="900" height="1125" loading="lazy"
+                   alt="Плакат на The Light Academy с надпис „Математиката не е за зубрене. Тя е суперсила.“" />
+            </figure>
             <div class="article-lead">
               <p><strong>Накратко.</strong> Математиката не е само за оценки. Тя е тренировка за мозъка.</p>
               <p>Решаването на задачи развива логическото мислене, учи ни да анализираме реални проблеми, да търсим различни решения и най-важното — да не се страхуваме да експериментираме и да грешим.</p>
