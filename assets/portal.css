@@ -205,6 +205,65 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 /* A mark the AI grader gave: real points, but not the teacher's last word. */
 .tla-badge--ai { background: #EDE7FA; color: #4B2E83; }
 
+/* ── УРОЦИТЕ: седмица като в календар ── */
+.tlu__bar { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.tlu__nav { display: flex; gap: 0.3rem; }
+.tlu__nav .tla-btn { min-width: 2.4rem; }
+.tlu__range { font-weight: 800; color: var(--tlp-navy); }
+.tlu__who { display: flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; color: var(--mid); }
+.tlu__bar .tla-btn--sm:last-child { margin-left: auto; }
+.tlu__hint { font-size: 0.84rem; margin-top: 0.7rem; }
+
+/* Решетката се плъзга настрани на тесен екран, вместо да се смачка:
+   седем дни под 320 px стават нечетими. */
+.tlu { overflow-x: auto; }
+.tlu__wrap { min-width: 680px; }
+.tlu__head { display: grid; grid-template-columns: 3.4rem repeat(7, 1fr); align-items: end; }
+.tlu__corner { display: block; }
+.tlu__day { text-align: center; font-size: 0.82rem; color: var(--mid); padding: 0.3rem 0; }
+.tlu__day b { color: var(--tlp-navy); text-transform: uppercase; font-size: 0.74rem; letter-spacing: 0.04em; }
+.tlu__day.is-today { color: var(--sun-dark); }
+.tlu__day.is-today b { color: var(--sun-dark); }
+.tlu__body { display: grid; grid-template-columns: 3.4rem repeat(7, 1fr);
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--white); }
+.tlu__hours { display: flex; flex-direction: column; background: #FBFCFF; }
+.tlu__hour { display: block; font-size: 0.72rem; color: var(--mid); padding: 0.15rem 0.35rem;
+  border-bottom: 1px solid var(--line); box-sizing: border-box; }
+.tlu__col { position: relative; border-left: 1px solid var(--line); }
+.tlu__col.is-today { background: #FFFDF5; }
+.tlu__cell { display: block; width: 100%; border: 0; border-bottom: 1px solid var(--line);
+  background: transparent; cursor: pointer; padding: 0; }
+.tlu__cell:hover { background: var(--sun-light); }
+.tlu__cell:focus-visible { outline: 2px solid var(--sun-dark); outline-offset: -2px; }
+.tlu__ev { position: absolute; left: 2px; right: 2px; overflow: hidden; text-align: left;
+  border: 1px solid hsl(var(--h, 210) 45% 60%); background: hsl(var(--h, 210) 70% 95%);
+  color: hsl(var(--h, 210) 60% 22%); border-radius: 8px; padding: 0.2rem 0.35rem;
+  font: inherit; font-size: 0.76rem; line-height: 1.25; cursor: pointer; }
+.tlu__ev b { font-weight: 800; }
+.tlu__ev span { display: block; opacity: 0.85; font-size: 0.72rem; }
+.tlu__ev:hover { filter: brightness(0.97); }
+
+/* Прозорчето за записване */
+.tlu-dlg { border: 0; border-radius: 18px; padding: 0; max-width: 32rem; width: calc(100vw - 2rem);
+  box-shadow: 0 24px 60px rgba(31,35,64,0.25); color: var(--tlp-ink); }
+.tlu-dlg::backdrop { background: rgba(13,27,54,0.45); }
+.tlu-dlg form { padding: 1.3rem 1.4rem 1.2rem; display: grid; gap: 0.8rem; }
+.tlu-dlg h3 { margin: 0; font-size: 1.15rem; color: var(--tlp-navy); }
+.tlu-f { display: grid; gap: 0.25rem; font-size: 0.86rem; color: var(--mid); font-weight: 700; }
+.tlu-f input, .tlu-f select { font: inherit; font-size: 0.95rem; font-weight: 400; color: var(--tlp-ink);
+  padding: 0.5rem 0.6rem; border: 1px solid rgba(13,27,54,0.18); border-radius: 10px; background: #fff; }
+.tlu-f input[readonly] { background: #F4F6FC; color: var(--mid); }
+.tlu-f3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+.tlu-chk { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.tlu-err { background: var(--tlp-bad-wash); color: var(--tlp-bad); border-radius: 10px;
+  padding: 0.5rem 0.7rem; font-size: 0.88rem; margin: 0; }
+.tlu-dlg__btns { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.3rem; }
+.tlu-dlg__gap { flex: 1; }
+@media (max-width: 560px) {
+  .tlu-f3 { grid-template-columns: 1fr 1fr; }
+  .tlu-f3 > :last-child { grid-column: 1 / -1; }
+}
+
 /* ── TABLES ── */
 .tla-tablewrap { overflow-x: auto; }
 .tla-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 560px; }

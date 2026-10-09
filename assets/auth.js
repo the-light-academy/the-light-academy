@@ -463,6 +463,47 @@
       return res.data || [];
     },
 
+    /* ---- уроците на преподавателите ------------------------------
+       Четенето е за една седмица, не за всичко: таблото се отваря на
+       една седмица и толкова му трябва. Политиките в базата решават
+       чии часове се връщат — преподавателят вижда своите, админът
+       всички, затова тук няма филтър по преподавател. */
+    listLessons: async function (fromIso, toIso) {
+      if (!client) return [];
+      var res = await client
+        .from('lessons')
+        .select('id, teacher_id, subject_id, child_name, starts_at, ends_at, note, series_id')
+        .gte('starts_at', fromIso)
+        .lt('starts_at', toIso)
+        .order('starts_at', { ascending: true });
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    /* Един час или цяла поредица — с едно вмъкване, за да не остане
+       половин поредица, ако нещо се счупи по средата. */
+    addLessons: async function (rows) {
+      if (!client) throw new Error('няма връзка с базата');
+      var res = await client.from('lessons').insert(rows).select('id');
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
+    deleteLesson: async function (id) {
+      if (!client) throw new Error('няма връзка с базата');
+      var res = await client.from('lessons').delete().eq('id', id);
+      if (res.error) throw res.error;
+    },
+
+    /* „Изтрий и следващите“: от този час нататък, по номера на
+       поредицата. Миналите часове остават — те вече са се случили. */
+    deleteSeriesFrom: async function (seriesId, fromIso) {
+      if (!client) throw new Error('няма връзка с базата');
+      var res = await client.from('lessons').delete()
+        .eq('series_id', seriesId).gte('starts_at', fromIso);
+      if (res.error) throw res.error;
+    },
+
     /* Which sheets the signed-in teacher has given to their students.
        A row with hidden = true was given and then taken back. */
     listReleases: async function () {

@@ -14,7 +14,7 @@
        ги дава с десетминутен кеш, а браузърът често ги пази и по-дълго —
        без този белег детето може да гледа вчерашния файл и да се чуди къде
        е новото. Сменя се, когато се пипне някой от тях. -->
-  <link rel="stylesheet" href="assets/portal.css?v=2026-10-07" />
+  <link rel="stylesheet" href="assets/portal.css?v=2026-10-09" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background.webp" media="(min-aspect-ratio: 1/1)" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background_mobile.webp" media="(max-aspect-ratio: 1/1)" />
 </head>
@@ -31,6 +31,7 @@
     <div class="tlp-nav__tabs" role="tablist" aria-label="Раздели в таблото">
       <button class="tla-tab" role="tab" aria-selected="true"  data-panel="panelResults">Резултати</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelCalendar">Календар</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelLessons" id="tabLessons">Моите уроци</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelHours">Часове</button>
@@ -130,6 +131,106 @@
         <div id="calendar"><p class="tla-empty">Зареждане…</p></div>
       </div>
     </section>
+
+
+    <!-- ── УРОЦИТЕ ───────────────────────────────────────────────
+         Седмица като в календар: колони по дни, часовете отстрани.
+         Преподавателят вижда своите, админът — на всички.
+    -->
+    <section class="tla-panel" id="panelLessons" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title" id="luTitle">Моите уроци</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;" id="luIntro"></p>
+
+        <div class="tlu__bar">
+          <div class="tlu__nav">
+            <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="luPrev"
+              aria-label="Предишната седмица">‹</button>
+            <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="luToday">Тази седмица</button>
+            <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="luNext"
+              aria-label="Следващата седмица">›</button>
+          </div>
+          <span class="tlu__range" id="luRange"></span>
+          <label class="tlu__who" data-admin hidden>
+            <span>Преподавател:</span>
+            <select id="luTeacherFilter"><option value="">всички</option></select>
+          </label>
+          <button type="button" class="tla-btn tla-btn--sm" id="luAdd">+ Нов час</button>
+        </div>
+
+        <div class="tlu" id="luGrid"><p class="tla-empty">Зареждане…</p></div>
+        <p class="tla-muted tlu__hint">Щракни върху празно място в решетката, за да запишеш час
+          точно там. Щракни върху записан час, за да го отвориш.</p>
+      </div>
+    </section>
+
+    <!-- Прозорчето за записване. <dialog> е на браузъра: сам затъмнява
+         фона, сам връща фокуса и се затваря с Esc. -->
+    <dialog class="tlu-dlg" id="luDlg">
+      <form method="dialog" id="luForm">
+        <h3 id="luDlgTitle">Нов час</h3>
+
+        <label class="tlu-f">
+          <span>Преподавател</span>
+          <input type="text" id="luTeacherName" readonly />
+          <select id="luTeacherPick" data-admin hidden></select>
+        </label>
+
+        <label class="tlu-f">
+          <span>Предмет</span>
+          <select id="luSubject" required></select>
+        </label>
+
+        <label class="tlu-f">
+          <span>Име на детето</span>
+          <input type="text" id="luChild" maxlength="80" required placeholder="напр. Мария" />
+        </label>
+
+        <div class="tlu-f3">
+          <label class="tlu-f">
+            <span>Дата</span>
+            <input type="date" id="luDate" required />
+          </label>
+          <label class="tlu-f">
+            <span>Начало</span>
+            <input type="time" id="luTime" step="900" required />
+          </label>
+          <label class="tlu-f">
+            <span>Колко време</span>
+            <select id="luDur">
+              <option value="30">30 мин</option>
+              <option value="45">45 мин</option>
+              <option value="60" selected>1 час</option>
+              <option value="90">1 ч 30 мин</option>
+              <option value="120">2 часа</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="tlu-chk">
+          <input type="checkbox" id="luRepeat" />
+          <span>Всяка седмица, по същото време</span>
+        </label>
+        <label class="tlu-f tlu-until" id="luUntilWrap" hidden>
+          <span>до дата</span>
+          <input type="date" id="luUntil" />
+        </label>
+
+        <label class="tlu-f">
+          <span>Бележка (не е задължителна)</span>
+          <input type="text" id="luNote" maxlength="500" />
+        </label>
+
+        <p class="tlu-err" id="luErr" hidden></p>
+
+        <div class="tlu-dlg__btns">
+          <button type="button" class="tla-btn tla-btn--ghost" id="luDel" hidden>Изтрий</button>
+          <span class="tlu-dlg__gap"></span>
+          <button type="button" class="tla-btn tla-btn--ghost" id="luCancel">Отказ</button>
+          <button type="submit" class="tla-btn" id="luSave">Запиши</button>
+        </div>
+      </form>
+    </dialog>
 
     <!-- ── ROSTER ─────────────────────────────────────────────── -->
     <section class="tla-panel" id="panelRoster" hidden>
@@ -486,11 +587,11 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/supabase-config.js?v=2026-10-07"></script>
-  <script src="assets/auth.js?v=2026-10-07"></script>
-  <script src="assets/race.js?v=2026-10-07"></script>
-  <script src="assets/analysis.js?v=2026-10-07"></script>
-  <script src="assets/tracks.js?v=2026-10-07"></script>
+  <script src="assets/supabase-config.js?v=2026-10-09"></script>
+  <script src="assets/auth.js?v=2026-10-09"></script>
+  <script src="assets/race.js?v=2026-10-09"></script>
+  <script src="assets/analysis.js?v=2026-10-09"></script>
+  <script src="assets/tracks.js?v=2026-10-09"></script>
   <script>
     (function () {
       var esc = TLA.escapeHtml;
@@ -2244,6 +2345,385 @@
         }
       });
 
+
+      /* ═══ УРОЦИТЕ ═══════════════════════════════════════════════════
+         Седмица като в календар. Всичко тук работи в МЕСТНО време и чак
+         при писане в базата се превръща в ISO — защото учителят мисли
+         „сряда, 17:00“, а не в часови пояси. По същата причина
+         повторението добавя 7 ДНИ към датата, а не 168 часа: в неделята
+         на разместването на часовника второто мести урока с час. */
+      var LU_FROM = 8, LU_TO = 21;      /* кои часове се виждат в решетката */
+      var LU_PX = 56;                    /* височина на един час */
+      var LU_DAYS = ['понеделник', 'вторник', 'сряда', 'четвъртък',
+                     'петък', 'събота', 'неделя'];
+      var LU_SHORT = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'нд'];
+      var LU_MONTHS = ['януари', 'февруари', 'март', 'април', 'май', 'юни', 'юли',
+                       'август', 'септември', 'октомври', 'ноември', 'декември'];
+
+      var lu = { monday: null, rows: [], editing: null };
+
+      function luMonday(d) {
+        var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        /* getDay(): 0 = неделя. Искаме понеделник за начало. */
+        x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+        return x;
+      }
+      function luPlusDays(d, n) {
+        var x = new Date(d.getFullYear(), d.getMonth(), d.getDate(),
+                         d.getHours(), d.getMinutes());
+        x.setDate(x.getDate() + n);
+        return x;
+      }
+      function luIsoDate(d) {
+        return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+               '-' + ('0' + d.getDate()).slice(-2);
+      }
+      function luHhMm(d) {
+        return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      }
+      function luSameDay(a, b) {
+        return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() &&
+               a.getDate() === b.getDate();
+      }
+
+      /* Предметите на един преподавател идват от „Кой кого води“: онова,
+         по което води поне един ученик. Ако още няма записано дете, се
+         показват всички — празен списък би спрял работата без причина. */
+      function luSubjectsFor(teacherId) {
+        var ids = {};
+        state.teaching.forEach(function (t) {
+          if (t.teacher_id === teacherId && t.subject_id) ids[t.subject_id] = true;
+        });
+        var mine = state.subjects.filter(function (s) { return ids[s.id]; });
+        return mine.length ? mine : state.subjects.slice();
+      }
+
+      function luTeachers() {
+        return state.roster.filter(function (p) { return p.role === 'teacher' && p.active; });
+      }
+      function luName(id) {
+        if (state.me && id === state.me.id) return state.me.full_name || 'Аз';
+        var hit = state.roster.filter(function (p) { return p.id === id; })[0];
+        return hit ? hit.full_name : 'преподавател';
+      }
+      /* Цвят по преподавател — за да личи чий е часът в изгледа на админа.
+         Изборът е по id, не по ред в списъка: инак цветовете се разместват
+         при всеки нов преподавател. */
+      function luHue(id) {
+        var n = 0, i;
+        for (i = 0; i < String(id).length; i++) n = (n * 31 + String(id).charCodeAt(i)) % 360;
+        return n;
+      }
+
+      async function luLoad() {
+        if (!lu.monday) lu.monday = luMonday(new Date());
+        var grid = document.getElementById('luGrid');
+        var from = lu.monday;
+        var to = luPlusDays(lu.monday, 7);
+        try {
+          lu.rows = await TLA.listLessons(from.toISOString(), to.toISOString());
+        } catch (err) {
+          lu.rows = [];
+          grid.innerHTML = '<p class="tla-empty">Часовете не се четат: ' +
+            esc(String(err.message || err)) + '<br />Ако пише, че няма такава таблица — ' +
+            'пусни <code>supabase/schema-v10.sql</code> веднъж.</p>';
+          return;
+        }
+        luRender();
+      }
+
+      function luRender() {
+        var grid = document.getElementById('luGrid');
+        if (!grid) return;
+        var pick = document.getElementById('luTeacherFilter');
+        var only = (state.isAdmin && pick) ? pick.value : '';
+        var rows = lu.rows.filter(function (r) { return !only || r.teacher_id === only; });
+        var today = new Date();
+
+        /* заглавието на седмицата */
+        var end = luPlusDays(lu.monday, 6);
+        var label = lu.monday.getDate() + ' ' + LU_MONTHS[lu.monday.getMonth()] +
+          (lu.monday.getMonth() === end.getMonth() ? '' : '') + ' – ' +
+          end.getDate() + ' ' + LU_MONTHS[end.getMonth()] + ' ' + end.getFullYear();
+        document.getElementById('luRange').textContent = label;
+
+        var html = '<div class="tlu__wrap"><div class="tlu__head">' +
+          '<span class="tlu__corner"></span>';
+        var d, i;
+        for (i = 0; i < 7; i++) {
+          d = luPlusDays(lu.monday, i);
+          html += '<span class="tlu__day' + (luSameDay(d, today) ? ' is-today' : '') + '">' +
+            '<b>' + LU_SHORT[i] + '</b> ' + d.getDate() + '.' + (d.getMonth() + 1) + '</span>';
+        }
+        html += '</div><div class="tlu__body">' +
+          '<div class="tlu__hours">';
+        for (i = LU_FROM; i < LU_TO; i++) {
+          html += '<span class="tlu__hour" style="height:' + LU_PX + 'px">' + i + ':00</span>';
+        }
+        html += '</div>';
+
+        for (i = 0; i < 7; i++) {
+          d = luPlusDays(lu.monday, i);
+          html += '<div class="tlu__col' + (luSameDay(d, today) ? ' is-today' : '') + '">';
+          for (var h = LU_FROM; h < LU_TO; h++) {
+            html += '<button type="button" class="tlu__cell" style="height:' + LU_PX + 'px" ' +
+              'data-day="' + luIsoDate(d) + '" data-hour="' + h + '" ' +
+              'aria-label="Нов час · ' + LU_DAYS[i] + ' ' + h + ':00"></button>';
+          }
+          /* часовете на този ден, залепени върху колоната */
+          rows.forEach(function (r) {
+            var st = new Date(r.starts_at), en = new Date(r.ends_at);
+            if (!luSameDay(st, d)) return;
+            var top = ((st.getHours() - LU_FROM) * 60 + st.getMinutes()) * LU_PX / 60;
+            var hgt = Math.max(22, (en - st) / 60000 * LU_PX / 60);
+            var hue = luHue(r.teacher_id);
+            html += '<button type="button" class="tlu__ev" data-ev="' + esc(r.id) + '" ' +
+              'style="top:' + top + 'px;height:' + (hgt - 2) + 'px;' +
+              '--h:' + hue + '" title="' + esc(r.child_name + ' · ' + subjectName(r.subject_id)) + '">' +
+              '<b>' + esc(luHhMm(st)) + '</b> ' + esc(r.child_name) +
+              '<span>' + esc(subjectName(r.subject_id)) +
+              (state.isAdmin && (!state.me || r.teacher_id !== state.me.id)
+                ? ' · ' + esc(luName(r.teacher_id)) : '') +
+              (r.series_id ? ' · всяка седмица' : '') + '</span></button>';
+          });
+          html += '</div>';
+        }
+        html += '</div></div>';
+        grid.innerHTML = html;
+
+        var n = rows.length;
+        document.getElementById('luIntro').textContent = n
+          ? (n === 1 ? 'Един час тази седмица.' : n + ' часа тази седмица.')
+          : 'Няма записани часове за тази седмица.';
+      }
+
+      /* ── прозорчето ─────────────────────────────────────────────── */
+      function luFillSubjects(teacherId) {
+        var sel = document.getElementById('luSubject');
+        var list = luSubjectsFor(teacherId);
+        sel.innerHTML = list.map(function (s) {
+          return '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>';
+        }).join('');
+        if (!list.length) sel.innerHTML = '<option value="">няма предмети</option>';
+      }
+
+      function luOpen(prefill) {
+        var dlg = document.getElementById('luDlg');
+        var mineId = state.me ? state.me.id : '';
+        lu.editing = prefill.lesson || null;
+
+        document.getElementById('luDlgTitle').textContent = lu.editing ? 'Часът' : 'Нов час';
+        document.getElementById('luErr').hidden = true;
+        document.getElementById('luDel').hidden = !lu.editing;
+        document.getElementById('luSave').hidden = !!lu.editing;
+
+        /* преподавателят: за всички е сам себе си; админът може и друг */
+        var who = (lu.editing ? lu.editing.teacher_id : mineId);
+        document.getElementById('luTeacherName').value = luName(who);
+        var tp = document.getElementById('luTeacherPick');
+        if (state.isAdmin) {
+          tp.innerHTML = luTeachers().map(function (t) {
+            return '<option value="' + esc(t.id) + '"' + (t.id === who ? ' selected' : '') + '>' +
+              esc(t.full_name) + '</option>';
+          }).join('');
+          tp.hidden = !!lu.editing;
+          document.getElementById('luTeacherName').hidden = !lu.editing;
+        } else {
+          tp.hidden = true;
+          document.getElementById('luTeacherName').hidden = false;
+        }
+
+        luFillSubjects(who);
+        var st = lu.editing ? new Date(lu.editing.starts_at) : prefill.start;
+        var en = lu.editing ? new Date(lu.editing.ends_at) : null;
+        document.getElementById('luSubject').value = lu.editing ? lu.editing.subject_id
+          : (document.getElementById('luSubject').value || '');
+        document.getElementById('luChild').value = lu.editing ? lu.editing.child_name : '';
+        document.getElementById('luDate').value = luIsoDate(st);
+        document.getElementById('luTime').value = luHhMm(st);
+        document.getElementById('luDur').value = en ? String(Math.round((en - st) / 60000)) : '60';
+        document.getElementById('luNote').value = (lu.editing && lu.editing.note) || '';
+        document.getElementById('luRepeat').checked = false;
+        document.getElementById('luRepeat').parentNode.hidden = !!lu.editing;
+        document.getElementById('luUntilWrap').hidden = true;
+        document.getElementById('luUntil').value = luIsoDate(luPlusDays(st, 7 * 12));
+
+        /* записаният час се чете, не се пише: полетата са заключени */
+        ['luSubject', 'luChild', 'luDate', 'luTime', 'luDur', 'luNote'].forEach(function (id) {
+          document.getElementById(id).disabled = !!lu.editing;
+        });
+
+        dlg.showModal();
+        if (!lu.editing) setTimeout(function () { document.getElementById('luChild').focus(); }, 30);
+      }
+
+      function luErr(msg) {
+        var el = document.getElementById('luErr');
+        el.textContent = msg;
+        el.hidden = false;
+      }
+
+      async function luSave() {
+        var mineId = state.me ? state.me.id : '';
+        var tp = document.getElementById('luTeacherPick');
+        var teacher = (state.isAdmin && !tp.hidden && tp.value) ? tp.value : mineId;
+        var subject = document.getElementById('luSubject').value;
+        var child = (document.getElementById('luChild').value || '').trim();
+        var date = document.getElementById('luDate').value;
+        var time = document.getElementById('luTime').value;
+        var dur = Number(document.getElementById('luDur').value || 60);
+        var note = (document.getElementById('luNote').value || '').trim();
+        var repeat = document.getElementById('luRepeat').checked;
+        var until = document.getElementById('luUntil').value;
+
+        if (!subject) { luErr('Избери предмет.'); return; }
+        if (!child) { luErr('Напиши името на детето.'); return; }
+        if (!date || !time) { luErr('Избери дата и час.'); return; }
+
+        var parts = date.split('-'), hm = time.split(':');
+        var start = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]),
+                             Number(hm[0]), Number(hm[1]));
+        if (isNaN(start.getTime())) { luErr('Датата или часът не се разчитат.'); return; }
+
+        var starts = [start];
+        if (repeat) {
+          if (!until) { luErr('Избери до коя дата да се повтаря.'); return; }
+          var up = until.split('-');
+          var last = new Date(Number(up[0]), Number(up[1]) - 1, Number(up[2]), 23, 59);
+          if (last < start) { luErr('Датата „до“ е преди първия час.'); return; }
+          var nxt = luPlusDays(start, 7);
+          while (nxt <= last && starts.length < 60) { starts.push(nxt); nxt = luPlusDays(nxt, 7); }
+        }
+
+        var series = (starts.length > 1) ? luUuid() : null;
+        var rows = starts.map(function (s) {
+          var e = new Date(s.getTime() + dur * 60000);
+          return {
+            teacher_id: teacher, subject_id: subject, child_name: child,
+            starts_at: s.toISOString(), ends_at: e.toISOString(),
+            note: note || null, series_id: series, created_by: mineId
+          };
+        });
+
+        var btn = document.getElementById('luSave');
+        btn.disabled = true;
+        try {
+          await TLA.addLessons(rows);
+          document.getElementById('luDlg').close();
+          say('ok', starts.length === 1 ? 'Часът е записан.'
+                                        : starts.length + ' часа са записани.');
+          await luLoad();
+        } catch (err) {
+          var m = String(err.message || err);
+          /* 23P01 е изключващото ограничение: вече има час по това време */
+          luErr(/lessons_no_overlap|23P01|exclusion/i.test(m)
+            ? 'По това време вече има записан час при този преподавател.'
+            : m);
+        } finally { btn.disabled = false; }
+      }
+
+      /* Номер на поредица. crypto.randomUUID го няма в по-старите браузъри,
+         затова има и резервен вариант. */
+      function luUuid() {
+        if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          var r = Math.random() * 16 | 0;
+          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+      }
+
+      async function luDelete(alsoNext) {
+        var row = lu.editing;
+        if (!row) return;
+        try {
+          if (alsoNext && row.series_id) await TLA.deleteSeriesFrom(row.series_id, row.starts_at);
+          else await TLA.deleteLesson(row.id);
+          document.getElementById('luDlg').close();
+          say('ok', alsoNext ? 'Часовете са изтрити.' : 'Часът е изтрит.');
+          await luLoad();
+        } catch (err) { luErr(String(err.message || err)); }
+      }
+
+      /* ── бутоните ───────────────────────────────────────────────── */
+      function luWire() {
+        var grid = document.getElementById('luGrid');
+        if (!grid || grid.dataset.wired) return;
+        grid.dataset.wired = '1';
+
+        grid.addEventListener('click', function (e) {
+          var ev = e.target.closest('[data-ev]');
+          if (ev) {
+            var row = lu.rows.filter(function (r) { return r.id === ev.getAttribute('data-ev'); })[0];
+            if (row) luOpen({ lesson: row });
+            return;
+          }
+          var cell = e.target.closest('.tlu__cell');
+          if (cell) {
+            var dp = cell.getAttribute('data-day').split('-');
+            luOpen({ start: new Date(Number(dp[0]), Number(dp[1]) - 1, Number(dp[2]),
+                                     Number(cell.getAttribute('data-hour')), 0) });
+          }
+        });
+
+        document.getElementById('luPrev').addEventListener('click', function () {
+          lu.monday = luPlusDays(lu.monday, -7); luLoad();
+        });
+        document.getElementById('luNext').addEventListener('click', function () {
+          lu.monday = luPlusDays(lu.monday, 7); luLoad();
+        });
+        document.getElementById('luToday').addEventListener('click', function () {
+          lu.monday = luMonday(new Date()); luLoad();
+        });
+        document.getElementById('luAdd').addEventListener('click', function () {
+          var now = new Date();
+          var d = (now >= lu.monday && now < luPlusDays(lu.monday, 7)) ? now : lu.monday;
+          luOpen({ start: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 17, 0) });
+        });
+        document.getElementById('luRepeat').addEventListener('change', function () {
+          document.getElementById('luUntilWrap').hidden = !this.checked;
+        });
+        document.getElementById('luCancel').addEventListener('click', function () {
+          document.getElementById('luDlg').close();
+        });
+        document.getElementById('luForm').addEventListener('submit', function (e) {
+          e.preventDefault(); luSave();
+        });
+        document.getElementById('luDel').addEventListener('click', function () {
+          var row = lu.editing;
+          if (!row) return;
+          if (row.series_id) {
+            /* поредица: питаме кое от двете */
+            if (confirm('Часът е от поредица.\n\nОК = трие този и всички следващи.\n' +
+                        'Отказ = трие само този.')) luDelete(true);
+            else luDelete(false);
+          } else if (confirm('Да изтрия ли този час?')) luDelete(false);
+        });
+        var tf = document.getElementById('luTeacherFilter');
+        if (tf) tf.addEventListener('change', luRender);
+        var tp = document.getElementById('luTeacherPick');
+        if (tp) tp.addEventListener('change', function () {
+          document.getElementById('luTeacherName').value = luName(this.value);
+          luFillSubjects(this.value);
+        });
+      }
+
+      function luSetup() {
+        var t = document.getElementById('tabLessons');
+        var h2 = document.getElementById('luTitle');
+        if (state.isAdmin) {
+          if (t) t.textContent = 'Уроци';
+          if (h2) h2.textContent = 'Уроците на всички';
+          var tf = document.getElementById('luTeacherFilter');
+          if (tf) {
+            tf.innerHTML = '<option value="">всички</option>' + luTeachers().map(function (x) {
+              return '<option value="' + esc(x.id) + '">' + esc(x.full_name) + '</option>';
+            }).join('');
+          }
+        }
+        luWire();
+        luLoad();
+      }
+
       /* ---- assignments ---- */
       function subjectName(id) {
         if (!id) return 'без предмет';
@@ -3846,6 +4326,9 @@
         /* Менютата на анализа чакат и трите неща: класовете идват от
            списъка с ученици, седмиците — от заданията с week. */
         fillAnaGrade(); fillAnaWeeks(); fillAnaStudents();
+        /* Уроците чакат две неща: кой съм аз (за своите часове) и „Кой
+           кого води“ (за предметите на преподавателя). */
+        luSetup();
         renderRace();
         if (state.isAdmin) renderTeachers();
       })();
