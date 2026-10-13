@@ -321,11 +321,18 @@
        opts.save     — (паспорт) => записва
        opts.name     — име на детето за надписа
        opts.grade    — „6. клас“ или празно
+       opts.birthday — рожденият ден от profiles („2015-03-21“ или празно)
+       opts.saveBirthday — (дата или null) => записва рождения ден;
+                       той НЕ е в картата, а в profiles, защото трябва да
+                       се вижда от преподавателя — виж schema-v12.sql
        opts.onAvatar — вика се при всяка смяна на знака, за да може
                        страницата да го сложи и горе, до поздрава      */
   function mount(root, opts) {
     opts = opts || {};
     var state = { avatar: null, interests: [], answers: {} };
+    /* Рожденият ден стои отделно от картата: той се пази в profiles, не
+       в star_cards, и се записва със своя заявка. */
+    var bday = String(opts.birthday || '').slice(0, 10);
     var dirty = false;
     var busy = false;
 
@@ -420,6 +427,35 @@
           'ще стои до името ти в профила.</p>' +
         '<div class="sc__avas" role="radiogroup" aria-label="Космонавт за профила">' +
           cells + '</div>' +
+      '</section>';
+    }
+
+    /* Какво пише под полето: „днес е“, „след N дни“ или нищо. */
+    function bdayNote() {
+      if (!bday) return 'Не е задължително. Може и да го добавиш по-късно.';
+      var n = TLA.birthdayNext ? TLA.birthdayNext(bday) : null;
+      if (!n) return '';
+      var when = TLA.birthdayLabel ? TLA.birthdayLabel(bday) : '';
+      if (n.days === 0) return 'Днес е! Честит рожден ден ✦';
+      if (n.days === 1) return 'Утре ставаш на ' + n.age + ' ✦';
+      return 'На ' + when + ' ставаш на ' + n.age + ' — след ' + n.days + ' дни.';
+    }
+
+    function birthdayHtml() {
+      var today = new Date();
+      var max = today.getFullYear() + '-' +
+        ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+      return '' +
+      '<section class="sc__block">' +
+        '<h3 class="sc__h">Рожден ден</h3>' +
+        '<p class="sc__m">Кажи ни кога имаш рожден ден, за да те поздравим. ' +
+          'Това е единственото тук, което виждат и преподавателите ти — ' +
+          'останалото в паспорта е само твое.</p>' +
+        '<div class="sc__ask sc__ask--wide">' +
+          '<label for="sc-bday">Моята дата</label>' +
+          '<input type="date" id="sc-bday" data-bday min="1995-01-01" max="' + max + '" />' +
+          '<p class="sc__bday" id="scBdayNote">' + esc(bdayNote()) + '</p>' +
+        '</div>' +
       '</section>';
     }
 
@@ -537,8 +573,11 @@
       var caret = keep && act.selectionStart;
 
       root.innerHTML =
-        '<div class="sc">' + heroHtml() + avatarsHtml() + dreamHtml() +
+        '<div class="sc">' + heroHtml() + avatarsHtml() + birthdayHtml() + dreamHtml() +
         groupsHtml() + asksHtml() + footHtml() + '</div>';
+
+      var bd = root.querySelector('input[data-bday]');
+      if (bd) bd.value = bday;
 
       /* Стойностите се слагат през .value, а не в html-а: така нищо
          написано от детето не минава през разбор на html, дори да е
@@ -608,6 +647,15 @@
        бутона „Запази“. Затова тук се пипат само числата, не дървото. */
     root.addEventListener('input', function (e) {
       var el = e.target;
+      if (el.dataset && el.dataset.bday !== undefined) {
+        bday = el.value || '';
+        dirty = true;
+        var nt = document.getElementById('scBdayNote');
+        if (nt) nt.textContent = bdayNote();
+        var s1 = document.getElementById('scState');
+        if (s1) { s1.textContent = 'Има незаписани промени'; s1.className = 'sc__state'; }
+        return;
+      }
       if (!el.dataset || !el.dataset.ans) return;
       var v = el.value.slice(0, 80);
       if (v.trim()) state.answers[el.dataset.ans] = v;
@@ -632,6 +680,10 @@
       busy = true; render();
       try {
         await opts.save(clean(state));
+        /* Два записа, защото са две места в базата: картата в
+           star_cards и датата в profiles. Ако вторият падне, първият
+           остава — затова съобщението отдолу казва кое не е минало. */
+        if (opts.saveBirthday) await opts.saveBirthday(bday || null);
         dirty = false; busy = false; render();
         note('Паспортът е записан ✦', false);
       } catch (err) {

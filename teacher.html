@@ -14,7 +14,7 @@
        ги дава с десетминутен кеш, а браузърът често ги пази и по-дълго —
        без този белег детето може да гледа вчерашния файл и да се чуди къде
        е новото. Сменя се, когато се пипне някой от тях. -->
-  <link rel="stylesheet" href="assets/portal.css?v=2026-10-09" />
+  <link rel="stylesheet" href="assets/portal.css?v=2026-10-13" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background.webp" media="(min-aspect-ratio: 1/1)" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background_mobile.webp" media="(max-aspect-ratio: 1/1)" />
 </head>
@@ -309,9 +309,9 @@
         <div class="tla-tablewrap">
           <table class="tla-table" id="rosterTable">
             <thead>
-              <tr><th>Име</th><th>Клас</th><th>Предмети</th><th>Преподавател</th><th>Решени</th><th>Статус</th><th>Създаден</th><th></th></tr>
+              <tr><th>Име</th><th>Клас</th><th>Предмети</th><th>Преподавател</th><th>Рожден ден</th><th>Решени</th><th>Статус</th><th>Създаден</th><th></th></tr>
             </thead>
-            <tbody><tr><td colspan="8" class="tla-empty">Зареждане…</td></tr></tbody>
+            <tbody><tr><td colspan="9" class="tla-empty">Зареждане…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -511,7 +511,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/supabase-config.js?v=2026-10-09"></script>
-  <script src="assets/auth.js?v=2026-10-09"></script>
+  <script src="assets/auth.js?v=2026-10-13"></script>
   <script src="assets/race.js?v=2026-10-09"></script>
   <script src="assets/analysis.js?v=2026-10-09"></script>
   <script src="assets/tracks.js?v=2026-10-09"></script>
@@ -1196,6 +1196,20 @@
         '</span>';
       }
 
+      /* Рожденият ден в таблицата. Детето си го пише само, от паспорта;
+         тук се чете само за да се знае кога да се поздрави. Празното е
+         празно — нищо не се предполага. */
+      function bdayCell(iso) {
+        var when = TLA.birthdayLabel(iso, true);
+        if (!when) return '<span class="tla-muted">—</span>';
+        var n = TLA.birthdayNext(iso);
+        var mark = '';
+        if (n && n.days === 0) mark = '<span class="tla-bday tla-bday--now">днес · на ' + n.age + '</span>';
+        else if (n && n.days === 1) mark = '<span class="tla-bday tla-bday--soon">утре · на ' + n.age + '</span>';
+        else if (n && n.days <= 14) mark = '<span class="tla-bday">след ' + n.days + ' дни</span>';
+        return '<span class="tla-bday-d">' + esc(when) + '</span>' + mark;
+      }
+
       /* ---- roster ---- */
       function renderRoster() {
         var tb = document.querySelector('#rosterTable tbody');
@@ -1217,7 +1231,7 @@
           (noTeacher ? ' · ' + noTeacher + ' без преподавател' : '');
 
         if (!rows.length) {
-          tb.innerHTML = '<tr><td colspan="8" class="tla-empty">' +
+          tb.innerHTML = '<tr><td colspan="9" class="tla-empty">' +
             (state.roster.length ? 'Няма ученици в този клас.' : 'Няма ученици.') +
             '</td></tr>';
           return;
@@ -1299,6 +1313,7 @@
                   return t.length ? esc(t.join(', '))
                     : '<span class="tla-badge tla-badge--off">без преподавател</span>';
                 })()) + '</td>' +
+            '<td>' + (isTeacher ? '—' : bdayCell(p.birthday)) + '</td>' +
             '<td>' + (isTeacher ? '—' : progressCell(p.id)) + '</td>' +
             '<td>' + (p.active
                 ? '<span class="tla-badge tla-badge--graded">Активен</span>'
@@ -3751,7 +3766,7 @@
 
       async function loadRoster() {
         var res = await TLA.client.from('profiles')
-          .select('id, full_name, role, active, created_at, grade_at_entry, entry_school_year, grade_set_at')
+          .select('id, full_name, role, active, created_at, grade_at_entry, entry_school_year, grade_set_at, birthday')
           .order('role', { ascending: true })
           .order('full_name', { ascending: true });
         if (res.error) { say('err', res.error.message); return; }
