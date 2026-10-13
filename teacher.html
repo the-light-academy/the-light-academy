@@ -157,6 +157,10 @@
           <button type="button" class="tla-btn tla-btn--sm" id="luAdd">+ Нов час</button>
         </div>
 
+        <!-- Кой е кой по цвят. Пълни се от кода само когато в седмицата
+             има часове на повече от един преподавател. -->
+        <div class="tlu__legend" id="luLegend" hidden></div>
+
         <div class="tlu" id="luGrid"><p class="tla-empty">Зареждане…</p></div>
         <p class="tla-muted tlu__hint">Щракни върху празно място в решетката, за да запишеш час
           точно там. Щракни върху записан час, за да го отвориш.</p>
@@ -2403,13 +2407,62 @@
         var hit = state.roster.filter(function (p) { return p.id === id; })[0];
         return hit ? hit.full_name : 'преподавател';
       }
-      /* Цвят по преподавател — за да личи чий е часът в изгледа на админа.
-         Изборът е по id, не по ред в списъка: инак цветовете се разместват
-         при всеки нов преподавател. */
+      /* Цвят по преподавател. Палитрата е подредена ръчно, а не сметната
+         от id-то: случайният оттенък попада и на жълто-зелено, което се
+         чете зле, и на два почти еднакви цвята за двама души. Тук
+         оттенъците са далеч един от друг и всеки има проверен контраст.
+
+         Раздават се по азбучен ред на имената, за да е еднакво при
+         всяко отваряне. */
+      var LU_HUES = [212, 340, 150, 275, 28, 190, 320, 95, 255, 10];
+      var luHueMap = null;
+      function luHueReset() { luHueMap = null; }
       function luHue(id) {
-        var n = 0, i;
-        for (i = 0; i < String(id).length; i++) n = (n * 31 + String(id).charCodeAt(i)) % 360;
-        return n;
+        if (!luHueMap) {
+          luHueMap = {};
+          luTeachers().slice().sort(function (a, b) {
+            return String(a.full_name || '').localeCompare(String(b.full_name || ''), 'bg');
+          }).forEach(function (t, i) { luHueMap[t.id] = LU_HUES[i % LU_HUES.length]; });
+        }
+        return (luHueMap[id] === undefined) ? 212 : luHueMap[id];
+      }
+
+      /* Успоредните часове един до друг.
+
+         Първо се режат на групи: час влиза в текущата група, докато
+         започва преди края на всичко натрупано дотук. После вътре в
+         групата всеки заема първата писта, която се е освободила. Броят
+         писти в групата решава широчината — два успоредни часа заемат по
+         половин колона, три по една трета.
+
+         Групата е важна: без нея три часа, от които първият и третият
+         не се застъпват, щяха да станат на три тесни ивици вместо на
+         две. */
+      /* В блокчето се вижда само първото име: пълното „Валя Стоянова“ се
+         реже до „Валя Сто…“ щом два часа си делят колоната, а първото име
+         се чете цяло. Пълното име остава в tooltip-а и в менюто. */
+      function luShort(name) { return String(name || '').trim().split(/\s+/)[0] || '—'; }
+
+      function luLanes(items) {
+        var clusters = [], cur = [], curEnd = 0;
+        items.forEach(function (it) {
+          if (cur.length && it.s >= curEnd) { clusters.push(cur); cur = []; curEnd = 0; }
+          cur.push(it);
+          curEnd = Math.max(curEnd, it.e);
+        });
+        if (cur.length) clusters.push(cur);
+
+        clusters.forEach(function (cl) {
+          var lanes = [];
+          cl.forEach(function (it) {
+            var k = 0;
+            while (k < lanes.length && lanes[k] > it.s) k++;
+            lanes[k] = it.e;
+            it.lane = k;
+          });
+          cl.forEach(function (it) { it.lanes = lanes.length; });
+        });
+        return items;
       }
 
       async function luLoad() {
@@ -2468,25 +2521,76 @@
               'aria-label="Нов час · ' + LU_DAYS[i] + ' ' + h + ':00"></button>';
           }
           /* часовете на този ден, залепени върху колоната */
-          rows.forEach(function (r) {
-            var st = new Date(r.starts_at), en = new Date(r.ends_at);
-            if (!luSameDay(st, d)) return;
+          var day = rows.filter(function (r) { return luSameDay(new Date(r.starts_at), d); })
+            .map(function (r) {
+              var st = new Date(r.starts_at), en = new Date(r.ends_at);
+              return { r: r, st: st, en: en, s: st.getTime(), e: en.getTime() };
+            })
+            .sort(function (a, b) { return a.s - b.s || a.e - b.e; });
+
+          luLanes(day).forEach(function (it) {
+            var r = it.r, st = it.st, en = it.en;
             var top = ((st.getHours() - LU_FROM) * 60 + st.getMinutes()) * LU_PX / 60;
-            var hgt = Math.max(22, (en - st) / 60000 * LU_PX / 60);
-            var hue = luHue(r.teacher_id);
-            html += '<button type="button" class="tlu__ev" data-ev="' + esc(r.id) + '" ' +
-              'style="top:' + top + 'px;height:' + (hgt - 2) + 'px;' +
-              '--h:' + hue + '" title="' + esc(r.child_name + ' · ' + subjectName(r.subject_id)) + '">' +
-              '<b>' + esc(luHhMm(st)) + '</b> ' + esc(r.child_name) +
-              '<span>' + esc(subjectName(r.subject_id)) +
-              (state.isAdmin && (!state.me || r.teacher_id !== state.me.id)
-                ? ' · ' + esc(luName(r.teacher_id)) : '') +
-              (r.series_id ? ' · всяка седмица' : '') + '</span></button>';
+            var hgt = Math.max(26, (en - st) / 60000 * LU_PX / 60);
+            var w = 100 / it.lanes;
+            /* Името на преподавателя е първото нещо в блокчето — но само
+               когато има смисъл. В „Моите уроци“ всички часове са на
+               гледащия и името щеше да се повтаря на всеки ред. */
+            var showWho = state.isAdmin;
+            /* Щом часовете си делят колоната, блокчето е наполовина или на
+               трета. Тогава всяко нещо отива на свой ред и предметът пада —
+               той остава в жълтото балонче при посочване. */
+            var tight = it.lanes > 1, micro = it.lanes > 2;
+            html += '<button type="button" class="tlu__ev' + (tight ? ' is-tight' : '') +
+              (micro ? ' is-micro' : '') +
+              '" data-ev="' + esc(r.id) + '" ' +
+              'style="top:' + top + 'px;height:' + (hgt - 3) + 'px;' +
+              'left:calc(' + (it.lane * w) + '% + 2px);' +
+              'width:calc(' + w + '% - 4px);' +
+              '--h:' + luHue(r.teacher_id) + '" ' +
+              'title="' + esc(luName(r.teacher_id) + ' · ' + luHhMm(st) + '–' + luHhMm(en) +
+                             ' · ' + r.child_name + ' · ' + subjectName(r.subject_id)) + '">' +
+              (showWho ? '<span class="tlu__ev-t">' + esc(luShort(luName(r.teacher_id))) +
+                         '</span>' : '') +
+              (micro
+                /* съвсем тясно: часът вече личи от мястото в решетката,
+                   затова остават само преподавателят и детето */
+                ? '<span class="tlu__ev-c">' + esc(r.child_name) + '</span>'
+                : tight
+                ? '<span class="tlu__ev-m"><b>' + esc(luHhMm(st)) + '</b></span>' +
+                  '<span class="tlu__ev-c">' + esc(r.child_name) + '</span>'
+                : '<span class="tlu__ev-m"><b>' + esc(luHhMm(st)) + '</b> ' +
+                  esc(r.child_name) + '</span>' +
+                  '<span class="tlu__ev-s">' + esc(subjectName(r.subject_id)) +
+                  (r.series_id ? ' · всяка седмица' : '') + '</span>') +
+              '</button>';
           });
           html += '</div>';
         }
         html += '</div></div>';
         grid.innerHTML = html;
+
+        /* Легендата: по едно кръгче на преподавател, в неговия цвят.
+           Брои се от ВСИЧКИ часове в седмицата, не от филтрираните —
+           иначе щом филтрираш, кръгчетата изчезват и няма как да го вдигнеш. */
+        var lg = document.getElementById('luLegend');
+        if (lg) {
+          var seen = [];
+          lu.rows.forEach(function (r) {
+            if (seen.indexOf(r.teacher_id) < 0) seen.push(r.teacher_id);
+          });
+          seen.sort(function (a, b) {
+            return String(luName(a)).localeCompare(String(luName(b)), 'bg');
+          });
+          if (state.isAdmin && seen.length > 1) {
+            lg.innerHTML = seen.map(function (id) {
+              return '<button type="button" class="tlu__key' + (only === id ? ' is-on' : '') +
+                '" data-who="' + esc(id) + '" aria-pressed="' + (only === id) + '" ' +
+                'style="--h:' + luHue(id) + '">' + esc(luName(id)) + '</button>';
+            }).join('');
+            lg.hidden = false;
+          } else { lg.innerHTML = ''; lg.hidden = true; }
+        }
 
         var n = rows.length;
         document.getElementById('luIntro').textContent = n
@@ -2726,6 +2830,15 @@
         });
         var tf = document.getElementById('luTeacherFilter');
         if (tf) tf.addEventListener('change', luRender);
+        /* кръгчето в легендата е и филтър: второ щракване го вдига */
+        var lg = document.getElementById('luLegend');
+        if (lg) lg.addEventListener('click', function (e) {
+          var k = e.target.closest ? e.target.closest('.tlu__key') : null;
+          if (!k || !tf) return;
+          var who = k.getAttribute('data-who');
+          tf.value = (tf.value === who) ? '' : who;
+          luRender();
+        });
         var tp = document.getElementById('luTeacherPick');
         if (tp) tp.addEventListener('change', function () {
           document.getElementById('luTeacherName').value = luName(this.value);
@@ -2746,6 +2859,7 @@
             }).join('');
           }
         }
+        luHueReset();
         luWire();
         luLoad();
       }
