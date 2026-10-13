@@ -14,7 +14,7 @@
        ги дава с десетминутен кеш, а браузърът често ги пази и по-дълго —
        без този белег детето може да гледа вчерашния файл и да се чуди къде
        е новото. Сменя се, когато се пипне някой от тях. -->
-  <link rel="stylesheet" href="assets/portal.css?v=2026-10-07" />
+  <link rel="stylesheet" href="assets/portal.css?v=2026-10-13" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background.webp" media="(min-aspect-ratio: 1/1)" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background_mobile.webp" media="(max-aspect-ratio: 1/1)" />
 </head>
@@ -280,9 +280,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/supabase-config.js?v=2026-10-07"></script>
-  <script src="assets/auth.js?v=2026-10-07"></script>
+  <script src="assets/auth.js?v=2026-10-13"></script>
   <script src="assets/race.js?v=2026-10-07"></script>
-  <script src="assets/starcard.js?v=2026-10-07"></script>
+  <script src="assets/starcard.js?v=2026-10-13"></script>
   <script src="assets/tracks.js?v=2026-10-07"></script>
   <script>
     /* The student's screen. Everything here is read-only: the numbers are
@@ -467,6 +467,11 @@
           save: TLA.saveMyCard,
           name: myName,
           grade: myGradeLabel,
+          birthday: myBirthday,
+          saveBirthday: async function (iso) {
+            await TLA.saveMyBirthday(iso);
+            myBirthday = iso || '';
+          },
           onAvatar: paintHeaderAvatar
         });
       }
@@ -509,6 +514,10 @@
          не ги чете втори път от базата. */
       var myName = '';
       var myGradeLabel = '';
+      /* Рожденият ден идва от profiles — в паспорта (star_cards) го няма
+         нарочно, за да може преподавателят да го вижда, без да му се
+         отваря цялата карта. Виж supabase/schema-v12.sql. */
+      var myBirthday = '';
 
       function renderHeader(profile, session) {
         var name = (profile && profile.full_name) || (session && session.user.email) || '';
@@ -520,6 +529,7 @@
         /* The class is worked out from the year the student was entered, so
            it is right on its own every September without anyone touching it. */
         myName = String(name || '').trim();
+        myBirthday = (profile && profile.birthday) ? String(profile.birthday).slice(0, 10) : '';
         myGrade = TLA.currentGrade(profile);
         if (myGrade !== null && myGrade >= -1 && myGrade <= 12) {
           myGradeLabel = TLA.gradeLabel(myGrade);

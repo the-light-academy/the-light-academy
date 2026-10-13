@@ -206,6 +206,15 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 .tla-badge--ai { background: #EDE7FA; color: #4B2E83; }
 
 /* ── Колко от дадените задания е решил ученикът ── */
+/* Рожденият ден в таблицата „Ученици“: датата, а под нея — отметка,
+   само когато наближава. */
+.tla-bday-d { display: block; white-space: nowrap; }
+.tla-bday { display: inline-block; margin-top: 0.15rem; font-size: 0.74rem; font-weight: 800;
+  border-radius: 999px; padding: 0.08rem 0.5rem; white-space: nowrap;
+  background: var(--tlp-accent-wash); color: var(--tlp-accent-deep); }
+.tla-bday--soon { background: #FFE6B8; }
+.tla-bday--now { background: var(--tlp-accent); color: #4A2E03; }
+
 .tla-prog { display: inline-grid; grid-template-columns: auto; gap: 0.15rem; min-width: 5.6rem; }
 .tla-prog__n { font-weight: 800; font-size: 0.95rem; color: var(--tlp-navy); }
 .tla-prog__bar { display: block; height: 6px; border-radius: 999px; background: rgba(13,27,54,0.10); overflow: hidden; }
@@ -1779,6 +1788,16 @@ body.tlp-space { background: #05070F; }
 .sc__ask input[type="text"]:focus { outline: 3px solid rgba(13,27,54,0.16); outline-offset: 1px; border-color: var(--tlp-navy); }
 .sc__ask--wide { background: var(--tlp-accent-wash); border-color: rgba(247,173,25,0.4); }
 .sc__ask--wide > label { color: var(--tlp-accent-deep); }
+/* ── рожденият ден ── */
+.sc__ask input[type="date"] {
+  font: inherit; color: var(--tlp-ink); padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(13,27,54,0.16); border-radius: 10px; background: #fff;
+  max-width: 100%;
+}
+.sc__ask input[type="date"]:focus { outline: 3px solid rgba(13,27,54,0.16); outline-offset: 1px;
+  border-color: var(--tlp-navy); }
+.sc__bday { margin: 0.5rem 0 0; font-size: 0.86rem; font-weight: 700;
+  color: var(--tlp-accent-deep); }
 
 .sc__opts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .sc__opt {

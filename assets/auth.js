@@ -246,15 +246,15 @@
     /* ---- profile -------------------------------------------------- */
 
     /* Returns { id, full_name, role, active, grade_at_entry,
-       entry_school_year } or null. RLS means a student can only ever read
-       their own row here. */
+       entry_school_year, birthday } or null. RLS means a student can only
+       ever read their own row here. */
     getProfile: async function () {
       if (!client) return null;
       var session = await TLA.getSession();
       if (!session) return null;
       var res = await client
         .from('profiles')
-        .select('id, full_name, role, active, is_admin, grade_at_entry, entry_school_year')
+        .select('id, full_name, role, active, is_admin, grade_at_entry, entry_school_year, birthday')
         .eq('id', session.user.id)
         .maybeSingle();
       if (res.error) return null;
@@ -626,6 +626,63 @@
       var res = await client.from('star_cards').upsert(row, { onConflict: 'user_id' });
       if (res.error) throw res.error;
       return true;
+    },
+
+    /* Рожденият ден. Пише се САМО през функцията в базата — ученикът
+       няма право да пише в profiles и не бива да получава такова, инак
+       заедно с датата идва и ролята, и класът, и is_admin. Функцията
+       пипа своя ред и само тази колона. Виж supabase/schema-v12.sql.
+
+       Празно изчиства датата: детето има право да си я махне. */
+    saveMyBirthday: async function (iso) {
+      if (!client) throw new Error('Няма връзка с базата.');
+      var res = await client.rpc('set_my_birthday', { p_birthday: iso || null });
+      if (res.error) throw res.error;
+      return res.data || null;
+    },
+
+    /* ---- рожден ден: четене на датата --------------------------------
+       Датата идва като „2015-03-21“ — ден без час. Нарочно НЕ минава
+       през new Date(iso): низ без час се чете като UTC полунощ и в
+       часови пояс на запад от Гринуич би станал предишният ден. Затова
+       се цепи на числа и се борави с тях.                              */
+
+    BG_MONTHS: ['януари', 'февруари', 'март', 'април', 'май', 'юни', 'юли',
+                'август', 'септември', 'октомври', 'ноември', 'декември'],
+
+    /* „21 март 2015“, или само „21 март“ без годината. */
+    birthdayLabel: function (iso, withYear) {
+      var p = TLA.birthdayParts(iso);
+      if (!p) return '';
+      return p.day + ' ' + TLA.BG_MONTHS[p.month - 1] + (withYear ? ' ' + p.year : '');
+    },
+
+    birthdayParts: function (iso) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '').slice(0, 10));
+      if (!m) return null;
+      var y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+      if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+      return { year: y, month: mo, day: d };
+    },
+
+    /* Колко остава до следващия рожден ден и на колко години става
+       детето. days === 0 значи „днес е“.
+
+       29 февруари: в година без 29-и Date го прехвърля на 1 март и
+       поздравът идва ден по-късно. Това е нарочно — по-добре ден след,
+       отколкото никога. */
+    birthdayNext: function (iso, today) {
+      var p = TLA.birthdayParts(iso);
+      if (!p) return null;
+      var now = today || new Date();
+      var t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var next = new Date(t0.getFullYear(), p.month - 1, p.day);
+      if (next < t0) next = new Date(t0.getFullYear() + 1, p.month - 1, p.day);
+      return {
+        days: Math.round((next - t0) / 86400000),
+        age: next.getFullYear() - p.year,
+        date: next
+      };
     },
 
     /* ---- small shared helpers ------------------------------------- */
