@@ -1303,8 +1303,28 @@
                   '</details>'
                 : '');
 
+          /* Името се чете много по-често, отколкото се сменя — както класът
+             и предметите — затова стои като текст, а полето е зад едно
+             кликване. Показва се само на админа: политиката
+             „profiles: admin all“ е единствената за запис по profiles и
+             базата би отрязала същото на преподавател. */
+          var nameCell = p.full_name
+            ? esc(p.full_name)
+            : '<span class="tla-badge tla-badge--off">без име</span>';
+          if (state.isAdmin && !isTeacher) {
+            nameCell += '<details class="tla-gradeedit"><summary>смени</summary>' +
+              '<span class="tla-setgrade">' +
+                '<input type="text" class="tla-sel" data-namein="' + esc(p.id) + '" ' +
+                  'value="' + esc(p.full_name || '') + '" maxlength="80" ' +
+                  'style="min-width:10rem;" aria-label="Име на ученика" /> ' +
+                '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                  'data-setname="' + esc(p.id) + '">Запази</button>' +
+              '</span>' +
+            '</details>';
+          }
+
           return '<tr>' +
-            '<td>' + esc(p.full_name || '—') + '</td>' +
+            '<td>' + nameCell + '</td>' +
             '<td>' + gradeCell + '</td>' +
             '<td>' + subjCell + '</td>' +
             '<td>' + (isTeacher ? '<span class="tla-badge">Преподавател</span>'
@@ -1370,6 +1390,26 @@
           return;
         }
 
+        /* Името на детето. То го вижда в поздрава „Здравей, …“ в своя
+           профил; празно име значи поздрав без име. */
+        var setn = e.target.closest('[data-setname]');
+        if (setn) {
+          var nid = setn.getAttribute('data-setname');
+          var fldn = document.querySelector('[data-namein="' + nid + '"]');
+          var newName = fldn ? fldn.value.trim().replace(/\s+/g, ' ') : '';
+          if (!newName) {
+            say('err', 'Името не може да е празно.'); if (fldn) fldn.focus(); return;
+          }
+          setn.disabled = true;
+          var upn = await TLA.client.from('profiles')
+            .update({ full_name: newName }).eq('id', nid);
+          setn.disabled = false;
+          if (upn.error) { say('err', upn.error.message); return; }
+          say('ok', 'Името е записано: ' + newName + '.');
+          await loadRoster();
+          return;
+        }
+
         /* Семейство забравя паролата по-често от всичко друго тук. Без
            това единственият път е администрацията на Supabase. Полето се
            отваря на самия ред, вместо в прозорец — confirm() и prompt()
@@ -1383,7 +1423,7 @@
           }
           var extra = document.createElement('tr');
           extra.dataset.pwrow = pid;
-          extra.innerHTML = '<td colspan="7">' +
+          extra.innerHTML = '<td colspan="9">' +
             '<div class="tla-pickrow">' +
               '<label for="pwnew-' + esc(pid) + '" class="tla-muted">Нова парола за ' +
                 esc((state.profiles[pid] || {}).full_name || 'ученика') + ':</label> ' +
