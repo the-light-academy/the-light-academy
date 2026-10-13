@@ -220,6 +220,9 @@
           <input type="text" id="luNote" maxlength="500" />
         </label>
 
+        <p class="tla-muted tlu-note" id="luSeriesHint" hidden>Часът е от поредица
+          „всяка седмица“. Промяната важи само за него — останалите остават
+          както са.</p>
         <p class="tlu-err" id="luErr" hidden></p>
 
         <div class="tlu-dlg__btns">
@@ -2506,10 +2509,18 @@
         var mineId = state.me ? state.me.id : '';
         lu.editing = prefill.lesson || null;
 
-        document.getElementById('luDlgTitle').textContent = lu.editing ? 'Часът' : 'Нов час';
+        /* Кой какво може: админът поправя всеки час, преподавателят —
+           своите. Това тук решава само какво се вижда; правилата са в
+           базата (schema-v11.sql) и важат, каквото и да прати екранът. */
+        var canEdit = !lu.editing || state.isAdmin ||
+          (state.me && lu.editing.teacher_id === state.me.id);
+
+        document.getElementById('luDlgTitle').textContent =
+          lu.editing ? (canEdit ? 'Поправи часа' : 'Часът') : 'Нов час';
         document.getElementById('luErr').hidden = true;
-        document.getElementById('luDel').hidden = !lu.editing;
-        document.getElementById('luSave').hidden = !!lu.editing;
+        document.getElementById('luDel').hidden = !(lu.editing && canEdit);
+        document.getElementById('luSave').hidden = !canEdit;
+        document.getElementById('luSave').textContent = lu.editing ? 'Запази' : 'Запиши';
 
         /* преподавателят: за всички е сам себе си; админът може и друг */
         var who = (lu.editing ? lu.editing.teacher_id : mineId);
@@ -2520,8 +2531,10 @@
             return '<option value="' + esc(t.id) + '"' + (t.id === who ? ' selected' : '') + '>' +
               esc(t.full_name) + '</option>';
           }).join('');
-          tp.hidden = !!lu.editing;
-          document.getElementById('luTeacherName').hidden = !lu.editing;
+          /* Админът може и да премести часа при друг преподавател. */
+          tp.hidden = false;
+          tp.disabled = !canEdit;
+          document.getElementById('luTeacherName').hidden = true;
         } else {
           tp.hidden = true;
           document.getElementById('luTeacherName').hidden = false;
@@ -2542,10 +2555,14 @@
         document.getElementById('luUntilWrap').hidden = true;
         document.getElementById('luUntil').value = luIsoDate(luPlusDays(st, 7 * 12));
 
-        /* записаният час се чете, не се пише: полетата са заключени */
         ['luSubject', 'luChild', 'luDate', 'luTime', 'luDur', 'luNote'].forEach(function (id) {
-          document.getElementById(id).disabled = !!lu.editing;
+          document.getElementById(id).disabled = !canEdit;
         });
+
+        /* Един час от поредица се поправя сам. Казва се, за да не се
+           очаква, че промяната ще слезе по всички следващи. */
+        var hint = document.getElementById('luSeriesHint');
+        hint.hidden = !(lu.editing && lu.editing.series_id);
 
         dlg.showModal();
         if (!lu.editing) setTimeout(function () { document.getElementById('luChild').focus(); }, 30);
@@ -2602,6 +2619,21 @@
         var btn = document.getElementById('luSave');
         btn.disabled = true;
         try {
+          if (lu.editing) {
+            var patch = {
+              subject_id: subject, child_name: child,
+              starts_at: rows[0].starts_at, ends_at: rows[0].ends_at,
+              note: note || null
+            };
+            /* Преподавателят не праща teacher_id изобщо — базата и без
+               това не би му позволила да премести часа при друг. */
+            if (state.isAdmin && teacher !== lu.editing.teacher_id) patch.teacher_id = teacher;
+            await TLA.updateLesson(lu.editing.id, patch);
+            document.getElementById('luDlg').close();
+            say('ok', 'Часът е поправен.');
+            await luLoad();
+            return;
+          }
           await TLA.addLessons(rows);
           document.getElementById('luDlg').close();
           say('ok', starts.length === 1 ? 'Часът е записан.'

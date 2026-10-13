@@ -489,6 +489,16 @@
       return res.data || [];
     },
 
+    /* Поправка на вече записан час. Изпраща се само това, което се е
+       променило — teacher_id влиза само когато админът мести часа при
+       друг преподавател. */
+    updateLesson: async function (id, patch) {
+      if (!client) throw new Error('няма връзка с базата');
+      var res = await client.from('lessons').update(patch).eq('id', id).select('id');
+      if (res.error) throw res.error;
+      return res.data || [];
+    },
+
     deleteLesson: async function (id) {
       if (!client) throw new Error('няма връзка с базата');
       var res = await client.from('lessons').delete().eq('id', id);

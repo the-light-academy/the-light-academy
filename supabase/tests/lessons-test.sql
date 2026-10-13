@@ -164,7 +164,82 @@ begin
   reset role;
 end $$;
 
--- ── 6. Поредица: един и същ series_id, седмица по седмица ─────────────
+-- ── 6. Редактиране ────────────────────────────────────────────────────
+do $$
+declare w record; lid uuid; n int; nm text;
+begin
+  select * into w from t_who;
+
+  /* Час, записан от АДМИНА за преподавателя — както стана с октомври.
+     Преподавателят трябва да може да го поправи, макар да не е той този,
+     който го е записал. */
+  insert into public.lessons (teacher_id, subject_id, child_name, starts_at, ends_at, created_by)
+  values (w.teach_id, w.subj_id, 'Записан от админа',
+          '2026-10-20 17:00+03', '2026-10-20 18:00+03', w.admin_id)
+  returning id into lid;
+
+  perform set_config('tla.uid', w.teach_id::text, true);
+  set local role authenticated;
+
+  update public.lessons set child_name = 'Поправено име' where id = lid;
+  get diagnostics n = row_count;
+  if n <> 1 then raise exception '   ✗ преподавателят не можа да поправи своя час (% реда)', n; end if;
+  raise notice '   ✓ преподавателят поправя свой час, записан от админа';
+
+  update public.lessons
+     set starts_at = '2026-10-20 19:00+03', ends_at = '2026-10-20 20:00+03'
+   where id = lid;
+  get diagnostics n = row_count;
+  if n <> 1 then raise exception '   ✗ часът не се мести (% реда)', n; end if;
+  raise notice '   ✓ и мести часа му';
+
+  /* Но не може да го прехвърли на друг преподавател. */
+  begin
+    update public.lessons set teacher_id = w.admin_id where id = lid;
+    raise exception '   ✗ преподавател прехвърли час на друг';
+  exception when insufficient_privilege then
+    raise notice '   ✓ не може да прехвърли час на друг преподавател';
+  end;
+
+  /* И не може да пипа чужд час: политиката просто не го вижда. */
+  update public.lessons set child_name = 'Чуждо' where teacher_id = w.admin_id;
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception '   ✗ поправи % чужди часа', n; end if;
+  raise notice '   ✓ чужд час не се поправя';
+  reset role;
+
+  /* Админът поправя всичко. */
+  perform set_config('tla.uid', w.admin_id::text, true);
+  set local role authenticated;
+  update public.lessons set child_name = 'От админа' where id = lid;
+  get diagnostics n = row_count;
+  if n <> 1 then raise exception '   ✗ админът не можа да поправи чужд час'; end if;
+  raise notice '   ✓ админът поправя и чужд час';
+  reset role;
+
+  select child_name into nm from public.lessons where id = lid;
+  if nm <> 'От админа' then raise exception '   ✗ промяната не се записа: %', nm; end if;
+  raise notice '   ✓ промяната наистина е в базата';
+end $$;
+
+-- Преместване върху зает час пак не минава — ограничението важи и при
+-- редакция, не само при записване. Нужен е втори час на СЪЩИЯ
+-- преподавател, върху който да се опитаме да стъпим.
+do $$
+declare w record;
+begin
+  select * into w from t_who;
+  insert into public.lessons (teacher_id, subject_id, child_name, starts_at, ends_at, created_by)
+  values (w.teach_id, w.subj_id, 'Зает час',
+          '2026-10-20 15:00+03', '2026-10-20 16:00+03', w.teach_id);
+end $$;
+
+select pg_temp.must_fail('местене върху зает час',
+  $$update public.lessons
+       set starts_at = '2026-10-20 15:00+03', ends_at = '2026-10-20 16:00+03'
+     where child_name = 'От админа'$$, '23P01');
+
+-- ── 7. Поредица: един и същ series_id, седмица по седмица ─────────────
 do $$
 declare w record; sid uuid := gen_random_uuid(); n int;
 begin
