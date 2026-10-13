@@ -246,14 +246,21 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
    стават ивици, в които не се чете нищо. По-добре се плъзга настрани. */
 .tlu__wrap { min-width: 860px; }
 .tlu__head { display: grid; grid-template-columns: 3.4rem repeat(7, 1fr); align-items: end; }
-.tlu__corner { display: block; }
+/* ъгълът горе вляво върви с часовете, за да не се пъха името на деня
+   под тях, когато решетката се плъзне */
+.tlu__corner { display: block; position: sticky; left: 0; z-index: 3; background: var(--white); }
 .tlu__day { text-align: center; font-size: 0.82rem; color: var(--mid); padding: 0.3rem 0; }
 .tlu__day b { color: var(--tlp-navy); text-transform: uppercase; font-size: 0.74rem; letter-spacing: 0.04em; }
 .tlu__day.is-today { color: var(--sun-dark); }
 .tlu__day.is-today b { color: var(--sun-dark); }
+/* overflow:clip, не hidden: hidden прави от тази кутия плъзгач и
+   залепените часове отляво спират да се залепват. clip само реже. */
 .tlu__body { display: grid; grid-template-columns: 3.4rem repeat(7, 1fr);
-  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--white); }
-.tlu__hours { display: flex; flex-direction: column; background: #FBFCFF; }
+  border: 1px solid var(--line); border-radius: 12px; overflow: clip; background: var(--white); }
+/* Часовете остават залепени отляво, щом решетката се плъзне настрани —
+   иначе не се вижда кое блокче в колко часа е. */
+.tlu__hours { display: flex; flex-direction: column; background: #FBFCFF;
+  position: sticky; left: 0; z-index: 3; box-shadow: 1px 0 0 var(--line); }
 .tlu__hour { display: block; font-size: 0.72rem; color: var(--mid); padding: 0.15rem 0.35rem;
   border-bottom: 1px solid var(--line); box-sizing: border-box; }
 .tlu__col { position: relative; border-left: 1px solid var(--line); }
@@ -313,6 +320,50 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 @media (max-width: 560px) {
   .tlu-f3 { grid-template-columns: 1fr 1fr; }
   .tlu-f3 > :last-child { grid-column: 1 / -1; }
+}
+
+/* ══ СПИСЪКЪТ ЗА ТЕЛЕФОН ══════════════════════════════════════════
+   Същите часове, но ден по ден отгоре надолу: нищо не се плъзга
+   настрани и часът стои отляво на всеки ред. */
+.tlu-ag { display: none; }
+.tlu-ag__day { display: grid; grid-template-columns: 1fr auto; align-items: center;
+  gap: 0.4rem 0.5rem; padding: 0.7rem 0 0.2rem; border-top: 1px solid var(--line); }
+.tlu-ag__day:first-of-type { border-top: 0; }
+.tlu-ag__date { margin: 0; font-size: 0.82rem; font-weight: 600; color: var(--mid);
+  text-transform: none; }
+.tlu-ag__date b { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.76rem;
+  color: var(--tlp-navy); margin-right: 0.3rem; }
+.tlu-ag__day.is-today .tlu-ag__date b { color: var(--sun-dark); }
+.tlu-ag__day.is-today .tlu-ag__date::after { content: ' · днес'; color: var(--sun-dark);
+  font-weight: 700; }
+.tlu-ag__add { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--white); color: var(--mid); font: inherit; font-size: 1.1rem; line-height: 1;
+  cursor: pointer; }
+.tlu-ag__add:hover { background: var(--sun-light); color: var(--dark); }
+.tlu-ag__free { grid-column: 1 / -1; margin: 0 0 0.3rem; font-size: 0.82rem; color: var(--mid);
+  opacity: 0.7; }
+.tlu-ag__row { grid-column: 1 / -1; display: grid; grid-template-columns: 3.4rem 1fr;
+  gap: 0.6rem; align-items: start; width: 100%; text-align: left; cursor: pointer;
+  font: inherit; margin-bottom: 0.4rem; padding: 0.5rem 0.6rem;
+  border: 1px solid hsl(var(--h, 212) 55% 72%);
+  border-left: 5px solid hsl(var(--h, 212) 62% 45%);
+  background: hsl(var(--h, 212) 88% 95%); border-radius: 10px; }
+.tlu-ag__row:hover { filter: brightness(0.97); }
+.tlu-ag__time { display: flex; flex-direction: column; font-variant-numeric: tabular-nums;
+  color: hsl(var(--h, 212) 65% 28%); font-size: 0.78rem; }
+.tlu-ag__time b { font-size: 1rem; font-weight: 800; }
+.tlu-ag__body { display: block; min-width: 0; }
+.tlu-ag__who { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+  text-transform: uppercase; color: hsl(var(--h, 212) 70% 32%); }
+.tlu-ag__kid { display: block; font-weight: 700; color: var(--dark); }
+.tlu-ag__sub { display: block; font-size: 0.82rem; color: var(--mid); }
+.tlu__hint--list { display: none; }
+
+@media (max-width: 760px) {
+  .tlu { display: none; }
+  .tlu-ag { display: block; }
+  .tlu__hint--grid { display: none; }
+  .tlu__hint--list { display: block; }
 }
 
 /* ── TABLES ── */
