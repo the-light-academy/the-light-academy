@@ -229,13 +229,14 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 /* Кой е кой по цвят. Кръгчето е и филтър, затова е бутон. */
 .tlu__legend { display: flex; flex-wrap: wrap; gap: 0.3rem 0.5rem; margin: -0.3rem 0 0.8rem; }
 .tlu__key { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer;
-  border: 1px solid hsl(var(--h, 212) 50% 78%); background: hsl(var(--h, 212) 88% 96%);
-  color: hsl(var(--h, 212) 62% 28%); border-radius: 999px;
+  border: 1px solid var(--ev-br, #8FA4CE); background: var(--ev-bg, #DCE5F6);
+  color: var(--ev-ink, #16233F); border-radius: 999px;
   padding: 0.12rem 0.6rem 0.12rem 0.5rem; font: inherit; font-size: 0.78rem; font-weight: 700; }
 .tlu__key::before { content: ''; width: 0.6rem; height: 0.6rem; border-radius: 50%;
-  background: hsl(var(--h, 212) 62% 45%); }
+  background: var(--ev-bar, #1B2E52); }
 .tlu__key:hover { filter: brightness(0.96); }
-.tlu__key.is-on { background: hsl(var(--h, 212) 62% 45%); border-color: hsl(var(--h, 212) 62% 38%);
+/* включеното кръгче: тъмният тон отзад, бяло отпред (най-слабото е 7.5:1) */
+.tlu__key.is-on { background: var(--ev-ink, #16233F); border-color: var(--ev-ink, #16233F);
   color: #fff; }
 .tlu__key.is-on::before { background: #fff; }
 
@@ -269,21 +270,33 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
   background: transparent; cursor: pointer; padding: 0; }
 .tlu__cell:hover { background: var(--sun-light); }
 .tlu__cell:focus-visible { outline: 2px solid var(--sun-dark); outline-offset: -2px; }
-/* Часът. Цветът идва от --h (оттенъкът на преподавателя): плътна черта
-   отляво, по-наситен фон и тъмен текст от същото семейство. Широчината и
-   отместването се пишат от кода — успоредните часове се делят колоната. */
+/* ── ЦВЕТОВЕТЕ НА ПРЕПОДАВАТЕЛИТЕ ────────────────────────────────
+   От тъмното синьо и слънчевото жълто на академията нататък. Всеки
+   получава четири тона: лента, фон, рамка и текст. Най-слабият
+   контраст на текста върху фона е 5.4:1, а фоновете се различават
+   достатъчно и за шестимата (ΔE ≥ 9.8, до петима ≥ 12). */
+.tlu-c1 { --ev-bar: #1B2E52; --ev-bg: #DCE5F6; --ev-ink: #16233F; --ev-br: #8FA4CE; }
+.tlu-c2 { --ev-bar: #F7AD19; --ev-bg: #FFEDBC; --ev-ink: #7A4A05; --ev-br: #DCA93F; }
+.tlu-c3 { --ev-bar: #C2550F; --ev-bg: #F9CFA6; --ev-ink: #8A3A08; --ev-br: #DD8D4E; }
+.tlu-c4 { --ev-bar: #8C2F39; --ev-bg: #F6D5D9; --ev-ink: #6E2029; --ev-br: #C97F88; }
+.tlu-c5 { --ev-bar: #5A7A2B; --ev-bg: #E2EEC4; --ev-ink: #3F5A1C; --ev-br: #9BB768; }
+.tlu-c6 { --ev-bar: #0F6E7A; --ev-bg: #C9E7EC; --ev-ink: #0B4C55; --ev-br: #5BA6B1; }
+
+/* Часът: плътна черта отляво в цвета на преподавателя, фон от същото
+   семейство, тъмен текст. Широчината и отместването се пишат от кода —
+   успоредните часове си делят колоната. */
 .tlu__ev { position: absolute; overflow: hidden; text-align: left;
-  border: 1px solid hsl(var(--h, 212) 55% 62%);
-  border-left: 4px solid hsl(var(--h, 212) 62% 42%);
-  background: hsl(var(--h, 212) 88% 93%);
-  color: hsl(var(--h, 212) 65% 24%); border-radius: 8px; padding: 0.18rem 0.3rem 0.18rem 0.4rem;
+  border: 1px solid var(--ev-br, #8FA4CE);
+  border-left: 4px solid var(--ev-bar, #1B2E52);
+  background: var(--ev-bg, #DCE5F6);
+  color: var(--ev-ink, #16233F); border-radius: 8px; padding: 0.18rem 0.3rem 0.18rem 0.4rem;
   font: inherit; font-size: 0.76rem; line-height: 1.2; cursor: pointer;
-  box-shadow: 0 1px 2px hsl(var(--h, 212) 40% 40% / 0.18); }
+  box-shadow: 0 1px 2px rgba(13, 27, 54, 0.14); }
 .tlu__ev b { font-weight: 800; }
 .tlu__ev span { display: block; }
 /* Преподавателят е първият ред и най-силното нещо в блокчето. */
 .tlu__ev-t { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.03em;
-  text-transform: uppercase; color: hsl(var(--h, 212) 70% 30%);
+  text-transform: uppercase; color: var(--ev-ink, #16233F); opacity: 0.85;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tlu__ev-m { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tlu__ev-c { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -297,7 +310,7 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
   font-size: 0.7rem; }
 .tlu__ev.is-micro .tlu__ev-t { font-size: 0.62rem; }
 .tlu__ev:hover { filter: brightness(0.96); }
-.tlu__ev:focus-visible { outline: 2px solid hsl(var(--h, 212) 62% 35%); outline-offset: 1px; }
+.tlu__ev:focus-visible { outline: 2px solid var(--ev-bar, #1B2E52); outline-offset: 1px; }
 
 /* Прозорчето за записване */
 .tlu-dlg { border: 0; border-radius: 18px; padding: 0; max-width: 32rem; width: calc(100vw - 2rem);
@@ -345,17 +358,17 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 .tlu-ag__row { grid-column: 1 / -1; display: grid; grid-template-columns: 3.4rem 1fr;
   gap: 0.6rem; align-items: start; width: 100%; text-align: left; cursor: pointer;
   font: inherit; margin-bottom: 0.4rem; padding: 0.5rem 0.6rem;
-  border: 1px solid hsl(var(--h, 212) 55% 72%);
-  border-left: 5px solid hsl(var(--h, 212) 62% 45%);
-  background: hsl(var(--h, 212) 88% 95%); border-radius: 10px; }
+  border: 1px solid var(--ev-br, #8FA4CE);
+  border-left: 5px solid var(--ev-bar, #1B2E52);
+  background: var(--ev-bg, #DCE5F6); border-radius: 10px; }
 .tlu-ag__row:hover { filter: brightness(0.97); }
 .tlu-ag__time { display: flex; flex-direction: column; font-variant-numeric: tabular-nums;
-  color: hsl(var(--h, 212) 65% 28%); font-size: 0.78rem; }
+  color: var(--ev-ink, #16233F); font-size: 0.78rem; }
 .tlu-ag__time b { font-size: 1rem; font-weight: 800; }
 .tlu-ag__body { display: block; min-width: 0; }
 .tlu-ag__who { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
-  text-transform: uppercase; color: hsl(var(--h, 212) 70% 32%); }
-.tlu-ag__kid { display: block; font-weight: 700; color: var(--dark); }
+  text-transform: uppercase; color: var(--ev-ink, #16233F); opacity: 0.85; }
+.tlu-ag__kid { display: block; font-weight: 700; color: var(--tlp-ink); }
 .tlu-ag__sub { display: block; font-size: 0.82rem; color: var(--mid); }
 .tlu__hint--list { display: none; }
 
