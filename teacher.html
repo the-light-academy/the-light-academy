@@ -162,9 +162,15 @@
              има часове на повече от един преподавател. -->
         <div class="tlu__legend" id="luLegend" hidden></div>
 
+        <!-- Две лица на едно и също: решетка на голям екран, списък по
+             дни на телефон. На телефона решетката се плъзгаше настрани и
+             часовете отляво изчезваха — в списък няма накъде да се изгуби. -->
         <div class="tlu" id="luGrid"><p class="tla-empty">Зареждане…</p></div>
-        <p class="tla-muted tlu__hint">Щракни върху празно място в решетката, за да запишеш час
-          точно там. Щракни върху записан час, за да го отвориш.</p>
+        <div class="tlu-ag" id="luList"></div>
+        <p class="tla-muted tlu__hint tlu__hint--grid">Щракни върху празно място в решетката, за да
+          запишеш час точно там. Щракни върху записан час, за да го отвориш.</p>
+        <p class="tla-muted tlu__hint tlu__hint--list">Докосни час, за да го отвориш, или „+“ до деня,
+          за да запишеш нов.</p>
       </div>
     </section>
 
@@ -2661,6 +2667,8 @@
         html += '</div></div>';
         grid.innerHTML = html;
 
+        luAgenda(rows, today);
+
         /* Легендата: по едно кръгче на преподавател, в неговия цвят.
            Брои се от ВСИЧКИ часове в седмицата, не от филтрираните —
            иначе щом филтрираш, кръгчетата изчезват и няма как да го вдигнеш. */
@@ -2687,6 +2695,46 @@
         document.getElementById('luIntro').textContent = n
           ? (n === 1 ? 'Един час тази седмица.' : n + ' часа тази седмица.')
           : 'Няма записани часове за тази седмица.';
+      }
+
+      /* Списъкът за телефон: ден по ден, отгоре надолу. Нищо не се
+         плъзга настрани, часът стои отляво на всеки ред, а празните дни
+         остават видими с един ред, за да личи как изглежда седмицата. */
+      function luAgenda(rows, today) {
+        var box = document.getElementById('luList');
+        if (!box) return;
+        var html = '', i, any = false;
+        for (i = 0; i < 7; i++) {
+          var d = luPlusDays(lu.monday, i);
+          var mine = rows.filter(function (r) { return luSameDay(new Date(r.starts_at), d); })
+            .sort(function (a, b) { return new Date(a.starts_at) - new Date(b.starts_at); });
+          if (mine.length) any = true;
+          html += '<section class="tlu-ag__day' + (luSameDay(d, today) ? ' is-today' : '') + '">' +
+            '<h3 class="tlu-ag__date"><b>' + LU_DAYS[i] + '</b> ' + d.getDate() + ' ' +
+            LU_MONTHS[d.getMonth()] + '</h3>' +
+            '<button type="button" class="tlu-ag__add" data-newday="' + luIsoDate(d) + '" ' +
+            'aria-label="Нов час в ' + LU_DAYS[i] + '">+</button>';
+          if (!mine.length) {
+            html += '<p class="tlu-ag__free">няма часове</p>';
+          } else {
+            mine.forEach(function (r) {
+              var st = new Date(r.starts_at), en = new Date(r.ends_at);
+              html += '<button type="button" class="tlu-ag__row" data-ev="' + esc(r.id) + '" ' +
+                'style="--h:' + luHue(r.teacher_id) + '">' +
+                '<span class="tlu-ag__time"><b>' + esc(luHhMm(st)) + '</b>' +
+                esc(luHhMm(en)) + '</span>' +
+                '<span class="tlu-ag__body">' +
+                (state.isAdmin ? '<span class="tlu-ag__who">' + esc(luName(r.teacher_id)) +
+                                 '</span>' : '') +
+                '<span class="tlu-ag__kid">' + esc(r.child_name) + '</span>' +
+                '<span class="tlu-ag__sub">' + esc(subjectName(r.subject_id)) +
+                (r.series_id ? ' · всяка седмица' : '') + '</span></span></button>';
+            });
+          }
+          html += '</section>';
+        }
+        box.innerHTML = any ? html
+          : '<p class="tla-empty">Няма записани часове за тази седмица.</p>' + html;
       }
 
       /* ── прозорчето ─────────────────────────────────────────────── */
@@ -2871,7 +2919,7 @@
         if (!grid || grid.dataset.wired) return;
         grid.dataset.wired = '1';
 
-        grid.addEventListener('click', function (e) {
+        function luClick(e) {
           var ev = e.target.closest('[data-ev]');
           if (ev) {
             var row = lu.rows.filter(function (r) { return r.id === ev.getAttribute('data-ev'); })[0];
@@ -2883,8 +2931,18 @@
             var dp = cell.getAttribute('data-day').split('-');
             luOpen({ start: new Date(Number(dp[0]), Number(dp[1]) - 1, Number(dp[2]),
                                      Number(cell.getAttribute('data-hour')), 0) });
+            return;
           }
-        });
+          /* „+“ до деня в списъка: нов час в 17:00 за този ден */
+          var add = e.target.closest('[data-newday]');
+          if (add) {
+            var np = add.getAttribute('data-newday').split('-');
+            luOpen({ start: new Date(Number(np[0]), Number(np[1]) - 1, Number(np[2]), 17, 0) });
+          }
+        }
+        grid.addEventListener('click', luClick);
+        var list = document.getElementById('luList');
+        if (list) list.addEventListener('click', luClick);
 
         document.getElementById('luPrev').addEventListener('click', function () {
           lu.monday = luPlusDays(lu.monday, -7); luLoad();
