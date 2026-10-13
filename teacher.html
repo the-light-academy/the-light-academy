@@ -2511,17 +2511,21 @@
 
          Раздават се по азбучен ред на имената, за да е еднакво при
          всяко отваряне. */
-      var LU_HUES = [212, 340, 150, 275, 28, 190, 320, 95, 255, 10];
-      var luHueMap = null;
-      function luHueReset() { luHueMap = null; }
-      function luHue(id) {
-        if (!luHueMap) {
-          luHueMap = {};
+      /* Шест тона в цветовете на академията — тъмно синьо, слънчево жълто,
+         оранжево, бордо, маслина, петрол. Самите цветове са в portal.css
+         като .tlu-c1 … .tlu-c6; тук се раздават по ред на имената, за да
+         е един и същ цветът на един и същи човек при всяко отваряне. */
+      var LU_TONES = 6;
+      var luToneMap = null;
+      function luToneReset() { luToneMap = null; }
+      function luTone(id) {
+        if (!luToneMap) {
+          luToneMap = {};
           luTeachers().slice().sort(function (a, b) {
             return String(a.full_name || '').localeCompare(String(b.full_name || ''), 'bg');
-          }).forEach(function (t, i) { luHueMap[t.id] = LU_HUES[i % LU_HUES.length]; });
+          }).forEach(function (t, i) { luToneMap[t.id] = (i % LU_TONES) + 1; });
         }
-        return (luHueMap[id] === undefined) ? 212 : luHueMap[id];
+        return 'tlu-c' + ((luToneMap[id] === undefined) ? 1 : luToneMap[id]);
       }
 
       /* Успоредните часове един до друг.
@@ -2638,13 +2642,12 @@
                трета. Тогава всяко нещо отива на свой ред и предметът пада —
                той остава в жълтото балонче при посочване. */
             var tight = it.lanes > 1, micro = it.lanes > 2;
-            html += '<button type="button" class="tlu__ev' + (tight ? ' is-tight' : '') +
-              (micro ? ' is-micro' : '') +
+            html += '<button type="button" class="tlu__ev ' + luTone(r.teacher_id) +
+              (tight ? ' is-tight' : '') + (micro ? ' is-micro' : '') +
               '" data-ev="' + esc(r.id) + '" ' +
               'style="top:' + top + 'px;height:' + (hgt - 3) + 'px;' +
               'left:calc(' + (it.lane * w) + '% + 2px);' +
-              'width:calc(' + w + '% - 4px);' +
-              '--h:' + luHue(r.teacher_id) + '" ' +
+              'width:calc(' + w + '% - 4px);" ' +
               'title="' + esc(luName(r.teacher_id) + ' · ' + luHhMm(st) + '–' + luHhMm(en) +
                              ' · ' + r.child_name + ' · ' + subjectName(r.subject_id)) + '">' +
               (showWho ? '<span class="tlu__ev-t">' + esc(luShort(luName(r.teacher_id))) +
@@ -2683,9 +2686,10 @@
           });
           if (state.isAdmin && seen.length > 1) {
             lg.innerHTML = seen.map(function (id) {
-              return '<button type="button" class="tlu__key' + (only === id ? ' is-on' : '') +
-                '" data-who="' + esc(id) + '" aria-pressed="' + (only === id) + '" ' +
-                'style="--h:' + luHue(id) + '">' + esc(luName(id)) + '</button>';
+              return '<button type="button" class="tlu__key ' + luTone(id) +
+                (only === id ? ' is-on' : '') +
+                '" data-who="' + esc(id) + '" aria-pressed="' + (only === id) + '">' +
+                esc(luName(id)) + '</button>';
             }).join('');
             lg.hidden = false;
           } else { lg.innerHTML = ''; lg.hidden = true; }
@@ -2719,8 +2723,8 @@
           } else {
             mine.forEach(function (r) {
               var st = new Date(r.starts_at), en = new Date(r.ends_at);
-              html += '<button type="button" class="tlu-ag__row" data-ev="' + esc(r.id) + '" ' +
-                'style="--h:' + luHue(r.teacher_id) + '">' +
+              html += '<button type="button" class="tlu-ag__row ' + luTone(r.teacher_id) +
+                '" data-ev="' + esc(r.id) + '">' +
                 '<span class="tlu-ag__time"><b>' + esc(luHhMm(st)) + '</b>' +
                 esc(luHhMm(en)) + '</span>' +
                 '<span class="tlu-ag__body">' +
@@ -3008,7 +3012,7 @@
             }).join('');
           }
         }
-        luHueReset();
+        luToneReset();
         luWire();
         luLoad();
       }
