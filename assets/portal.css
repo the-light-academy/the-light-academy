@@ -205,6 +205,19 @@ footer .footer-legal { margin-top: 0.7rem; font-size: 12px; color: rgba(255,255,
 /* A mark the AI grader gave: real points, but not the teacher's last word. */
 .tla-badge--ai { background: #EDE7FA; color: #4B2E83; }
 
+/* ── Колко от дадените задания е решил ученикът ── */
+.tla-prog { display: inline-grid; grid-template-columns: auto; gap: 0.15rem; min-width: 5.6rem; }
+.tla-prog__n { font-weight: 800; font-size: 0.95rem; color: var(--tlp-navy); }
+.tla-prog__bar { display: block; height: 6px; border-radius: 999px; background: rgba(13,27,54,0.10); overflow: hidden; }
+.tla-prog__bar i { display: block; height: 100%; border-radius: 999px; background: var(--tlp-ink-soft); }
+.tla-prog__m { font-size: 0.74rem; color: var(--mid); white-space: nowrap; }
+.tla-prog--ok .tla-prog__n { color: var(--tlp-good); }
+.tla-prog--ok .tla-prog__bar i { background: var(--tlp-good); }
+.tla-prog--mid .tla-prog__n { color: var(--tlp-accent-deep); }
+.tla-prog--mid .tla-prog__bar i { background: var(--tlp-accent); }
+.tla-prog--low .tla-prog__n { color: var(--tlp-bad); }
+.tla-prog--low .tla-prog__bar i { background: var(--tlp-bad); }
+
 /* ── УРОЦИТЕ: седмица като в календар ── */
 .tlu__bar { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
 .tlu__nav { display: flex; gap: 0.3rem; }

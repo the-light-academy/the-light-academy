@@ -297,9 +297,9 @@
         <div class="tla-tablewrap">
           <table class="tla-table" id="rosterTable">
             <thead>
-              <tr><th>Име</th><th>Клас</th><th>Предмети</th><th>Преподавател</th><th>Статус</th><th>Създаден</th><th></th></tr>
+              <tr><th>Име</th><th>Клас</th><th>Предмети</th><th>Преподавател</th><th>Решени</th><th>Статус</th><th>Създаден</th><th></th></tr>
             </thead>
-            <tbody><tr><td colspan="7" class="tla-empty">Зареждане…</td></tr></tbody>
+            <tbody><tr><td colspan="8" class="tla-empty">Зареждане…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1190,6 +1190,90 @@
         });
       }
 
+      /* Кои задания са СТИГНАЛИ до това дете — същите три условия, които
+         прилага и базата в can_see_assignment(): листът е в библиотеката,
+         за неговия клас е, по предмет, който учи, и негов преподавател му
+         го е дал, без после да го е скрил.
+
+         Уроците не влизат: те се гледат, не се решават.
+
+         Внимание какво значи числото: преподавателят вижда САМО своите
+         раздавания (политиката „releases: teacher own“), затова за него
+         това е „от моето“. Админът вижда всички раздавания и за него
+         числото е „от всичко, което детето е получило“ — същото, което
+         показва и пръстенът в неговия профил. */
+      function givenTo(studentId) {
+        var p = state.profiles[studentId];
+        if (!p) return [];
+        var g = gradeOf(p);
+        if (g === null || g < -1 || g > 12) return [];
+
+        var mine = state.teaching.filter(function (t) {
+          return t.student_id === studentId && t.active !== false;
+        });
+        if (!mine.length) return [];
+
+        var bySubject = {};
+        mine.forEach(function (t) {
+          (bySubject[t.subject_id] = bySubject[t.subject_id] || []).push(t.teacher_id);
+        });
+        var anyTeacher = mine.map(function (t) { return t.teacher_id; });
+
+        var enrolled = {};
+        state.enrollments.forEach(function (e) {
+          if (e.profile_id === studentId && e.active !== false) enrolled[e.subject_id] = true;
+        });
+
+        return Object.keys(state.assignments).map(function (k) {
+          return state.assignments[k];
+        }).filter(function (a) {
+          if (!a.published) return false;
+          if (!TLA.isGradable(a)) return false;
+          if (a.grades && a.grades.length && a.grades.indexOf(g) === -1) return false;
+          if (a.subject_id && !enrolled[a.subject_id]) return false;
+          var who = a.subject_id ? (bySubject[a.subject_id] || []) : anyTeacher;
+          return state.releases.some(function (r) {
+            return r.assignment_id === a.id && !r.hidden && who.indexOf(r.teacher_id) !== -1;
+          });
+        });
+      }
+
+      /* Колко от дадените е направил. „Направен“ значи предаден: започнат,
+         но непредаден опит не е решена работа. */
+      function doneOf(studentId) {
+        var did = {};
+        state.attempts.forEach(function (t) {
+          if (t.user_id === studentId && t.status !== 'in_progress') did[t.assignment_id] = true;
+        });
+        var given = givenTo(studentId);
+        var out = { all: given.length, done: 0, hw: 0, hwDone: 0, ex: 0, exDone: 0 };
+        given.forEach(function (a) {
+          var ok = !!did[a.id];
+          if (ok) out.done++;
+          if (a.kind === 'homework') { out.hw++; if (ok) out.hwDone++; }
+          else { out.ex++; if (ok) out.exDone++; }
+        });
+        out.pct = out.all ? Math.round(out.done / out.all * 100) : null;
+        return out;
+      }
+
+      function progressCell(studentId) {
+        var d = doneOf(studentId);
+        if (!d.all) {
+          return '<span class="tla-badge tla-badge--off" title="На това дете още не е ' +
+            'дадено нито едно задание">няма дадени</span>';
+        }
+        var tone = d.pct >= 75 ? 'ok' : (d.pct >= 40 ? 'mid' : 'low');
+        var title = d.done + ' от ' + d.all + ' дадени' +
+          (d.hw ? ' · домашни ' + d.hwDone + ' от ' + d.hw : '') +
+          (d.ex ? ' · изпити ' + d.exDone + ' от ' + d.ex : '');
+        return '<span class="tla-prog tla-prog--' + tone + '" title="' + esc(title) + '">' +
+          '<span class="tla-prog__n">' + d.pct + '%</span>' +
+          '<span class="tla-prog__bar" aria-hidden="true"><i style="width:' + d.pct + '%"></i></span>' +
+          '<span class="tla-prog__m">' + d.done + ' от ' + d.all + '</span>' +
+        '</span>';
+      }
+
       /* ---- roster ---- */
       function renderRoster() {
         var tb = document.querySelector('#rosterTable tbody');
@@ -1211,7 +1295,7 @@
           (noTeacher ? ' · ' + noTeacher + ' без преподавател' : '');
 
         if (!rows.length) {
-          tb.innerHTML = '<tr><td colspan="7" class="tla-empty">' +
+          tb.innerHTML = '<tr><td colspan="8" class="tla-empty">' +
             (state.roster.length ? 'Няма ученици в този клас.' : 'Няма ученици.') +
             '</td></tr>';
           return;
@@ -1293,6 +1377,7 @@
                   return t.length ? esc(t.join(', '))
                     : '<span class="tla-badge tla-badge--off">без преподавател</span>';
                 })()) + '</td>' +
+            '<td>' + (isTeacher ? '—' : progressCell(p.id)) + '</td>' +
             '<td>' + (p.active
                 ? '<span class="tla-badge tla-badge--graded">Активен</span>'
                 : '<span class="tla-badge tla-badge--off">Спрян</span>') + '</td>' +
@@ -3894,6 +3979,12 @@
            вземе наново, вместо да показва вчерашното класиране. */
         academy.rows = null; academy.err = null;
         renderAttempts();
+        /* Колоната „Решени“ в Ученици стъпва на опитите, а те идват чак
+           тук — след като списъкът с ученици вече е нарисуван. Без това
+           при отваряне всички щяха да са на 0%, докато нещо друго не
+           пречертае таблицата. Същото важи и след оценяване: решените
+           са станали с един повече. */
+        if (state.roster.length) renderRoster();
       }
 
       /* The teacher and subject pickers on the add-student form. A student
