@@ -519,16 +519,20 @@
          отваря цялата карта. Виж supabase/schema-v12.sql. */
       var myBirthday = '';
 
-      function renderHeader(profile, session) {
-        var name = (profile && profile.full_name) || (session && session.user.email) || '';
-        var first = String(name).trim().split(/\s+/)[0] || name;
+      function renderHeader(profile) {
+        /* Поздравът е с името на детето и само с него. Имейлът не става за
+           поздрав — „Здравей, ivan.petrov“ не е обръщение към човек, а
+           адрес. Ако име няма записано, поздравът остава без име, а
+           администраторът може да го допише от таба „Ученици“. */
+        var name = String((profile && profile.full_name) || '').trim();
+        var first = name.split(/\s+/)[0] || '';
         var hello = $('hello');
         var badge = $('helloGrade');
         hello.firstChild.nodeValue = first ? ('Здравей, ' + first + ' 👋') : 'Здравей 👋';
 
         /* The class is worked out from the year the student was entered, so
            it is right on its own every September without anyone touching it. */
-        myName = String(name || '').trim();
+        myName = name;
         myBirthday = (profile && profile.birthday) ? String(profile.birthday).slice(0, 10) : '';
         myGrade = TLA.currentGrade(profile);
         if (myGrade !== null && myGrade >= -1 && myGrade <= 12) {
@@ -1398,7 +1402,7 @@
         var auth = await TLA.requireAuth();
         if (!auth) return;                       /* requireAuth already redirected */
 
-        renderHeader(auth.profile, auth.session);
+        renderHeader(auth.profile);
         if (auth.profile && auth.profile.role === 'teacher') $('teacherLink').hidden = false;
 
         /* Знакът до поздрава. Не се чака: ако редът го няма още (дете,
