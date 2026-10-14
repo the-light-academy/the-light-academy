@@ -117,11 +117,17 @@
       }
 
       /* Where to go after a successful sign-in: back to whatever page
-         bounced us here, or the dashboard that matches the role. */
-      function destination() {
+         bounced us here, or the dashboard that matches the role.
+
+         Едно изключение: преподавател, бутнат насам от ученическия профил
+         (portal.html), се връща на СВОЕТО табло. Инак влиза с админските си
+         данни и попада в празен ученически профил — без домашни, защото
+         няма зададени на него. */
+      function destination(profile) {
         var next = new URLSearchParams(location.search).get('next');
-        if (next && /^[A-Za-z0-9_\-]+\.html(\?.*)?$/.test(next)) return next;
-        return null;
+        if (!next || !/^[A-Za-z0-9_\-]+\.html(\?.*)?$/.test(next)) return null;
+        if (profile && profile.role === 'teacher' && /^portal\.html/.test(next)) return null;
+        return next;
       }
 
       if (!TLA.isConfigured()) {
@@ -135,7 +141,7 @@
       TLA.getSession().then(function (session) {
         if (!session) return;
         TLA.getProfile().then(function (p) {
-          location.replace(destination() || (p && p.role === 'teacher' ? 'teacher.html' : 'portal.html'));
+          location.replace(destination(p) || (p && p.role === 'teacher' ? 'teacher.html' : 'portal.html'));
         });
       });
 
@@ -152,7 +158,8 @@
             await TLA.client.auth.signOut();
             throw new Error('Профилът е деактивиран. Свържете се с преподавателя.');
           }
-          location.replace(destination() || (profile && profile.role === 'teacher' ? 'teacher.html' : 'portal.html'));
+          location.replace(destination(profile) ||
+            (profile && profile.role === 'teacher' ? 'teacher.html' : 'portal.html'));
         } catch (err) {
           var m = (err && err.message) || '';
           showError(/invalid login/i.test(m)

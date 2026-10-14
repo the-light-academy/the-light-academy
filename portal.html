@@ -1402,6 +1402,17 @@
         var auth = await TLA.requireAuth();
         if (!auth) return;                       /* requireAuth already redirected */
 
+        /* Тази страница е профилът на ДЕТЕТО. Преподавател, който я отвори
+           (от показалка, от връзка или върнат тук след вход), вижда празен
+           ученически профил — няма домашни, защото никой не му е давал.
+           Затова отива на своето табло. С ?preview=1 нарочно гледа
+           ученическия изглед и тогава не се мести. */
+        if (auth.profile && auth.profile.role === 'teacher' &&
+            !/[?&]preview=1/.test(location.search)) {
+          location.replace('teacher.html');
+          return;
+        }
+
         renderHeader(auth.profile);
         if (auth.profile && auth.profile.role === 'teacher') $('teacherLink').hidden = false;
 
