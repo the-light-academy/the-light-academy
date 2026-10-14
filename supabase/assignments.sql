@@ -201,7 +201,7 @@ on conflict (slug) do update set
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
 
--- ── 6. клас, седмица 4 (12–16 окт. 2026): степенуване ──
+-- ── 6. клас, седмица 11 (30 ноем. – 4 дек. 2026): степенуване ──
 -- Понятие за степен с естествен показател и умножение на степени с равни
 -- основи. Десет задачи с избор, по една точка всяка.
 insert into public.assignments
@@ -213,8 +213,8 @@ values
    'homework_6_w04.html',
    10,
    false,
-   393,
-   4,
+   399,
+   11,
    (select id from public.subjects where slug = 'matematika'),
    '{6}')
 on conflict (slug) do update set
@@ -228,7 +228,7 @@ on conflict (slug) do update set
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
 
--- ── 6. клас, седмица 5 (19–23 окт. 2026): степенуване, втора част ──
+-- ── 6. клас, седмица 12 (7–11 дек. 2026): степенуване, втора част ──
 -- Деление на степени с равни основи и степенуване на произведение,
 -- частно и степен. Десет задачи с избор, по една точка всяка.
 insert into public.assignments
@@ -240,8 +240,8 @@ values
    'homework_6_w05.html',
    10,
    false,
-   394,
-   5,
+   400,
+   12,
    (select id from public.subjects where slug = 'matematika'),
    '{6}')
 on conflict (slug) do update set
@@ -1149,7 +1149,7 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
--- 6. клас, седмица 6 — пресмятане на числови изрази със степени и стандартен запис.
+-- 6. клас, седмица 13 — пресмятане на числови изрази със степени и стандартен запис.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
   (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
@@ -1158,6 +1158,87 @@ values
    'Домашно — Изрази със степени. Стандартен запис',
    'homework',
    'homework_6_w06.html',
+   10,
+   false,
+   401,
+   13,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 4 — положителни и отрицателни числа, рационални числа и числова ос.
+-- Пет задачи с избор и пет писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w07',
+   'Домашно — Положителни и отрицателни числа',
+   'homework',
+   'homework_6_w07.html',
+   10,
+   false,
+   393,
+   4,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 5 — абсолютна стойност (модул) и сравняване на рационални числа.
+-- Пет задачи с избор и пет писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w08',
+   'Домашно — Абсолютна стойност. Сравняване',
+   'homework',
+   'homework_6_w08.html',
+   10,
+   false,
+   394,
+   5,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
+-- 6. клас, седмица 6 — събиране на рационални числа с еднакви и с различни знаци.
+-- Четири задачи с избор и шест писани, по една точка всяка.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('hw6-w09',
+   'Домашно — Събиране на рационални числа',
+   'homework',
+   'homework_6_w09.html',
    10,
    false,
    394,
@@ -1176,15 +1257,15 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
--- 6. клас, седмица 7 — положителни и отрицателни числа, рационални числа и числова ос.
--- Пет задачи с избор и пет писани, по една точка всяка.
+-- 6. клас, седмица 7 — изваждане на рационални числа и алгебричен сбор.
+-- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
   (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
 values
-  ('hw6-w07',
-   'Домашно — Положителни и отрицателни числа',
+  ('hw6-w10',
+   'Домашно — Изваждане на рационални числа',
    'homework',
-   'homework_6_w07.html',
+   'homework_6_w10.html',
    10,
    false,
    395,
@@ -1203,15 +1284,15 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
--- 6. клас, седмица 8 — абсолютна стойност (модул) и сравняване на рационални числа.
--- Пет задачи с избор и пет писани, по една точка всяка.
+-- 6. клас, седмица 8 — умножение на рационални числа и свойства на умножението.
+-- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
   (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
 values
-  ('hw6-w08',
-   'Домашно — Абсолютна стойност. Сравняване',
+  ('hw6-w11',
+   'Домашно — Умножение на рационални числа',
    'homework',
-   'homework_6_w08.html',
+   'homework_6_w11.html',
    10,
    false,
    396,
@@ -1230,15 +1311,15 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
--- 6. клас, седмица 9 — събиране на рационални числа с еднакви и с различни знаци.
--- Четири задачи с избор и шест писани, по една точка всяка.
+-- 6. клас, седмица 9 — деление на рационални числа и намиране на неизвестно число.
+-- Две задачи с избор и осем писани, по една точка всяка.
 insert into public.assignments
   (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
 values
-  ('hw6-w09',
-   'Домашно — Събиране на рационални числа',
+  ('hw6-w12',
+   'Домашно — Деление на рационални числа',
    'homework',
-   'homework_6_w09.html',
+   'homework_6_w12.html',
    10,
    false,
    397,
@@ -1257,88 +1338,7 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
--- 6. клас, седмица 10 — изваждане на рационални числа и алгебричен сбор.
--- Три задачи с избор и седем писани, по една точка всяка.
-insert into public.assignments
-  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
-values
-  ('hw6-w10',
-   'Домашно — Изваждане на рационални числа',
-   'homework',
-   'homework_6_w10.html',
-   10,
-   false,
-   398,
-   10,
-   (select id from public.subjects where slug = 'matematika'),
-   '{6}')
-on conflict (slug) do update set
-  title       = excluded.title,
-  kind        = excluded.kind,
-  url         = excluded.url,
-  max_points  = excluded.max_points,
-  sort_order  = excluded.sort_order,
-  week        = excluded.week,
-  subject_id  = excluded.subject_id,
-  grades      = excluded.grades;
-  -- published нарочно липсва тук: то се управлява от таблото.
-
-
--- 6. клас, седмица 11 — умножение на рационални числа и свойства на умножението.
--- Три задачи с избор и седем писани, по една точка всяка.
-insert into public.assignments
-  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
-values
-  ('hw6-w11',
-   'Домашно — Умножение на рационални числа',
-   'homework',
-   'homework_6_w11.html',
-   10,
-   false,
-   399,
-   11,
-   (select id from public.subjects where slug = 'matematika'),
-   '{6}')
-on conflict (slug) do update set
-  title       = excluded.title,
-  kind        = excluded.kind,
-  url         = excluded.url,
-  max_points  = excluded.max_points,
-  sort_order  = excluded.sort_order,
-  week        = excluded.week,
-  subject_id  = excluded.subject_id,
-  grades      = excluded.grades;
-  -- published нарочно липсва тук: то се управлява от таблото.
-
-
--- 6. клас, седмица 12 — деление на рационални числа и намиране на неизвестно число.
--- Две задачи с избор и осем писани, по една точка всяка.
-insert into public.assignments
-  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
-values
-  ('hw6-w12',
-   'Домашно — Деление на рационални числа',
-   'homework',
-   'homework_6_w12.html',
-   10,
-   false,
-   400,
-   12,
-   (select id from public.subjects where slug = 'matematika'),
-   '{6}')
-on conflict (slug) do update set
-  title       = excluded.title,
-  kind        = excluded.kind,
-  url         = excluded.url,
-  max_points  = excluded.max_points,
-  sort_order  = excluded.sort_order,
-  week        = excluded.week,
-  subject_id  = excluded.subject_id,
-  grades      = excluded.grades;
-  -- published нарочно липсва тук: то се управлява от таблото.
-
-
--- 6. клас, седмица 13 — правоъгълна координатна система, координати на точка и разстояние.
+-- 6. клас, седмица 10 — правоъгълна координатна система, координати на точка и разстояние.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
   (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
@@ -1349,8 +1349,8 @@ values
    'homework_6_w13.html',
    10,
    false,
-   401,
-   13,
+   398,
+   10,
    (select id from public.subjects where slug = 'matematika'),
    '{6}')
 on conflict (slug) do update set
