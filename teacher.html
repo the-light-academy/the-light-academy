@@ -151,7 +151,12 @@
               aria-label="Следващата седмица">›</button>
           </div>
           <span class="tlu__range" id="luRange"></span>
-          <label class="tlu__who" data-admin hidden>
+          <!-- Календарът е общ: всеки преподавател вижда и чуждите часове.
+               Затова филтърът е за всички, не само за админа, а „Само
+               моите“ е прекият път до своята седмица. -->
+          <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="luMine"
+            aria-pressed="false">Само моите</button>
+          <label class="tlu__who">
             <span>Преподавател:</span>
             <select id="luTeacherFilter"><option value="">всички</option></select>
           </label>
@@ -617,6 +622,8 @@
         me: null, isAdmin: false,
         availability: [], blocks: [], lessons: [],   /* часове (schema-v4) */
         teaching: [],      /* (teacher, student, subject) rows visible to me */
+        teacherSubjects: [], /* кой преподавател по какво преподава (schema-v13) */
+        teacherNames: [],  /* id + име на всички преподаватели (schema-v13) */
         enrollments: [],   /* which student studies which subject */
         releases: []       /* which sheets have been given to which students */
       };
@@ -2543,24 +2550,46 @@
                a.getDate() === b.getDate();
       }
 
-      /* Предметите на един преподавател идват от „Кой кого води“: онова,
-         по което води поне един ученик. Ако още няма записано дете, се
-         показват всички — празен списък би спрял работата без причина. */
+      /* По кои предмети може да се запише час на този преподавател.
+         Първо списъкът „кой какво преподава“ (schema-v13) — той важи и
+         за предмет, по който още няма записан ученик. Ако го няма
+         (файлът не е пуснат), пада назад към „кого какво учи“, а ако и
+         там няма нищо — всички предмети, за да не остане без избор. */
       function luSubjectsFor(teacherId) {
         var ids = {};
-        state.teaching.forEach(function (t) {
+        state.teacherSubjects.forEach(function (t) {
           if (t.teacher_id === teacherId && t.subject_id) ids[t.subject_id] = true;
         });
         var mine = state.subjects.filter(function (s) { return ids[s.id]; });
+        if (mine.length) return mine;
+
+        ids = {};
+        state.teaching.forEach(function (t) {
+          if (t.teacher_id === teacherId && t.subject_id) ids[t.subject_id] = true;
+        });
+        mine = state.subjects.filter(function (s) { return ids[s.id]; });
         return mine.length ? mine : state.subjects.slice();
       }
 
+      /* Всички преподаватели — за менюто, легендата и цветовете.
+
+         Не стига да се вземат от roster: преподавател не чете чужд
+         профил, затова там е само той самият. Имената идват от
+         teacher_names() (schema-v13); докато файлът не е пуснат, се пада
+         назад към roster — тогава админът вижда всички, а преподавателят
+         само себе си, както беше досега. */
       function luTeachers() {
+        if (state.teacherNames.length) {
+          return state.teacherNames.slice().sort(function (a, b) {
+            return String(a.full_name || '').localeCompare(String(b.full_name || ''), 'bg');
+          });
+        }
         return state.roster.filter(function (p) { return p.role === 'teacher' && p.active; });
       }
       function luName(id) {
         if (state.me && id === state.me.id) return state.me.full_name || 'Аз';
         var hit = state.roster.filter(function (p) { return p.id === id; })[0];
+        if (!hit) hit = state.teacherNames.filter(function (p) { return p.id === id; })[0];
         return hit ? hit.full_name : 'преподавател';
       }
       /* Цвят по преподавател. Палитрата е подредена ръчно, а не сметната
@@ -2646,9 +2675,24 @@
         var grid = document.getElementById('luGrid');
         if (!grid) return;
         var pick = document.getElementById('luTeacherFilter');
-        var only = (state.isAdmin && pick) ? pick.value : '';
+        var only = pick ? pick.value : '';
+        var mineId = state.me ? state.me.id : '';
+        var mineBtn = document.getElementById('luMine');
+        if (mineBtn) {
+          var on = (only && only === mineId);
+          mineBtn.setAttribute('aria-pressed', String(!!on));
+          mineBtn.classList.toggle('is-on', !!on);
+        }
         var rows = lu.rows.filter(function (r) { return !only || r.teacher_id === only; });
         var today = new Date();
+
+        /* Чие име се пише по часовете: само когато в седмицата има повече
+           от един преподавател. При „само моите“ то се повтаря излишно. */
+        var whoSeen = [];
+        rows.forEach(function (r) {
+          if (whoSeen.indexOf(r.teacher_id) < 0) whoSeen.push(r.teacher_id);
+        });
+        var many = whoSeen.length > 1;
 
         /* заглавието на седмицата */
         var end = luPlusDays(lu.monday, 6);
@@ -2688,7 +2732,7 @@
             })
             .sort(function (a, b) { return a.s - b.s || a.e - b.e; });
 
-          luLanes(day).forEach(function (it) {
+          luLanes(day).forEach(function (it) {   /* „many“ се смята по-горе */
             var r = it.r, st = it.st, en = it.en;
             var top = ((st.getHours() - LU_FROM) * 60 + st.getMinutes()) * LU_PX / 60;
             var hgt = Math.max(26, (en - st) / 60000 * LU_PX / 60);
@@ -2696,7 +2740,7 @@
             /* Името на преподавателя е първото нещо в блокчето — но само
                когато има смисъл. В „Моите уроци“ всички часове са на
                гледащия и името щеше да се повтаря на всеки ред. */
-            var showWho = state.isAdmin;
+            var showWho = many;
             /* Щом часовете си делят колоната, блокчето е наполовина или на
                трета. Тогава всяко нещо отива на свой ред и предметът пада —
                той остава в жълтото балонче при посочване. */
@@ -2743,7 +2787,7 @@
           seen.sort(function (a, b) {
             return String(luName(a)).localeCompare(String(luName(b)), 'bg');
           });
-          if (state.isAdmin && seen.length > 1) {
+          if (seen.length > 1) {
             lg.innerHTML = seen.map(function (id) {
               return '<button type="button" class="tlu__key ' + luTone(id) +
                 (only === id ? ' is-on' : '') +
@@ -2766,6 +2810,12 @@
       function luAgenda(rows, today) {
         var box = document.getElementById('luList');
         if (!box) return;
+        /* както в решетката: името се пише само когато има чие друго */
+        var seenWho = [];
+        rows.forEach(function (r) {
+          if (seenWho.indexOf(r.teacher_id) < 0) seenWho.push(r.teacher_id);
+        });
+        var agMany = seenWho.length > 1;
         var html = '', i, any = false;
         for (i = 0; i < 7; i++) {
           var d = luPlusDays(lu.monday, i);
@@ -2787,8 +2837,8 @@
                 '<span class="tlu-ag__time"><b>' + esc(luHhMm(st)) + '</b>' +
                 esc(luHhMm(en)) + '</span>' +
                 '<span class="tlu-ag__body">' +
-                (state.isAdmin ? '<span class="tlu-ag__who">' + esc(luName(r.teacher_id)) +
-                                 '</span>' : '') +
+                (agMany ? '<span class="tlu-ag__who">' + esc(luName(r.teacher_id)) +
+                          '</span>' : '') +
                 '<span class="tlu-ag__kid">' + esc(r.child_name) + '</span>' +
                 '<span class="tlu-ag__sub">' + esc(subjectName(r.subject_id)) +
                 (r.series_id ? ' · всяка седмица' : '') + '</span></span></button>';
@@ -3042,6 +3092,13 @@
         });
         var tf = document.getElementById('luTeacherFilter');
         if (tf) tf.addEventListener('change', luRender);
+        /* „Само моите“ е същият филтър, но с едно щракване; второто го вдига */
+        var mb = document.getElementById('luMine');
+        if (mb) mb.addEventListener('click', function () {
+          if (!tf || !state.me) return;
+          tf.value = (tf.value === state.me.id) ? '' : state.me.id;
+          luRender();
+        });
         /* кръгчето в легендата е и филтър: второ щракване го вдига */
         var lg = document.getElementById('luLegend');
         if (lg) lg.addEventListener('click', function (e) {
@@ -3059,17 +3116,17 @@
       }
 
       function luSetup() {
+        /* Календарът е общ за преподавателите — затова и надписът е общ,
+           а не „Моите уроци“. Своите се виждат с едно щракване. */
         var t = document.getElementById('tabLessons');
         var h2 = document.getElementById('luTitle');
-        if (state.isAdmin) {
-          if (t) t.textContent = 'Уроци';
-          if (h2) h2.textContent = 'Уроците на всички';
-          var tf = document.getElementById('luTeacherFilter');
-          if (tf) {
-            tf.innerHTML = '<option value="">всички</option>' + luTeachers().map(function (x) {
-              return '<option value="' + esc(x.id) + '">' + esc(x.full_name) + '</option>';
-            }).join('');
-          }
+        if (t) t.textContent = 'Уроци';
+        if (h2) h2.textContent = 'Уроците на всички';
+        var tf = document.getElementById('luTeacherFilter');
+        if (tf) {
+          tf.innerHTML = '<option value="">всички</option>' + luTeachers().map(function (x) {
+            return '<option value="' + esc(x.id) + '">' + esc(x.full_name) + '</option>';
+          }).join('');
         }
         luToneReset();
         luWire();
@@ -4150,6 +4207,10 @@
       async function loadTeaching() {
         try { state.teaching = await TLA.listTeaching(); }
         catch (err) { state.teaching = []; say('err', String(err.message || err)); }
+        try { state.teacherSubjects = await TLA.listTeacherSubjects(); }
+        catch (err) { state.teacherSubjects = []; }
+        try { state.teacherNames = await TLA.listTeacherNames(); }
+        catch (err) { state.teacherNames = []; }
       }
 
       /* Кой какъв предмет учи. „Кой кого води“ стъпва на това, а не на
