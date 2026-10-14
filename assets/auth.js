@@ -517,6 +517,43 @@
       return res.data || [];
     },
 
+    /* Кой преподавател по какво преподава — schema-v13.sql. Отделно от
+       teaching, защото teaching иска УЧЕНИК, а часовете в календара се
+       пишат на свободно име на дете, което още не е в платформата.
+
+       Докато файлът не е пуснат, таблицата я няма: връща се празен
+       списък, а страницата пада назад към старото поведение. Цял таб не
+       бива да виси на едно непуснато ново нещо. */
+    listTeacherSubjects: async function () {
+      if (!client) return [];
+      var res = await client
+        .from('teacher_subjects')
+        .select('teacher_id, subject_id, active')
+        .eq('active', true);
+      if (res.error) {
+        if (res.error.code === '42P01') return [];
+        throw res.error;
+      }
+      return res.data || [];
+    },
+
+    /* Имената на преподавателите — schema-v13.sql. Преподавател не чете
+       чужд профил (политиките по profiles са „моят ред“ и „моите
+       ученици“), а общият календар показва чии са часовете. Функцията
+       връща само id и име на активните преподаватели и нищо повече.
+
+       Докато файлът не е пуснат, функцията я няма: връща се празно и
+       страницата пада назад към това, което чете от profiles. */
+    listTeacherNames: async function () {
+      if (!client) return [];
+      var res = await client.rpc('teacher_names');
+      if (res.error) {
+        if (res.error.code === '42883' || res.error.code === 'PGRST202') return [];
+        throw res.error;
+      }
+      return res.data || [];
+    },
+
     /* ---- уроците на преподавателите ------------------------------
        Четенето е за една седмица, не за всичко: таблото се отваря на
        една седмица и толкова му трябва. Политиките в базата решават
