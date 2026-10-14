@@ -122,6 +122,11 @@ footer{color:var(--muted);font-size:.85rem}
   font-size:15px;line-height:1.6}
 .gate[hidden]{display:none}
 
+/* Името отгоре е само за четене: детето е влязло с профила си и няма
+   какво да си пише. */
+.student .who{font-weight:800;color:var(--ink)}
+.student .who:empty::before{content:"Ученик";color:var(--muted)}
+
 /* Предаването. Стои в паспорта, под лентата с напредъка. */
 .hand{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .hand .btn-send{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:10px 22px;
@@ -157,7 +162,7 @@ footer{color:var(--muted);font-size:.85rem}
     <p>Първо прочети теорията и примерите. После реши задачите в тетрадката и напиши отговора тук. Всеки верен отговор слага печат в паспорта ти.</p>
   </header>
 
-  <div class="student"><label for="nm">Име:</label><input id="nm" placeholder="напиши името си" autocomplete="name"><span class="sc" id="sc">0 / 0 верни</span></div>
+  <div class="student"><span class="who" id="whoName"></span><input type="hidden" id="nm" /><span class="sc" id="sc">0 / 0 верни</span></div>
 
   <h2><span class="badge">Част 1</span>Теория</h2>
   <div id="theory" style="display:flex;flex-direction:column;gap:12px"></div>
@@ -368,7 +373,18 @@ const TI=0;
 const THEORY=[{"h": "1. Какво е рационален израз", "b": "<p>Рационален израз е запис от <b>числа и букви (променливи)</b>, свързани със знаците за действия <b>+, −, ·, :</b>, степенуване и скоби. В израза няма знак „=“. Ако има „=“, вече е уравнение.</p><div class=\"exm\"><b class=\"t\">Примери</b>Изрази: <span class=\"m\">4,5 + 1,2k</span>, <span class=\"m\">2x² − 3xy + y²</span>, <span class=\"m\">(a + b) : 5</span><br>Не е израз (уравнение е): <span class=\"m\">3x + 1 = 7</span></div>"}, {"h": "2. Променливи и постоянни величини", "b": "<p><b>Променлива</b> е величина, която може да приема различни стойности. Означаваме я с буква. <b>Постоянна</b> е величина, чиято стойност не се променя.</p><div class=\"exm\"><b class=\"t\">Пример</b>Обиколка на кръг: <span class=\"m\">C = 2πr</span>. Числата 2 и π ≈ 3,14 са <b>постоянни</b>. Радиусът r и обиколката C са <b>променливи</b>, защото зависят от кръга.</div>"}, {"h": "3. Цели и дробни изрази", "b": "<ul><li><b>Цял израз</b>: няма деление на израз с променлива. Деление на число е позволено: <span class=\"m\">(x + 3) : 5</span> е цял.</li><li><b>Дробен израз</b>: има деление на израз с променлива, например <span class=\"m\">7 : (x − 4)</span>.</li></ul><p>Дробният израз <b>няма смисъл</b>, когато делителят (знаменателят) е 0, защото на нула не се дели.</p><div class=\"exm\"><b class=\"t\">Пример</b><span class=\"m\">7 : (x − 4)</span> няма смисъл при x − 4 = 0, тоест при <b>x = 4</b>.</div>"}, {"h": "4. Числена стойност на израз", "b": "<p>Числената стойност е числото, което получаваме, като <b>заместим</b> буквите с дадените числа и <b>извършим действията</b>.</p><ul><li>Отрицателните числа заместваме <b>в скоби</b>.</li><li>Спазваме реда на действията: степенуване → умножение и деление → събиране и изваждане.</li></ul><div class=\"exm\"><b class=\"t\">Решен пример</b><span class=\"m\">3a² − 2ab</span> при a = −2 и b = 3:<br><span class=\"m\">3·(−2)² − 2·(−2)·3 = 3·4 + 12 = 24</span></div><p class=\"warn\">Внимание: <span class=\"m\">−2² = −4</span>, но <span class=\"m\">(−2)² = 4</span>.</p>"}, {"h": "5. Хитър трик: заместване на цяла група", "b": "<p>Понякога не знаем буквите поотделно, но знаем стойността на някакъв израз от тях. Тогава го „откриваме“ в търсения израз.</p><div class=\"exm\"><b class=\"t\">Решен пример</b>Ако <span class=\"m\">a − b = 3</span>, то <span class=\"m\">2a − 2b + 1 = 2(a − b) + 1 = 2·3 + 1 = 7</span>.</div>"}, {"h": "6. Проценти в изрази", "b": "<p>Намаление с p% означава, че плащаме (100 − p)% от цената.</p><div class=\"exm\"><b class=\"t\">Пример</b>−25% от цена x: плащаме <span class=\"m\">0,75x</span>. При x = 40 € това е <span class=\"m\">0,75·40 = 30 €</span>.</div>"}];
 const KEY="dz7-"+TI;
 const LV=["","основна","ниво 2","задачник"];
-const TASKS=TOPICS[TI].stops.map(s=>({lv:s.lv?2:s.x?3:1,place:s.x?"":s.place.replace("Ниво 2 · ",""),ctx:s.x?"":s.story,...s.b}));
+/* Всяка спирка носи ДВА въпроса: един с избор (a — за понятието) и един
+   с писане на число (b — смятането). Досега на екрана влизаше само
+   вторият, а първият стоеше неизползван в данните. Сега влизат и двата:
+   първо този с избор, после смятането. Мястото и разказът се пишат
+   веднъж, над първия от двойката, за да не се повтарят. */
+const TASKS=TOPICS[TI].stops.flatMap(st=>{
+  const lv=st.lv?2:st.x?3:1,place=st.x?"":st.place.replace("Ниво 2 · ",""),ctx=st.x?"":st.story;
+  const out=[];
+  if(st.a)out.push({lv:lv,place:place,ctx:ctx,...st.a});
+  out.push(out.length?{lv:lv,place:"",ctx:"",...st.b}:{lv:lv,place:place,ctx:ctx,...st.b});
+  return out;
+});
 let S=TASKS.map(()=>({ok:false,t:0,sel:null}));
 let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 if(saved.s&&saved.s.length===S.length)S=saved.s.map(x=>({ok:!!x.ok,t:x.t||0,sel:null}));
@@ -419,7 +435,7 @@ draw();
    Листът си остава какъвто беше: решава се сам, проверява се сам и пази
    напредъка в браузъра. Добавени са само трите неща, които го правят
    домашно НА ПЛАТФОРМАТА — вход, бутон „Предай“ и записване на опита в
-   профила на детето. Нищо от самите задачи не е пипано.
+   профила на детето.
 --------------------------------------------------------------------- */
 const SLUG = "hw7-w03b";
 
@@ -494,9 +510,8 @@ document.getElementById("sendBtn").addEventListener("click", handIn);
   }
   const auth = await TLA.requireAuth();
   if(!auth) return;                       /* requireAuth вече пренасочи */
-  if(auth.profile && auth.profile.full_name && !nm.value.trim()){
-    nm.value = auth.profile.full_name; save();
-  }
+  const who = ((auth.profile && auth.profile.full_name) || "").trim();
+  if(who){ nm.value = who; document.getElementById("whoName").textContent = who; save(); }
   document.getElementById("sheet").hidden = false;
   progress();
 })();
