@@ -122,6 +122,11 @@ footer{color:var(--muted);font-size:.85rem}
   font-size:15px;line-height:1.6}
 .gate[hidden]{display:none}
 
+/* Името отгоре е само за четене: детето е влязло с профила си и няма
+   какво да си пише. */
+.student .who{font-weight:800;color:var(--ink)}
+.student .who:empty::before{content:"Ученик";color:var(--muted)}
+
 /* Предаването. Стои в паспорта, под лентата с напредъка. */
 .hand{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .hand .btn-send{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:10px 22px;
@@ -157,7 +162,7 @@ footer{color:var(--muted);font-size:.85rem}
     <p>Първо прочети теорията и примерите. После реши задачите в тетрадката и напиши отговора тук. Всеки верен отговор слага печат в паспорта ти.</p>
   </header>
 
-  <div class="student"><label for="nm">Име:</label><input id="nm" placeholder="напиши името си" autocomplete="name"><span class="sc" id="sc">0 / 0 верни</span></div>
+  <div class="student"><span class="who" id="whoName"></span><input type="hidden" id="nm" /><span class="sc" id="sc">0 / 0 верни</span></div>
 
   <h2><span class="badge">Част 1</span>Теория</h2>
   <div id="theory" style="display:flex;flex-direction:column;gap:12px"></div>
@@ -368,7 +373,18 @@ const TI=1;
 const THEORY=[{"h": "1. Какво е едночлен", "b": "<p>Едночлен е <b>произведение</b> на числа и променливи (и техни степени). Число или само буква също са едночлени.</p><div class=\"exm\"><b class=\"t\">Примери</b>Едночлени: <span class=\"m\">−2a²b</span>, <span class=\"m\">½x</span>, <span class=\"m\">7</span>, <span class=\"m\">y</span><br>Не са едночлени: <span class=\"m\">3x + y</span> (има сбор), <span class=\"m\">5 : x</span> (деление на буква)</div>"}, {"h": "2. Нормален вид и коефициент", "b": "<p>Едночленът е в <b>нормален вид</b>, когато има само един числов множител, записан отпред (това е <b>коефициентът</b>), и всяка буква се среща само веднъж, със степен.</p><div class=\"exm\"><b class=\"t\">Решен пример</b><span class=\"m\">3x · (−2)y · x² = −6x³y</span>. Коефициентът е <b>−6</b>.</div><p>Ако коефициентът е 1 или −1, не го пишем: <span class=\"m\">1·a²b = a²b</span>, <span class=\"m\">−1·xy = −xy</span>.</p>"}, {"h": "3. Степен на едночлен", "b": "<p>Степента е <b>сборът от степените на всички букви</b>. Коефициентът не влияе. Буква без степен е на степен 1.</p><div class=\"exm\"><b class=\"t\">Пример</b><span class=\"m\">−5a²b³c</span> има степен 2 + 3 + 1 = <b>6</b>.</div>"}, {"h": "4. Подобни едночлени и събиране", "b": "<p><b>Подобни</b> са едночлени с еднаква буквена част (същите букви на същите степени). Само подобни се събират и изваждат: събираме коефициентите, а буквената част остава същата.</p><div class=\"exm\"><b class=\"t\">Решен пример</b><span class=\"m\">2xy² + 5xy² − 3xy² = (2 + 5 − 3)xy² = 4xy²</span></div><p class=\"warn\"><span class=\"m\">x²y</span> и <span class=\"m\">xy²</span> имат еднаква степен, но <b>не</b> са подобни.</p>"}, {"h": "5. Свойства на степените", "b": "<div class=\"rules\"><div>aᵐ · aⁿ = aᵐ⁺ⁿ<small>умножение: събираме</small></div><div>aᵐ : aⁿ = aᵐ⁻ⁿ<small>деление: изваждаме</small></div><div>(aᵐ)ⁿ = aᵐ·ⁿ<small>степен на степен: умножаваме</small></div><div>(a·b)ⁿ = aⁿ·bⁿ<small>степен на произведение</small></div></div><p class=\"warn\">Знак: отрицателно число на четна степен е положително, на нечетна степен е отрицателно. (−2)⁴ = 16, (−2)³ = −8.</p>"}, {"h": "6. Умножение, степенуване и деление на едночлени", "b": "<ul><li><b>Умножение:</b> умножаваме коефициентите, а степените на еднаквите букви събираме.</li><li><b>Степенуване:</b> степенуваме коефициента и всяка буква.</li><li><b>Деление:</b> делим коефициентите, а степените на еднаквите букви изваждаме.</li></ul><div class=\"exm\"><b class=\"t\">Решени примери</b><span class=\"m\">(4x³y) · (−2xy²) = −8x⁴y³</span><br><span class=\"m\">(−2a³b)² = 4a⁶b²</span><br><span class=\"m\">(−15x⁴y³) : (5xy) = −3x³y²</span></div>"}, {"h": "7. Неизвестен множител", "b": "<p>Ако <span class=\"m\">? · A = B</span>, то <span class=\"m\">? = B : A</span>. Ако <span class=\"m\">? : A = B</span>, то <span class=\"m\">? = B · A</span>.</p><div class=\"exm\"><b class=\"t\">Пример</b><span class=\"m\">? · 2x = 10x³</span> → <span class=\"m\">? = 10x³ : 2x = 5x²</span></div>"}];
 const KEY="dz7-"+TI;
 const LV=["","основна","ниво 2","задачник"];
-const TASKS=TOPICS[TI].stops.map(s=>({lv:s.lv?2:s.x?3:1,place:s.x?"":s.place.replace("Ниво 2 · ",""),ctx:s.x?"":s.story,...s.b}));
+/* Всяка спирка носи ДВА въпроса: един с избор (a — за понятието) и един
+   с писане на число (b — смятането). Досега на екрана влизаше само
+   вторият, а първият стоеше неизползван в данните. Сега влизат и двата:
+   първо този с избор, после смятането. Мястото и разказът се пишат
+   веднъж, над първия от двойката, за да не се повтарят. */
+const TASKS=TOPICS[TI].stops.flatMap(st=>{
+  const lv=st.lv?2:st.x?3:1,place=st.x?"":st.place.replace("Ниво 2 · ",""),ctx=st.x?"":st.story;
+  const out=[];
+  if(st.a)out.push({lv:lv,place:place,ctx:ctx,...st.a});
+  out.push(out.length?{lv:lv,place:"",ctx:"",...st.b}:{lv:lv,place:place,ctx:ctx,...st.b});
+  return out;
+});
 let S=TASKS.map(()=>({ok:false,t:0,sel:null}));
 let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 if(saved.s&&saved.s.length===S.length)S=saved.s.map(x=>({ok:!!x.ok,t:x.t||0,sel:null}));
@@ -419,7 +435,7 @@ draw();
    Листът си остава какъвто беше: решава се сам, проверява се сам и пази
    напредъка в браузъра. Добавени са само трите неща, които го правят
    домашно НА ПЛАТФОРМАТА — вход, бутон „Предай“ и записване на опита в
-   профила на детето. Нищо от самите задачи не е пипано.
+   профила на детето.
 --------------------------------------------------------------------- */
 const SLUG = "hw7-w04b";
 
@@ -494,9 +510,8 @@ document.getElementById("sendBtn").addEventListener("click", handIn);
   }
   const auth = await TLA.requireAuth();
   if(!auth) return;                       /* requireAuth вече пренасочи */
-  if(auth.profile && auth.profile.full_name && !nm.value.trim()){
-    nm.value = auth.profile.full_name; save();
-  }
+  const who = ((auth.profile && auth.profile.full_name) || "").trim();
+  if(who){ nm.value = who; document.getElementById("whoName").textContent = who; save(); }
   document.getElementById("sheet").hidden = false;
   progress();
 })();

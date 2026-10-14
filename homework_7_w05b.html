@@ -122,6 +122,11 @@ footer{color:var(--muted);font-size:.85rem}
   font-size:15px;line-height:1.6}
 .gate[hidden]{display:none}
 
+/* Името отгоре е само за четене: детето е влязло с профила си и няма
+   какво да си пише. */
+.student .who{font-weight:800;color:var(--ink)}
+.student .who:empty::before{content:"Ученик";color:var(--muted)}
+
 /* Предаването. Стои в паспорта, под лентата с напредъка. */
 .hand{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .hand .btn-send{font:inherit;font-weight:800;font-size:15px;min-height:44px;padding:10px 22px;
@@ -157,7 +162,7 @@ footer{color:var(--muted);font-size:.85rem}
     <p>Първо прочети теорията и примерите. После реши задачите в тетрадката и напиши отговора тук. Всеки верен отговор слага печат в паспорта ти.</p>
   </header>
 
-  <div class="student"><label for="nm">Име:</label><input id="nm" placeholder="напиши името си" autocomplete="name"><span class="sc" id="sc">0 / 0 верни</span></div>
+  <div class="student"><span class="who" id="whoName"></span><input type="hidden" id="nm" /><span class="sc" id="sc">0 / 0 верни</span></div>
 
   <h2><span class="badge">Част 1</span>Теория</h2>
   <div id="theory" style="display:flex;flex-direction:column;gap:12px"></div>
@@ -368,7 +373,18 @@ const TI=2;
 const THEORY=[{"h": "1. Какво е многочлен", "b": "<p>Многочлен е <b>сбор от едночлени</b>. Едночлените се наричат <b>членове</b>. С два члена е двучлен, с три е тричлен.</p><div class=\"exm\"><b class=\"t\">Примери</b><span class=\"m\">2a + 3b</span> (двучлен), <span class=\"m\">3x² − 5x + 7</span> (тричлен, членовете са 3x², −5x и 7)</div>"}, {"h": "2. Нормален вид", "b": "<p>Многочленът е в <b>нормален вид</b>, когато всичките му членове са едночлени в нормален вид и <b>няма подобни членове</b>. За да стигнем дотам, събираме подобните.</p><div class=\"exm\"><b class=\"t\">Решен пример</b><span class=\"m\">4a − 2b + a + 5b − 3 = 5a + 3b − 3</span></div>"}, {"h": "3. Степен на многочлен", "b": "<p>Степента е <b>най-голямата степен</b> на член в нормален вид.</p><div class=\"exm\"><b class=\"t\">Решен пример</b><span class=\"m\">2x³ − x²y² + 4 − 2x³ = −x²y² + 4</span> → степен <b>4</b></div><p class=\"warn\">Винаги първо привеждай в нормален вид! Членът 2x³ изчезна, затова степента не е 3.</p>"}, {"h": "4. Разкриване на скоби", "b": "<ul><li><b>+( )</b>: махаме скобите, знаците остават същите.</li><li><b>−( )</b>: махаме скобите и сменяме знака на <b>всеки</b> член в тях.</li><li><b>Вложени скоби</b>: разкриваме от най-вътрешните навън.</li></ul><div class=\"exm\"><b class=\"t\">Решен пример</b><span class=\"m\">5x − (2x − (x + 1))</span> = <span class=\"m\">5x − (2x − x − 1)</span> = <span class=\"m\">5x − (x − 1)</span> = <span class=\"m\">4x + 1</span></div>"}, {"h": "5. Събиране и изваждане на многочлени", "b": "<p>Разкриваме скобите и събираме подобните членове.</p><div class=\"exm\"><b class=\"t\">Решени примери</b><span class=\"m\">(2x² − x + 3) + (x² + 4x − 5) = 3x² + 3x − 2</span><br><span class=\"m\">(4a² − ab) − (a² − 3ab + 2) = 3a² + 2ab − 2</span></div>"}, {"h": "6. Намиране на неизвестен многочлен", "b": "<ul><li>Ако <span class=\"m\">A − M = B</span>, то <span class=\"m\">M = A − B</span>.</li><li>Ако <span class=\"m\">M + A = B</span>, то <span class=\"m\">M = B − A</span>.</li></ul><div class=\"exm\"><b class=\"t\">Пример</b><span class=\"m\">M + (x + 2) = 3x + 5</span> → <span class=\"m\">M = 3x + 5 − x − 2 = 2x + 3</span></div>"}, {"h": "7. „Не зависи от x“", "b": "<p>Ако след привеждане в нормален вид всички членове с x се унищожат, остава само число. Тогава стойността на израза е една и съща за всяко x.</p><div class=\"exm\"><b class=\"t\">Пример</b><span class=\"m\">(x + 4) − (x − 1) = x + 4 − x + 1 = 5</span> при всяко x.</div>"}];
 const KEY="dz7-"+TI;
 const LV=["","основна","ниво 2","задачник"];
-const TASKS=TOPICS[TI].stops.map(s=>({lv:s.lv?2:s.x?3:1,place:s.x?"":s.place.replace("Ниво 2 · ",""),ctx:s.x?"":s.story,...s.b}));
+/* Всяка спирка носи ДВА въпроса: един с избор (a — за понятието) и един
+   с писане на число (b — смятането). Досега на екрана влизаше само
+   вторият, а първият стоеше неизползван в данните. Сега влизат и двата:
+   първо този с избор, после смятането. Мястото и разказът се пишат
+   веднъж, над първия от двойката, за да не се повтарят. */
+const TASKS=TOPICS[TI].stops.flatMap(st=>{
+  const lv=st.lv?2:st.x?3:1,place=st.x?"":st.place.replace("Ниво 2 · ",""),ctx=st.x?"":st.story;
+  const out=[];
+  if(st.a)out.push({lv:lv,place:place,ctx:ctx,...st.a});
+  out.push(out.length?{lv:lv,place:"",ctx:"",...st.b}:{lv:lv,place:place,ctx:ctx,...st.b});
+  return out;
+});
 let S=TASKS.map(()=>({ok:false,t:0,sel:null}));
 let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 if(saved.s&&saved.s.length===S.length)S=saved.s.map(x=>({ok:!!x.ok,t:x.t||0,sel:null}));
@@ -419,7 +435,7 @@ draw();
    Листът си остава какъвто беше: решава се сам, проверява се сам и пази
    напредъка в браузъра. Добавени са само трите неща, които го правят
    домашно НА ПЛАТФОРМАТА — вход, бутон „Предай“ и записване на опита в
-   профила на детето. Нищо от самите задачи не е пипано.
+   профила на детето.
 --------------------------------------------------------------------- */
 const SLUG = "hw7-w05b";
 
@@ -494,9 +510,8 @@ document.getElementById("sendBtn").addEventListener("click", handIn);
   }
   const auth = await TLA.requireAuth();
   if(!auth) return;                       /* requireAuth вече пренасочи */
-  if(auth.profile && auth.profile.full_name && !nm.value.trim()){
-    nm.value = auth.profile.full_name; save();
-  }
+  const who = ((auth.profile && auth.profile.full_name) || "").trim();
+  if(who){ nm.value = who; document.getElementById("whoName").textContent = who; save(); }
   document.getElementById("sheet").hidden = false;
   progress();
 })();
