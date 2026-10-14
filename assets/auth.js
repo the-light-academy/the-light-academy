@@ -73,6 +73,22 @@
      преподавател да остави опит на свое име в чужд профил. */
   previewOn = previewAsked;
 
+  /* Червена лента най-горе на страницата. Нарочно без зависимост от
+     стиловете на страницата: обажда се точно когато нещо не е наред. */
+  function blockPage(msg) {
+    var doc = global.document;
+    var host = doc.body || doc.documentElement;
+    if (!host || doc.getElementById('tlaBlock')) return;
+    var box = doc.createElement('div');
+    box.id = 'tlaBlock';
+    box.setAttribute('role', 'alert');
+    box.style.cssText = 'margin:1rem;padding:1rem 1.2rem;border-radius:12px;' +
+      'background:#FBEAE9;color:#93231F;border:1px solid #E7B9B6;' +
+      'font:700 15px/1.55 Nunito,system-ui,sans-serif;';
+    box.textContent = msg;
+    host.insertBefore(box, host.firstChild);
+  }
+
   function enterPreviewIfAsked(profile) {
     if (!previewAsked) return;
     if (!profile || profile.role !== 'teacher') { previewOn = false; return; }
@@ -245,20 +261,46 @@
 
     /* ---- profile -------------------------------------------------- */
 
+    /* Колоните, без които страницата не знае кой си. Новите, които идват
+       с ново пускане на файл в базата, стоят отделно: ако файлът още не е
+       пуснат, заявката пада с 42703 и БЕЗ това разделяне човекът остава
+       без профил — тоест без роля, тоест изхвърлен в ученическия изглед.
+       Цяло табло не бива да виси на една нова колона. */
+    PROFILE_CORE: 'id, full_name, role, active, is_admin, grade_at_entry, entry_school_year',
+    PROFILE_EXTRA: 'birthday',
+
+    /* „Няма такава колона“ — базата го казва с 42703, а PostgREST понякога
+       само с текста. Проверяват се и двете. */
+    isMissingColumn: function (err) {
+      if (!err) return false;
+      return err.code === '42703' ||
+             /does not exist/i.test(String(err.message || '')) &&
+             /column/i.test(String(err.message || ''));
+    },
+
     /* Returns { id, full_name, role, active, grade_at_entry,
        entry_school_year, birthday } or null. RLS means a student can only
-       ever read their own row here. */
-    getProfile: async function () {
-      if (!client) return null;
+       ever read their own row here.
+
+       getProfileResult() връща и грешката, за да може пазачът отдолу да
+       различи „прочетох те и си ученик“ от „изобщо не можах да те
+       прочета“. Второто не бива да се лекува с прехвърляне. */
+    getProfileResult: async function () {
+      if (!client) return { profile: null, error: null };
       var session = await TLA.getSession();
-      if (!session) return null;
-      var res = await client
-        .from('profiles')
-        .select('id, full_name, role, active, is_admin, grade_at_entry, entry_school_year, birthday')
-        .eq('id', session.user.id)
-        .maybeSingle();
-      if (res.error) return null;
-      return res.data;
+      if (!session) return { profile: null, error: null };
+      var q = function (cols) {
+        return client.from('profiles').select(cols).eq('id', session.user.id).maybeSingle();
+      };
+      var res = await q(TLA.PROFILE_CORE + ', ' + TLA.PROFILE_EXTRA);
+      if (res.error && TLA.isMissingColumn(res.error)) res = await q(TLA.PROFILE_CORE);
+      if (res.error) return { profile: null, error: res.error };
+      return { profile: res.data, error: null };
+    },
+
+    getProfile: async function () {
+      var r = await TLA.getProfileResult();
+      return r.profile;
     },
 
     /* ---- page guards ---------------------------------------------- */
@@ -275,7 +317,18 @@
         global.location.replace('login.html?next=' + encodeURIComponent(back));
         return null;
       }
-      var profile = await TLA.getProfile();
+      var pr = await TLA.getProfileResult();
+      var profile = pr.profile;
+      /* Профилът не се прочете — не се знае нито ролята, нито дали е
+         активен. Прехвърляне тук значи двете страници да се замерват една
+         с друга: таблото вижда „не си преподавател“ и праща в профила,
+         профилът вижда същото и остава там. По-добре да спре и да каже. */
+      if (pr.error) {
+        blockPage('Профилът не можа да се прочете, затова страницата не знае кой си. ' +
+                  'Презареди; ако се повтаря, покажи това: ' +
+                  (pr.error.message || pr.error.code || 'неизвестна грешка'));
+        return null;
+      }
       if (profile && profile.active === false) {
         await TLA.signOut();
         return null;
@@ -637,7 +690,18 @@
     saveMyBirthday: async function (iso) {
       if (!client) throw new Error('Няма връзка с базата.');
       var res = await client.rpc('set_my_birthday', { p_birthday: iso || null });
-      if (res.error) throw res.error;
+      if (res.error) {
+        /* Функцията идва с schema-v12.sql. Докато файлът не е пуснат,
+           детето получава „не се записа“ без да разбере защо — затова
+           тук се закача обяснение на разбираем език. */
+        var m = String(res.error.message || '');
+        if (res.error.code === '42883' || res.error.code === 'PGRST202' ||
+            /set_my_birthday/.test(m)) {
+          res.error.hint_bg = 'Рожденият ден още не може да се записва. ' +
+            'Кажи на преподавателя си — останалото от паспорта се запази.';
+        }
+        throw res.error;
+      }
       return res.data || null;
     },
 

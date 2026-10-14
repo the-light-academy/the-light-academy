@@ -688,7 +688,7 @@
         note('Паспортът е записан ✦', false);
       } catch (err) {
         busy = false; render();
-        note('Не се записа. Провери връзката и опитай пак.', true);
+        note((err && err.hint_bg) || 'Не се записа. Провери връзката и опитай пак.', true);
         if (global.console) console.error('starcard save:', err);
       }
     }

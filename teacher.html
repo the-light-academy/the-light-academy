@@ -4121,10 +4121,18 @@
       }
 
       async function loadRoster() {
-        var res = await TLA.client.from('profiles')
-          .select('id, full_name, role, active, created_at, grade_at_entry, entry_school_year, grade_set_at, birthday')
-          .order('role', { ascending: true })
-          .order('full_name', { ascending: true });
+        /* Рожденият ден идва с schema-v12.sql. Докато файлът не е пуснат,
+           колоната я няма и цялата заявка пада — а с нея и таблицата с
+           учениците. Затова се опитва веднъж с нея и веднъж без. */
+        var COLS = 'id, full_name, role, active, created_at, grade_at_entry,' +
+                   ' entry_school_year, grade_set_at';
+        var ask = function (cols) {
+          return TLA.client.from('profiles').select(cols)
+            .order('role', { ascending: true })
+            .order('full_name', { ascending: true });
+        };
+        var res = await ask(COLS + ', birthday');
+        if (res.error && TLA.isMissingColumn(res.error)) res = await ask(COLS);
         if (res.error) { say('err', res.error.message); return; }
         state.roster = res.data || [];
         state.profiles = {};
