@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Горски задачи · 4. клас</title>
+<meta name="description" content="Интерактивен урок за 4. клас, седмица 1: безкраен генератор на текстови задачи с числата до 1000 — с подсказка, кубчета и решение." />
+<!-- =====================================================================
+     Горски задачи — 4. клас, седмица 1
+     ---------------------------------------------------------------------
+     Генератор на текстови задачи с числата до 1000: събиране, изваждане,
+     „с колко повече“, „пъти повече“, разделяне поравно и двустъпкови.
+     Всяка задача има подсказка, кубчета за показване и решение. Задачите
+     не свършват — става и за петминутно загряване в която и да е седмица.
+
+     Урокът не иска вход и нищо не предава към платформата.
+     ===================================================================== -->
+<style>
+/* основите, които страницата имаше в claude.ai */
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: a living forest stage on top (animals act out the problem), the problem card below, stepping-stone progress between them. Deliberately one bright daytime look. */
+:root{
+  --sky-1:#9fd8ff; --sky-2:#e3f5ff; --grass:#7cc95f; --grass-2:#5aa847; --hill:#a6dc7d;
+  --ink:#1e3a2b; --muted:#557264; --paper:#ffffff; --leaf:#e9f7df; --line:#cfe8c0;
+  --sun:#ffd23f; --coral:#ff7a59; --berry:#e8467c; --sea:#2c8fd6;
+  --ok:#1d8a4c; --ok-bg:#dcf5e5; --bad:#c43d3d; --bad-bg:#ffe3e0; --warn:#946200; --warn-bg:#fff3cf;
+  --display:'Rubik','Nunito',system-ui,sans-serif;
+  --body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--leaf);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5}
+.wrap{max-width:880px;margin:0 auto;padding-inline:16px;padding-block:18px 70px;display:grid;gap:14px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,6vw,40px);margin:0;line-height:1.1;text-wrap:balance}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:10px}
+.sub{color:var(--muted);font-weight:700;margin:2px 0 0}
+.stars{font-family:var(--display);font-weight:800;font-size:20px;background:var(--paper);border:3px solid var(--sun);border-radius:999px;padding:4px 14px;font-variant-numeric:tabular-nums}
+.stars b{color:#e0a800}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+
+.cats{display:flex;flex-wrap:wrap;gap:6px}
+.cats button{border:2.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 14px;font-weight:800;font-size:15px}
+.cats button[aria-pressed="true"]{background:var(--grass-2);border-color:var(--grass-2);color:#fff}
+
+/* stage */
+.stage{position:relative;height:clamp(230px,40vw,310px);border-radius:28px;overflow:hidden;border:3px solid var(--grass-2);
+  background:linear-gradient(var(--sky-1),var(--sky-2) 70%)}
+.sun{position:absolute;right:8%;top:12%;width:54px;height:54px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 10px #ffe58a88,0 0 0 22px #fff3c055}
+.sun::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:4px dotted #ffcc33;animation:spin 18s linear infinite}
+.cloud{position:absolute;width:90px;height:28px;background:#fff;border-radius:30px;opacity:.95;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:40px;height:40px;left:14px;top:-20px}
+.cloud::after{width:30px;height:30px;left:46px;top:-13px}
+.c1{top:14%;animation-duration:46s}.c2{top:30%;animation-duration:64s;animation-delay:-30s;transform:scale(.7)}
+.hills{position:absolute;inset:auto 0 0 0;width:100%;height:62%}
+.flower{position:absolute;bottom:6%;width:18px;height:18px;animation:sway 3s ease-in-out infinite;transform-origin:bottom center}
+.butter{position:absolute;width:30px;height:24px;top:30%;left:10%;animation:flutter 13s ease-in-out infinite}
+.butter .w{transform-origin:15px 12px;animation:flap .22s ease-in-out infinite alternate}
+.actor{position:absolute;bottom:7%;width:clamp(118px,24vw,175px);left:12%;z-index:2}
+.actor.two{left:auto;right:10%}
+.actor.enter{animation:enter 1.5s cubic-bezier(.2,.8,.3,1) both}
+.actor.two.enter{animation-name:enterR}
+.face{display:block}
+.actor.two .face{transform:scaleX(-1)}
+.react{transform-origin:50% 100%}
+.react.yay{animation:yay .9s ease 1}
+.react.no{animation:shake .6s ease 1}
+.m-hop .mover{animation:hop 2.6s ease-in-out infinite;transform-origin:50% 100%}
+.m-walk .mover{animation:bob 1.1s ease-in-out infinite;transform-origin:50% 100%}
+.m-slow .mover{animation:bob 2.2s ease-in-out infinite;transform-origin:50% 100%}
+.m-fly .mover{animation:float 3.6s ease-in-out infinite}
+.ani{display:block;width:100%;height:auto;overflow:visible}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+.ear{transform-box:fill-box;transform-origin:50% 100%;animation:twitch 3.2s ease-in-out infinite}
+.ear2{animation-delay:-1.4s}
+.tail{transform-box:fill-box;transform-origin:100% 100%;animation:wag 1.6s ease-in-out infinite}
+.leg{transform-box:fill-box;transform-origin:50% 0;animation:step .55s ease-in-out infinite alternate}
+.leg2{animation-delay:-.55s}
+.wing{transform-box:fill-box;transform-origin:50% 100%;animation:flap .14s linear infinite alternate}
+.bubble{position:absolute;left:58%;bottom:100%;margin-bottom:4px;background:var(--paper);border:2.5px solid var(--ink);border-radius:16px;padding:4px 10px;font-weight:800;font-size:14px;white-space:nowrap;display:flex;gap:6px;align-items:center;animation:pop .4s 1.2s both}
+.actor.two .bubble{left:auto;right:58%}
+.bubble svg{width:20px;height:20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{left:-120px}to{left:110%}}
+@keyframes sway{50%{transform:rotate(8deg)}}
+@keyframes flutter{0%{transform:translate(0,0)}25%{transform:translate(40vw,-30px)}50%{transform:translate(70vw,20px)}75%{transform:translate(30vw,-10px)}100%{transform:translate(0,0)}}
+@keyframes flap{from{transform:scaleX(1)}to{transform:scaleX(.25)}}
+@keyframes enter{0%{transform:translateX(-60vw)}100%{transform:none}}
+@keyframes enterR{0%{transform:translateX(60vw)}100%{transform:none}}
+@keyframes hop{0%,55%,100%{transform:translateY(0) scale(1,1)}60%{transform:translateY(0) scale(1.06,.9)}72%{transform:translateY(-20%) scale(.96,1.05)}84%{transform:translateY(0) scale(1.05,.92)}90%{transform:none}}
+@keyframes bob{50%{transform:translateY(-3%) rotate(-2deg)}}
+@keyframes float{0%,100%{transform:translate(0,0) rotate(-3deg)}25%{transform:translate(8%,-14%)}50%{transform:translate(0,-6%) rotate(4deg)}75%{transform:translate(-8%,-14%)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes twitch{0%,80%,100%{transform:rotate(0)}86%{transform:rotate(-10deg)}92%{transform:rotate(6deg)}}
+@keyframes wag{50%{transform:rotate(9deg)}}
+@keyframes step{to{transform:rotate(14deg)}}
+@keyframes yay{0%{transform:none}30%{transform:translateY(-34%) rotate(-8deg)}55%{transform:translateY(0) scale(1.08,.9)}75%{transform:translateY(-14%) rotate(6deg)}100%{transform:none}}
+@keyframes shake{20%{transform:rotate(-7deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(2deg)}}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+.path{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.stone{width:30px;height:22px;border-radius:50%;background:#d8d2c4;border:2.5px solid #b9b1a0;display:grid;place-items:center;font-size:14px;color:transparent;transition:background .3s,transform .3s}
+.stone.on{background:var(--sun);border-color:#e0a800;color:#8a5a00;transform:translateY(-3px)}
+
+/* card */
+.card{background:var(--paper);border:3px solid var(--line);border-radius:26px;padding:18px;display:grid;gap:14px;min-width:0}
+.tag{justify-self:start;font-size:13px;font-weight:800;border-radius:999px;padding:3px 12px;background:var(--leaf);color:var(--grass-2);letter-spacing:.02em}
+.text{font-size:clamp(19px,4.4vw,23px);font-weight:700;line-height:1.55;margin:0;text-wrap:pretty}
+mark.kw{background:#ffe680;border-radius:6px;padding:0 3px;color:inherit;box-shadow:0 0 0 2px #ffd23f}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#ans{flex:1 1 150px;min-width:0;max-width:260px;font:inherit;font-family:var(--display);font-size:26px;font-weight:800;padding:8px 14px;border-radius:16px;border:3px solid var(--line);background:var(--leaf);color:var(--ink);font-variant-numeric:tabular-nums}
+#ans:focus{border-color:var(--grass-2);background:var(--paper)}
+#unit{font-weight:800;color:var(--muted);font-size:18px}
+.btn{border:3px solid var(--grass-2);background:var(--grass-2);color:#fff;border-radius:999px;padding:8px 18px;font-weight:800;font-size:17px}
+.btn:hover{background:#4b9339}
+.ghost{border:2.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 14px;font-weight:800;font-size:15px}
+.ghost:hover{background:var(--leaf)}
+.ghost.nudge{border-color:var(--coral);animation:wob .5s ease 3}
+@keyframes wob{50%{transform:translateY(-3px)}}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.fb{border-radius:16px;padding:10px 14px;font-weight:800}
+.fb.ok{background:var(--ok-bg);color:var(--ok)}.fb.bad{background:var(--bad-bg);color:var(--bad)}.fb.warn{background:var(--warn-bg);color:var(--warn)}
+.helper{display:grid;gap:12px;background:var(--leaf);border-radius:20px;padding:14px;min-width:0}
+.helper h3{font-family:var(--display);font-size:15px;margin:0;color:var(--grass-2);letter-spacing:.03em}
+.idea{font-weight:700}
+.steps{margin:0;padding-left:24px;display:grid;gap:6px;font-weight:700}
+pre.col{font-family:var(--mono);font-size:19px;line-height:1.3;background:var(--paper);border-radius:12px;padding:8px 14px;margin:4px 0 0;display:inline-block}
+
+.model{display:grid;gap:12px;overflow-x:auto;padding-block:4px}
+.mrow{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:start;min-width:300px}
+.mname{font-weight:800;font-size:14px;padding-top:6px;text-align:right}
+.mtrack{min-width:0}
+.mbar{display:flex;height:36px;border-radius:10px;overflow:hidden;border:2.5px solid var(--ink)}
+.seg{display:grid;place-items:center;min-width:30px;font-weight:800;font-size:14px;border-right:2px dashed var(--ink);white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums}
+.seg:last-child{border-right:0}
+.seg.s1{background:#bfe6a6}.seg.s2{background:#9fd8ff}.seg.q{background:#ffe680}
+.seg.out{background:repeating-linear-gradient(45deg,#ffd0c4 0 6px,#fff 6px 12px)}
+.mtot{height:12px;border:2.5px solid var(--ink);border-top:0;border-radius:0 0 10px 10px;margin-top:3px;position:relative}
+.mtot span{position:absolute;left:50%;top:8px;transform:translateX(-50%);font-weight:800;font-size:14px;background:var(--leaf);padding:0 6px;white-space:nowrap}
+.mrow:has(.mtot){margin-bottom:16px}
+
+.blocks{display:flex;flex-wrap:wrap;gap:12px}
+.blk{background:var(--paper);border-radius:14px;padding:8px 10px;display:grid;gap:6px;min-width:0}
+.blk .bn{font-family:var(--display);font-weight:800}
+.bp{display:flex;flex-wrap:wrap;gap:3px;align-items:flex-end;max-width:300px}
+.bp i{display:block;border:1.5px solid var(--grass-2);background:#bfe6a6}
+.bp i.h{width:40px;height:40px;background-image:linear-gradient(var(--grass-2) 1px,transparent 1px),linear-gradient(90deg,var(--grass-2) 1px,transparent 1px);background-size:4px 4px;background-color:#bfe6a6}
+.bp i.t{width:6px;height:40px;background-image:linear-gradient(var(--grass-2) 1px,transparent 1px);background-size:4px 4px;background-color:#bfe6a6}
+.bp i.o{width:7px;height:7px}
+.blegend{font-size:13px;color:var(--muted);font-weight:700}
+
+.clockwrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.clock .hand{transition:transform 2.6s cubic-bezier(.4,.1,.3,1);transform-origin:100px 100px}
+.perim{position:relative;width:220px;height:150px;flex:none}
+.perim .hopper{position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;animation:around 7s linear infinite}
+.perimwrap{overflow-x:auto}
+@keyframes around{from{offset-distance:0%}to{offset-distance:100%}}
+
+#fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.cf{position:absolute;top:-30px;font-size:24px;animation:fall var(--d,1.6s) ease-in forwards}
+@keyframes fall{to{transform:translate(var(--x,0),105vh) rotate(var(--r,200deg))}}
+.win{position:fixed;inset:0;display:grid;place-items:center;background:#1e3a2b66;z-index:40;padding:16px}
+.win div{background:var(--paper);border-radius:28px;border:4px solid var(--sun);padding:24px;text-align:center;display:grid;gap:12px;max-width:340px}
+.win b{font-family:var(--display);font-size:28px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}.clock .hand{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Горски задачи</h1><p class="sub">Текстови задачи за 3. клас · числата до 1000</p></div>
+    <div class="stars" aria-live="polite">★ <b id="score">0</b></div>
+  </div>
+  <div class="cats" id="cats" aria-label="Вид задачи"></div>
+
+  <div class="stage" id="stage" aria-label="Горска поляна">
+    <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div>
+    <svg class="hills" viewBox="0 0 800 200" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 110 Q150 40 310 100 T620 80 T800 90 V200 H0Z" fill="#a6dc7d"/>
+      <path d="M0 150 Q200 100 420 140 T800 130 V200 H0Z" fill="#7cc95f"/>
+      <path d="M0 185 H800 V200 H0Z" fill="#5aa847"/>
+    </svg>
+    <div id="flowers" aria-hidden="true"></div>
+    <svg class="butter" viewBox="0 0 30 24" aria-hidden="true"><g class="w"><ellipse cx="8" cy="9" rx="7" ry="8" fill="#ff9ec4" stroke="#1e3a2b" stroke-width="1.5"/><ellipse cx="22" cy="9" rx="7" ry="8" fill="#ff9ec4" stroke="#1e3a2b" stroke-width="1.5"/><ellipse cx="9" cy="18" rx="5" ry="5" fill="#ffd23f" stroke="#1e3a2b" stroke-width="1.5"/><ellipse cx="21" cy="18" rx="5" ry="5" fill="#ffd23f" stroke="#1e3a2b" stroke-width="1.5"/></g><rect x="13.5" y="4" width="3" height="18" rx="1.5" fill="#1e3a2b"/></svg>
+    <div id="actors"></div>
+  </div>
+  <div class="path" id="path" aria-label="Пътечка от звезди"></div>
+
+  <section class="card" aria-live="polite">
+    <span class="tag" id="tag"></span>
+    <p class="text" id="text"></p>
+    <div class="row">
+      <input id="ans" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="?" aria-label="Отговор">
+      <span id="unit"></span>
+      <button class="btn" id="check">Провери</button>
+    </div>
+    <div id="fb" class="fb" hidden></div>
+    <div class="actions">
+      <button class="ghost" id="hint">Подсказка</button>
+      <button class="ghost" id="blocksBtn" hidden>Кубчета</button>
+      <button class="ghost" id="solve">Решение</button>
+      <button class="ghost" id="next">Нова задача →</button>
+    </div>
+    <div class="helper" id="helper" hidden></div>
+  </section>
+</div>
+<div id="fx" aria-hidden="true"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const OL='stroke="#2e2a33" stroke-width="2.5" stroke-linejoin="round"';
+
+/* ---------- animals (original drawings, all face right) ---------- */
+const ART={
+bunny:()=>`<svg class="ani" viewBox="0 0 120 100"><ellipse cx="62" cy="94" rx="30" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<circle cx="33" cy="67" r="8" fill="#fff"/><ellipse cx="56" cy="70" rx="27" ry="20" fill="#f3eefb"/>
+<g class="ear"><ellipse cx="72" cy="24" rx="6" ry="17" fill="#f3eefb" transform="rotate(-14 72 24)"/></g>
+<g class="ear ear2"><ellipse cx="86" cy="25" rx="6" ry="17" fill="#f3eefb" transform="rotate(12 86 25)"/></g>
+<circle cx="82" cy="52" r="17" fill="#f3eefb"/><ellipse cx="70" cy="88" rx="10" ry="5" fill="#fff"/><ellipse cx="44" cy="88" rx="8" ry="4.5" fill="#fff"/></g>
+<ellipse cx="72" cy="25" rx="2.4" ry="10" fill="#ffb7cb" transform="rotate(-14 72 25)"/><ellipse cx="86" cy="26" rx="2.4" ry="10" fill="#ffb7cb" transform="rotate(12 86 26)"/>
+<ellipse class="eye" cx="88" cy="49" rx="2.6" ry="3.4" fill="#2a2333"/><circle cx="98" cy="56" r="2.6" fill="#ff7fa2"/><circle cx="85" cy="59" r="3.6" fill="#ffc7d6"/></svg>`,
+hedgehog:()=>{let p=[];for(let i=0;i<=22;i++){const a=Math.PI*(1-i/22*.92),r=i%2?1:1.28;p.push(`${(56+38*r*Math.cos(a)).toFixed(1)},${(82-32*r*Math.sin(a)).toFixed(1)}`)}
+ return `<svg class="ani" viewBox="0 0 120 100"><ellipse cx="60" cy="94" rx="36" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<ellipse class="leg" cx="40" cy="87" rx="5" ry="6" fill="#5c3b22"/><ellipse class="leg leg2" cx="74" cy="87" rx="5" ry="6" fill="#5c3b22"/>
+<polygon points="${p.join(' ')} 92,84 14,84" fill="#7a5233"/><ellipse cx="94" cy="74" rx="16" ry="11" fill="#ecc99c"/><circle cx="86" cy="65" r="4" fill="#ecc99c"/></g>
+<circle cx="110" cy="72" r="3.6" fill="#2a1d14"/><ellipse class="eye" cx="96" cy="69" rx="2.3" ry="2.8" fill="#2a1d14"/><circle cx="98" cy="77" r="3" fill="#f7a6a0"/></svg>`},
+squirrel:()=>`<svg class="ani" viewBox="0 0 120 100"><ellipse cx="62" cy="94" rx="28" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<path class="tail" d="M46 84 C14 86 2 52 16 30 C26 14 50 16 50 34 C50 46 36 44 36 56 C36 66 44 72 50 76 Z" fill="#d9772b"/>
+<ellipse cx="64" cy="70" rx="18" ry="20" fill="#e8893a"/><polygon class="ear" points="66,36 67,20 76,32" fill="#e8893a"/><polygon class="ear ear2" points="76,32 83,19 85,34" fill="#e8893a"/>
+<circle cx="76" cy="45" r="14" fill="#e8893a"/><ellipse cx="60" cy="89" rx="10" ry="4.5" fill="#d9772b"/><ellipse cx="80" cy="66" rx="5" ry="6" fill="#a0612b"/><path d="M74 62 Q80 56 86 62 Z" fill="#6e3f1a"/></g>
+<ellipse cx="68" cy="75" rx="8" ry="12" fill="#fbe0c0"/><ellipse class="eye" cx="81" cy="42" rx="2.4" ry="3" fill="#2a1d14"/><circle cx="89" cy="48" r="2.2" fill="#2a1d14"/><circle cx="80" cy="51" r="3" fill="#f7a6a0"/></svg>`,
+bear:()=>`<svg class="ani" viewBox="0 0 120 100"><ellipse cx="60" cy="94" rx="34" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<ellipse class="leg" cx="44" cy="86" rx="8" ry="8" fill="#8a5b38"/><ellipse class="leg leg2" cx="74" cy="86" rx="8" ry="8" fill="#8a5b38"/>
+<ellipse cx="58" cy="70" rx="30" ry="21" fill="#9b6a43"/><circle class="ear" cx="70" cy="30" r="7" fill="#9b6a43"/><circle class="ear ear2" cx="95" cy="31" r="7" fill="#9b6a43"/>
+<circle cx="83" cy="47" r="18" fill="#9b6a43"/><ellipse cx="93" cy="54" rx="9" ry="7" fill="#dcb68f"/></g>
+<ellipse cx="99" cy="51" rx="3.6" ry="2.6" fill="#2a1d14"/><ellipse class="eye" cx="80" cy="42" rx="2.4" ry="3" fill="#2a1d14"/><ellipse class="eye" cx="90" cy="41" rx="2.4" ry="3" fill="#2a1d14"/><circle cx="78" cy="52" r="3.4" fill="#f2a08e"/><ellipse cx="54" cy="72" rx="13" ry="10" fill="#b98760"/></svg>`,
+frog:()=>`<svg class="ani" viewBox="0 0 120 100"><ellipse cx="60" cy="94" rx="34" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<ellipse cx="34" cy="84" rx="15" ry="8" fill="#56a83a"/><ellipse cx="86" cy="84" rx="15" ry="8" fill="#56a83a"/>
+<ellipse cx="60" cy="72" rx="31" ry="19" fill="#6cc04a"/><circle cx="47" cy="52" r="12" fill="#6cc04a"/><circle cx="74" cy="52" r="12" fill="#6cc04a"/>
+<circle cx="47" cy="51" r="7.5" fill="#fff"/><circle cx="74" cy="51" r="7.5" fill="#fff"/><path d="M45 76 Q60 87 76 76" fill="none"/></g>
+<ellipse class="eye" cx="49" cy="52" rx="3.5" ry="4" fill="#2a2333"/><ellipse class="eye" cx="76" cy="52" rx="3.5" ry="4" fill="#2a2333"/><circle cx="40" cy="72" r="4" fill="#ffadb0" opacity=".8"/><circle cx="81" cy="72" r="4" fill="#ffadb0" opacity=".8"/></svg>`,
+bee:()=>`<svg class="ani" viewBox="0 0 120 100"><g ${OL}>
+<ellipse class="wing" cx="54" cy="34" rx="10" ry="16" fill="#e6f6ff" opacity=".9" transform="rotate(-18 54 34)"/><ellipse class="wing" cx="67" cy="32" rx="10" ry="16" fill="#e6f6ff" opacity=".9" transform="rotate(14 67 32)"/>
+<polygon points="34,58 24,61 34,64" fill="#2a2333"/><ellipse cx="60" cy="60" rx="27" ry="18" fill="#ffd23f"/></g>
+<rect x="49" y="43" width="8" height="34" rx="3" fill="#2a2333"/><rect x="63" y="43" width="8" height="34" rx="3" fill="#2a2333"/>
+<g ${OL}><ellipse cx="60" cy="60" rx="27" ry="18" fill="none"/><circle cx="89" cy="55" r="13" fill="#ffd23f"/><path d="M88 43 Q86 30 80 28 M94 43 Q98 30 104 29" fill="none"/></g>
+<circle cx="80" cy="28" r="3" fill="#2a2333"/><circle cx="104" cy="29" r="3" fill="#2a2333"/><ellipse class="eye" cx="94" cy="52" rx="2.6" ry="3.2" fill="#2a2333"/><path d="M90 61 Q95 64 99 60" stroke="#2a2333" stroke-width="2" fill="none"/><circle cx="88" cy="59" r="2.8" fill="#ffa07a"/></svg>`,
+fox:()=>`<svg class="ani" viewBox="0 0 120 100"><ellipse cx="60" cy="94" rx="34" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<path class="tail" d="M42 78 C16 82 4 62 14 48 C22 38 30 58 44 66 Z" fill="#f07a2c"/>
+<ellipse class="leg" cx="50" cy="86" rx="5" ry="8" fill="#5a3420"/><ellipse class="leg leg2" cx="72" cy="86" rx="5" ry="8" fill="#5a3420"/>
+<ellipse cx="60" cy="71" rx="24" ry="17" fill="#f07a2c"/><polygon class="ear" points="72,43 74,24 84,39" fill="#f07a2c"/><polygon class="ear ear2" points="84,38 93,22 96,41" fill="#f07a2c"/>
+<circle cx="83" cy="51" r="14" fill="#f07a2c"/><polygon points="92,49 110,56 93,61" fill="#fff"/></g>
+<circle cx="13" cy="51" r="5" fill="#fff"/><ellipse cx="74" cy="74" rx="8" ry="10" fill="#fff"/><circle cx="110" cy="56" r="2.8" fill="#2a1d14"/><ellipse class="eye" cx="87" cy="48" rx="2.3" ry="3" fill="#2a1d14"/></svg>`,
+turtle:()=>`<svg class="ani" viewBox="0 0 120 100"><ellipse cx="62" cy="94" rx="40" ry="4" fill="#000" opacity=".12"/><g ${OL}>
+<ellipse class="leg" cx="40" cy="85" rx="7" ry="6" fill="#a9d98e"/><ellipse class="leg leg2" cx="84" cy="85" rx="7" ry="6" fill="#a9d98e"/>
+<polygon points="22,76 14,79 22,81" fill="#a9d98e"/><ellipse cx="106" cy="70" rx="11" ry="9" fill="#a9d98e"/>
+<path d="M24 79 Q28 36 62 36 Q96 36 100 79 Z" fill="#6bab5a"/></g>
+<circle cx="46" cy="64" r="7" fill="#8fcf6f"/><circle cx="62" cy="52" r="7" fill="#8fcf6f"/><circle cx="78" cy="64" r="7" fill="#8fcf6f"/><circle cx="62" cy="70" r="5" fill="#8fcf6f"/>
+<rect x="22" y="76" width="80" height="6" rx="3" fill="#4f8a43"/><ellipse class="eye" cx="110" cy="67" rx="2.2" ry="2.8" fill="#2a1d14"/><path d="M106 74 Q110 76 114 73" stroke="#2a1d14" stroke-width="1.8" fill="none"/></svg>`
+};
+const ICON={
+carrot:`<svg viewBox="0 0 24 24"><polygon points="3,22 14,7 18,11" fill="#ff8a2a" stroke="#2e2a33" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 8 L13 2 M16 8 L19 3 M17 10 L23 8" stroke="#3c9a35" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+acorn:`<svg viewBox="0 0 24 24"><ellipse cx="12" cy="15" rx="6" ry="7" fill="#c47f36" stroke="#2e2a33" stroke-width="1.5"/><path d="M4 12 Q12 3 20 12 Z" fill="#7a4a20" stroke="#2e2a33" stroke-width="1.5"/><path d="M12 6 V2" stroke="#2e2a33" stroke-width="2"/></svg>`,
+apple:`<svg viewBox="0 0 24 24"><circle cx="12" cy="14" r="8" fill="#ff5a5a" stroke="#2e2a33" stroke-width="1.5"/><path d="M12 6 V2" stroke="#2e2a33" stroke-width="2"/><ellipse cx="16" cy="4" rx="3.5" ry="2" fill="#3c9a35"/></svg>`,
+mushroom:`<svg viewBox="0 0 24 24"><rect x="9" y="12" width="6" height="9" rx="2" fill="#fff4e0" stroke="#2e2a33" stroke-width="1.5"/><path d="M2 13 Q12 0 22 13 Z" fill="#ff5a5a" stroke="#2e2a33" stroke-width="1.5"/><circle cx="8" cy="9" r="1.6" fill="#fff"/><circle cx="14" cy="7" r="1.6" fill="#fff"/></svg>`,
+strawberry:`<svg viewBox="0 0 24 24"><path d="M4 9 Q12 26 20 9 Q12 6 4 9Z" fill="#ff4d6d" stroke="#2e2a33" stroke-width="1.5"/><path d="M7 8 L12 4 L17 8" stroke="#3c9a35" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="10" cy="13" r=".9" fill="#fff"/><circle cx="14" cy="14" r=".9" fill="#fff"/><circle cx="12" cy="17" r=".9" fill="#fff"/></svg>`,
+honey:`<svg viewBox="0 0 24 24"><path d="M12 2 Q20 12 20 15 A8 8 0 0 1 4 15 Q4 12 12 2Z" fill="#ffb703" stroke="#2e2a33" stroke-width="1.5"/></svg>`,
+candy:`<svg viewBox="0 0 24 24"><polygon points="2,7 7,12 2,17" fill="#9fd8ff" stroke="#2e2a33" stroke-width="1.5"/><polygon points="22,7 17,12 22,17" fill="#9fd8ff" stroke="#2e2a33" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="6" ry="5" fill="#e8467c" stroke="#2e2a33" stroke-width="1.5"/></svg>`,
+step:`<svg viewBox="0 0 24 24"><ellipse cx="9" cy="15" rx="4" ry="6" fill="#6cc04a" stroke="#2e2a33" stroke-width="1.5"/><ellipse cx="16" cy="8" rx="3.5" ry="5" fill="#6cc04a" stroke="#2e2a33" stroke-width="1.5"/></svg>`,
+coin:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#ffd23f" stroke="#2e2a33" stroke-width="1.5"/><text x="12" y="16.5" text-anchor="middle" font-size="12" font-weight="800" fill="#2e2a33" font-family="Nunito,sans-serif">€</text></svg>`,
+clock:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#fff" stroke="#2e2a33" stroke-width="1.5"/><path d="M12 6 V12 L16 14" stroke="#2e2a33" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`
+};
+
+/* who and what */
+const HEROES={
+ zayo:{name:'Зайо Байо',short:'Зайо',art:'bunny',move:'hop',items:['carrot']},
+ taralej:{name:'Таралежко',short:'Таралежко',art:'hedgehog',move:'walk',items:['apple','mushroom']},
+ rijka:{name:'Катеричката Рижка',short:'Рижка',art:'squirrel',move:'hop',items:['acorn']},
+ mecho:{name:'Мечо Брумчо',short:'Брумчо',art:'bear',move:'walk',items:['strawberry','honey']},
+ kvaki:{name:'Жабката Кваки',short:'Кваки',art:'frog',move:'hop',items:['step']},
+ juja:{name:'Пчеличката Жужа',short:'Жужа',art:'bee',move:'fly',items:['honey']},
+ lisa:{name:'Кума Лиса',short:'Лиса',art:'fox',move:'walk',items:['candy','apple']},
+ bavka:{name:'Костенурката Бавка',short:'Бавка',art:'turtle',move:'slow',items:['strawberry']}
+};
+const ITEMS={
+ carrot:{cnt:'моркова',verb:'събра',col:true,box:'торбички',each:'всяка',icon:'carrot'},
+ apple:{cnt:'ябълки',verb:'набра',col:true,box:'кошнички',each:'всяка',icon:'apple'},
+ mushroom:{cnt:'гъби',verb:'набра',col:true,box:'кошнички',each:'всяка',icon:'mushroom'},
+ acorn:{cnt:'жълъда',verb:'събра',col:true,box:'хралупи',each:'всяка',icon:'acorn'},
+ strawberry:{cnt:'ягоди',verb:'набра',col:true,box:'кошнички',each:'всяка',icon:'strawberry'},
+ honey:{cnt:'грама мед',verb:'събра',col:true,box:'гърненца',each:'всяко',icon:'honey'},
+ candy:{cnt:'бонбона',verb:'купи',col:true,box:'кутийки',each:'всяка',icon:'candy'},
+ step:{cnt:'скока',verb:'направи',col:false,icon:'step'}
+};
+function cast(n,needCol){const keys=Object.keys(HEROES).filter(k=>!needCol||HEROES[k].items.some(i=>ITEMS[i].col));
+  const a=pick(keys);let it=pick(HEROES[a].items.filter(i=>!needCol||ITEMS[i].col));
+  let b=null;if(n>1){b=pick(keys.filter(k=>k!==a&&(HEROES[k].items.includes(it)||true)))}
+  return{H:HEROES[a],H2:b?HEROES[b]:null,I:ITEMS[it],keys:[a,b].filter(Boolean),icon:ITEMS[it].icon}}
+
+/* bar model */
+function model(rows){
+  const tot=r=>r.segs.reduce((s,g)=>s+g.w,0),max=Math.max(...rows.map(tot));
+  return `<div class="model">${rows.map(r=>`<div class="mrow"><span class="mname">${r.name||''}</span><div class="mtrack"><div class="mbar" style="width:${(tot(r)/max*100).toFixed(1)}%">${r.segs.map(g=>`<span class="seg ${g.c||'s1'}" style="flex:${g.w} 1 0">${g.t}</span>`).join('')}</div>${r.total!=null?`<div class="mtot" style="width:${(tot(r)/max*100).toFixed(1)}%"><span>${r.total}</span></div>`:''}</div></div>`).join('')}</div>`;
+}
+const rep=(k,seg)=>Array.from({length:k},()=>({...seg}));
+function col(a,b,op,res){const w=Math.max(String(a).length,String(b).length,String(res).length);const L=[`  ${String(a).padStart(w)}`,`${op} ${String(b).padStart(w)}`,`  ${'─'.repeat(w)}`,`  ${String(res).padStart(w)}`];return `<pre class="col">${L.join('\n')}</pre>`}
+const hm=t=>`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+
+/* ---------- problem types ---------- */
+const TYPES={
+add:{cat:'addsub',label:'Събиране',make(){const c=cast(1),{H,I}=c;let a,b;do{a=ri(120,560);b=ri(105,399)}while(a+b>1000);const ans=a+b;
+ return{c,text:`${H.name} ${I.verb} ${a} ${I.cnt} сутринта и още ${b} ${I.cnt} следобед. Колко ${I.cnt} ${I.verb} общо?`,key:'общо',
+  idea:'„Общо“ значи да съберем двете части.',ans,unit:I.cnt,nums:[a,b],
+  model:model([{name:H.short,segs:[{w:a,t:a},{w:b,t:b,c:'s2'}],total:'? общо'}]),
+  steps:[`Събираме: ${a} + ${b}`+col(a,b,'+',ans),`Отговор: ${H.name} ${I.verb} общо ${ans} ${I.cnt}.`],
+  diag:n=>n===Math.abs(a-b)?'Извади. Но „общо“ значи двете части заедно, събираме.':null}}},
+sub:{cat:'addsub',label:'Изваждане',make(){const c=cast(1,true),{H,I}=c;const a=ri(300,950),b=ri(110,a-60),ans=a-b;
+ return{c,text:`${H.name} имаше ${a} ${I.cnt}. Подари на приятелите си ${b} ${I.cnt}. Колко ${I.cnt} останаха?`,key:'Подари',
+  idea:'Подари значи даде, останаха по-малко. Изваждаме.',ans,unit:I.cnt,nums:[a,b],
+  model:model([{name:'имаше',segs:[{w:a,t:a}]},{name:'',segs:[{w:b,t:`подари ${b}`,c:'out'},{w:ans,t:'?',c:'q'}]}]),
+  steps:[`Изваждаме: ${a} − ${b}`+col(a,b,'−',ans),`Проверка: ${ans} + ${b} = ${a} ✓`,`Отговор: Останаха ${ans} ${I.cnt}.`],
+  diag:n=>n===a+b?'Събра. Когато подаряваш, остават по-малко, затова изваждаме.':null}}},
+more:{cat:'addsub',label:'С повече',make(){const c=cast(2),{H,H2,I}=c;const a=ri(110,600),b=ri(15,300),ans=a+b;
+ return{c,text:`${H.name} ${I.verb} ${a} ${I.cnt}, а ${H2.name} — с ${b} повече. Колко ${I.cnt} ${I.verb} ${H2.short}?`,key:`с ${b} повече`,
+  idea:`${H2.short} има колкото ${H.short} и ОЩЕ ${b}. „С … повече“ значи събираме.`,ans,unit:I.cnt,nums:[a,b],
+  model:model([{name:H.short,segs:[{w:a,t:a}]},{name:H2.short,segs:[{w:a,t:a},{w:b,t:'+'+b,c:'s2'}],total:'?'}]),
+  steps:[`„С ${b} повече“ → ${a} + ${b}`+col(a,b,'+',ans),`Отговор: ${H2.short} ${I.verb} ${ans} ${I.cnt}.`],
+  diag:n=>n===a-b?'„С повече“ значи да добавим, не да махнем. Събираме.':n===a*b?'„С ... повече“ е събиране. Умножаваме само при „пъти повече“.':null}}},
+less:{cat:'addsub',label:'С по-малко',make(){const c=cast(2),{H,H2,I}=c;const a=ri(200,900),b=ri(15,a-60),ans=a-b;
+ return{c,text:`${H.name} ${I.verb} ${a} ${I.cnt}, а ${H2.name} — с ${b} по-малко. Колко ${I.cnt} ${I.verb} ${H2.short}?`,key:`с ${b} по-малко`,
+  idea:`${H2.short} има колкото ${H.short}, но БЕЗ ${b}. „С … по-малко“ значи изваждаме.`,ans,unit:I.cnt,nums:[a,b],
+  model:model([{name:H.short,segs:[{w:a,t:a}]},{name:H2.short,segs:[{w:ans,t:'?',c:'q'},{w:b,t:'−'+b,c:'out'}]}]),
+  steps:[`„С ${b} по-малко“ → ${a} − ${b}`+col(a,b,'−',ans),`Отговор: ${H2.short} ${I.verb} ${ans} ${I.cnt}.`],
+  diag:n=>n===a+b?'„По-малко“ значи да махнем. Изваждаме.':null}}},
+diffby:{cat:'addsub',label:'С колко повече',make(){const c=cast(2),{H,H2,I}=c;const a=ri(250,950),b=ri(100,a-30),ans=a-b;
+ return{c,text:`${H.name} ${I.verb} ${a} ${I.cnt}, а ${H2.name} — ${b} ${I.cnt}. С колко ${I.cnt} повече ${I.verb} ${H.short}?`,key:'С колко',
+  idea:'„С колко повече“ значи сравняваме: от по-голямото изваждаме по-малкото.',ans,unit:I.cnt,nums:[a,b],
+  model:model([{name:H.short,segs:[{w:a,t:a}]},{name:H2.short,segs:[{w:b,t:b,c:'s2'},{w:ans,t:'?',c:'q'}]}]),
+  steps:[`Сравняваме: ${a} − ${b}`+col(a,b,'−',ans),`Отговор: ${H.short} ${I.verb} с ${ans} ${I.cnt} повече.`],
+  diag:n=>n===a+b?'Тук не събираме. „С колко повече“ значи разликата, изваждаме.':null}}},
+times:{cat:'muldiv',label:'Пъти повече',make(){const c=cast(2),{H,H2,I}=c;const a=ri(3,15),k=ri(2,9),ans=a*k;
+ return{c,text:`${H.name} ${I.verb} ${a} ${I.cnt}, а ${H2.name} — ${k} пъти повече. Колко ${I.cnt} ${I.verb} ${H2.short}?`,key:`${k} пъти повече`,
+  idea:`„${k} пъти повече“ значи ${k} пъти по толкова. Умножаваме.`,ans,unit:I.cnt,nums:[a,k],
+  model:model([{name:H.short,segs:[{w:a,t:a}]},{name:H2.short,segs:rep(k,{w:a,t:a}),total:'?'}]),
+  steps:[`${k} пъти по ${a}: ${a} · ${k} = ${ans}`,`Отговор: ${H2.short} ${I.verb} ${ans} ${I.cnt}.`],
+  diag:n=>n===a+k?`„Пъти повече“ е умножение, не събиране: ${a} · ${k}.`:null}}},
+timesless:{cat:'muldiv',label:'Пъти по-малко',make(){const c=cast(2),{H,H2,I}=c;const k=ri(2,9),a=ri(3,15),big=a*k;
+ return{c,text:`${H.name} ${I.verb} ${big} ${I.cnt}, а ${H2.name} — ${k} пъти по-малко. Колко ${I.cnt} ${I.verb} ${H2.short}?`,key:`${k} пъти по-малко`,
+  idea:`„${k} пъти по-малко“ значи делим на ${k}.`,ans:a,unit:I.cnt,nums:[big,k],
+  model:model([{name:H.short,segs:rep(k,{w:1,t:''}),total:big},{name:H2.short,segs:[{w:1,t:'?',c:'q'}]}]),
+  steps:[`Делим на ${k}: ${big} : ${k} = ${a}`,`Проверка: ${a} · ${k} = ${big} ✓`,`Отговор: ${H2.short} ${I.verb} ${a} ${I.cnt}.`],
+  diag:n=>n===big-k?`„Пъти по-малко“ е деление, не изваждане: ${big} : ${k}.`:n===big*k?'„По-малко“ значи, че отговорът е по-малък. Делим.':null}}},
+share:{cat:'muldiv',label:'Поравно',make(){const c=cast(1,true),{H,I}=c;const k=ri(2,9),q=k<=4?ri(6,24):ri(3,12),n=k*q;
+ return{c,text:`${H.name} раздели ${n} ${I.cnt} поравно в ${k} ${I.box}. По колко ${I.cnt} има във ${I.each}?`,key:'поравно',
+  idea:'„Поравно“ значи всички получават еднакво. Делим.',ans:q,unit:I.cnt,nums:[n,k],
+  model:model([{name:'',segs:rep(k,{w:1,t:'?'}),total:n}]),
+  steps:[`${n} : ${k} = ${q}`,`Проверка: ${q} · ${k} = ${n} ✓`,`Отговор: Във ${I.each} има по ${q} ${I.cnt}.`],
+  diag:n2=>n2===n-k?'Тук не изваждаме. Разделяме поравно, значи делим.':n2===n*k?'Умножи. Делим, защото разпределяме.':null}}},
+groups:{cat:'muldiv',label:'По … на брой',make(){const c=cast(1,true),{H,I}=c;let k,q;do{k=ri(2,6);q=ri(12,160)}while(k*q>1000);const ans=k*q;
+ return{c,text:`${H.name} напълни ${k} ${I.box} с по ${q} ${I.cnt} във ${I.each}. Колко ${I.cnt} има общо?`,key:`по ${q}`,
+  idea:`${k} пъти по ${q}. Еднакви групи значи умножаваме.`,ans,unit:I.cnt,nums:[q,k],
+  model:model([{name:'',segs:rep(k,{w:1,t:q}),total:'? общо'}]),
+  steps:[`${q} · ${k} = ${ans}${q>=10?`  (${Math.floor(q/10)*10} · ${k} = ${Math.floor(q/10)*10*k}, ${q%10} · ${k} = ${q%10*k})`:''}`,`Отговор: Общо има ${ans} ${I.cnt}.`],
+  diag:n=>n===q+k?`Еднаквите групи се умножават: ${q} · ${k}.`:null}}},
+two:{cat:'two',label:'Две действия',make(){const c=cast(1,true),{H,I}=c;let a,b,cc;do{a=ri(120,500);b=ri(50,300);cc=ri(40,350)}while(a+b>1000||cc>=a+b-20);const s=a+b,ans=s-cc;
+ return{c,text:`${H.name} имаше ${a} ${I.cnt}. Намери още ${b}, а после изяде ${cc}. Колко ${I.cnt} има сега?`,key:'после',
+  idea:'Две случки, две действия: първо „намери още“ (събираме), после „изяде“ (изваждаме).',ans,unit:I.cnt,nums:[a,b,cc],
+  model:model([{name:'имаше + намери',segs:[{w:a,t:a},{w:b,t:'+'+b,c:'s2'}],total:s},{name:'изяде',segs:[{w:ans,t:'?',c:'q'},{w:cc,t:'−'+cc,c:'out'}]}]),
+  steps:[`① ${a} + ${b} = ${s}`,`② ${s} − ${cc} = ${ans}`,`Отговор: Сега има ${ans} ${I.cnt}.`],
+  diag:n=>n===s?'Направи само първото действие. Не забравяй, че после изяде.':n===a-cc?'Пропусна „намери още“. Първо събери.':n===a-b-cc?'„Намери още“ значи стават повече, събираме.':null}}},
+money:{cat:'two',label:'Пари',make(){const c=cast(1,true),{H}=c;const th=pick([{cnt:'тетрадки'},{cnt:'молива'},{cnt:'книжки'},{cnt:'балона'}]);let k,p,m;
+ do{k=ri(2,6);p=ri(2,15);m=pick([10,20,50,100])}while(k*p>=m||m-k*p>60);const cost=k*p,ans=m-cost;c.icon='coin';
+ return{c,text:`${H.name} купи ${k} ${th.cnt} по ${p} € и плати с банкнота от ${m} €. Колко евро ресто получи?`,key:'ресто',
+  idea:'Първо колко струва покупката (умножаваме), после колко връщат от банкнотата (изваждаме).',ans,unit:'€',nums:[k,p,m],
+  model:model([{name:'банкнота',segs:[{w:m,t:m+' €',c:'s2'}]},{name:'покупка',segs:[...rep(k,{w:p,t:p}),{w:ans,t:'?',c:'q'}]}]),
+  steps:[`① Цена: ${p} · ${k} = ${cost} €`,`② Ресто: ${m} − ${cost} = ${ans} €`,`Отговор: Получи ${ans} € ресто.`],
+  diag:n=>n===cost?'Това е цената на покупката. Колко ще върнат от банкнотата?':n===m-p?`Купи ${k} ${th.cnt}, не една. Първо ${p} · ${k}.`:n===m-k-p?`Цената е ${p} · ${k}, не ${p} + ${k}.`:null}}},
+perim:{cat:'measure',label:'Обиколка',make(){const c=cast(1);const sq=Math.random()<.3;const a=ri(8,60),b=sq?a:ri(5,a-2);const ans=sq?4*a:2*(a+b);c.icon='step';
+ const place=pick(['езерце','градинка','поляна']);
+ return{c,text:sq?`${c.H.name} обиколи ${place} с форма на квадрат със страна ${a} m. Колко метра е обиколката?`:`${c.H.name} обиколи ${place} с форма на правоъгълник с дължина ${a} m и ширина ${b} m. Колко метра е обиколката?`,key:'обиколи',
+  idea:sq?'Квадратът има 4 еднакви страни. Обиколката е сборът на всичките 4.':'Обиколката минава по 4 страни: 2 дълги и 2 къси.',ans,unit:'m',nums:[a,b],
+  model:rectVis(a,b),
+  steps:sq?[`P = ${a} + ${a} + ${a} + ${a} = 4 · ${a} = ${ans} m`,`Отговор: Обиколката е ${ans} m.`]:[`P = ${a} + ${b} + ${a} + ${b}`,`= 2 · (${a} + ${b}) = 2 · ${a+b} = ${ans} m`,`Отговор: Обиколката е ${ans} m.`],
+  diag:n=>n===a+b?'Това са само 2 страни. Фигурата има 4 страни.':n===a*b?'Това е лице. Обиколката е сбор от страните.':(!sq&&(n===2*a+b||n===a+2*b))?'Пропусна една страна. Брой: 4 страни.':(sq&&n===2*a)?'Квадратът има 4 страни, не 2.':null}}},
+time:{cat:'measure',label:'Време',make(){const c=cast(1);const st=ri(7,16)*60+5*ri(0,11),d=pick([15,20,25,30,35,40,45,50,55,65,70,75,80,90]),end=st+d;c.icon='clock';
+ return{c,time:true,text:`${c.H.name} тръгна на разходка в ${hm(st)} ч. и вървя ${d} минути. В колко часа се прибра?`,key:`${d} минути`,
+  idea:'Към началния час прибавяме минутите. Помни: 60 минути = 1 час.',ans:end,unit:'ч.',st,d,nums:[],
+  model:clockVis(st,end),
+  steps:(()=>{const mm=st%60+d;return[`${hm(st)} + ${d} мин.`,mm>=60?`${st%60} + ${d} = ${mm} мин. = ${Math.floor(mm/60)} ч. и ${mm%60} мин. → часът става ${Math.floor(end/60)}`:`${st%60} + ${d} = ${mm} мин.`,`Отговор: Прибра се в ${hm(end)} ч.`]})()}}}
+};
+TYPES.time.fix=true;
+const CATS=[{id:'all',name:'Всички'},{id:'addsub',name:'Събиране и изваждане'},{id:'muldiv',name:'Умножение и деление'},{id:'two',name:'Две действия'},{id:'measure',name:'Мерки и време'}];
+
+function rectVis(a,b){const s=Math.min(170/a,110/b),w=a*s,h=b*s,x=(220-w)/2,y=(150-h)/2;
+  return `<div class="perimwrap"><div class="perim"><svg width="220" height="150" viewBox="0 0 220 150"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#9fd8ff" stroke="#1e3a2b" stroke-width="3" stroke-dasharray="7 5"/>
+  <text x="110" y="${y-6}" text-anchor="middle" font-weight="800" font-size="14" fill="#1e3a2b" font-family="Nunito,sans-serif">${a} m</text>
+  <text x="110" y="${y+h+16}" text-anchor="middle" font-weight="700" font-size="13" fill="#557264" font-family="Nunito,sans-serif">${a} m</text>
+  <text x="${x-6}" y="${y+h/2+5}" text-anchor="end" font-weight="800" font-size="14" fill="#1e3a2b" font-family="Nunito,sans-serif">${b}</text>
+  <text x="${x+w+6}" y="${y+h/2+5}" font-weight="700" font-size="13" fill="#557264" font-family="Nunito,sans-serif">${b}</text></svg>
+  <div class="hopper" style="offset-path:path('M${x.toFixed(1)} ${y.toFixed(1)} h${w.toFixed(1)} v${h.toFixed(1)} h${(-w).toFixed(1)} Z')">${ICON.step}</div></div></div>`}
+function clockVis(st,end){let t='';for(let i=1;i<=12;i++){const an=i*30*Math.PI/180;t+=`<text x="${(100+72*Math.sin(an)).toFixed(1)}" y="${(106-72*Math.cos(an)).toFixed(1)}" text-anchor="middle" font-size="17" font-weight="800" fill="#1e3a2b" font-family="Nunito,sans-serif">${i}</text>`}
+  for(let i=0;i<60;i++){const an=i*6*Math.PI/180,r1=i%5?86:82;t+=`<line x1="${(100+r1*Math.sin(an)).toFixed(1)}" y1="${(100-r1*Math.cos(an)).toFixed(1)}" x2="${(100+90*Math.sin(an)).toFixed(1)}" y2="${(100-90*Math.cos(an)).toFixed(1)}" stroke="#1e3a2b" stroke-width="${i%5?1:2.5}"/>`}
+  return `<div class="clockwrap"><svg class="clock" width="170" height="170" viewBox="0 0 200 200" data-st="${st}" data-end="${end}"><circle cx="100" cy="100" r="94" fill="#fff" stroke="#1e3a2b" stroke-width="5"/>${t}
+  <line class="hand hh" x1="100" y1="100" x2="100" y2="55" stroke="#1e3a2b" stroke-width="7" stroke-linecap="round" style="transform:rotate(${st*.5}deg)"/>
+  <line class="hand mh" x1="100" y1="100" x2="100" y2="24" stroke="#e8467c" stroke-width="4.5" stroke-linecap="round" style="transform:rotate(${st*6}deg)"/><circle cx="100" cy="100" r="6" fill="#1e3a2b"/></svg>
+  <div style="display:grid;gap:8px"><span class="idea">Тръгва в ${hm(st)}</span><button class="ghost" data-run>Завърти стрелките ▶</button></div></div>`}
+
+/* answers */
+function parseNum(raw){const s=String(raw).replace(/[a-zа-яё€.]+/gi,'').trim();if(/^\d[\d\s]*$/.test(s))return parseInt(s.replace(/\s/g,''),10);return null}
+function parseTime(raw){const s=String(raw).trim();let m=s.match(/^(\d{1,2})\s*[:.,\s]\s*(\d{1,2})/);if(m)return{h:+m[1],m:+m[2]};m=s.match(/^(\d{1,2})$/);return m?{h:+m[1],m:0}:null}
+function judge(P,raw){
+  if(P.time){const t=parseTime(raw);if(!t)return{type:'warn',msg:'Пиши часа така: 10:35'};
+    const v=t.h*60+t.m;if(t.m>=60)return{type:'warn',msg:`Минутите не може да са ${t.m}. 60 минути правят 1 час, премести ги в часа.`};
+    if(v===P.ans)return{type:'ok'};
+    if(v===P.st-P.d)return{type:'bad',msg:'Тя се прибира ПО-КЪСНО, затова прибавяме минутите.'};
+    if(t.h===Math.floor(P.st/60)&&t.m===(P.st%60+P.d)%60)return{type:'bad',msg:'Минутите са верни, но мина цял час. Часът се увеличава.'};
+    if(t.h===Math.floor(P.ans/60))return{type:'bad',msg:'Часът е верен. Провери минутите.'};
+    return{type:'bad',msg:'Не е вярно. Завърти стрелките в подсказката.'}}
+  const n=parseNum(raw);if(n===null)return{type:'warn',msg:'Напиши само числото.'};
+  if(n===P.ans)return{type:'ok'};
+  return{type:'bad',msg:P.diag&&P.diag(n)||'Още не е вярно. Прочети задачата пак и натисни „Подсказка“.'};
+}
+
+if(typeof document!=='undefined'){(function(){
+const $=id=>document.getElementById(id);
+let cat='all',P=null,hintLvl=0,solved=false,tries=0,score=0;
+try{score=+localStorage.getItem('gorski-score')||0}catch(e){}
+
+/* scenery */
+$('flowers').innerHTML=[6,18,33,52,67,79,91].map((l,i)=>`<svg class="flower" style="left:${l}%;animation-delay:${-i*.4}s" viewBox="0 0 20 20"><circle cx="10" cy="5" r="4" fill="${['#ff9ec4','#ffd23f','#fff','#b9a3ff'][i%4]}"/><circle cx="5" cy="9" r="4" fill="${['#ff9ec4','#ffd23f','#fff','#b9a3ff'][i%4]}"/><circle cx="15" cy="9" r="4" fill="${['#ff9ec4','#ffd23f','#fff','#b9a3ff'][i%4]}"/><circle cx="10" cy="9" r="3" fill="#ff7a59"/><rect x="9" y="12" width="2" height="8" fill="#3c9a35"/></svg>`).join('');
+
+$('cats').innerHTML=CATS.map(c=>`<button data-c="${c.id}" aria-pressed="${c.id===cat}">${c.name}</button>`).join('');
+$('cats').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;[...$('cats').children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)));next()});
+
+const SAY=['Помогни ми!','Ще ми помогнеш ли?','Хайде да сметнем!','Колко ли са?'];
+function actor(key,two,icon){const h=HEROES[key];
+  return `<div class="actor enter m-${h.move}${two?' two':''}"><div class="react"><div class="mover"><div class="face">${ART[h.art]()}</div></div></div>${two?'':`<div class="bubble">${ICON[icon]||''}<span>${pick(SAY)}</span></div>`}</div>`}
+function setBubble(t){const b=document.querySelector('.actor:not(.two) .bubble span');if(b)b.textContent=t}
+function react(cls){document.querySelectorAll('.react').forEach(r=>{r.classList.remove('yay','no');void r.offsetWidth;r.classList.add(cls)})}
+
+function renderPath(){const n=score%10;$('path').innerHTML=Array.from({length:10},(_,i)=>`<span class="stone${i<n?' on':''}">★</span>`).join('');$('score').textContent=score}
+
+function next(){
+  const pool=Object.entries(TYPES).filter(([k,t])=>cat==='all'||t.cat===cat);
+  const [tk,T]=pick(pool);P=T.make();P.label=T.label;
+  hintLvl=0;solved=false;tries=0;
+  $('tag').textContent=T.label;
+  $('text').textContent=P.text;
+  $('ans').value='';$('ans').placeholder=P.time?'10:35':'?';$('ans').inputMode=P.time?'text':'numeric';
+  $('unit').textContent=P.unit;
+  $('fb').hidden=true;$('helper').hidden=true;$('helper').innerHTML='';
+  $('blocksBtn').hidden=!(P.nums.length&&P.nums.every(n=>n>=20&&n<=1000)&&['addsub','two'].includes(T.cat)&&tk!=='money');
+  $('solve').classList.remove('nudge');$('next').textContent='Нова задача →';
+  $('actors').innerHTML=P.c.keys.map((k,i)=>actor(k,i===1,P.c.icon)).join('');
+}
+function markKey(){if(!P.key)return;const t=P.text,i=t.indexOf(P.key);if(i<0)return;
+  $('text').innerHTML='';$('text').append(t.slice(0,i));const m=document.createElement('mark');m.className='kw';m.textContent=P.key;$('text').append(m,t.slice(i+P.key.length))}
+function helper(level){
+  const h=$('helper');let html='';
+  if(level>=1){markKey();html+=`<h3>КАКВО СЕ ПИТА?</h3><p class="idea">${P.idea}</p>`}
+  if(level>=2)html+=`<h3>${P.time?'ЧАСОВНИК':(P.model.includes('perim')?'РИСУНКА':'МОДЕЛ С ОТСЕЧКИ')}</h3>${P.model}`;
+  if(level>=3)html+=`<h3>РЕШЕНИЕ</h3><ol class="steps">${P.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+  h.innerHTML=html;h.hidden=!html;
+  const run=h.querySelector('[data-run]');if(run)run.addEventListener('click',()=>{const c=h.querySelector('.clock');c.querySelector('.hh').style.transform=`rotate(${c.dataset.end*.5}deg)`;c.querySelector('.mh').style.transform=`rotate(${c.dataset.end*6}deg)`;run.textContent=`Пристига в ${hm(+c.dataset.end)}`;run.disabled=true});
+  if(level>=3&&P.time){const r=h.querySelector('[data-run]');if(r&&!r.disabled)setTimeout(()=>r.click(),300)}
+}
+function blocks(){const h=$('helper');const col=['','',''];
+  const blk=n=>{const H=Math.floor(n/100),T=Math.floor(n%100/10),O=n%10;return `<div class="blk"><span class="bn">${n}</span><div class="bp">${'<i class="h"></i>'.repeat(H)}${'<i class="t"></i>'.repeat(T)}${'<i class="o"></i>'.repeat(O)}</div><span class="blegend">${H} стотици · ${T} десетици · ${O} единици</span></div>`};
+  const html=`<h3>КУБЧЕТА</h3><div class="blocks">${P.nums.map(blk).join('')}</div>`;
+  const ex=h.querySelector('.blocks');if(ex){ex.previousElementSibling.remove();ex.remove();h.hidden=!h.innerHTML.trim();return}
+  h.insertAdjacentHTML('afterbegin',html);h.hidden=false}
+
+const PRAISE=['Браво! ★','Точно така!','Супер си!','Отлично!','Ура, вярно!'];
+function check(){
+  if(!P||solved)return;const raw=$('ans').value;if(!raw.trim()){$('ans').focus();return}
+  const r=judge(P,raw);
+  if(r.type==='ok'){solved=true;score++;try{localStorage.setItem('gorski-score',score)}catch(e){}
+    $('fb').className='fb ok';$('fb').textContent=pick(PRAISE)+' Отговор: '+(P.time?hm(P.ans)+' ч.':P.ans+' '+P.unit);$('fb').hidden=false;
+    react('yay');setBubble(pick(['Благодаря!','Ура!','Браво!','Ти си супер!']));burst();renderPath();
+    $('next').textContent='Следваща задача →';$('next').focus();
+    if(score%10===0)setTimeout(win,900);return}
+  $('fb').className='fb '+r.type;$('fb').textContent=r.msg;$('fb').hidden=false;
+  if(r.type==='bad'){tries++;react('no');setBubble(pick(['Хм… опитай пак','Почти!','Не съвсем…']));if(tries>=2)$('solve').classList.add('nudge');if(hintLvl<1){hintLvl=1;helper(1)}}
+}
+function burst(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const fx=$('fx');
+  for(let i=0;i<24;i++){const e=document.createElement('span');e.className='cf';e.textContent=pick(['★','✿','❀','●','♥']);e.style.left=ri(3,97)+'%';
+    e.style.color=pick(['#ffd23f','#ff7a59','#7cc95f','#9fd8ff','#ff9ec4']);e.style.setProperty('--d',(1.1+Math.random()*1.3).toFixed(2)+'s');e.style.setProperty('--x',ri(-90,90)+'px');e.style.setProperty('--r',ri(-360,360)+'deg');
+    fx.appendChild(e);setTimeout(()=>e.remove(),2700)}}
+function win(){const d=document.createElement('div');d.className='win';d.innerHTML=`<div><b>Още 10 звезди! ★</b><p>Всички горски приятели са ти благодарни.</p><button class="btn">Продължи</button></div>`;
+  document.body.appendChild(d);burst();d.querySelector('button').addEventListener('click',()=>{d.remove();renderPath();next()});d.querySelector('button').focus()}
+
+$('check').addEventListener('click',check);
+$('ans').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();solved?next():check()}});
+$('hint').addEventListener('click',()=>{hintLvl=Math.min(hintLvl+1,2);helper(hintLvl)});
+$('solve').addEventListener('click',()=>{hintLvl=3;helper(3);$('solve').classList.remove('nudge')});
+$('blocksBtn').addEventListener('click',blocks);
+$('next').addEventListener('click',next);
+renderPath();next();
+})();}
+if(typeof module!=='undefined')module.exports={TYPES,judge,hm};
+</script>
+
+</body>
+</html>

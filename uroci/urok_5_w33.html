@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Архитектът на Мишо · 5. клас</title>
+<meta name="description" content="Интерактивен урок за 5. клас, седмица 33: къща се строи с десетични дроби, части от число, мерни единици, периметър и лице, НОД и НОК, проценти и движение." />
+<!-- =====================================================================
+     Архитектът на Мишо — 5. клас, седмица 33
+     ---------------------------------------------------------------------
+     14 задачи в четири нива — загрявка, архитектурни измервания,
+     строителни предизвикателства и финален проект. Минава през
+     десетичните дроби, частите от число, мерните единици, периметъра и
+     лицето, НОД и НОК, процентите и движението, тоест през целия
+     годишен преговор.
+
+     Задачите са кръстени на Мишо и Боян — имената им са в текста.
+     Урокът не иска вход и нищо не предава към платформата.
+     ===================================================================== -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+  :root{
+    --font-display: 'Baloo 2', 'Segoe UI', system-ui, sans-serif;
+    --font-body: 'Nunito', 'Segoe UI', Tahoma, Verdana, Arial, sans-serif;
+
+    --bg1:#dff3ff;
+    --bg2:#fff7e0;
+    --ink:#22303f;
+    --ink-strong:#16212e;
+    --surface:#ffffff;
+    --surface-2:#f7f9fc;
+    --border:#e4e9ee;
+    --border-soft:#e9edf3;
+    --muted:#647589;
+    --track-bg:#eef1f5;
+
+    --l1:#3fb87f; --l1-bg:#e6f8ef;
+    --l2:#e0a72e; --l2-bg:#fff5df;
+    --l3:#e0722e; --l3-bg:#fff0e2;
+    --l4:#d6455a; --l4-bg:#ffe6ea;
+
+    --accent:#4f7cff; --accent-bg:#eef2ff; --accent-ink:#3446c7;
+    --good:#2fae66; --good-bg:#e7f8ef; --good-ink:#1f8a53;
+    --bad:#e0616f; --bad-bg:#fdeef0; --bad-ink:#b8404f;
+    --info-bg:#eef4ff; --info-ink:#3153a6; --info-border:#cfe3ff;
+    --warn-bg:#fff8e8; --warn-border:#e7c766; --warn-ink:#8a6d1f;
+
+    --shadow: 0 10px 30px rgba(40,60,90,.12);
+    --radius: 18px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg1:#0e1a2b; --bg2:#122238;
+      --ink:#e7edf5; --ink-strong:#ffffff;
+      --surface:#152238; --surface-2:#101d31;
+      --border:#28405c; --border-soft:#233856;
+      --muted:#93a4ba; --track-bg:#1c2e47;
+
+      --l1:#57d79f; --l1-bg:#123527;
+      --l2:#f0be55; --l2-bg:#3a2c10;
+      --l3:#f0925a; --l3-bg:#3a2412;
+      --l4:#ef6b81; --l4-bg:#3a1620;
+
+      --accent:#7aa5ff; --accent-bg:#1c2c52; --accent-ink:#bcd0ff;
+      --good:#57d79f; --good-bg:#123527; --good-ink:#8fe9c1;
+      --bad:#ef6b81; --bad-bg:#3a1620; --bad-ink:#ffb3c0;
+      --info-bg:#1c2c52; --info-ink:#bcd0ff; --info-border:#2f4a82;
+      --warn-bg:#3a2c10; --warn-border:#7a5b1f; --warn-ink:#f0c869;
+
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg1:#0e1a2b; --bg2:#122238;
+    --ink:#e7edf5; --ink-strong:#ffffff;
+    --surface:#152238; --surface-2:#101d31;
+    --border:#28405c; --border-soft:#233856;
+    --muted:#93a4ba; --track-bg:#1c2e47;
+
+    --l1:#57d79f; --l1-bg:#123527;
+    --l2:#f0be55; --l2-bg:#3a2c10;
+    --l3:#f0925a; --l3-bg:#3a2412;
+    --l4:#ef6b81; --l4-bg:#3a1620;
+
+    --accent:#7aa5ff; --accent-bg:#1c2c52; --accent-ink:#bcd0ff;
+    --good:#57d79f; --good-bg:#123527; --good-ink:#8fe9c1;
+    --bad:#ef6b81; --bad-bg:#3a1620; --bad-ink:#ffb3c0;
+    --info-bg:#1c2c52; --info-ink:#bcd0ff; --info-border:#2f4a82;
+    --warn-bg:#3a2c10; --warn-border:#7a5b1f; --warn-ink:#f0c869;
+
+    --shadow: 0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: var(--font-body);
+    background: linear-gradient(160deg, var(--bg1), var(--bg2) 70%);
+    color: var(--ink);
+    min-height:100vh;
+    padding: 18px;
+  }
+  .app{
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  header.top{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom: 14px;
+  }
+  header.top .mascot{ width:56px; height:56px; flex:0 0 auto; }
+  header.top h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+    margin: 0;
+    line-height:1.25;
+    text-wrap: balance;
+  }
+  header.top p{
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: .92rem;
+  }
+
+  .status-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .status-row .badges{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .pill{
+    display:inline-flex; align-items:center; gap:6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight:700;
+    font-size:.88rem;
+    white-space:nowrap;
+  }
+  .pill.score{ background:var(--accent-bg); color:var(--accent-ink); }
+  .pill.level{ transition: background .3s, color .3s; }
+  .progress-wrap{
+    flex: 1 1 260px;
+    min-width: 220px;
+  }
+  .progress-text{
+    font-family: 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: .82rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  .progress-bar-outer{
+    height: 12px;
+    background: var(--track-bg);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-bar-inner{
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--l1), var(--good));
+    border-radius: 999px;
+    transition: width .6s cubic-bezier(.4,1.4,.6,1);
+  }
+
+  main.grid{
+    display:grid;
+    grid-template-columns: 340px 1fr;
+    gap: 18px;
+    align-items:start;
+  }
+  @media (max-width: 820px){
+    main.grid{ grid-template-columns: 1fr; }
+    .house-panel{ order: 2; }
+    .task-panel{ order: 1; }
+  }
+
+  .house-panel{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    position: sticky;
+    top: 14px;
+  }
+  @media (max-width: 820px){ .house-panel{ position:static; } }
+  .house-panel h3{
+    margin: 0 0 8px;
+    font-size: .95rem;
+    color: var(--muted);
+    display:flex; align-items:center; gap:6px;
+  }
+  .house-svg-wrap{
+    background: linear-gradient(180deg, #bfe6ff 0%, #d9f2ff 60%, #cdeeb0 60%, #b6e28e 100%);
+    border-radius: 14px;
+    overflow:hidden;
+    border: 1px solid #d7e7f0;
+  }
+  .house-part{
+    opacity: 0;
+    transform: scale(.6);
+    transform-origin: center;
+    transform-box: fill-box;
+    transition: opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .house-part.show{ opacity:1; transform: scale(1); }
+  .smoke{ animation: floatSmoke 3s ease-in-out infinite; }
+  @keyframes floatSmoke{
+    0%,100%{ transform: translateY(0px); opacity:.55;}
+    50%{ transform: translateY(-6px); opacity:.9;}
+  }
+  .sunray{ animation: spinSun 12s linear infinite; transform-origin: 260px 45px; }
+  @keyframes spinSun{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  .sparkle{ animation: sparkle 1.6s ease-in-out infinite; }
+  @keyframes sparkle{ 0%,100%{opacity:.2;} 50%{opacity:1;} }
+
+  .task-panel{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 6px solid var(--l1);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+    min-height: 340px;
+    transition: border-color .3s;
+  }
+  .task-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:8px;
+    margin-bottom: 10px;
+  }
+  .task-tag{
+    font-weight:800;
+    font-size: .8rem;
+    letter-spacing:.4px;
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+  .task-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 4px 0 6px;
+    color: var(--ink-strong);
+    text-wrap: balance;
+  }
+  .task-story{
+    color: var(--muted);
+    font-size: .96rem;
+    line-height:1.5;
+    margin-bottom: 10px;
+  }
+  .task-question{
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: .98rem;
+    line-height: 1.55;
+  }
+  .task-question b{ color:var(--ink-strong); }
+
+  .fields{
+    display:flex; flex-direction:column; gap:10px;
+    margin-bottom: 12px;
+  }
+  .field-row{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .field-row label{ font-size:.92rem; min-width:170px; }
+  .field-row input[type=text]{
+    flex:1 1 140px;
+    min-width:110px;
+    padding: 9px 10px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+    outline:none;
+    transition: border-color .2s;
+  }
+  .field-row input[type=text]:focus{ border-color: var(--accent); }
+  .field-row input.wrong{ border-color: var(--bad); animation: shake .35s; }
+  .field-row .unit{ color: var(--muted); font-size:.86rem; }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    75%{transform:translateX(5px);}
+  }
+
+  .choices{ display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+  .choice{
+    display:flex; align-items:center; gap:10px;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor:pointer;
+    font-size: .96rem;
+    transition: border-color .2s, background .2s;
+  }
+  .choice:hover{ border-color: var(--accent); background:var(--accent-bg); }
+  .choice.selected{ border-color: var(--accent); background:var(--accent-bg); font-weight:700; }
+  .choice input{ accent-color: var(--accent); }
+
+  .info-note{
+    background: var(--warn-bg);
+    border: 1px dashed var(--warn-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: .9rem;
+    color: var(--warn-ink);
+    margin-bottom: 14px;
+  }
+
+  .timer-wrap{ margin-bottom: 12px; display:none; }
+  .timer-wrap.active{ display:block; }
+  .timer-label{ font-size:.82rem; color: var(--muted); margin-bottom:4px; display:flex; justify-content:space-between; font-variant-numeric: tabular-nums; }
+  .timer-outer{ height:8px; background:var(--track-bg); border-radius:999px; overflow:hidden; }
+  .timer-inner{ height:100%; background: linear-gradient(90deg,var(--accent),var(--accent)); width:100%; transition: width 1s linear, background .4s; }
+  .timer-inner.low{ background: linear-gradient(90deg,var(--bad),var(--bad)); }
+
+  .btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 10px; }
+  button{
+    font-family: var(--font-body);
+    font-size: .96rem;
+    font-weight:700;
+    border-radius: 12px;
+    border: none;
+    padding: 11px 18px;
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .2s;
+  }
+  button:active{ transform: translateY(1px) scale(.98); }
+  button:disabled{ opacity:.5; cursor:not-allowed; }
+  button:focus-visible{ outline: 3px solid var(--accent); outline-offset: 2px; }
+  .choice:focus-within{ border-color: var(--accent); }
+  .field-row input:focus-visible{ outline: 3px solid var(--accent-bg); }
+  .btn-primary{ background: linear-gradient(135deg,#5a8bff,#4166e0); color:white; box-shadow: 0 6px 16px rgba(65,102,224,.35); }
+  .btn-hint{ background:var(--warn-bg); color:var(--warn-ink); border:1px solid var(--warn-border); }
+  .btn-next{ background: linear-gradient(135deg,#3fb87f,#2b9666); color:white; box-shadow: 0 6px 16px rgba(43,150,102,.32); }
+  .btn-ghost{ background:var(--surface-2); color:var(--ink); }
+
+  .hint-box{
+    background:var(--info-bg); border:1px solid var(--info-border); color:var(--info-ink);
+    border-radius: 10px; padding:10px 12px; font-size:.88rem;
+    margin-bottom: 10px; display:none;
+  }
+  .hint-box.show{ display:block; }
+
+  .feedback{
+    min-height: 30px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: .95rem;
+    font-weight:600;
+    display:none;
+    align-items:center;
+    gap:8px;
+  }
+  .feedback.show{ display:flex; }
+  .feedback.correct{ background: var(--good-bg); color: var(--good-ink); }
+  .feedback.wrong{ background: var(--bad-bg); color: var(--bad-ink); }
+  .feedback.info{ background:var(--info-bg); color:var(--info-ink); }
+
+  .final-overlay{
+    position: fixed; inset:0; background: rgba(10,16,26,.6);
+    display:none; align-items:center; justify-content:center; z-index: 50; padding: 16px;
+  }
+  .final-overlay.show{ display:flex; }
+  .final-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 28px 26px;
+    max-width: 480px; width:100%;
+    text-align:center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    max-height: 90vh; overflow-y:auto;
+  }
+  .final-card h2{ margin: 6px 0 2px; font-size:1.5rem; font-family: var(--font-display); text-wrap: balance; }
+  .final-title-badge{
+    display:inline-block; padding:8px 18px; border-radius:999px;
+    font-weight:800; margin: 10px 0 14px; font-size:1.05rem; font-family: var(--font-display);
+  }
+  .final-stats{
+    text-align:left; background:var(--surface-2); border-radius:14px; padding:14px 16px; margin: 14px 0;
+    display:flex; flex-direction:column; gap:8px; font-size:.95rem;
+  }
+  .final-stats div{ display:flex; justify-content:space-between; gap: 12px; }
+  .final-stats b{ font-variant-numeric: tabular-nums; }
+  .final-misho{ font-size:.95rem; color:var(--info-ink); background:var(--info-bg); border-radius:12px; padding:10px 14px; margin-bottom:14px; }
+
+  .sr-only{ position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+      <ellipse cx="50" cy="78" rx="26" ry="18" fill="#fff"/>
+      <ellipse cx="50" cy="78" rx="26" ry="18" fill="#fff" stroke="#e3c8d8" stroke-width="2"/>
+      <circle cx="50" cy="48" r="22" fill="#fff" stroke="#e3c8d8" stroke-width="2"/>
+      <ellipse cx="38" cy="18" rx="7" ry="20" fill="#fff" stroke="#e3c8d8" stroke-width="2"/>
+      <ellipse cx="62" cy="18" rx="7" ry="20" fill="#fff" stroke="#e3c8d8" stroke-width="2"/>
+      <ellipse cx="38" cy="20" rx="3.2" ry="12" fill="#f6c9dc"/>
+      <ellipse cx="62" cy="20" rx="3.2" ry="12" fill="#f6c9dc"/>
+      <circle cx="42" cy="46" r="3" fill="#2b3a4a"/>
+      <circle cx="58" cy="46" r="3" fill="#2b3a4a"/>
+      <ellipse cx="50" cy="54" rx="3" ry="2" fill="#f4a5c0"/>
+      <path d="M46 58 Q50 62 54 58" stroke="#2b3a4a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h1>🏗️ Архитектът на Мишо: мисията на Боян</h1>
+      <p>Помогни на Мишо да построи мечтаната си къща, като решаваш архитектурни задачи!</p>
+    </div>
+  </header>
+
+  <div class="status-row">
+    <div class="badges">
+      <span class="pill score">⭐ <span id="scoreVal">0</span> точки</span>
+      <span class="pill level" id="levelPill">🟢 Ниво 1</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-text" id="progressText">░░░░░░░░░░░░░░ 0 / 14</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+    </div>
+  </div>
+
+  <main class="grid">
+    <section class="house-panel">
+      <h3>🏠 Къщата на Мишо</h3>
+      <div class="house-svg-wrap">
+        <svg viewBox="0 0 320 260" width="100%" style="display:block;" role="img" aria-label="Къщата на Мишо, изградена стъпка по стъпка">
+          <!-- sun -->
+          <g id="part-12" class="house-part">
+            <g class="sunray">
+              <circle cx="260" cy="45" r="20" fill="#ffd35c"/>
+              <g stroke="#ffd35c" stroke-width="4" stroke-linecap="round">
+                <line x1="260" y1="10" x2="260" y2="2"/>
+                <line x1="260" y1="80" x2="260" y2="88"/>
+                <line x1="225" y1="45" x2="217" y2="45"/>
+                <line x1="295" y1="45" x2="303" y2="45"/>
+                <line x1="235" y1="20" x2="229" y2="14"/>
+                <line x1="285" y1="70" x2="291" y2="76"/>
+                <line x1="285" y1="20" x2="291" y2="14"/>
+                <line x1="235" y1="70" x2="229" y2="76"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- fence -->
+          <g id="part-9" class="house-part" stroke="#b58a5a" stroke-width="3" stroke-linecap="round">
+            <line x1="14" y1="235" x2="14" y2="210"/>
+            <line x1="30" y1="235" x2="30" y2="205"/>
+            <line x1="46" y1="235" x2="46" y2="210"/>
+            <line x1="14" y1="215" x2="46" y2="215"/>
+            <line x1="274" y1="235" x2="274" y2="210"/>
+            <line x1="290" y1="235" x2="290" y2="205"/>
+            <line x1="306" y1="235" x2="306" y2="210"/>
+            <line x1="274" y1="215" x2="306" y2="215"/>
+          </g>
+
+          <!-- tree -->
+          <g id="part-10" class="house-part">
+            <rect x="35" y="185" width="9" height="34" rx="2" fill="#8a5a3b"/>
+            <circle cx="39" cy="175" r="22" fill="#5fb37a"/>
+            <circle cx="24" cy="188" r="14" fill="#5fb37a"/>
+            <circle cx="54" cy="188" r="14" fill="#5fb37a"/>
+          </g>
+
+          <!-- path -->
+          <g id="part-8" class="house-part" fill="#e5d3ad">
+            <ellipse cx="160" cy="222" rx="10" ry="5"/>
+            <ellipse cx="160" cy="236" rx="12" ry="5.5"/>
+            <ellipse cx="160" cy="251" rx="14" ry="6"/>
+          </g>
+
+          <!-- foundation -->
+          <g id="part-1" class="house-part">
+            <rect x="95" y="196" width="130" height="14" fill="#8d6e52"/>
+          </g>
+
+          <!-- walls -->
+          <g id="part-2" class="house-part">
+            <rect x="100" y="140" width="120" height="60" fill="#f6e2b3" stroke="#c9a15a" stroke-width="2"/>
+          </g>
+
+          <!-- left window -->
+          <g id="part-3" class="house-part">
+            <rect x="113" y="158" width="26" height="26" fill="#bfe3f2" stroke="#5a7d99" stroke-width="2"/>
+            <line x1="126" y1="158" x2="126" y2="184" stroke="#5a7d99" stroke-width="2"/>
+            <line x1="113" y1="171" x2="139" y2="171" stroke="#5a7d99" stroke-width="2"/>
+          </g>
+
+          <!-- right window -->
+          <g id="part-7" class="house-part">
+            <rect x="181" y="158" width="26" height="26" fill="#bfe3f2" stroke="#5a7d99" stroke-width="2"/>
+            <line x1="194" y1="158" x2="194" y2="184" stroke="#5a7d99" stroke-width="2"/>
+            <line x1="181" y1="171" x2="207" y2="171" stroke="#5a7d99" stroke-width="2"/>
+          </g>
+
+          <!-- door -->
+          <g id="part-4" class="house-part">
+            <path d="M150 200 v-24 a10 10 0 0 1 20 0 v24 z" fill="#8a5a3b" stroke="#6a4227" stroke-width="1.5"/>
+            <circle cx="166" cy="188" r="1.6" fill="#f6e2b3"/>
+          </g>
+
+          <!-- roof -->
+          <g id="part-5" class="house-part">
+            <polygon points="90,142 230,142 160,95" fill="#c0483c" stroke="#8f3226" stroke-width="2"/>
+          </g>
+
+          <!-- chimney + smoke -->
+          <g id="part-6" class="house-part">
+            <rect x="192" y="103" width="14" height="32" fill="#7a7a7a"/>
+            <g class="smoke" fill="#e8ecef">
+              <circle cx="199" cy="94" r="5"/>
+              <circle cx="204" cy="84" r="6"/>
+              <circle cx="198" cy="74" r="7"/>
+            </g>
+          </g>
+
+          <!-- garden flowers -->
+          <g id="part-11" class="house-part">
+            <g transform="translate(80,214)">
+              <circle r="3" fill="#f4a5c0"/><circle cx="6" r="3" fill="#ffd35c"/><circle cx="3" cy="-4" r="3" fill="#f4a5c0"/>
+            </g>
+            <g transform="translate(232,216)">
+              <circle r="3" fill="#ffd35c"/><circle cx="6" r="3" fill="#f4a5c0"/><circle cx="3" cy="-4" r="3" fill="#ffd35c"/>
+            </g>
+          </g>
+
+          <!-- flag -->
+          <g id="part-13" class="house-part">
+            <line x1="160" y1="95" x2="160" y2="78" stroke="#6a4227" stroke-width="2"/>
+            <polygon points="160,78 176,84 160,90" fill="#4f7cff"/>
+          </g>
+
+          <!-- finale: ribbon + Misho celebrating -->
+          <g id="part-14" class="house-part">
+            <g transform="translate(120,236)">
+              <ellipse cx="0" cy="10" rx="16" ry="11" fill="#fff" stroke="#e3c8d8" stroke-width="1.4"/>
+              <circle cx="0" cy="-8" r="12" fill="#fff" stroke="#e3c8d8" stroke-width="1.4"/>
+              <ellipse cx="-6" cy="-22" rx="3.4" ry="10" fill="#fff" stroke="#e3c8d8" stroke-width="1.2"/>
+              <ellipse cx="6" cy="-22" rx="3.4" ry="10" fill="#fff" stroke="#e3c8d8" stroke-width="1.2"/>
+              <circle cx="-3.5" cy="-9" r="1.6" fill="#2b3a4a"/>
+              <circle cx="3.5" cy="-9" r="1.6" fill="#2b3a4a"/>
+              <path d="M-3 -3 Q0 0 3 -3" stroke="#2b3a4a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            </g>
+            <g class="sparkle" fill="#ffd35c">
+              <circle cx="70" cy="150" r="2.4"/>
+              <circle cx="250" cy="160" r="2.4"/>
+              <circle cx="255" cy="120" r="2"/>
+              <circle cx="60" cy="120" r="2"/>
+            </g>
+            <text x="160" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#2b9666">ГОТОВО! 🎉</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="task-panel" id="taskPanel">
+      <!-- filled by JS -->
+    </section>
+  </main>
+</div>
+
+<div class="final-overlay" id="finalOverlay">
+  <div class="final-card">
+    <div style="font-size:2.4rem;">🏆</div>
+    <h2>Къщата на Мишо е готова!</h2>
+    <div class="final-title-badge" id="finalBadge">Архитект-помощник</div>
+    <div class="final-stats" id="finalStats"></div>
+    <div class="final-misho" id="finalMisho"></div>
+    <button class="btn-primary" onclick="location.reload()">🔁 Играй отново</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  function parseNumber(str){
+    if(str===null || str===undefined) return NaN;
+    str = String(str).trim().replace(/\s+/g,'').replace(',', '.');
+    if(str.includes('/')){
+      var parts = str.split('/');
+      if(parts.length===2){
+        var n = parseFloat(parts[0]), d = parseFloat(parts[1]);
+        if(!isNaN(n) && !isNaN(d) && d!==0) return n/d;
+      }
+      return NaN;
+    }
+    return parseFloat(str);
+  }
+  function numClose(a,b,tol){
+    if(isNaN(a)) return false;
+    return Math.abs(a-b) <= tol;
+  }
+
+  var WRONG_MESSAGES = [
+    "🐰 Мишо наднича в чертежа… Май трябва да проверим още веднъж!",
+    "🏗️ Истинските архитекти също променят проектите си. Опитай отново!",
+    "💡 Добър опит! Нека разгледаме внимателно числата.",
+    "📐 Близо си! Провери пресмятанията отново, архитект."
+  ];
+  var CORRECT_MESSAGES = [
+    "🎉 Отлично, архитект Боян! Мишо е много доволен!",
+    "🏗️ Чудесна работа! Още едно парче от къщата е готово!",
+    "⭐ Точно попадение! Мишо подскача от радост!",
+    "✅ Перфектно изчислено! Проектът расте пред очите ни!"
+  ];
+  var SKIP_MESSAGES = [
+    "🐰 Няма проблем! Мишо казва: „Ще се върнем към този чертеж по-късно.“ Продължаваме напред!",
+    "🏗️ Добре, оставяме тази мисия за по-нататък — строежът продължава!",
+    "💡 Всеки архитект понякога прескача някой детайл. Хайде към следващата мисия!"
+  ];
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+  var LEVEL_INFO = {
+    1: {name:"Ниво 1 — Загрявка", emoji:"🟢", color:"var(--l1)", bg:"var(--l1-bg)"},
+    2: {name:"Ниво 2 — Архитектурни измервания", emoji:"🟡", color:"var(--l2)", bg:"var(--l2-bg)"},
+    3: {name:"Ниво 3 — Строителни предизвикателства", emoji:"🟠", color:"var(--l3)", bg:"var(--l3-bg)"},
+    4: {name:"Ниво 4 — Финален архитектурен проект", emoji:"🔴", color:"var(--l4)", bg:"var(--l4-bg)"}
+  };
+
+  // ---------------- TASK DATA ----------------
+  var tasks = [
+    { // 1
+      num:"Задача 1", level:1, points:100, timer:75,
+      title:"Първите чертожни листове",
+      story:"Мишо разстила първите скици на бъдещата къща. Преди да започне строежа, Боян трябва да провери няколко важни изчисления по чертежите.",
+      question:"Пресметни внимателно:<br><b>а)</b> 137268,234 + 72,04 &nbsp; <b>б)</b> 56,37 − 18,678 &nbsp; <b>в)</b> 1,25 · 0,04 + 0,4 · 0,5 · 8",
+      type:"answer",
+      fields:[
+        {label:"а) резултат", expected:137340.274, tol:0.001, unit:""},
+        {label:"б) резултат", expected:37.692, tol:0.001, unit:""},
+        {label:"в) резултат", expected:1.65, tol:0.001, unit:""}
+      ],
+      hint:"Подравни десетичните запетаи една под друга, преди да пресмяташ, а в подточка в) първо намери произведенията, после ги събери."
+    },
+    { // 2 - info
+      num:"Задача 2", level:1, points:50, timer:null,
+      title:"Загадъчният чертож",
+      story:"Мишо изважда стара папка с чертежи от строежа. За съжаление една от страниците е избеляла от дъжда.",
+      type:"info",
+      infoNote:"⚠️ Бележка от архитектите: оригиналното изображение към тази задача не е налично в проекта. За да не изопачим математиката, не си измисляме ново условие вместо липсващото — просто продължаваме напред заедно с Мишо.",
+      question:"Тази страница от чертежите не може да бъде възстановена точно сега. Мишо решава да продължи напред и да разчита на следващите задачи, за да завърши къщата си."
+    },
+    { // 3
+      num:"Задача 4", level:1, points:100, timer:60,
+      title:"Проверка на архитектурния план",
+      story:"На плана на къщата два размера трябва да съвпадат идеално, но едно число е заличено с молив. Помогни на Боян да го открие.",
+      question:"Кое число трябва да се постави на мястото на <b>*</b> в равенството:<br><b>5,834 + 2,78 = * + 5,222</b>",
+      type:"mc",
+      options:["3,492","3,392","3,292","3,002"],
+      correctIndex:1,
+      hint:"Раздели на две прости стъпки: първо намери сумата вляво (5,834 + 2,78), после извади от нея дясното известно число (5,222)."
+    },
+    { // 4 - new fractions
+      num:"Задача 12 (нова)", level:2, points:150, timer:90,
+      title:"Зоните на строителната площадка",
+      story:"Боян трябва да раздели площадката на зони, преди строежът да започне.",
+      question:"Строителната площадка на Мишо е разделена на зони: <b>2/5</b> от нея е заета от самата къща, <b>1/4</b> — от градината, а останалата част ще бъде двор за игра. Ако цялата площадка е <b>300 m²</b>:<br><b>а)</b> Каква част от площадката е дворът за игра? (запиши като дроб, напр. 3/10)<br><b>б)</b> Колко квадратни метра е дворът за игра?",
+      type:"answer",
+      fields:[
+        {label:"а) част от площадката (дроб)", expected:0.35, tol:0.004, unit:"", isFraction:true, expectedLabel:"7/20"},
+        {label:"б) площ на двора", expected:105, tol:0.5, unit:"m²"}
+      ],
+      hint:"Намери общ знаменател на 2/5 и 1/4 (например 20-ти), събери ги, после извади сумата от цялото (1), за да получиш частта за двора."
+    },
+    { // 5
+      num:"Задача 10", level:2, points:150, timer:null,
+      title:"Проектиране на стая",
+      story:"Мишо иска голяма и уютна стая. Боян трябва да пресметне точния ѝ размер, преди да поръча материалите за пода и первазите.",
+      question:"Стаята на Мишо ще бъде правоъгълна с дължина <b>5 m и 35 cm</b>, а широчината ѝ е с <b>1 m и 6 dm</b> по-малка от дължината. Намери:<br><b>а)</b> лицето на стаята (в m²)<br><b>б)</b> обиколката на стаята (в m)",
+      type:"answer",
+      fields:[
+        {label:"а) лице", expected:20.0625, tol:0.01, unit:"m²"},
+        {label:"б) обиколка", expected:18.2, tol:0.02, unit:"m"}
+      ],
+      hint:"Преобразувай всичко в метри: 5 m 35 cm = 5,35 m; 1 m 6 dm = 1,6 m. Лице = дължина × широчина; Обиколка = 2 × (дължина + широчина)."
+    },
+    { // 6
+      num:"Задача 6", level:2, points:150, timer:null,
+      title:"Декоративният прозорец",
+      story:"Мишо иска специален декоративен прозорец във формата на правилен многоъгълник над входната врата.",
+      question:"Мишо проектира декоративен прозорец във формата на <b>правилен дванадесетоъгълник</b> (12 страни). За украсата му трябват решетки по всички диагонали на фигурата. По колко диагонала трябва да изработи Боян?",
+      type:"answer",
+      fields:[ {label:"брой диагонали", expected:54, tol:0.4, unit:""} ],
+      hint:"Формулата за брой диагонали на многоъгълник с n страни е n(n − 3) / 2."
+    },
+    { // 7 - info
+      num:"Задача 5", level:2, points:50, timer:null,
+      title:"Измерване на чертежа",
+      story:"На чертежа с детайлите на покрива има отсечка, разделена на части, но мастилото по единия ъгъл е размазано.",
+      type:"info",
+      infoNote:"⚠️ Бележка от архитектите: оригиналният чертеж (с отсечката и нейните части) не е наличен в проекта. Приблизителното условие споменава отсечка с дължина 2,5 cm, но точните пропорции липсват, затова не измисляме останалите числа.",
+      question:"Боян прибира внимателно чертежа настрана, за да не обърка мерките, и продължава към следващата задача, докато открие оригинала."
+    },
+    { // 8
+      num:"Задача 3", level:3, points:200, timer:null,
+      title:"Маршрутът на камиона с материали",
+      story:"Камион трябва да достави тухли и цимент до площадката на Мишо по два участъка от пътя с различна скорост.",
+      question:"Камион се движи <b>3 часа</b> със скорост <b>70,5 km/h</b>, а след това още <b>4 часа</b> със скорост с <b>5 km/h</b> по-голяма. Какво разстояние е изминал камионът общо?",
+      type:"answer",
+      fields:[ {label:"общо разстояние", expected:513.5, tol:0.2, unit:"km"} ],
+      hint:"Спомни си формулата: разстояние = скорост × време. Пресметни двата участъка поотделно и после ги събери."
+    },
+    { // 9
+      num:"Задача 7", level:3, points:200, timer:120,
+      title:"Планиране на строителните дейности",
+      story:"Различни строителни екипи работят на площадката на цикли — зидарите се връщат през определен брой дни, а електротехниците — през друг. Боян трябва да пресметне кога всички ще съвпаднат отново.",
+      question:"Намери НОК (най-малко общо кратно):<br><b>а)</b> НОК(12, 15, 18)<br><b>б)</b> НОК(42, 35, 56)",
+      type:"answer",
+      fields:[
+        {label:"а) НОК(12,15,18)", expected:180, tol:0.4, unit:""},
+        {label:"б) НОК(42,35,56)", expected:840, tol:0.4, unit:""}
+      ],
+      hint:"Потърси най-малкото число, което се дели на всички дадени числа — разложи ги на прости множители и вземи всеки от тях в най-високата му степен."
+    },
+    { // 10
+      num:"Задача 8", level:3, points:200, timer:null,
+      title:"Тайният код на архитекта",
+      story:"На вратата на строителната барака има ключалка с таен код. За да я отвори, Боян трябва да реши уравненията, оставени от главния архитект.",
+      question:"Реши за X:<br><b>а)</b> НОК(2, 3, 7) + x = НОК(9, 13)<br><b>б)</b> НОК(27, 42) : X = НОД(36, 126)",
+      type:"answer",
+      fields:[
+        {label:"а) x =", expected:75, tol:0.4, unit:""},
+        {label:"б) X =", expected:21, tol:0.4, unit:""}
+      ],
+      hint:"Първо пресметни НОК/НОД от лявата и дясната страна на всяко уравнение поотделно, после реши простото уравнение, което остава."
+    },
+    { // 11 - new percent
+      num:"Задача 13 (нова)", level:3, points:200, timer:null,
+      title:"Поръчката на тухли",
+      story:"Доставчикът на тухли предлага отстъпка на Мишо, защото поръчката е голяма. Боян трябва да пресметне колко точно ще плати Мишо.",
+      question:"Мишо поръчва <b>500 тухли</b> по цена <b>0,80 лв</b> за брой. Доставчикът прави отстъпка от <b>10%</b> от общата цена. Колко лева ще плати Мишо накрая?",
+      type:"answer",
+      fields:[ {label:"крайна цена", expected:360, tol:0.5, unit:"лв"} ],
+      hint:"Първо намери общата цена без отстъпка (500 × 0,80 лв), после намери 10% от нея (раздели на 10) и извади отстъпката."
+    },
+    { // 12
+      num:"Задача 9", level:4, points:250, timer:null,
+      title:"Празненство за строителите",
+      story:"Строежът напредва чудесно и Мишо иска да организира празненство за работниците. Сладкарската работилница приготвя специални сладки за случая — това е едно от най-сериозните предизвикателства на Боян!",
+      question:"За един ден работилницата произвежда <b>625 масленки</b>, <b>1000 локумки</b> и <b>875 ореховки</b>. Всички сладки трябва да се разпределят по еднакви пакетчета, така че всеки вид да се разпредели точно, без остатък.<br><b>а)</b> Какъв е максималният брой еднакви пакетчета, които могат да се направят?<br><b>б)</b> Колко сладки общо ще има във всяко пакетче?<br><b>в)</b> По колко масленки, локумки и ореховки ще има във всяко пакетче?",
+      type:"answer",
+      fields:[
+        {label:"а) брой пакетчета", expected:125, tol:0.4, unit:""},
+        {label:"б) сладки в пакет общо", expected:20, tol:0.4, unit:""},
+        {label:"в) масленки в пакет", expected:5, tol:0.2, unit:""},
+        {label:"в) локумки в пакет", expected:8, tol:0.2, unit:""},
+        {label:"в) ореховки в пакет", expected:7, tol:0.2, unit:""}
+      ],
+      hint:"Търси най-голямото число, на което се делят точно и трите количества (НОД на 625, 1000 и 875). После раздели всяко количество на него."
+    },
+    { // 13 - info
+      num:"Задача 11", level:4, points:50, timer:null,
+      title:"Тайната на реката",
+      story:"За да превози последните материали, Мишо пита дали може да се използва моторна лодка по реката покрай площадката.",
+      type:"info",
+      infoNote:"⚠️ Бележка от архитектите: оригиналното условие за задачата с лодката (разстояние срещу течението и скоростта на течението) е непълно в наличните файлове на проекта — липсват точните числа. За да не измисляме условие, отбелязваме го ясно тук.",
+      question:"Мишо решава, че материалите могат да почакат за идея с лодката до следващия път, и Боян продължава към последните мисии на брега."
+    },
+    { // 14 - finale geometry
+      num:"Задача 14 (нова, финал)", level:4, points:250, timer:null,
+      title:"Финалният архитектурен проект",
+      story:"Последната мисия! Боян трябва да пресметне общата площ на завършения етаж на къщата — основната стая и квадратната тераса към нея — за да поръча точния брой подови плочки.",
+      question:"Основната стая на къщата е правоъгълник с размери <b>8 m × 5 m</b>. До нея има квадратна тераса със страна <b>3 m</b>.<br><b>а)</b> Каква е общата площ на стаята и терасата заедно?<br><b>б)</b> Всяка подова плочка покрива точно 1 m², а се продават в опаковки по 7 плочки. Колco пълни опаковки трябват, за да се покрие цялата площ?",
+      type:"answer",
+      fields:[
+        {label:"а) обща площ", expected:49, tol:0.3, unit:"m²"},
+        {label:"б) брой опаковки", expected:7, tol:0.2, unit:""}
+      ],
+      hint:"Раздели сложната фигура на две прости — правоъгълник и квадрат, намери лицето на всяка поотделно и ги събери. После раздели общата площ на 7."
+    }
+  ];
+
+  tasks.forEach(function(t, i){ t.stage = i+1; t.hintUsed=false; t.wrongOnce=false; t.timedOut=false; t.timeLeft=t.timer; t.done=false; });
+
+  var maxPossibleScore = 0;
+  tasks.forEach(function(t){
+    maxPossibleScore += t.points;
+    if(t.timer) maxPossibleScore += 20;
+  });
+
+  var GRADED_TOTAL = tasks.filter(function(t){ return t.type!=="info"; }).length;
+
+  // ---------------- STATE ----------------
+  var state = { score:0, currentIndex:0, correctCount:0, skippedCount:0, timeBonusTotal:0, timerHandle:null };
+
+  // ---------------- DOM refs ----------------
+  var scoreVal = document.getElementById('scoreVal');
+  var levelPill = document.getElementById('levelPill');
+  var progressText = document.getElementById('progressText');
+  var progressBar = document.getElementById('progressBar');
+  var taskPanel = document.getElementById('taskPanel');
+  var finalOverlay = document.getElementById('finalOverlay');
+
+  function addScore(n){
+    state.score = Math.max(0, state.score + n);
+    scoreVal.textContent = state.score;
+    scoreVal.parentElement.style.transform = 'scale(1.12)';
+    setTimeout(function(){ scoreVal.parentElement.style.transform='scale(1)'; }, 180);
+  }
+
+  function updateProgress(){
+    var completed = tasks.filter(function(t){ return t.done; }).length;
+    var total = tasks.length;
+    var filled = Math.round((completed/total)*14);
+    var bar = "";
+    for(var i=0;i<14;i++){ bar += i<filled ? "█" : "░"; }
+    progressText.textContent = bar + " " + completed + " / " + total;
+    progressBar.style.width = (completed/total*100) + "%";
+  }
+
+  function setLevelPill(level){
+    var info = LEVEL_INFO[level];
+    levelPill.textContent = info.emoji + " " + info.name;
+    levelPill.style.background = info.bg;
+    levelPill.style.color = info.color;
+  }
+
+  function revealHousePart(stage){
+    var el = document.getElementById('part-' + stage);
+    if(el){ el.classList.add('show'); }
+  }
+
+  function stopTimer(){
+    if(state.timerHandle){ clearInterval(state.timerHandle); state.timerHandle=null; }
+  }
+
+  function renderTask(index){
+    stopTimer();
+    var t = tasks[index];
+    var info = LEVEL_INFO[t.level];
+    taskPanel.style.borderTopColor = info.color;
+
+    var html = '';
+    html += '<div class="task-meta">';
+    html += '<span class="task-tag" style="background:'+info.bg+';color:'+info.color+'">'+info.emoji+' '+info.name+'</span>';
+    html += '<span class="task-tag" style="background:var(--accent-bg);color:var(--accent-ink)">'+t.num+' &middot; +'+t.points+' точки</span>';
+    html += '</div>';
+    html += '<div class="task-title">'+t.title+'</div>';
+    html += '<div class="task-story">'+t.story+'</div>';
+
+    if(t.type==='info'){
+      html += '<div class="info-note">'+t.infoNote+'</div>';
+      html += '<div class="task-question">'+t.question+'</div>';
+      html += '<div class="btn-row"><button class="btn-next" id="continueBtn">Продължи напред 🏗️</button></div>';
+      html += '<div class="feedback" id="feedback"></div>';
+      taskPanel.innerHTML = html;
+      document.getElementById('continueBtn').addEventListener('click', function(){
+        completeTask(t, t.points, 'info', 0);
+      });
+      updateProgress();
+      setLevelPill(t.level);
+      return;
+    }
+
+    html += '<div class="task-question">'+t.question+'</div>';
+
+    if(t.timer){
+      html += '<div class="timer-wrap active" id="timerWrap">';
+      html += '<div class="timer-label"><span>⏱️ Оставащо време</span><span id="timerSeconds">'+t.timer+'s</span></div>';
+      html += '<div class="timer-outer"><div class="timer-inner" id="timerInner"></div></div>';
+      html += '</div>';
+    }
+
+    if(t.type==='mc'){
+      html += '<div class="choices" id="choicesWrap">';
+      var letters = ['А','Б','В','Г'];
+      t.options.forEach(function(opt, i){
+        html += '<label class="choice" data-idx="'+i+'"><input type="radio" name="mc" value="'+i+'"><span>'+letters[i]+') '+opt+'</span></label>';
+      });
+      html += '</div>';
+    } else if(t.type==='answer'){
+      html += '<div class="fields">';
+      t.fields.forEach(function(f, i){
+        html += '<div class="field-row"><label for="f'+t.stage+'_'+i+'">'+f.label+'</label>';
+        html += '<input type="text" id="f'+t.stage+'_'+i+'" inputmode="decimal" autocomplete="off">';
+        if(f.unit) html += '<span class="unit">'+f.unit+'</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="hint-box" id="hintBox">💡 '+t.hint+'</div>';
+    html += '<div class="btn-row">';
+    html += '<button class="btn-primary" id="checkBtn">Провери ✅</button>';
+    html += '<button class="btn-hint" id="hintBtn">💡 Подсказка (−20 точки)</button>';
+    html += '<button class="btn-ghost" id="skipBtn">⏭️ Пропусни тази задача</button>';
+    html += '</div>';
+    html += '<div class="feedback" id="feedback"></div>';
+
+    taskPanel.innerHTML = html;
+    updateProgress();
+    setLevelPill(t.level);
+
+    document.getElementById('checkBtn').addEventListener('click', function(){ checkCurrentTask(t); });
+    document.getElementById('hintBtn').addEventListener('click', function(){ useHint(t); });
+    document.getElementById('skipBtn').addEventListener('click', function(){ skipTask(t); });
+
+    if(t.type==='mc'){
+      var choiceEls = taskPanel.querySelectorAll('.choice');
+      choiceEls.forEach(function(el){
+        el.addEventListener('click', function(){
+          choiceEls.forEach(function(c){ c.classList.remove('selected'); });
+          el.classList.add('selected');
+          el.querySelector('input').checked = true;
+        });
+      });
+    }
+    if(t.type==='answer'){
+      var inputs = taskPanel.querySelectorAll('.field-row input');
+      inputs.forEach(function(inp){
+        inp.addEventListener('keydown', function(e){
+          if(e.key==='Enter'){ checkCurrentTask(t); }
+        });
+      });
+    }
+
+    if(t.timer){
+      t.timeLeft = t.timer;
+      t.timedOut = false;
+      var timerInner = document.getElementById('timerInner');
+      var timerSeconds = document.getElementById('timerSeconds');
+      state.timerHandle = setInterval(function(){
+        t.timeLeft--;
+        var pct = Math.max(0, (t.timeLeft/t.timer)*100);
+        if(timerInner) timerInner.style.width = pct + '%';
+        if(timerSeconds) timerSeconds.textContent = Math.max(0,t.timeLeft) + 's';
+        if(pct < 30 && timerInner) timerInner.classList.add('low');
+        if(t.timeLeft <= 0){
+          stopTimer();
+          t.timedOut = true;
+          showFeedback('⏱️ Времето изтече! Няма проблем — архитектите понякога отделят повече време за важните чертежи.', 'info');
+        }
+      }, 1000);
+    }
+  }
+
+  function useHint(t){
+    var box = document.getElementById('hintBox');
+    box.classList.add('show');
+    if(!t.hintUsed){
+      t.hintUsed = true;
+      addScore(-20);
+      document.getElementById('hintBtn').textContent = '💡 Подсказката е показана';
+      document.getElementById('hintBtn').disabled = true;
+    }
+  }
+
+  function showFeedback(msg, kind){
+    var fb = document.getElementById('feedback');
+    if(!fb) return;
+    fb.textContent = msg;
+    fb.className = 'feedback show ' + kind;
+  }
+
+  function markFieldsWrong(){
+    var inputs = taskPanel.querySelectorAll('.field-row input');
+    inputs.forEach(function(inp){
+      inp.classList.add('wrong');
+      setTimeout(function(){ inp.classList.remove('wrong'); }, 400);
+    });
+  }
+
+  function checkCurrentTask(t){
+    var allCorrect = true;
+
+    if(t.type==='mc'){
+      var checked = taskPanel.querySelector('input[name="mc"]:checked');
+      if(!checked){ showFeedback('Първо избери отговор от вариантите А, Б, В или Г.', 'wrong'); return; }
+      allCorrect = (parseInt(checked.value,10) === t.correctIndex);
+    } else if(t.type==='answer'){
+      t.fields.forEach(function(f, i){
+        var inp = document.getElementById('f'+t.stage+'_'+i);
+        var val = parseNumber(inp.value);
+        var ok = numClose(val, f.expected, f.tol);
+        if(!ok){ allCorrect = false; inp.classList.add('wrong'); }
+        else { inp.classList.remove('wrong'); }
+      });
+    }
+
+    if(allCorrect){
+      var pts = t.points;
+      var bonus = 0;
+      if(t.timer && !t.timedOut && t.timeLeft>0){
+        bonus = 20;
+        state.timeBonusTotal += 20;
+      }
+      pts += bonus;
+      completeTask(t, pts, 'correct', bonus);
+    } else {
+      if(!t.wrongOnce){
+        t.wrongOnce = true;
+        addScore(-25);
+      }
+      showFeedback(pick(WRONG_MESSAGES), 'wrong');
+      setTimeout(function(){
+        var live = document.getElementById('feedback');
+        if(live) markFieldsWrong();
+      }, 0);
+    }
+  }
+
+  function skipTask(t){
+    if(t.done) return;
+    completeTask(t, 0, 'skip', 0);
+  }
+
+  function completeTask(t, pts, kind, bonus){
+    if(t.done) return;
+    t.done = true;
+    stopTimer();
+    addScore(pts);
+    if(kind==='correct') state.correctCount++;
+    if(kind==='skip') state.skippedCount++;
+    revealHousePart(t.stage);
+
+    var msg;
+    if(kind==='info'){
+      msg = '🐰 Мишо благодари на Боян за издръжливостта! +' + pts + ' точки за упоритост.';
+    } else if(kind==='skip'){
+      msg = pick(SKIP_MESSAGES);
+    } else {
+      msg = pick(CORRECT_MESSAGES) + ' +' + pts + ' точки' + (bonus ? ' (⚡ +' + bonus + ' бонус за бързина!)' : '');
+    }
+    showFeedback(msg, kind==='skip' ? 'info' : 'correct');
+
+    var checkBtn = document.getElementById('checkBtn');
+    var hintBtn = document.getElementById('hintBtn');
+    var skipBtn = document.getElementById('skipBtn');
+    var continueBtn = document.getElementById('continueBtn');
+    if(checkBtn) checkBtn.disabled = true;
+    if(hintBtn) hintBtn.disabled = true;
+    if(skipBtn) skipBtn.disabled = true;
+    if(continueBtn) continueBtn.style.display = 'none';
+    var mcInputs = taskPanel.querySelectorAll('input[name="mc"]');
+    mcInputs.forEach(function(el){ el.disabled = true; });
+    var fieldInputs = taskPanel.querySelectorAll('.field-row input');
+    fieldInputs.forEach(function(el){ el.disabled = true; });
+
+    var btnRow = taskPanel.querySelector('.btn-row');
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'btn-next';
+    nextBtn.textContent = (state.currentIndex < tasks.length-1) ? 'Напред към следващата мисия →' : 'Виж финалния резултат 🏆';
+    nextBtn.addEventListener('click', goNext);
+    btnRow.appendChild(nextBtn);
+    updateProgress();
+  }
+
+  function goNext(){
+    state.currentIndex++;
+    if(state.currentIndex >= tasks.length){
+      showFinal();
+    } else {
+      renderTask(state.currentIndex);
+      taskPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }
+
+  function showFinal(){
+    var pct = Math.round((state.score / maxPossibleScore) * 100);
+    pct = Math.max(0, Math.min(100, pct));
+    var title, misho;
+    if(pct < 40){
+      title = 'Архитект-помощник 🌱';
+      misho = "🐰 Мишо прегръща Боян: „Благодаря ти за помощта! Заедно ще продължим да учим и строим — следващия път ще бъде още по-добре!“";
+    } else if(pct < 60){
+      title = 'Млад архитект 🧰';
+      misho = "🐰 Мишо подскача радостно: „Ти си истински млад архитект! Къщата ми изглежда чудесно!“";
+    } else if(pct < 80){
+      title = 'Архитект на Мишо 🏗️';
+      misho = "🐰 Мишо танцува от щастие: „Ти си АРХИТЕКТЪТ на Мишо! Точно такава мечтаех да е къщата ми!“";
+    } else {
+      title = 'Главен архитект на Мишо 👑';
+      misho = "🐰 Мишо развява знаменце от покрива: „Ти си ГЛАВНИЯТ архитект на Мишо — най-добрата къща на света!“";
+    }
+    document.getElementById('finalBadge').textContent = title;
+    document.getElementById('finalBadge').style.background = pct>=80 ? 'var(--l1-bg)' : pct>=60 ? 'var(--l2-bg)' : pct>=40 ? 'var(--l3-bg)':'var(--l4-bg)';
+    document.getElementById('finalBadge').style.color = pct>=80 ? 'var(--l1)' : pct>=60 ? 'var(--l2)' : pct>=40 ? 'var(--l3)':'var(--l4)';
+    document.getElementById('finalMisho').textContent = misho;
+
+    var statsHtml = '';
+    statsHtml += '<div><span>⭐ Общи точки:</span><b>' + state.score + ' / ' + maxPossibleScore + '</b></div>';
+    statsHtml += '<div><span>🧮 Правилни отговори:</span><b>' + state.correctCount + ' / ' + GRADED_TOTAL + '</b></div>';
+    if(state.skippedCount > 0){
+      statsHtml += '<div><span>⏭️ Пропуснати задачи:</span><b>' + state.skippedCount + '</b></div>';
+    }
+    statsHtml += '<div><span>🏗️ Завършен проект:</span><b>14 / 14 мисии</b></div>';
+    statsHtml += '<div><span>⚡ Бонус за бързина:</span><b>+' + state.timeBonusTotal + ' точки</b></div>';
+    statsHtml += '<div><span>📊 Резултат:</span><b>' + pct + '%</b></div>';
+    document.getElementById('finalStats').innerHTML = statsHtml;
+
+    finalOverlay.classList.add('show');
+  }
+
+  // init
+  setLevelPill(1);
+  updateProgress();
+  renderTask(0);
+
+})();
+</script>
+</body>
+</html>
+
+</body></html>

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Отборът по оста · 6. клас</title>
+<meta name="description" content="Интерактивен урок за 6. клас, седмица 5: три учебни часа по числовата ос, модула, сравняването и събирането на рационални числа — за двама ученици, които работят като отбор." />
+<!-- =====================================================================
+     Отборът по оста — 6. клас, седмица 5
+     ---------------------------------------------------------------------
+     План за ТРИ учебни часа по 45 минути, за двама силни ученици, които
+     работят като един отбор: 28 задачи и 5 игри (Подредете оста, Вярно
+     или грешно, Скачачът по оста, Лавина с жокер). Час 1 е ос, модул и
+     сравняване (седмици 4–5), час 2 е събирането (седмица 6), час 3 са
+     свойствата и поглед към изваждането (седмица 7).
+
+     Урокът не иска вход и нищо не предава към платформата.
+     ===================================================================== -->
+<style>
+/* основите, които страницата имаше в claude.ai */
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: graph-paper notebook (same family as the 7th-grade page), teal ink for 6th grade; hour tabs + team star bar + phase timeline + games + task cards */
+:root{
+  --bg:#f5f9f8; --grid:#dcebe7; --paper:#ffffff; --ink:#173a3a; --muted:#557272;
+  --line:#cfe1dc; --accent:#0f8a7e; --hi:#ffd84d; --hi-ink:#3a3000;
+  --ok:#1f9d63; --bad:#d6453d; --chip:#e3f4f0; --neg:#2f6fe0; --pos:#e2603a;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-math:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1b1c; --grid:#162a2b; --paper:#132425; --ink:#e3f2ef; --muted:#93b3ae;
+  --line:#25403f; --accent:#4fd1c0; --hi:#ffd84d; --hi-ink:#2b2400;
+  --ok:#43c98a; --bad:#ff7a70; --chip:#1a3534; --neg:#7fa8ff; --pos:#ff9a74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1b1c; --grid:#162a2b; --paper:#132425; --ink:#e3f2ef; --muted:#93b3ae;
+  --line:#25403f; --accent:#4fd1c0; --hi:#ffd84d; --hi-ink:#2b2400;
+  --ok:#43c98a; --bad:#ff7a70; --chip:#1a3534; --neg:#7fa8ff; --pos:#ff9a74; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:18px}
+header h1{font-family:var(--f-display);font-weight:700;font-size:clamp(1.5rem,5vw,2.3rem);line-height:1.15;margin:0;text-wrap:balance}
+header h1 mark{background:var(--hi);color:var(--hi-ink);padding:0 .2em;border-radius:3px}
+.sub{color:var(--muted);margin:.4rem 0 0;max-width:65ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:var(--chip);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:500}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding-block:6px;background:var(--bg)}
+.tab{font-family:var(--f-display);font-size:.8rem;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;line-height:1.25}
+.tab small{display:block;font-family:var(--f-body);font-size:.72rem;color:var(--muted);font-weight:500}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.tab[aria-selected="true"] small{color:var(--paper);opacity:.8}
+.tab:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.team{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:12px 14px}
+.team .tn{min-width:0;flex:1 1 160px}
+.team .tn span{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.team input{font:inherit;font-family:var(--f-display);font-size:1rem;width:100%;border:0;border-bottom:2px dashed var(--line);background:transparent;color:var(--ink);padding:2px 0}
+.team .stars{flex:2 1 220px;display:flex;flex-direction:column;gap:6px}
+.team .bar{height:14px;border-radius:999px;background:var(--chip);overflow:hidden}
+.team .bar i{display:block;height:100%;width:0;background:var(--hi);transition:width .4s ease}
+.team .sc{font-family:var(--f-math);font-size:.9rem;color:var(--muted)}
+.team .sc b{color:var(--ink);font-size:1.2rem}
+.timer{background:var(--ink);color:var(--paper);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.timer .now{min-width:0}
+.timer .now span{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.clock{font-family:var(--f-math);font-size:2.2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.clock.low{color:var(--hi)}
+.tbtns{display:flex;gap:8px}
+.tbtns button{font:inherit;font-weight:700;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;background:var(--hi);color:var(--hi-ink)}
+.tbtns button.ghost{background:transparent;color:var(--paper);border:1px solid currentColor}
+section.panel{display:flex;flex-direction:column;gap:16px}
+h2{font-family:var(--f-display);font-size:1.15rem;margin:0}
+.goal{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.goal b{color:var(--accent)}
+.phases{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.phase{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.phase.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.phase .mins{font-family:var(--f-math);font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;font-size:.9rem}
+.phase .mins small{display:block;color:var(--muted);font-weight:500;font-size:.72rem}
+.phase h3{margin:0 0 2px;font-size:1rem}
+.phase p{margin:0;color:var(--muted);font-size:.92rem}
+.phase .tag{display:inline-block;font-size:.72rem;font-weight:700;background:var(--hi);color:var(--hi-ink);padding:1px 8px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.tasks{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.task{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.task .n{font-family:var(--f-math);font-size:.75rem;color:var(--muted)}
+.task .q{font-family:var(--f-math);font-size:1rem;line-height:1.55;overflow-wrap:anywhere}
+.task .q.txt{font-family:var(--f-body)}
+.task button{align-self:flex-start;font:inherit;font-size:.85rem;font-weight:700;background:var(--chip);color:var(--accent);border:0;border-radius:6px;padding:5px 10px;cursor:pointer}
+.ans{font-family:var(--f-math);font-size:.9rem;border-top:1px dashed var(--line);padding-top:8px}
+.ans b{background:var(--hi);color:var(--hi-ink);padding:0 4px;border-radius:3px}
+.lvl{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
+.lvl.l2{color:var(--accent)}.lvl.l3{color:var(--bad)}.lvl.l4{color:var(--neg)}
+.game{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.game .hint{margin:0;color:var(--muted);font-size:.92rem}
+.big{font-family:var(--f-math);font-size:clamp(1.6rem,7vw,2.6rem);font-weight:700;text-align:center;padding:10px 0;overflow-wrap:anywhere}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.btn{font:inherit;font-weight:700;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:10px;padding:10px 16px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.btn.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.no{background:var(--bad);border-color:var(--bad);color:#fff}
+.fb{text-align:center;font-weight:700;min-height:1.5em}
+.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.score{font-family:var(--f-math);text-align:center;color:var(--muted)}
+.nl{width:100%;overflow-x:auto}
+.nl svg{display:block;width:100%;min-width:520px;height:auto}
+.nl .ax{stroke:var(--ink);stroke-width:2}
+.nl .tk{stroke:var(--ink);stroke-width:1.5}
+.nl .tl{fill:var(--muted);font:12px var(--f-math);text-anchor:middle}
+.nl .tl.z{fill:var(--ink);font-weight:700}
+.nl .dot{fill:var(--accent)}
+.nl .dl{fill:var(--ink);font:bold 12px var(--f-math);text-anchor:middle}
+.nl .arc{fill:none;stroke-width:3;stroke-linecap:round}
+.nl .arc.p{stroke:var(--pos)}.nl .arc.n{stroke:var(--neg)}
+.nl .start{fill:var(--ink)}.nl .end{fill:var(--hi);stroke:var(--ink);stroke-width:2}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chips button{font-family:var(--f-math);font-size:1.05rem;font-weight:700;border:2px solid var(--ink);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chips button.done{border-color:var(--ok);background:var(--ok);color:#fff;cursor:default}
+.chips button.pick{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.jump{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;font-family:var(--f-math);font-size:1.2rem;font-weight:700}
+.jump input{font:inherit;width:6.5ch;text-align:center;padding:6px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.locks{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.lock{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.lock.open{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+.lock .q{font-family:var(--f-math);font-size:.95rem}
+.lock input{font:inherit;font-family:var(--f-math);font-size:1.1rem;width:100%;padding:6px 10px;border:2px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.code{display:flex;gap:8px;justify-content:center}
+.code span{width:48px;height:60px;border:2px solid var(--ink);border-radius:8px;display:grid;place-items:center;font-family:var(--f-math);font-size:1.8rem;font-weight:700;background:var(--paper)}
+.code span.on{background:var(--hi);color:var(--hi-ink);border-color:var(--hi)}
+.notes{background:var(--paper);border-left:4px solid var(--hi);border-radius:0 12px 12px 0;padding:12px 16px}
+.notes ul{margin:.3rem 0 0;padding-left:1.1rem}
+.notes li{margin:.2rem 0}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.pop{animation:pop .35s ease}.shake{animation:shake .3s ease}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.pop,.shake{animation:none}.nl .arc{animation:none!important;stroke-dashoffset:0!important}}
+footer{color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>6 клас · <mark>Рационални числа</mark><br>отборът по оста</h1>
+  <p class="sub">3 учебни часа × 45 мин за двама силни ученици, които работят като един отбор. Темата следва училището следващата седмица: събиране на рационални числа с еднакви и с различни знаци и свойства на събирането. Час 1 загрява с числова ос и модул, а час 3 надниква в изваждането.</p>
+  <div class="meta"><span class="chip">2 ученици · 1 отбор</span><span class="chip">28 задачи + 5 игри</span><span class="chip">повишена трудност</span></div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="t0" aria-selected="true">Час 1<small>Ос, модул, сравняване</small></button>
+  <button class="tab" role="tab" id="t1" aria-selected="false">Час 2<small>Събиране на рационални</small></button>
+  <button class="tab" role="tab" id="t2" aria-selected="false">Час 3<small>Свойства и умно смятане</small></button>
+</div>
+
+<div class="team" aria-label="Табло на отбора">
+  <div class="tn"><span>Отбор</span><input id="tName" value="Числовите откриватели" aria-label="Име на отбора"></div>
+  <div class="stars"><div class="bar"><i id="bar"></i></div><div class="sc" id="sc"><b>0</b> / 30 ⭐ до общата награда</div></div>
+  <div class="row"><button class="btn" id="stM" aria-label="Махни звезда">−</button><button class="btn primary" id="stP">+1 ⭐</button></div>
+</div>
+
+<div class="timer" aria-live="polite">
+  <div class="now"><span>Сега</span><strong id="nowName">Избери етап отдолу</strong></div>
+  <div class="clock" id="clock">00:00</div>
+  <div class="tbtns"><button id="play">Старт</button><button class="ghost" id="reset">Нулирай</button></div>
+</div>
+
+<main id="panels"></main>
+
+<footer>Последователността следва учебниците по новата програма: числова ос → противоположни числа и модул → сравняване → събиране с еднакви знаци → с различни знаци → свойства на събирането → изваждане. Ако класът им изостава или избързва с урок, разменете час 1 и час 3.</footer>
+</div>
+
+<script>
+const M="−";
+function fN(x){const r=Math.round(x*1000)/1000;return (r<0?M:"")+String(Math.abs(r)).replace(".",",")}
+function pN(s){return parseFloat(String(s).trim().replace(/[−–]/g,"-").replace(",","."))}
+
+const HOURS=[
+{
+  goal:"<b>Цел:</b> уверено движение по числовата ос: противоположни числа, модул като разстояние до 0 и сравняване на дроби и десетични с различни знаци.",
+  phases:[
+    [5,"Загрявка: асансьорът","Сградата има 3 подземни етажа. „Качвам се от −3 на 4. Колко етажа минах?“ Първо единият измисля въпрос за другия, после сменят. Така естествено стигат до разстояние по оста."],
+    [8,"Подредете оста","Играта по-долу. Двамата трябва да се съгласят за всяко следващо число, преди да го натиснат. Всяка правилно поставена точка излиза на оста. Цялата ос подредена = +3 ⭐.","игра"],
+    [18,"Задачи 1–10 като „пилот и навигатор“","Единият пише, другият диктува и обосновава всяка стъпка. На всяка задача сменят ролите. Задачи 9–10 решават поотделно и после сравняват. Вярна задача = +1 ⭐."],
+    [8,"Вярно или грешно?","Имат 10 сек да се договорят и вдигат ЕДНА обща карта. Ако не са съгласни, всеки трябва да даде пример или контрапример. Верен отговор = +1 ⭐.","игра"],
+    [6,"Обяснете на мен","Всеки обяснява на теб едно правило със свои думи: „модулът е…“, „по-голямо е това число, което…“. Партньорът допълва."]
+  ],
+  tasks:[
+    ["Подреди във възходящ ред:<br>−2,5; 1/3; −2⅔; 0; −0,3; |−2|","<b>−2⅔ &lt; −2,5 &lt; −0,3 &lt; 0 &lt; 1/3 &lt; 2</b>. Капан: −2⅔ ≈ −2,67 е по-малко от −2,5.",2],
+    ["Колко цели числа има между −4,2 и 3,7?","−4, −3, …, 3 → <b>8 числа</b>",2],
+    ["Сравни −5/6 и −4/5.","5/6 = 25/30, 4/5 = 24/30. По-голям модул → по-малко число: <b>−5/6 &lt; −4/5</b>",3],
+    ["Сравни −0,7 и −3/4.","−3/4 = −0,75 → <b>−3/4 &lt; −0,7</b>",2],
+    ["a = −3,2. Намери −a, |a|, −|a| и |−a|.","<b>3,2; 3,2; −3,2; 3,2</b>",2],
+    ["Колко цели числа x изпълняват |x| &lt; 3? Колко е сборът им?","−2, −1, 0, 1, 2 → <b>5 числа, сбор 0</b>",3],
+    ["Точка A е в −3, а B е в 5. Колко е разстоянието AB и кое число е по средата?","AB = 8; средата е на 4 от всяка → <b>8 и 1</b>",3],
+    ["Кои числа са на разстояние 4 от −1?","−1 + 4 и −1 − 4 → <b>3 и −5</b>",3],
+    ["Опрости: −(−(−4)) и −|−4|","<b>−4 и −4</b>. Нечетен брой минуси → отрицателно.",2],
+    ["Намери x: |x − 1| = 3","Разстоянието от x до 1 е 3 → <b>x = 4 или x = −2</b>",4]
+  ],
+  notes:[
+    "Това са силни ученици, затова задачите са от „средна“ нагоре. Задача 10 е предизвикателство: подскажи само „модулът е разстояние“.",
+    "„Пилот и навигатор“: следи навигаторът да казва защо, а не само какво. Похвалявай доброто обяснение, не скоростта.",
+    "При „Вярно или грешно“ най-ценни са несъгласията: оставяй ги да спорят 30 сек, преди да покажеш отговора."
+  ]
+},
+{
+  goal:"<b>Цел:</b> сами да открият правилата за събиране с еднакви и с различни знаци и да ги прилагат с дроби и десетични числа.",
+  phases:[
+    [5,"Загрявка: термометърът","Задача 16 без коментар. Единият чертае термометър на дъската, другият мести „живака“. После обясняват на теб какво се случи."],
+    [8,"Скачачът по оста: откриваме правилото","Играта по-долу. Пробват заедно поне 5 двойки числа (+ и +, − и −, + и −). Задачата им е сами да формулират правилото за различни знаци и да го запишат на дъската. Записано правило = +3 ⭐.","игра"],
+    [17,"Отборна мисия: задачи 11–20","Един маркер, една дъска. Единият решава ред, подава маркера, другият продължава. Може да каже „стоп, тук има грешка“. Вярна задача = +1 ⭐, без твоя подсказка = +2 ⭐.","игра"],
+    [10,"Лавина с жокер","Генераторът по-долу. Редуват се, но всеки има „жокер“ да попита партньора. Всеки верен отговор = +1 ⭐ за отбора.","игра"],
+    [5,"Правилото с наши думи","Двамата заедно пишат правилото на картон, който остава в стаята за следващия час."]
+  ],
+  tasks:[
+    ["−3,7 + (−4,8)","Еднакви знаци: събираме модулите, знакът остава → <b>−8,5</b>",2],
+    ["−2/3 + (−5/6)","−4/6 + (−5/6) = −9/6 = <b>−1½</b>",2],
+    ["7,25 + (−9,5)","9,5 − 7,25 = 2,25, знакът е на −9,5 → <b>−2,25</b>",2],
+    ["−3⅓ + 5½","−20/6 + 33/6 = 13/6 = <b>2⅙</b>",3],
+    ["−0,75 + 3/8","−6/8 + 3/8 = <b>−3/8</b>",3],
+    ["Сутрин е −7,5°C. До обяд се затопля с 12,3°, а до вечерта изстива с 9,4°. Колко градуса е вечерта?","−7,5 + 12,3 = 4,8; 4,8 + (−9,4) = <b>−4,6°C</b>",3],
+    ["Асансьорът тръгва от етаж −2: +7, −4, +3, −6. На кой етаж спира?","−2 → 5 → 1 → 4 → <b>−2</b>, обратно в началото!",2],
+    ["Какво число трябва да прибавим към −3,5, за да получим 1,2?","Разстоянието от −3,5 до 1,2 е 4,7 → <b>4,7</b>",3],
+    ["Сбор на всички цели числа от −10 до 12","От −10 до 10 се унищожават по двойки → 11 + 12 = <b>23</b>",4],
+    ["a = −2,4; b = 1,6; c = −0,7.<br>Намери a + b + c и |a| + |b| + |c|.","a + b + c = <b>−1,5</b>; |a| + |b| + |c| = <b>4,7</b>",3]
+  ],
+  notes:[
+    "Не казвай правилото за различни знаци предварително. Скачачът е направен така, че да го открият сами: виждат кой скок е по-дълъг.",
+    "Задача 19 е звездата на часа. Ако се затруднят, питай: „Кои числа се унищожават?“",
+    "Ако единият решава много по-бързо, дай му ролята на проверяващия, който пита „защо?“, а не на решаващия."
+  ]
+},
+{
+  goal:"<b>Цел:</b> умно смятане чрез разместително и съдружително свойство и групиране на противоположни числа. Като бонус: изваждането е събиране с противоположното.",
+  phases:[
+    [6,"Двойки със сбор 1","Играта по-долу. Заедно намират двойки плочки със сбор точно 1. Всяка двойка изисква съгласие на двамата. Всички 5 двойки = +3 ⭐.","игра"],
+    [4,"Правилата на дъската","Разместително: a + b = b + a. Съдружително: (a + b) + c = a + (b + c). Противоположни числа дават 0. Нека те дадат пример за всяко."],
+    [17,"„Учител за 2 минути“: задачи 21–28","Единият решава задача и я обяснява на другия като учител, после сменят ролите. На 25–26 (изваждане) ги остави сами да открият, че a − b = a + (−b)."],
+    [13,"Escape room: 4 ключалки","10 мин срещу часовника. Всеки отключва по 2 ключалки, но партньорът проверява преди въвеждане. Отворена врата = +5 ⭐.","игра"],
+    [5,"Рефлексия","Преброявате звездите. Всеки казва какво партньорът му е обяснил добре днес и какво още не е съвсем ясно."]
+  ],
+  tasks:[
+    ["−4,7 + 8,3 + (−5,3) + 4,7","(−4,7 + 4,7) + (8,3 + (−5,3)) = 0 + 3 = <b>3</b>",2],
+    ["−1/3 + 2,5 + (−2/3) + (−1,5)","(−1/3 − 2/3) + (2,5 − 1,5) = −1 + 1 = <b>0</b>",3],
+    ["−2⅗ + 1,75 + (−0,4) + 3¼","(−2,6 + (−0,4)) + (1,75 + 3,25) = −3 + 5 = <b>2</b>",3],
+    ["1 + (−2) + 3 + (−4) + … + 99 + (−100)","50 двойки по −1 → <b>−50</b>",4],
+    ["5,2 − (−3,8)","Изваждане = прибавяне на противоположното: 5,2 + 3,8 = <b>9</b>",3],
+    ["−3/4 − 5/6","−9/12 + (−10/12) = −19/12 = <b>−1 7/12</b>",3],
+    ["Сборът на 5 последователни цели числа е −15. Кои са?","Средното е −15 : 5 = −3 → <b>−5, −4, −3, −2, −1</b>",4],
+    ["Във всяка редица всяко число е сбор от двете преди него: −3; 2; …<br>Намери следващите 4.","−3 + 2 = −1; 2 + (−1) = 1; −1 + 1 = 0; 1 + 0 = 1 → <b>−1; 1; 0; 1</b>",3]
+  ],
+  notes:[
+    "Изваждането (25–26) вероятно още не са го учили. Ако се справят, са с урок напред, и това е чудесен знак за родителите.",
+    "Escape room-ът е последен нарочно: завършваме с общ успех.",
+    "Задача 24 и 27 са олимпиадни по дух. Ако ги решат без помощ, дай по +2 ⭐."
+  ]
+}];
+
+/* ---------- Number line SVG ---------- */
+const NS="http://www.w3.org/2000/svg";
+function lineSVG(min,max){
+  const W=640,H=110,pad=30,y=70;const X=v=>pad+(v-min)/(max-min)*(W-2*pad);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Числова ос от ${fN(min)} до ${fN(max)}"><line class="ax" x1="${pad-10}" y1="${y}" x2="${W-pad+10}" y2="${y}"/>`;
+  for(let v=min;v<=max;v++){s+=`<line class="tk" x1="${X(v)}" y1="${y-6}" x2="${X(v)}" y2="${y+6}"/><text class="tl${v===0?" z":""}" x="${X(v)}" y="${y+24}">${fN(v)}</text>`}
+  return {html:s+`<g class="layer"></g></svg>`,X,y};
+}
+
+/* ---------- Game data ---------- */
+const ORDER=[["−2⅔",-8/3],["−2,5",-2.5],["−|−1,5|",-1.5],["−0,3",-0.3],["0",0],["1/3",1/3],["|−2|",2],["2,75",2.75]];
+const TF=[
+  ["−5 > −3",false,"на оста −5 е по-наляво"],
+  ["|−4,5| = 4,5",true,"модулът е разстояние до 0"],
+  ["−1/2 < −1/3",true,"1/2 > 1/3, по-големият модул дава по-малко отрицателно число"],
+  ["|a| винаги е положително число",false,"|0| = 0, а 0 не е положително"],
+  ["Между −1 и 0 няма рационални числа",false,"−0,5; −1/3; −0,01… безброй са"],
+  ["−(−(−2)) = 2",false,"три минуса → −2"],
+  ["Ако a < 0, то −a > 0",true,"противоположното на отрицателно е положително"],
+  ["Сборът на две отрицателни числа може да е положителен",false,"винаги е отрицателен"]
+];
+const PAIRS=[["−2,5","3,5"],["1,75","−0,75"],["−1/3","4/3"],["0,6","0,4"],["−7","8"]];
+const LOCKS=[["|−8| + (−5)","3"],["−2,5 + 9,5","7"],["Колко цели числа има между −2,5 и 2,5?","5"],["−17 + 26","9"]];
+function avalancheQ(){
+  const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,t=r(0,3),wrap=v=>v<0?"("+fN(v)+")":fN(v);
+  if(t===0){const a=r(-20,20)||-7,b=r(-20,20)||9;return [fN(a)+" + "+wrap(b),a+b]}
+  if(t===1){const a=r(-19,19)/2||-3.5,b=r(-19,19)/2||2.5;return [fN(a)+" + "+wrap(b),a+b]}
+  if(t===2){const d=[4,5,8,10][r(0,3)],a=r(-9,-1),b=r(1,9);const s=a+b;return [`${M}${-a}/${d} + ${b}/${d}`,null,(s<0?M:"")+Math.abs(s)+"/"+d]}
+  const a=r(-50,-10)/10,b=r(10,50)/10;return [fN(a)+" + "+fN(b),a+b]
+}
+
+function gameHTML(h){
+  if(h===0) return `
+  <div class="game"><h2>Подредете оста</h2>
+    <p class="hint">Натискайте числата от най-малкото към най-голямото. Двамата се договарят преди всяко натискане.</p>
+    <div class="chips" id="ordChips"></div>
+    <div class="nl" id="ordLine"></div>
+    <div class="fb" id="ordF"></div>
+    <div class="row"><button class="btn" id="ordReset">Отначало</button></div></div>
+  <div class="game" id="tf"><h2>Вярно или грешно?</h2>
+    <div class="big" id="tfQ"></div><div class="fb" id="tfF"></div>
+    <div class="row"><button class="btn good" data-v="1">Вярно ✔</button><button class="btn no" data-v="0">Грешно ✘</button></div>
+    <div class="score" id="tfS"></div></div>`;
+  if(h===1) return `
+  <div class="game"><h2>Скачачът по оста</h2>
+    <p class="hint">Въведете две числа от −10 до 10 (може с десетична запетая). Скачачът тръгва от първото и прави скок с второто: надясно, ако е положително, наляво, ако е отрицателно.</p>
+    <div class="jump"><input id="ja" value="−3" aria-label="Първо число"> + <input id="jb" value="5" aria-label="Второ число"> <button class="btn primary" id="jGo">Скок!</button></div>
+    <div class="nl" id="jLine"></div>
+    <div class="fb" id="jF"></div>
+    <div class="row" id="jEx"></div></div>
+  <div class="game"><h2>Лавина с жокер</h2>
+    <div class="big" id="avQ">Натисни „Нова“</div><div class="fb" id="avA"></div>
+    <div class="row"><button class="btn primary" id="avNew">Нова</button><button class="btn" id="avShow">Покажи отговора</button></div></div>`;
+  return `
+  <div class="game"><h2>Двойки със сбор 1</h2>
+    <p class="hint">Изберете две плочки, чийто сбор е точно 1.</p>
+    <div class="chips" id="prChips"></div><div class="fb" id="prF"></div></div>
+  <div class="game"><h2>Escape room · 4 ключалки</h2>
+    <div class="locks" id="locks"></div>
+    <div class="code" id="code"><span>?</span><span>?</span><span>?</span><span>?</span></div>
+    <div class="fb" id="lockF"></div></div>`;
+}
+function bump(el,c="pop"){el.classList.remove(c);void el.offsetWidth;el.classList.add(c)}
+
+function wireGames(h){
+  if(h===0){
+    const L=lineSVG(-3,3);let next=0;const sorted=[...ORDER].sort((a,b)=>a[1]-b[1]);
+    const shuffled=[...ORDER].sort(()=>Math.random()-.5);
+    function reset(){next=0;ordLine.innerHTML=L.html;ordF.textContent="";ordF.className="fb";
+      ordChips.innerHTML=shuffled.map((c,k)=>`<button data-k="${k}">${c[0]}</button>`).join("");
+      ordChips.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+        const c=shuffled[+b.dataset.k];if(b.classList.contains("done"))return;
+        if(c[1]===sorted[next][1]){b.classList.add("done");bump(b);
+          const g=ordLine.querySelector(".layer"),x=L.X(c[1]),up=next%2?-30:-14;
+          g.insertAdjacentHTML("beforeend",`<circle class="dot" cx="${x}" cy="${L.y}" r="6"/><text class="dl" x="${x}" y="${L.y+up-6}">${c[0]}</text>`);
+          next++;ordF.textContent=next===ORDER.length?"Оста е подредена! +3 ⭐":"Точно така!";ordF.className="fb ok";
+        }else{bump(b,"shake");ordF.textContent="Хм… има ли по-малко число от това? Обсъдете.";ordF.className="fb bad"}
+      })}
+    ordReset.onclick=reset;reset();
+    let i=0,pts=0;
+    const show=()=>{tfQ.textContent=TF[i][0];tfS.textContent=`Верни отговори на отбора: ${pts} / ${i}`};
+    tf.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{
+      if(i>=TF.length){i=0;pts=0;tfF.textContent="";tfF.className="fb";show();return}
+      const [,v,why]=TF[i],ok=(b.dataset.v==="1")===v;if(ok)pts++;
+      tfF.textContent=(ok?"Точно така! ":"Не съвсем. ")+why;tfF.className="fb "+(ok?"ok":"bad");
+      i++;if(i>=TF.length){tfQ.textContent="Край! 🎉";tfS.textContent=`Верни отговори на отбора: ${pts} / ${TF.length} · натисни бутон за нова игра`}else show();
+    });show();
+  }
+  if(h===1){
+    const L=lineSVG(-10,10);jLine.innerHTML=L.html;
+    function go(){
+      const a=pN(ja.value),b=pN(jb.value);
+      if(isNaN(a)||isNaN(b)||Math.abs(a)>10||Math.abs(b)>20||Math.abs(a+b)>10){jF.textContent="Изберете числа така, че и началото, и краят да са между −10 и 10.";jF.className="fb bad";return}
+      const g=jLine.querySelector(".layer"),x1=L.X(a),x2=L.X(a+b),mid=(x1+x2)/2,hgt=Math.min(55,12+Math.abs(x2-x1)/4);
+      const len=Math.abs(x2-x1)*1.4+10;
+      g.innerHTML=`<path class="arc ${b>=0?"p":"n"}" d="M${x1} ${L.y} Q${mid} ${L.y-hgt*2} ${x2} ${L.y}" style="stroke-dasharray:${len};stroke-dashoffset:${len};animation:draw .7s ease forwards"/>
+        <circle class="start" cx="${x1}" cy="${L.y}" r="6"/><circle class="end" cx="${x2}" cy="${L.y}" r="8"/>
+        <text class="dl" x="${x2}" y="${L.y-12}">${fN(a+b)}</text>`;
+      let why;
+      if(b===0)why="Прибавяне на 0 не мести скачача.";
+      else if((a>=0)===(b>=0)||a===0)why=`Еднакви знаци: ${fN(Math.abs(a))} + ${fN(Math.abs(b))} = ${fN(Math.abs(a+b))}, знакът се запазва.`;
+      else why=`Различни знаци: ${fN(Math.max(Math.abs(a),Math.abs(b)))} − ${fN(Math.min(Math.abs(a),Math.abs(b)))} = ${fN(Math.abs(a+b))}, знакът е на числото с по-голям модул.`;
+      jF.innerHTML=`${fN(a)} + ${b<0?"("+fN(b)+")":fN(b)} = ${fN(a+b)}<br><span style="font-weight:500">${why}</span>`;jF.className="fb ok";
+    }
+    jGo.onclick=go;[ja,jb].forEach(i=>i.addEventListener("keydown",e=>{if(e.key==="Enter")go()}));
+    jEx.innerHTML=[["4","3"],["−4","−3"],["−6","2,5"],["3,5","−7"],["−2","2"]].map(p=>`<button class="btn" data-a="${p[0]}" data-b="${p[1]}">${p[0]} + ${p[1].startsWith("−")?"("+p[1]+")":p[1]}</button>`).join("");
+    jEx.querySelectorAll("button").forEach(b=>b.onclick=()=>{ja.value=b.dataset.a;jb.value=b.dataset.b;go()});
+    go();
+    let cur=null;
+    avNew.onclick=()=>{cur=avalancheQ();avQ.textContent=cur[0];bump(avQ);avA.textContent=""};
+    avShow.onclick=()=>{if(cur)avA.textContent="= "+(cur[2]||fN(cur[1]))};
+  }
+  if(h===2){
+    const tiles=PAIRS.flat().map((t,k)=>({t,v:t.includes("/")?(([n,d])=>pN(n)/pN(d))(t.split("/")):pN(t),k})).sort(()=>Math.random()-.5);
+    let sel=null,found=0;
+    prChips.innerHTML=tiles.map((c,k)=>`<button data-k="${k}">${c.t}</button>`).join("");
+    prChips.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      if(b.classList.contains("done"))return;
+      if(sel===null){sel=b;b.classList.add("pick");return}
+      if(sel===b){b.classList.remove("pick");sel=null;return}
+      const a=tiles[+sel.dataset.k],c=tiles[+b.dataset.k];
+      if(Math.abs(a.v+c.v-1)<1e-9){[sel,b].forEach(x=>{x.classList.remove("pick");x.classList.add("done");bump(x)});found++;
+        prF.textContent=found===PAIRS.length?"Всички 5 двойки са намерени! +3 ⭐":`${a.t} + ${c.t.startsWith("−")?"("+c.t+")":c.t} = 1 ✔`;prF.className="fb ok"}
+      else{bump(b,"shake");sel.classList.remove("pick");prF.textContent=`${a.t} + ${c.t.startsWith("−")?"("+c.t+")":c.t} = ${fN(a.v+c.v)}. Опитайте пак.`;prF.className="fb bad"}
+      sel=null;
+    });
+    locks.innerHTML=LOCKS.map((l,k)=>`<div class="lock" id="lk${k}"><div class="q">🔒 ${l[0]}</div><input id="li${k}" inputmode="numeric" aria-label="Отговор на ключалка ${k+1}" placeholder="отговор"></div>`).join("");
+    const digits=[...code.children];
+    LOCKS.forEach((l,k)=>document.getElementById("li"+k).addEventListener("input",e=>{
+      const open=e.target.value.trim()===l[1],box=document.getElementById("lk"+k);
+      box.classList.toggle("open",open);box.querySelector(".q").textContent=(open?"🔓 ":"🔒 ")+l[0];
+      digits[k].textContent=open?l[1]:"?";digits[k].classList.toggle("on",open);
+      if(digits.every(d=>d.classList.contains("on"))){lockF.textContent="Кодът е 3759 — вратата е отворена! 🎉";lockF.className="fb ok"}else lockF.textContent="";
+    }));
+  }
+}
+
+/* ---------- Render + timer ---------- */
+let hour=0,sel=null,left=0,run=false,tick=null;
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function render(){
+  const H=HOURS[hour];let t=0;const base=[0,10,20][hour];
+  panels.innerHTML=`<section class="panel">
+    <div class="goal">${H.goal}</div>
+    <h2>План по минути</h2>
+    <ol class="phases">${H.phases.map((p,k)=>{const a=t;t+=p[0];return `<li><button class="phase" data-k="${k}"><div class="mins">${a}–${t}<small>${p[0]} мин</small></div><div><h3>${p[1]}${p[3]?`<span class="tag">${p[3]}</span>`:""}</h3><p>${p[2]}</p></div></button></li>`}).join("")}</ol>
+    ${gameHTML(hour)}
+    <h2>Задачи</h2>
+    <div class="tasks">${H.tasks.map((q,k)=>{const lv=["","","l2","l3","l4"][q[2]],lt=["","","средна","трудна","предизвикателство"][q[2]];
+      return `<div class="task"><div class="n">Задача ${base+k+1}<span class="lvl ${lv}">${lt}</span></div><div class="q${/[а-я]{4}/i.test(q[0])?" txt":""}">${q[0]}</div><button data-a="${k}">Отговор</button><div class="ans" id="a${hour}_${k}" hidden>${q[1]}</div></div>`}).join("")}</div>
+    <div class="notes"><h2>Бележки за теб</h2><ul>${H.notes.map(n=>`<li>${n}</li>`).join("")}</ul></div>
+  </section>`;
+  panels.querySelectorAll(".phase").forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+  panels.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const el=document.getElementById(`a${hour}_${b.dataset.a}`);el.hidden=!el.hidden;b.textContent=el.hidden?"Отговор":"Скрий"});
+  wireGames(hour);
+}
+function pick(k){sel=k;left=HOURS[hour].phases[k][0]*60;stop();nowName.textContent=HOURS[hour].phases[k][1];clock.textContent=fmt(left);clock.classList.remove("low");
+  panels.querySelectorAll(".phase").forEach((b,i)=>b.classList.toggle("active",i===k));start()}
+function start(){if(sel===null)return;run=true;play.textContent="Пауза";tick=setInterval(()=>{
+  left--;clock.textContent=fmt(Math.max(0,left));clock.classList.toggle("low",left<=60);
+  if(left<=0){stop();const nx=sel+1;nowName.textContent=nx<HOURS[hour].phases.length?"Време е за: "+HOURS[hour].phases[nx][1]:"Краят на часа!"}},1000)}
+function stop(){run=false;clearInterval(tick);play.textContent="Старт"}
+play.onclick=()=>{if(sel===null){pick(0);return}run?stop():(left>0&&start())};
+reset.onclick=()=>{if(sel!==null){pick(sel);stop()}};
+document.querySelectorAll(".tab").forEach((b,i)=>b.onclick=()=>{hour=i;sel=null;stop();nowName.textContent="Избери етап отдолу";clock.textContent="00:00";
+  document.querySelectorAll(".tab").forEach((x,j)=>x.setAttribute("aria-selected",j===i));render()});
+
+let stars=0;const GOAL=30;
+function drawStars(){bar.style.width=Math.min(100,stars/GOAL*100)+"%";
+  sc.innerHTML=stars>=GOAL?`<b>${stars}</b> ⭐ Наградата е отключена! 🎉`:`<b>${stars}</b> / ${GOAL} ⭐ до общата награда`;bump(sc.querySelector("b"))}
+stP.onclick=()=>{stars++;drawStars()};stM.onclick=()=>{stars=Math.max(0,stars-1);drawStars()};
+try{const n=localStorage.getItem("math6team");if(n)tName.value=n}catch(e){}
+tName.addEventListener("input",()=>{try{localStorage.setItem("math6team",tName.value)}catch(e){}});
+render();
+</script>
+
+</body>
+</html>
