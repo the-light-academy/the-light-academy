@@ -728,6 +728,12 @@ body.tlp-page { background: #FFFDF7; }
   gap: 0.75rem; flex-wrap: wrap;
 }
 .tlp__card-t { font-size: 1rem; font-weight: 800; color: var(--tlp-navy); margin: 0; }
+/* Описанието на урока: веднага под заглавието, преди реда със
+   седмицата. По-тъмно от него, защото се чете, а не се подминава. */
+.tlp__card-d {
+  margin: 0.25rem 0 0; font-size: 0.9rem; font-weight: 600;
+  line-height: 1.35; color: var(--tlp-ink);
+}
 .tlp__card-m { font-size: 0.88rem; color: var(--tlp-ink-soft); margin: 0.3rem 0 0; }
 .tlp__pct { font-size: 1.35rem; font-weight: 800; color: var(--tlp-accent-deep); font-variant-numeric: tabular-nums; }
 .tlp__bar { height: 8px; border-radius: 999px; background: rgba(13,27,54,0.08); margin-top: 0.75rem; overflow: hidden; }
@@ -1099,6 +1105,13 @@ body.tlp-page { background: #FFFDF7; }
 }
 .tlc__hw-row + .tlc__hw-row { margin-top: 0.4rem; }
 .tlc__hw-t { flex: 1 1 180px; min-width: 0; font-weight: 700; font-size: 0.9rem; color: var(--tlp-navy); }
+/* Описанието: един ред под заглавието, в същата клетка на реда — затова
+   е block, а не отделна колона, която щеше да се пренесе встрани. */
+.tlc__hw-d {
+  display: block; margin-top: 0.1rem;
+  font-weight: 600; font-size: 0.78rem; line-height: 1.3;
+  color: var(--tlp-ink-soft);
+}
 .tlc__hw-none { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0; }
 
 /* Урокът стои над заданието и се различава на един поглед: кехлибарена

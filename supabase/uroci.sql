@@ -30,7 +30,16 @@
 --  sort_order: ползва се схемата от домашните — клас · 100 + седмица
 --  (4. клас, седмица 5 → 405). Уроците са с 10 000 отгоре, за да стоят
 --  отделно: 10405.
+--
+--  description е един ред под заглавието — какво ще се случи в часа.
+--  Вижда се в календара и в портала. Може да се остави null.
 -- =====================================================================
+
+-- Колоната за описанието идва от supabase/schema-v14.sql. Повтаря се и
+-- тук (add column IF NOT EXISTS, тоест нищо не разваля), за да няма
+-- значение кой от двата файла е пуснат първи.
+alter table public.assignments
+  add column if not exists description text;
 
 -- ---------------------------------------------------------------------
 -- ОБРАЗЕЦ — копирай блока и смени четирите неща.
@@ -38,12 +47,14 @@
 -- махни последния ред с where и напиши своето.
 -- ---------------------------------------------------------------------
 insert into public.assignments
-  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
 select
   'urok-4-w05',                               -- slug
   'Урок — Деление с едноцифрено число',       -- title
   'lesson',
   'uroci/urok_4_w05.html',                    -- url
+  'Делим на части, докато не остане нищо',    -- description: един ред отдолу, може и null
   0,                                          -- max_points: урокът НЕ се оценява, винаги 0
   false,
   10405,                                      -- sort_order: 10000 + клас·100 + седмица
@@ -52,14 +63,15 @@ select
   '{4}'                                       -- grades
 where false                                   -- ← махни този ред за истински урок
 on conflict (slug) do update set
-  title      = excluded.title,
-  kind       = excluded.kind,
-  url        = excluded.url,
-  max_points = excluded.max_points,
-  sort_order = excluded.sort_order,
-  week       = excluded.week,
-  subject_id = excluded.subject_id,
-  grades     = excluded.grades;
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
 
 
 -- ---------------------------------------------------------------------
@@ -72,12 +84,14 @@ on conflict (slug) do update set
 -- Страницата е ЗА ПРЕПОДАВАТЕЛЯ: вижда се планът по минути, отговорите
 -- на всички задачи и бележките за работата с децата.
 insert into public.assignments
-  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
 values
   ('urok-7-w02',
    'Урок 1 — От числата към буквите',
    'lesson',
    'uroci/urok_7_w02.html',
+   'Три часа преговор и първата нова тема',
    0,
    false,
    10702,
@@ -85,17 +99,54 @@ values
    (select id from public.subjects where slug = 'matematika'),
    '{7}')
 on conflict (slug) do update set
-  title      = excluded.title,
-  kind       = excluded.kind,
-  url        = excluded.url,
-  max_points = excluded.max_points,
-  sort_order = excluded.sort_order,
-  week       = excluded.week,
-  subject_id = excluded.subject_id,
-  grades     = excluded.grades;
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
   -- published нарочно липсва: решава се от таблото.
 
 
+
+-- 6. клас, седмица 6 — „Рационално Гран при“: състезание на писта за
+-- Формула 1. От 2 до 8 деца играят на една клавиатура, всяко с по два
+-- клавиша; колата върви напред толкова, колкото е отговорило вярно на
+-- въпроси за рационални числа — отрицателни числа, числова ос, модул,
+-- сравняване, събиране с еднакви и с различни знаци, свойства.
+-- Три части (Състезание, Реванш, „Брад Пит във Формула 1“) и накрая
+-- таблица по теми за преподавателя: къде са грешките.
+-- Страницата е ЗА ЧАСА: не иска вход и нищо не предава — урокът не се
+-- оценява.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('urok-6-w06',
+   'Урок — Рационално Гран при',
+   'lesson',
+   'uroci/urok_6_w06.html',
+   'Състезание на писта за Формула 1',
+   0,
+   false,
+   10606,
+   6,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва: решава се от таблото.
 
 -- Какво има до момента:
 select kind as вид,

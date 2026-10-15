@@ -693,6 +693,11 @@
             '<p class="tlp__card-t">' + esc(a.title) + '</p>' +
             '<span class="tlp__chip tlp__chip--lesson">Урок</span>' +
           '</div>' +
+          /* Описанието е първото под заглавието: детето чете какво ще
+             прави в часа, преди реда със седмицата. */
+          (a.description
+            ? '<p class="tlp__card-d">' + esc(a.description) + '</p>'
+            : '') +
           '<p class="tlp__card-m">' +
             (a.week ? 'Седмица ' + a.week + ' · ' : '') +
             (a.url ? 'Интерактивен урок — гледаш и пробваш, нищо не се предава.'
