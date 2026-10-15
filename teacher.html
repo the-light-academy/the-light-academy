@@ -14,7 +14,7 @@
        ги дава с десетминутен кеш, а браузърът често ги пази и по-дълго —
        без този белег детето може да гледа вчерашния файл и да се чуди къде
        е новото. Сменя се, когато се пипне някой от тях. -->
-  <link rel="stylesheet" href="assets/portal.css?v=2026-10-13" />
+  <link rel="stylesheet" href="assets/portal.css?v=2026-10-15" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background.webp" media="(min-aspect-ratio: 1/1)" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background_mobile.webp" media="(max-aspect-ratio: 1/1)" />
 </head>
@@ -34,6 +34,7 @@
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelLessons" id="tabLessons">Моите уроци</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRoster">Ученици</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelAssign">Задания</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelFeedback">Обратна връзка</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRace">Формула 1</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelTeachers" data-admin hidden>Преподаватели</button>
     </div>
@@ -328,6 +329,79 @@
          смята от данните, които таблото вече е заредило: нито една нова
          заявка към базата и нито един ред SQL за пускане.
     -->
+    <!-- ── ОБРАТНА ВРЪЗКА ЗА РОДИТЕЛЯ ─────────────────────────── -->
+    <section class="tla-panel" id="panelFeedback" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Обратна връзка за родителя</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;">
+          Отчет за едно дете за един период. Числата ги смята платформата,
+          думите са твои. Накрая се сваля като PDF — лист, който изпращаш на
+          родителя. Детето НЕ вижда написаното тук.
+        </p>
+
+        <div class="tla-msg tla-msg--warn" id="fbMigrate" hidden>
+          Отчетите още не се пазят: в базата липсва таблицата
+          <code>feedback_reports</code>. Пусни <code>supabase/schema-v15.sql</code>
+          в Supabase. Дотогава можеш да пишеш и да сваляш PDF, но написаното
+          се губи при презареждане.
+        </div>
+
+        <div class="tla-filters">
+          <label for="fbKid">Ученик:</label>
+          <select id="fbKid"></select>
+          <span class="fb-when"><label for="fbFrom">От:</label>
+            <input class="tla-sel" type="date" id="fbFrom"></span>
+          <span class="fb-when"><label for="fbTo">До:</label>
+            <input class="tla-sel" type="date" id="fbTo"></span>
+          <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="fbRecount">Пресметни наново</button>
+        </div>
+
+        <p class="tla-empty" id="fbEmpty" hidden></p>
+
+        <div id="fbBody" hidden>
+          <h3 class="fb-h">Как върви по числа</h3>
+          <div class="fb-stats" id="fbStats"></div>
+          <div class="fb-topics" id="fbTopics"></div>
+
+          <h3 class="fb-h">Какво пишеш ти</h3>
+          <p class="tla-muted fb-hint">Празните полета не влизат в документа.
+            Кликни върху тема отгоре, за да се запише в полето под курсора.</p>
+
+          <div class="fb-f">
+            <label for="fbSummary">Накратко — първото, което родителят чете</label>
+            <textarea id="fbSummary" rows="3" placeholder="Например: Иван работи спокойно и с желание. За тези два месеца най-голямата промяна е, че вече се връща да провери отговора си, вместо да бърза напред."></textarea>
+          </div>
+          <div class="fb-f">
+            <label for="fbImproved">Какво се подобри</label>
+            <textarea id="fbImproved" rows="3" placeholder="Например: Умножението с 10, 100 и 1000 вече е автоматично. Задачите с текст ги чете до край, преди да смята."></textarea>
+          </div>
+          <div class="fb-f">
+            <label for="fbFocus">Върху какво наблягаме</label>
+            <textarea id="fbFocus" rows="3" placeholder="Например: Ред на действията — все още смята отляво надясно, когато има и умножение, и събиране. Работим с подчертаване на действието, което е първо."></textarea>
+          </div>
+          <div class="fb-f">
+            <label for="fbNoticed">Какво забелязвам</label>
+            <textarea id="fbNoticed" rows="3" placeholder="Например: Трудно сяда сам за домашното, но щом започне, работи съсредоточено. Пита, когато не разбира — това е голяма крачка."></textarea>
+          </div>
+          <div class="fb-f">
+            <label for="fbNext">Какво предстои и какво може вкъщи</label>
+            <textarea id="fbNext" rows="3" placeholder="Например: Следващите седмици са дроби. Вкъщи: по 10 минути устно смятане, 3 пъти седмично — не повече. Не проверявайте домашното вместо него; оставете грешките да дойдат при мен."></textarea>
+          </div>
+
+          <div class="fb-actions">
+            <button type="button" class="tla-btn" id="fbSave">Запази</button>
+            <button type="button" class="tla-btn tla-btn--ghost" id="fbPdf">Изтегли PDF</button>
+            <button type="button" class="tla-btn tla-btn--ghost" id="fbSent">Отбележи като изпратен</button>
+            <button type="button" class="tla-btn tla-btn--ghost" id="fbNew" hidden>Нов отчет</button>
+            <span class="tla-muted" id="fbMsg"></span>
+          </div>
+
+          <h3 class="fb-h">Досега за това дете</h3>
+          <div id="fbList"></div>
+        </div>
+      </div>
+    </section>
+
     <section class="tla-panel" id="panelRace" hidden>
       <div class="tla-card">
         <h2 class="tla-card__title">Състезание Формула 1</h2>
@@ -516,7 +590,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/supabase-config.js?v=2026-10-09"></script>
-  <script src="assets/auth.js?v=2026-10-13"></script>
+  <script src="assets/auth.js?v=2026-10-15"></script>
   <script src="assets/race.js?v=2026-10-09"></script>
   <script src="assets/analysis.js?v=2026-10-09"></script>
   <script src="assets/tracks.js?v=2026-10-09"></script>
@@ -4400,6 +4474,547 @@
         });
       });
 
+      /* ==================================================================
+         Обратна връзка за родителя
+         ------------------------------------------------------------------
+         Един документ за едно дете за един период. Числата ги смята
+         платформата, думите са на преподавателя, а накрая листът се
+         сваля като PDF и се изпраща на родителя на ръка — платформата
+         не праща писма и не пази имейли на родители.
+
+         ЗАЩО ЧИСЛАТА СЕ ЗАПИСВАТ В ОТЧЕТА
+
+         Отчетът е изпратен документ. След месец „миналия път казахме
+         78%“ трябва да се провери, а дотогава детето е предало още пет
+         домашни. Затова при запис числата отиват в stats като снимка и
+         повече не се пресмятат — отваряш стар отчет и виждаш точно
+         каквото е видял родителят.
+
+         КОЕ ЗАДАНИЕ ПАДА В ПЕРИОДА
+
+         По СЕДМИЦАТА на заданието, не по датата на предаване: домашното
+         за седмица 4 си е за седмица 4, дори детето да го е предало със
+         закъснение. Задание без седмица не се брои — няма как да се
+         сложи в период.
+         ================================================================== */
+      var fb = { kid: '', from: '', to: '', stats: null, reports: [],
+                 current: null, table: true, busy: false, lastField: null };
+
+      function fbEl(id) { return document.getElementById(id); }
+      function fbMsg(t) { var e = fbEl('fbMsg'); if (e) e.textContent = t || ''; }
+
+      function fbIso(d) {
+        return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+               '-' + ('0' + d.getDate()).slice(-2);
+      }
+      function fbDate(iso) {
+        var p = String(iso || '').split('-');
+        return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+      }
+      function fbHuman(iso) {
+        var d = fbDate(iso);
+        if (isNaN(d.getTime())) return '—';
+        return d.getDate() + ' ' + MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
+      }
+
+      /* Моите ученици. Админът вижда всички деца — той пише за всекиго. */
+      function fbStudents() {
+        var mine = {};
+        state.teaching.forEach(function (t) {
+          if (t.active === false) return;
+          if (t.teacher_id === (state.me && state.me.id)) mine[t.student_id] = 1;
+        });
+        return state.roster.filter(function (p) {
+          return p.role === 'student' && p.active !== false &&
+                 (state.isAdmin || mine[p.id]);
+        }).sort(function (a, b) {
+          return String(a.full_name || '').localeCompare(String(b.full_name || ''), 'bg');
+        });
+      }
+
+      /* Заданията, дадени на това дете, чиято седмица пада в периода. */
+      function fbGiven(kid, fromIso, toIso) {
+        var pr = state.profiles[kid];
+        if (!pr) return [];
+        var prog = programmeFor(gradeOf(pr));
+        if (!prog) return [];
+        var teachers = {};
+        state.teaching.forEach(function (t) {
+          if (t.student_id === kid && t.active !== false) teachers[t.teacher_id] = 1;
+        });
+        var given = {};
+        state.releases.forEach(function (r) {
+          if (teachers[r.teacher_id] && !r.hidden) given[r.assignment_id] = 1;
+        });
+        var from = fbDate(fromIso), to = fbDate(toIso);
+        return calAll.filter(function (a) {
+          if (!TLA.isGradable(a)) return false;      /* урокът не се оценява */
+          if (!given[a.id]) return false;
+          if (!assignmentIsForGrade(a, gradeOf(pr))) return false;
+          if (!a.week) return false;
+          var d = weekDates(prog, a.week);
+          return !(d.to < from || d.from > to);
+        });
+      }
+
+      /* Колко от възможното е събрала една работа. */
+      function fbCapOf(t) {
+        var cap = Number(t.auto_max || 0) + Number(t.manual_max || 0);
+        if (cap) return cap;
+        var a = state.assignments[t.assignment_id];
+        return a ? Number(a.max_points || 0) : 0;
+      }
+
+      /* Средният резултат е претеглен: точки от възможните точки, не
+         средно аритметично на процентите. Инак едно домашно от 4 точки
+         тежи колкото изпит от 40. */
+      function fbAvg(list) {
+        var pts = 0, max = 0;
+        list.forEach(function (t) {
+          var cap = fbCapOf(t);
+          if (!cap) return;
+          pts += Number(t.total_score || 0); max += cap;
+        });
+        return max ? { pts: pts, max: max, pct: Math.round(pts / max * 100) }
+                   : { pts: 0, max: 0, pct: null };
+      }
+
+      async function fbCompute() {
+        var kid = fb.kid, fromIso = fb.from, toIso = fb.to;
+        if (!kid || !fromIso || !toIso) return null;
+
+        var from = fbDate(fromIso), to = fbDate(toIso);
+        var span = Math.round((to - from) / 86400000) + 1;
+        var prevTo = new Date(from.getTime());   prevTo.setDate(prevTo.getDate() - 1);
+        var prevFrom = new Date(prevTo.getTime()); prevFrom.setDate(prevFrom.getDate() - span + 1);
+
+        /* Една заявка за двата периода наведнъж. Незавършените работи
+           нямат дата на предаване и затова не влизат — те се виждат по
+           друг начин: като „непредадено“ от дадените задания. */
+        var res = await TLA.client.from('attempts')
+          .select('id, assignment_id, status, records, submitted_at, ' +
+                  'auto_max, manual_max, total_score')
+          .eq('user_id', kid)
+          .gte('submitted_at', fbIso(prevFrom) + 'T00:00:00')
+          .lte('submitted_at', toIso + 'T23:59:59.999');
+        if (res.error) throw res.error;
+
+        var now = [], prev = [];
+        (res.data || []).forEach(function (t) {
+          if (t.status === 'in_progress' || !t.submitted_at) return;
+          var day = String(t.submitted_at).slice(0, 10);
+          if (day >= fromIso && day <= toIso) now.push(t);
+          else prev.push(t);
+        });
+
+        /* Темите: всеки записан отговор минава през разпознаването по
+           условие (assets/analysis.js) и попада в своята тема. Броят се
+           и верните, и грешните — инак „слаба тема“ и „рядко давана
+           тема“ изглеждат еднакво. */
+        var byKind = {};
+        now.forEach(function (t) {
+          (Array.isArray(t.records) ? t.records : []).forEach(function (r) {
+            if (!r || !r.text) return;
+            var k = TLA.Analysis.classify(r.text);
+            var b = byKind[k.id] || (byKind[k.id] = { id: k.id, name: k.name, total: 0, correct: 0 });
+            b.total++;
+            if (r.correct === true) b.correct++;
+          });
+        });
+        var topics = Object.keys(byKind).map(function (id) {
+          var b = byKind[id];
+          b.pct = Math.round(b.correct / b.total * 100);
+          return b;
+        }).sort(function (a, b) {
+          if (a.pct !== b.pct) return a.pct - b.pct;
+          return b.total - a.total;
+        });
+
+        /* Две различни числа, които лесно се бъркат:
+             given/handed — от ЗАДАНИЯТА за този период кое е предадено;
+             works        — всичко предадено в периода, включително
+                            закъсняло отпреди. Средният резултат се смята
+                            по works: това е работата, която детето е
+                            свършило в тези два месеца. */
+        var given = fbGiven(kid, fromIso, toIso);
+        var handedIds = {};
+        now.forEach(function (t) { handedIds[t.assignment_id] = 1; });
+        var missing = given.filter(function (a) { return !handedIds[a.id]; });
+        var handed = given.length - missing.length;
+
+        var cur = fbAvg(now), old = fbAvg(prev);
+        var pr = state.profiles[kid] || {};
+        return {
+          kid: kid, name: pr.full_name || '—', grade: gradeOf(pr),
+          from: fromIso, to: toIso,
+          prevFrom: fbIso(prevFrom), prevTo: fbIso(prevTo),
+          given: given.length, handed: handed, works: now.length,
+          missing: missing.map(function (a) { return a.title; }),
+          avg: cur.pct, points: cur.pts, max: cur.max,
+          prevHanded: prev.length, prevAvg: old.pct,
+          delta: (cur.pct != null && old.pct != null) ? cur.pct - old.pct : null,
+          topics: topics,
+          madeAt: new Date().toISOString()
+        };
+      }
+
+      function fbStrong(st) {
+        return (st.topics || []).filter(function (t) { return t.total >= 3 && t.pct >= 80; });
+      }
+      function fbWeak(st) {
+        return (st.topics || []).filter(function (t) { return t.total >= 3 && t.pct < 60; });
+      }
+
+      function fbRenderStats(st) {
+        var box = fbEl('fbStats'), tp = fbEl('fbTopics');
+        if (!box) return;
+        if (!st) { box.innerHTML = ''; tp.innerHTML = ''; return; }
+
+        var delta = '';
+        if (st.delta == null) {
+          delta = '<span class="fb-stat__sub">няма с какво да се сравни</span>';
+        } else {
+          var up = st.delta > 0, same = st.delta === 0;
+          delta = '<span class="fb-stat__sub fb-delta ' +
+            (same ? 'is-same' : (up ? 'is-up' : 'is-down')) + '">' +
+            (same ? '— същото като' : ((up ? '▲ ' : '▼ ') + Math.abs(st.delta) + ' пункта спрямо')) +
+            ' предходните ' + Math.max(1, Math.round((fbDate(st.to) - fbDate(st.from)) / 86400000 / 30)) +
+            ' месеца (' + st.prevAvg + '%)</span>';
+        }
+
+        box.innerHTML =
+          '<div class="fb-stat"><b>' +
+            (st.given ? st.handed + ' от ' + st.given : String(st.works)) + '</b>' +
+            '<span class="fb-stat__lab">предадени работи</span>' +
+            (!st.given
+              ? '<span class="fb-stat__sub">за този период няма отбелязани задания — брои се всичко предадено</span>'
+              : (st.missing.length
+                  ? '<span class="fb-stat__sub">не е предал: ' + esc(st.missing.slice(0, 3).join(', ')) +
+                    (st.missing.length > 3 ? ' и още ' + (st.missing.length - 3) : '') + '</span>'
+                  : '<span class="fb-stat__sub">всичко е предадено</span>')) +
+          '</div>' +
+          '<div class="fb-stat"><b>' + (st.avg == null ? '—' : st.avg + '%') + '</b>' +
+            '<span class="fb-stat__lab">среден резултат</span>' +
+            '<span class="fb-stat__sub">' + st.points + ' от ' + st.max + ' точки · ' +
+              st.works + (st.works === 1 ? ' работа' : ' работи') + '</span>' +
+          '</div>' +
+          '<div class="fb-stat"><b>' + (st.delta == null ? '—'
+              : (st.delta > 0 ? '+' : '') + st.delta + ' п.') + '</b>' +
+            '<span class="fb-stat__lab">движение</span>' + delta +
+          '</div>';
+
+        var chips = function (list, cls) {
+          return list.map(function (t) {
+            return '<button type="button" class="fb-chip ' + cls + '" data-topic="' +
+              esc(t.name) + '">' + esc(t.name) + ' · ' + t.pct + '%</button>';
+          }).join('');
+        };
+        var strong = fbStrong(st), weak = fbWeak(st);
+        tp.innerHTML =
+          (strong.length ? '<div class="fb-trow"><span class="fb-tlab">Върви:</span>' +
+            chips(strong, 'is-ok') + '</div>' : '') +
+          (weak.length ? '<div class="fb-trow"><span class="fb-tlab">Куца:</span>' +
+            chips(weak, 'is-bad') + '</div>' : '') +
+          (!strong.length && !weak.length
+            ? '<p class="tla-muted fb-hint">Още няма достатъчно решени задачи, за да се откроят теми. ' +
+              'Тема влиза тук от третата решена задача по нея.</p>' : '');
+      }
+
+      var FB_FIELDS = { summary: 'fbSummary', improved: 'fbImproved', focus: 'fbFocus',
+                        noticed: 'fbNoticed', next_steps: 'fbNext' };
+
+      function fbReadForm() {
+        var out = {};
+        Object.keys(FB_FIELDS).forEach(function (k) {
+          var el = fbEl(FB_FIELDS[k]);
+          out[k] = el ? el.value.trim() : '';
+        });
+        return out;
+      }
+      function fbFillForm(r) {
+        Object.keys(FB_FIELDS).forEach(function (k) {
+          var el = fbEl(FB_FIELDS[k]);
+          if (el) el.value = (r && r[k]) || '';
+        });
+      }
+
+      function fbRenderList() {
+        var box = fbEl('fbList');
+        if (!box) return;
+        if (!fb.table) { box.innerHTML = '<p class="tla-empty">Историята ще се появи, щом пуснеш schema-v15.sql.</p>'; return; }
+        if (!fb.reports.length) { box.innerHTML = '<p class="tla-empty">Още няма писана обратна връзка за това дете.</p>'; return; }
+        box.innerHTML = fb.reports.map(function (r) {
+          var who = (state.profiles[r.teacher_id] || {}).full_name || 'преподавател';
+          return '<div class="fb-item' + (fb.current && fb.current.id === r.id ? ' is-open' : '') + '">' +
+            '<span class="fb-item__when">' + esc(fbHuman(r.period_from)) + ' – ' + esc(fbHuman(r.period_to)) + '</span>' +
+            '<span class="tla-badge ' + (r.status === 'sent' ? 'tla-badge--graded' : 'tla-badge--off') + '">' +
+              (r.status === 'sent' ? 'изпратен' : 'чернова') + '</span>' +
+            '<span class="fb-item__who">' + esc(who) + '</span>' +
+            '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-fbopen="' + esc(r.id) + '">Отвори</button>' +
+          '</div>';
+        }).join('');
+      }
+
+      async function fbLoadReports() {
+        if (!fb.kid) { fb.reports = []; fbRenderList(); return; }
+        var res = await TLA.client.from('feedback_reports')
+          .select('id, student_id, teacher_id, period_from, period_to, summary, ' +
+                  'improved, focus, noticed, next_steps, stats, status, sent_at, updated_at')
+          .eq('student_id', fb.kid)
+          .order('period_to', { ascending: false });
+        if (res.error) {
+          /* 42P01 — таблицата още я няма. Разделът продължава да работи
+             без история: числата се смятат, PDF-ът се сваля. */
+          if (res.error.code === '42P01' || /feedback_reports/.test(String(res.error.message || ''))) {
+            fb.table = false;
+            var m = fbEl('fbMigrate'); if (m) m.hidden = false;
+            fb.reports = []; fbRenderList();
+            return;
+          }
+          throw res.error;
+        }
+        fb.table = true;
+        fb.reports = res.data || [];
+        fbRenderList();
+      }
+
+      async function fbRefresh(keepText) {
+        if (fb.busy || !fb.kid) return;
+        fb.busy = true; fbMsg('Смятам…');
+        try {
+          if (fb.table) await fbLoadReports();
+          fb.stats = await fbCompute();
+          fbRenderStats(fb.stats);
+          if (!keepText) { fb.current = null; fbFillForm(null); }
+          fbEl('fbBody').hidden = false;
+          fbEl('fbEmpty').hidden = true;
+          fbMsg('');
+        } catch (err) {
+          fbMsg('');
+          say('err', 'Обратната връзка не се зареди: ' + (err.message || err));
+        } finally { fb.busy = false; }
+      }
+
+      /* Период по подразбиране: два месеца назад, а ако вече има отчет —
+         от деня след последния, за да не се застъпват. */
+      function fbDefaultPeriod() {
+        var to = new Date(); to.setHours(0, 0, 0, 0);
+        var from = new Date(to.getTime()); from.setMonth(from.getMonth() - 2);
+        var last = fb.reports[0];
+        if (last && last.period_to) {
+          var d = fbDate(last.period_to); d.setDate(d.getDate() + 1);
+          if (d < to) from = d;
+        }
+        fb.from = fbIso(from); fb.to = fbIso(to);
+        fbEl('fbFrom').value = fb.from;
+        fbEl('fbTo').value = fb.to;
+      }
+
+      async function fbPickKid(id) {
+        fb.kid = id;
+        if (!id) {
+          fbEl('fbBody').hidden = true;
+          var e = fbEl('fbEmpty');
+          e.hidden = false;
+          e.textContent = 'Избери ученик.';
+          return;
+        }
+        fb.reports = [];
+        if (fb.table) { try { await fbLoadReports(); } catch (err) { say('err', String(err.message || err)); } }
+        fbDefaultPeriod();
+        await fbRefresh(false);
+      }
+
+      function fbOpenReport(id) {
+        var hit = fb.reports.filter(function (r) { return r.id === id; })[0];
+        if (!hit) return;
+        fb.current = hit;
+        fb.from = hit.period_from; fb.to = hit.period_to;
+        fbEl('fbFrom').value = fb.from;
+        fbEl('fbTo').value = fb.to;
+        fbFillForm(hit);
+        /* Числата идват от записаната снимка, не се смятат наново:
+           отчетът трябва да изглежда както при изпращането му. */
+        fb.stats = (hit.stats && hit.stats.from) ? hit.stats : null;
+        fbRenderStats(fb.stats);
+        fbEl('fbNew').hidden = false;
+        fbRenderList();
+        fbMsg(fb.stats ? 'Отворен отчет — числата са както са били записани.'
+                       : 'Отворен отчет. Натисни „Пресметни наново“ за числата.');
+      }
+
+      async function fbSave() {
+        if (!fb.kid) return;
+        if (!fb.table) { say('err', 'Отчетът няма къде да се запише: пусни supabase/schema-v15.sql.'); return; }
+        var txt = fbReadForm();
+        var any = Object.keys(txt).some(function (k) { return txt[k]; });
+        if (!any) { say('err', 'Празен отчет не се записва — напиши поне едно изречение.'); return; }
+
+        var row = {
+          student_id: fb.kid,
+          teacher_id: state.me && state.me.id,
+          period_from: fb.from, period_to: fb.to,
+          stats: fb.stats || {}
+        };
+        Object.keys(FB_FIELDS).forEach(function (k) { row[k] = txt[k]; });
+
+        fbMsg('Записвам…');
+        var res = fb.current
+          ? await TLA.client.from('feedback_reports').update(row).eq('id', fb.current.id)
+          : await TLA.client.from('feedback_reports').insert(row);
+        if (res.error) { fbMsg(''); say('err', 'Не се записа: ' + res.error.message); return; }
+        /* Кой ред се получи се чете наново от базата, а не от отговора на
+           вмъкването: така се хваща и каквото базата е доизпълнила сама
+           (updated_at, стойности по подразбиране). */
+        await fbLoadReports();
+        if (!fb.current) {
+          fb.current = fb.reports.filter(function (r) {
+            return r.period_from === fb.from && r.period_to === fb.to &&
+                   r.teacher_id === (state.me && state.me.id);
+          })[0] || null;
+        } else {
+          fb.current = fb.reports.filter(function (r) { return r.id === fb.current.id; })[0] || fb.current;
+        }
+        fbRenderList();
+        fbEl('fbNew').hidden = false;
+        fbMsg('');
+        say('ok', 'Обратната връзка е записана.');
+      }
+
+      async function fbMarkSent() {
+        if (!fb.current) { say('err', 'Първо запази отчета, после го отбележи като изпратен.'); return; }
+        var id = fb.current.id;
+        var res = await TLA.client.from('feedback_reports')
+          .update({ status: 'sent', sent_at: new Date().toISOString() })
+          .eq('id', id);
+        if (res.error) { say('err', 'Не се отбеляза: ' + res.error.message); return; }
+        await fbLoadReports();
+        fb.current = fb.reports.filter(function (r) { return r.id === id; })[0] || fb.current;
+        fbRenderList();
+        say('ok', 'Отбелязан като изпратен.');
+      }
+
+      /* ---- листът за родителя --------------------------------------
+         През печата на браузъра, не с външна библиотека: кирилицата
+         излиза вярна, защото я рисува самият браузър, текстът остава
+         вектор, и няма чужд CDN, който да не отговори. */
+      function fbPaperHtml() {
+        var st = fb.stats, txt = fbReadForm();
+        var pr = state.profiles[fb.kid] || {};
+        var me = (state.me && state.me.full_name) || '';
+        var sec = function (title, body) {
+          return body ? '<section class="fbp-s"><h2>' + esc(title) + '</h2><p>' +
+            esc(body).replace(/\n+/g, '</p><p>') + '</p></section>' : '';
+        };
+        var numbers = '';
+        if (st) {
+          var move = (st.delta == null) ? 'няма с какво да се сравни'
+            : (st.delta > 0 ? 'нагоре с ' + st.delta + ' пункта'
+              : (st.delta < 0 ? 'надолу с ' + Math.abs(st.delta) + ' пункта' : 'без промяна')) +
+              (st.prevAvg == null ? '' : ' (преди: ' + st.prevAvg + '%)');
+          var strong = fbStrong(st), weak = fbWeak(st);
+          numbers =
+            '<section class="fbp-s"><h2>Как върви по числа</h2>' +
+            '<div class="fbp-nums">' +
+              '<div><b>' + (st.given ? st.handed + ' от ' + st.given : String(st.works)) +
+                '</b><span>предадени работи</span></div>' +
+              '<div><b>' + (st.avg == null ? '—' : st.avg + '%') + '</b><span>среден резултат</span></div>' +
+              '<div><b>' + (st.delta == null ? '—' : (st.delta > 0 ? '▲ +' : (st.delta < 0 ? '▼ ' : '')) + st.delta + ' п.') +
+                '</b><span>' + esc(move) + '</span></div>' +
+            '</div>' +
+            (strong.length ? '<p class="fbp-t"><b>Уверено се справя с:</b> ' +
+              esc(strong.map(function (t) { return t.name; }).join(', ')) + '.</p>' : '') +
+            (weak.length ? '<p class="fbp-t"><b>Още се упражняваме върху:</b> ' +
+              esc(weak.map(function (t) { return t.name; }).join(', ')) + '.</p>' : '') +
+            '</section>';
+        }
+        return '<div class="fbp">' +
+          '<div class="fbp-head">' +
+            '<div class="fbp-brand">THE LIGHT ACADEMY</div>' +
+            '<div class="fbp-kind">Обратна връзка за родителя</div>' +
+          '</div>' +
+          '<h1 class="fbp-kid">' + esc(pr.full_name || '—') + '</h1>' +
+          '<div class="fbp-meta">' +
+            esc(TLA.gradeLabel(gradeOf(pr))) +
+            ' · период ' + esc(fbHuman(fb.from)) + ' – ' + esc(fbHuman(fb.to)) +
+            (me ? ' · преподавател: ' + esc(me) : '') +
+          '</div>' +
+          sec('Накратко', txt.summary) +
+          numbers +
+          sec('Какво се подобри', txt.improved) +
+          sec('Върху какво наблягаме', txt.focus) +
+          sec('Какво забелязвам', txt.noticed) +
+          sec('Какво предстои и какво може вкъщи', txt.next_steps) +
+          '<div class="fbp-foot">The Light Academy · Лозенец, София · ' +
+            'the.light.academy56@gmail.com · ' +
+            esc(new Date().toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })) +
+          '</div>' +
+        '</div>';
+      }
+
+      function fbPrint() {
+        if (!fb.kid) { say('err', 'Избери ученик.'); return; }
+        var paper = fbEl('fbPaper');
+        paper.innerHTML = fbPaperHtml();
+        var pr = state.profiles[fb.kid] || {};
+        var was = document.title;
+        /* Името на файла идва от заглавието на документа — браузърът го
+           ползва за предложеното име при „Съхрани като PDF“. */
+        document.title = 'Обратна връзка — ' + (pr.full_name || '') + ' — ' + fb.to;
+        fbMsg('В диалога избери „Съхрани като PDF“.');
+        window.addEventListener('afterprint', function () { document.title = was; }, { once: true });
+        window.print();
+      }
+
+      function fbSetup() {
+        var sel = fbEl('fbKid');
+        if (!sel) return;
+        var kids = fbStudents();
+        sel.innerHTML = '<option value="">— избери —</option>' + kids.map(function (p) {
+          return '<option value="' + esc(p.id) + '">' + esc(p.full_name || '—') +
+            ' · ' + esc(TLA.gradeLabel(gradeOf(p))) + '</option>';
+        }).join('');
+        fbEl('fbEmpty').hidden = false;
+        fbEl('fbEmpty').textContent = kids.length
+          ? 'Избери ученик.'
+          : 'Още нямаш ученици — в „Ученици“ се задава кой кого води.';
+
+        sel.addEventListener('change', function () { fbPickKid(this.value); });
+        ['fbFrom', 'fbTo'].forEach(function (id) {
+          fbEl(id).addEventListener('change', function () {
+            fb[id === 'fbFrom' ? 'from' : 'to'] = this.value;
+            if (fb.kid) fbRefresh(true);
+          });
+        });
+        fbEl('fbRecount').addEventListener('click', function () { fbRefresh(true); });
+        fbEl('fbSave').addEventListener('click', fbSave);
+        fbEl('fbPdf').addEventListener('click', fbPrint);
+        fbEl('fbSent').addEventListener('click', fbMarkSent);
+        fbEl('fbNew').addEventListener('click', function () {
+          fb.current = null; fbFillForm(null); this.hidden = true;
+          fbDefaultPeriod(); fbRefresh(false);
+        });
+        /* Кое поле е под курсора — за да знае чипът с темата къде да се
+           запише. Без това „кликни на темата“ би писало все в първото. */
+        Object.keys(FB_FIELDS).forEach(function (k) {
+          var el = fbEl(FB_FIELDS[k]);
+          if (el) el.addEventListener('focus', function () { fb.lastField = FB_FIELDS[k]; });
+        });
+        fbEl('fbTopics').addEventListener('click', function (e) {
+          var b = e.target.closest('[data-topic]');
+          if (!b) return;
+          var el = fbEl(fb.lastField || 'fbFocus');
+          if (!el) return;
+          var v = el.value.trim();
+          el.value = v ? (v.replace(/[.;,\s]*$/, '') + ', ' + b.dataset.topic) : b.dataset.topic;
+          el.focus();
+        });
+        fbEl('fbList').addEventListener('click', function (e) {
+          var b = e.target.closest('[data-fbopen]');
+          if (b) fbOpenReport(b.dataset.fbopen);
+        });
+      }
+
       (async function () {
         if (!TLA.isConfigured()) { say('err', TLA.notConfiguredMessage()); return; }
         var auth = await TLA.requireAuth({ role: 'teacher' });
@@ -4454,10 +5069,16 @@
         /* Уроците чакат две неща: кой съм аз (за своите часове) и „Кой
            кого води“ (за предметите на преподавателя). */
         luSetup();
+        fbSetup();
         renderRace();
         if (state.isAdmin) renderTeachers();
       })();
     })();
   </script>
+
+  <!-- Листът, който излиза в PDF. На екран го няма (.fbpaper е display:none);
+       при печат @media print скрива всичко останало и показва само него.
+       Пълни се в мига на натискане на „Изтегли PDF“. -->
+  <div class="fbpaper" id="fbPaper" aria-hidden="true"></div>
 </body>
 </html>
