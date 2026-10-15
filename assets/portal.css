@@ -528,18 +528,21 @@ body.tlp-page { background: #FFFDF7; }
 .tlp-nav__tabs::-webkit-scrollbar { display: none; }
 .tlp-nav__tabs .tla-tab { flex-shrink: 0; min-height: 36px; padding: 0.35rem 0.9rem; }
 
-/* Four tabs need the room the wordmark was taking -- but only once they
-   really do. Measured with "LightSpace" in the bar: the strip starts
-   scrolling at 780px, and that is where the name gives way. */
-@media (max-width: 780px) {
+/* Разделите искат мястото на името — но чак когато наистина им трябва.
+   Мерено с „LightSpace“ в лентата и с деветте раздела, които има сега
+   („Обратна връзка“ е последният дошъл): лентата започва да се плъзга
+   на 1340px, и там името отстъпва. Правилото е САМО за таблото
+   (.tlp-nav--tabs): порталът на детето няма раздели в лентата и си
+   остава с името, както си беше. */
+@media (max-width: 1340px) {
   .tlp-nav--tabs .tlp-nav__name,
   .tlp-nav--tabs .tlp-nav__sep { display: none; }
 }
 
-/* Measured: the four stop fitting at 615px. Below that the strip scrolls, and
-   a soft fade on the right edge says so — otherwise "Ученици" and "Задания"
-   simply look absent. Applied only where something is actually hidden. */
-@media (max-width: 618px) {
+/* Мерено: с девет раздела и скрито име последният спира да се побира
+   на 1260px. Под това лентата се плъзга и мекото избледняване вдясно го
+   показва — инак последните раздели просто изглеждат несъществуващи. */
+@media (max-width: 1260px) {
   .tlp-nav__tabs {
     -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
     mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
@@ -1954,3 +1957,100 @@ body.tlp-space { background: #05070F; }
 /* Календарът при предмет без своя програма: седмиците наред, без теми. */
 .tlc__alien { margin: 0 0 0.9rem; font-size: 0.88rem; line-height: 1.6; }
 .tlc__flat { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+
+/* ─────────────────────────────────────────────────────────────────────
+   ОБРАТНА ВРЪЗКА ЗА РОДИТЕЛЯ
+   Разделът в таблото и листът, който излиза в PDF. Листът го няма на
+   екран (.fbpaper е display:none) и се появява само при печат, където
+   @media print скрива всичко останало.
+   ───────────────────────────────────────────────────────────────────── */
+.fb-h { font-size: 0.95rem; font-weight: 800; color: var(--navy-2);
+  margin: 1.4rem 0 0.6rem; }
+.fb-hint { font-size: 0.85rem; margin: 0 0 0.8rem; }
+
+/* Датата и етикетът ѝ не се делят на два реда: на телефон „До:“
+   оставаше само, а полето му минаваше отдолу. */
+.fb-when { display: inline-flex; align-items: center; gap: 0.4rem; }
+.fb-when > label { font-size: 0.85rem; font-weight: 800; color: var(--mid); }
+
+.fb-stats { display: grid; gap: 0.7rem; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 760px) { .fb-stats { grid-template-columns: 1fr; } }
+.fb-stat {
+  background: var(--cream); border: 1px solid var(--line); border-radius: 14px;
+  padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.15rem;
+}
+.fb-stat b { font-size: 1.6rem; font-weight: 800; color: var(--navy-2); line-height: 1.1; }
+.fb-stat__lab { font-size: 0.85rem; font-weight: 800; color: var(--mid); }
+.fb-stat__sub { font-size: 0.78rem; color: var(--mid); line-height: 1.35; }
+.fb-delta.is-up { color: #2E6B45; font-weight: 700; }
+.fb-delta.is-down { color: #8C2F39; font-weight: 700; }
+
+.fb-topics { margin-top: 0.7rem; display: grid; gap: 0.4rem; }
+.fb-trow { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.fb-tlab { font-size: 0.8rem; font-weight: 800; color: var(--mid); min-width: 3.2rem; }
+.fb-chip {
+  font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+  border-radius: 999px; padding: 0.25rem 0.7rem; min-height: 32px;
+  border: 1px solid var(--line); background: var(--white); color: var(--dark);
+}
+.fb-chip.is-ok { background: #E8F3EC; border-color: #BBD9C6; color: #2E6B45; }
+.fb-chip.is-bad { background: #FBE9EB; border-color: #E6C2C7; color: #8C2F39; }
+.fb-chip:hover { transform: translateY(-1px); }
+
+.fb-f { margin-bottom: 0.9rem; }
+.fb-f label { display: block; font-size: 0.85rem; font-weight: 800;
+  color: var(--navy-2); margin-bottom: 0.3rem; }
+.fb-f textarea {
+  width: 100%; font: inherit; font-size: 0.95rem; color: var(--dark);
+  padding: 0.7rem 0.9rem; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--white); line-height: 1.55; resize: vertical;
+}
+.fb-f textarea:focus { outline: none; border-color: var(--sun); box-shadow: 0 0 0 3px var(--sun-light); }
+.fb-f textarea::placeholder { color: #A89A86; }
+
+.fb-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+  margin: 1rem 0 0.4rem; }
+
+.fb-item {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+  padding: 0.5rem 0.8rem;
+}
+.fb-item + .fb-item { margin-top: 0.4rem; }
+.fb-item.is-open { border-color: var(--sun); background: var(--sun-light); }
+.fb-item__when { font-weight: 800; font-size: 0.9rem; color: var(--navy-2); }
+.fb-item__who { font-size: 0.82rem; color: var(--mid); margin-left: auto; }
+
+/* ---- листът ---- */
+.fbpaper { display: none; }
+
+@media print {
+  @page { size: A4 portrait; margin: 16mm 14mm; }
+  /* всичко освен листа изчезва — таблото не влиза в PDF-а */
+  body > *:not(#fbPaper) { display: none !important; }
+  html, body { background: #fff !important; }
+  #fbPaper { display: block !important; }
+
+  .fbp { font-family: 'Nunito', sans-serif; color: #1F2430; font-size: 11pt; line-height: 1.5; }
+  .fbp-head { display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid #1B2E52; padding-bottom: 2mm; }
+  .fbp-brand { font-weight: 800; font-size: 10pt; letter-spacing: .08em; color: #A17522; }
+  .fbp-kind { font-size: 10pt; color: #55658A; }
+  .fbp-kid { font-size: 20pt; font-weight: 800; color: #16233F; margin: 5mm 0 1mm; }
+  .fbp-meta { font-size: 10.5pt; color: #55658A; margin-bottom: 5mm; }
+
+  .fbp-s { margin-bottom: 4.5mm; page-break-inside: avoid; break-inside: avoid; }
+  .fbp-s h2 { font-size: 11.5pt; font-weight: 800; color: #1B2E52; margin: 0 0 1.5mm;
+    padding-bottom: 1mm; border-bottom: 1px solid #E2D9C6; }
+  .fbp-s p { margin: 0 0 1.5mm; }
+
+  .fbp-nums { display: flex; gap: 6mm; margin: 2mm 0 3mm; }
+  .fbp-nums > div { flex: 1; border: 1px solid #E2D9C6; border-radius: 3mm;
+    padding: 2.5mm 3mm; background: #FEF7EB; }
+  .fbp-nums b { display: block; font-size: 15pt; font-weight: 800; color: #16233F; }
+  .fbp-nums span { display: block; font-size: 9pt; color: #55658A; line-height: 1.3; }
+  .fbp-t { margin: 1mm 0; }
+
+  .fbp-foot { margin-top: 6mm; padding-top: 2mm; border-top: 1px solid #E2D9C6;
+    font-size: 9pt; color: #55658A; }
+}
