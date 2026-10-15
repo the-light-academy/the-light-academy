@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Да поправим грешките · 5. клас</title>
+<meta name="description" content="Интерактивен урок за 5. клас, седмица 3: сгрешените задачи от входното ниво, една по една, и по една подобна задача към всяка." />
+<!-- =====================================================================
+     Да поправим грешките — 5. клас, седмица 3
+     ---------------------------------------------------------------------
+     Сгрешените задачи от входното ниво по математика: ред на действията,
+     текстови задачи, четните числа между две числа. Всяка се поправя, а
+     после идва подобна задача — за да се види, че е разбрана.
+
+     Прави се в часа за анализ на входното ниво. Урокът не иска вход и
+     нищо не предава към платформата.
+     ===================================================================== -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:#2d2a4a;background:#fff8ef;background-image:radial-gradient(#ffe2c7 1.2px,transparent 1.2px);background-size:22px 22px}
+.hero{background:linear-gradient(135deg,#7c5cff,#ff7a59);color:#fff;padding:30px 16px 42px;text-align:center;border-radius:0 0 28px 28px}
+.hero h1{margin:0 0 6px;font-size:clamp(24px,6vw,36px);font-weight:900}
+.hero p{margin:0;opacity:.93;font-size:16px}
+.bar{position:sticky;top:0;z-index:5;background:#fffffff0;backdrop-filter:blur(6px);padding:10px 16px;box-shadow:0 2px 10px #0001;display:flex;align-items:center;gap:12px;font-weight:800}
+.track{flex:1;height:12px;background:#ece6f5;border-radius:99px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#2bb673,#a3e635);transition:width .6s}
+main{max-width:760px;margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:22px;padding:18px;margin:18px 0;box-shadow:0 8px 24px #2d2a4a14;border-top:7px solid var(--c);position:relative}
+.card.done::after{content:"✔ Решена";position:absolute;top:14px;right:16px;background:#2bb673;color:#fff;font-weight:800;font-size:12px;padding:4px 10px;border-radius:99px}
+.head{display:flex;gap:12px;align-items:center;margin-bottom:10px;padding-right:80px}
+.badge{width:42px;height:42px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;flex:none}
+.head h2{margin:0;font-size:19px;line-height:1.2}
+.pts{font-size:13px;color:#7a7799;font-weight:700}
+.art{background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:16px;padding:8px;margin:6px 0 12px}
+.art svg{width:100%;height:auto;display:block}
+.text{font-size:17px;line-height:1.55}
+.expr{display:inline-block;background:#f3f0ff;border-radius:8px;padding:2px 10px;font-weight:800;margin:4px 0;white-space:nowrap}
+.mistake{margin:12px 0;background:#fff0f2;border-left:5px solid #ef4b5f;border-radius:10px;padding:10px 12px;font-size:15px}
+.mistake s{color:#ef4b5f}
+.part{margin-top:14px}
+.q{font-weight:800;margin-bottom:6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;cursor:pointer}
+.opt{border:2px solid #ece6f5;background:#fff;border-radius:14px;padding:12px;font-size:17px;text-align:left;transition:.15s;color:#2d2a4a}
+.opt:hover:not(:disabled){border-color:var(--c);transform:translateY(-1px)}
+.opt.ok{background:#2bb673;border-color:#2bb673;color:#fff}
+.opt.no{background:#fff0f2;border-color:#ef4b5f;animation:shake .4s}
+.opt:disabled{cursor:default}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.numrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.numrow input{flex:1;min-width:110px;font:inherit;font-size:18px;padding:10px 12px;border:2px solid #ece6f5;border-radius:12px;color:#2d2a4a}
+.numrow input:focus{outline:none;border-color:var(--c)}
+.numrow input.ok{border-color:#2bb673;background:#eafaf1}
+.numrow input.no{border-color:#ef4b5f;animation:shake .4s}
+.unit{color:#7a7799;font-weight:700}
+.chk,.act{background:var(--c);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:800}
+.chk:disabled{opacity:.5}
+.act{margin-top:4px;width:100%}
+.fb{min-height:22px;font-weight:800;margin-top:6px}
+.fb.ok{color:#2bb673}.fb.no{color:#ef4b5f}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tools button{flex:1;min-width:150px;border:2px dashed var(--c);background:#fff;color:#2d2a4a;border-radius:12px;padding:10px;font-weight:800}
+.hint{margin-top:10px;background:#fff8d6;border-radius:12px;padding:12px;border-left:5px solid #ffd166;line-height:1.5}
+.sol{margin-top:10px;background:#f6f4ff;border-radius:14px;padding:12px 14px}
+.sol ol{margin:0;padding-left:22px}
+.sol li{margin:8px 0;line-height:1.5;display:none}
+.sol li.show{display:list-item;animation:pop .35s}
+.sol li svg{width:100%;height:auto;display:block;margin-top:6px;background:#fff;border-radius:10px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.next{margin-top:6px;background:var(--c);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-weight:800}
+.why{margin-top:10px;background:#fff0f2;border-radius:10px;padding:10px 12px;line-height:1.5}
+.final{display:none;text-align:center;background:linear-gradient(135deg,#2bb673,#a3e635);color:#fff;border-radius:22px;padding:24px;margin:18px 0;font-size:20px;font-weight:900}
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:99;animation:fall linear forwards;border-radius:2px}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+footer{text-align:center;color:#7a7799;padding:10px 20px 30px;font-size:14px}
+@media(max-width:420px){.text{font-size:16px}.opt{font-size:16px;padding:10px}}
+</style>
+</head>
+<body>
+<header class="hero"><h1>Да поправим грешките 🔧</h1><p>Входно ниво по математика · 5. клас · сгрешените задачи</p></header>
+<div class="bar">⭐ <span><span id="sc">0</span> / <span id="mx"></span> т.</span><div class="track"><div class="fill" id="fill"></div></div></div>
+<main id="app"></main>
+<main><div class="final" id="final">🎉 Всички грешки са поправени! Сега пробвай подобните задачи.</div></main>
+<footer>Всяка грешка е стъпка към разбирането 🌱</footer>
+<script>
+/* ---------- рисунки ---------- */
+function artBoard(expr,note){return `<svg viewBox="0 0 300 165"><rect x="14" y="10" width="272" height="132" rx="12" fill="#a0673a"/><rect x="24" y="20" width="252" height="112" rx="6" fill="#2f5d50"/><text x="150" y="70" text-anchor="middle" font-size="22" font-weight="800" fill="#f4f1de" font-family="'Comic Sans MS','Segoe Print',Nunito,cursive">${expr}</text><text x="150" y="106" text-anchor="middle" font-size="14" fill="#ffd166" font-family="'Comic Sans MS',Nunito,cursive">${note}</text><rect x="200" y="142" width="34" height="7" rx="3" fill="#fff"/><rect x="60" y="142" width="40" height="9" rx="2" fill="#ff7a59"/></svg>`}
+
+function artPoles(n,kind){const xs=[];for(let k=0;k<n;k++)xs.push(Math.round(35+k*230/(n-1)));
+let s=`<svg viewBox="0 0 300 166"><rect x="0" y="0" width="300" height="124" fill="#dff3ff" rx="12"/><circle cx="268" cy="24" r="13" fill="#ffd166"/><ellipse cx="70" cy="20" rx="22" ry="8" fill="#fff"/><ellipse cx="160" cy="14" rx="16" ry="6" fill="#fff"/><rect x="0" y="118" width="300" height="12" fill="#7bc96f"/>`;
+xs.forEach((x,k)=>{if(kind==='lamp'){s+=`<rect x="${x-3}" y="46" width="6" height="74" fill="#6b7280"/><circle cx="${x}" cy="42" r="13" fill="#ffd166" opacity=".35"/><circle cx="${x}" cy="42" r="7" fill="#ffd166" stroke="#6b7280" stroke-width="2"/>`}else{s+=`<rect x="${x-4}" y="40" width="8" height="80" fill="#8b5a2b"/><rect x="${x-14}" y="46" width="28" height="5" fill="#8b5a2b"/>`}
+s+=`<text x="${x}" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#2d2a4a">${k+1}</text>`});
+for(let k=0;k<n-1;k++){const a=xs[k],b=xs[k+1],m=(a+b)/2;s+=`<g class="seg" opacity="0"><path d="M${a+3} 136 Q${m} 152 ${b-3} 136" fill="none" stroke="#ff7a59" stroke-width="3" stroke-linecap="round"/><circle cx="${m}" cy="156" r="8" fill="#ff7a59"/><text x="${m}" y="160" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${k+1}</text></g>`}
+return s+`<g class="walker" data-xs="${xs.join(',')}" transform="translate(${xs[0]},0)"><text x="0" y="117" font-size="30" text-anchor="middle" transform="scale(-1,1)">🚶</text></g></svg>`}
+
+function artVehicle(em,down,monthly,months){return `<svg viewBox="0 0 300 165"><rect width="300" height="120" rx="12" fill="#ffeee6"/><rect y="118" width="300" height="47" fill="#5b5f6b"/><line x1="0" y1="142" x2="300" y2="142" stroke="#fff" stroke-width="3" stroke-dasharray="14 10"/><text x="80" y="124" font-size="66" text-anchor="middle">${em}</text>
+<g transform="translate(168,14)"><rect width="118" height="44" rx="10" fill="#ffd166"/><text x="59" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="#2d2a4a">първа вноска</text><text x="59" y="36" text-anchor="middle" font-size="16" font-weight="900" fill="#2d2a4a">${down}</text></g>
+<g transform="translate(168,66)"><rect width="118" height="46" rx="10" fill="#fff" stroke="#ff7a59" stroke-width="2"/><rect width="118" height="16" rx="8" fill="#ff7a59"/><text x="59" y="12" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">всеки месец</text><text x="59" y="37" text-anchor="middle" font-size="15" font-weight="900" fill="#2d2a4a">${months} × ${monthly}</text></g></svg>`}
+
+function artThree(kind,items){let s=`<svg viewBox="0 0 300 165">`;items.forEach((it,k)=>{const x=55+k*95;
+if(kind==='flower'){const heads=[[x-17,64],[x+17,64],[x,44]];heads.forEach(([hx,hy])=>{s+=`<path d="M${hx} ${hy} Q${(hx+x)/2} ${hy+30} ${x} 114" stroke="#3f9b4b" stroke-width="3" fill="none"/>`});
+s+=`<ellipse cx="${x+12}" cy="96" rx="9" ry="4" fill="#5cb85c" transform="rotate(-30 ${x+12} 96)"/>`;
+heads.forEach(([hx,hy])=>{for(let a=0;a<6;a++){const r=a*Math.PI/3;s+=`<circle cx="${(hx+8*Math.cos(r)).toFixed(1)}" cy="${(hy+8*Math.sin(r)).toFixed(1)}" r="7" fill="${it.c}" stroke="#00000030"/>`}s+=`<circle cx="${hx}" cy="${hy}" r="5" fill="#f4a259"/>`});
+s+=`<path d="M${x-24} 112 h48 l-7 28 h-34z" fill="#c8553d"/>`}
+else{s+=`<rect x="${x-30}" y="26" width="60" height="100" rx="6" fill="${it.c}" stroke="#00000030"/><rect x="${x-12}" y="46" width="34" height="16" rx="3" fill="#fff" opacity=".9"/><line x1="${x-8}" y1="54" x2="${x+16}" y2="54" stroke="#bbb" stroke-width="2"/>`;for(let q=0;q<8;q++)s+=`<circle cx="${x-30}" cy="${34+q*12}" r="4" fill="none" stroke="#555" stroke-width="2"/>`}
+s+=`<text x="${x}" y="158" text-anchor="middle" font-size="14" font-weight="800" fill="#2d2a4a">${it.l}</text>`});return s+'</svg>'}
+
+function artDays(top){let s=`<svg viewBox="0 0 300 165"><text x="150" y="28" text-anchor="middle" font-size="19" font-weight="900" fill="#2d2a4a">${top}</text>`;
+['Ден 1','Ден 2','Ден 3'].forEach((d,k)=>{const x=18+k*92;s+=`<rect x="${x}" y="42" width="80" height="112" rx="12" fill="#fff" stroke="#3a86ff" stroke-width="2"/><path d="M${x} 68 v-14 a12 12 0 0 1 12 -12 h56 a12 12 0 0 1 12 12 v14z" fill="#3a86ff"/><text x="${x+40}" y="61" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">${d}</text><text x="${x+40}" y="128" text-anchor="middle" font-size="44" font-weight="900" fill="#3a86ff">?</text>`});return s+'</svg>'}
+
+function artXY(word){const box=(x,l)=>`<rect x="${x}" y="50" width="76" height="70" rx="10" fill="#16a34a"/><rect x="${x}" y="40" width="76" height="18" rx="6" fill="#15803d"/><rect x="${x+33}" y="40" width="10" height="80" fill="#ffd166"/><circle cx="${x+38}" cy="88" r="20" fill="#fff"/><text x="${x+38}" y="99" text-anchor="middle" font-size="30" font-weight="900" fill="#16a34a">${l}</text><text x="${x+38}" y="32" text-anchor="middle" font-size="20">❓</text>`;
+return `<svg viewBox="0 0 300 165">${box(20,'x')}${box(204,'y')}<line x1="106" y1="86" x2="194" y2="86" stroke="#2d2a4a" stroke-width="4" stroke-dasharray="1 10" stroke-linecap="round"/><text x="150" y="70" text-anchor="middle" font-size="22" font-weight="900" fill="#16a34a">сбор?</text><text x="150" y="152" text-anchor="middle" font-size="14" font-weight="800" fill="#2d2a4a">само ${word}те числа между тях</text></svg>`}
+
+function numberLine(a,b,par){const n=b-a,st=270/n;let s=`<svg viewBox="0 0 300 62"><line x1="10" y1="24" x2="290" y2="24" stroke="#2d2a4a" stroke-width="2"/>`;
+for(let v=a;v<=b;v++){const x=15+(v-a)*st,on=v>a&&v<b&&v%2===par,end=v===a||v===b;
+if(on)s+=`<circle cx="${x}" cy="24" r="7" fill="#16a34a"/>`;if(end)s+=`<rect x="${x-8}" y="16" width="16" height="16" rx="3" fill="#ffd166" stroke="#2d2a4a"/>`;
+s+=`<line x1="${x}" y1="19" x2="${x}" y2="29" stroke="#2d2a4a"/><text x="${x}" y="48" text-anchor="middle" font-size="9" font-weight="${on||end?900:400}" fill="${on?'#16a34a':'#2d2a4a'}">${v}</text>`}
+return s+'</svg>'}
+
+function rep(n,v,c,t){return Array.from({length:n},()=>({v,c,t}))}
+function barModel(rows){const max=Math.max(...rows.map(r=>r.segs.reduce((s,g)=>s+g.v,0)));const W=210,L=84;let y=8,o='';
+rows.forEach(r=>{let x=L;o+=`<text x="${L-6}" y="${y+16}" text-anchor="end" font-size="11" fill="#2d2a4a" font-weight="800">${r.label}</text>`;
+r.segs.forEach(g=>{const w=g.v/max*W;o+=`<rect x="${x}" y="${y}" width="${w}" height="24" rx="4" fill="${g.c}" stroke="#2d2a4a" stroke-width="1"/>`+(g.t?`<text x="${x+w/2}" y="${y+16}" text-anchor="middle" font-size="10" font-weight="800" fill="#2d2a4a">${g.t}</text>`:'');x+=w});y+=34});
+return `<svg viewBox="0 0 300 ${y}">${o}</svg>`}
+
+/* ---------- задачи ---------- */
+const TASKS = [
+{n:3,pts:2,color:'#7c5cff',title:'Ред на действията',
+ art:artBoard('2 016 − 2 016 : 4 + 4','Кое действие е първо? 🤔'),
+ text:'Стойността на израза<br><span class="expr">2 016 − 2 016 : 4 + 4</span> е:',
+ wrong:'Б) 1 508',
+ parts:[{type:'mc',options:['0','1 508','1 764','1 516'],ans:3}],
+ hint:'Първо <b>делението</b>! После събиране и изваждане – <b>отляво надясно</b>, точно в реда, в който са записани. Знакът пред всяко число си остава същият.',
+ steps:['Делим: 2 016 : 4 = <b>504</b>','Изразът става: 2 016 − 504 + 4','Отляво надясно: 2 016 − 504 = <b>1 512</b>','1 512 + 4 = <b>1 516</b> → отговор <b>Г</b>'],
+ why:'Получено е 1 508, защото числото 4 е <b>извадено</b>, а не прибавено (1 512 − 4). Пред 4 стои „+“ – значи се прибавя!'},
+
+{n:6,pts:2,color:'#2bb3c0',title:'Стълбовете и Милко',
+ art:artPoles(4,'pole'),
+ action:{label:'▶ Пусни Милко да върви',after:'↻ Пак · 4 стълба = само 3 разстояния!'},
+ text:'На равни разстояния един от друг се намират <b>4 стълба</b>. Милко изминава разстоянието от първия до последния стълб за <b>12 минути</b>. За колко минути ще измине разстоянието от първия до втория стълб, ако през цялото време се движи с една и съща скорост?',
+ wrong:'А) 3',
+ parts:[{type:'mc',options:['3','4','2','6'],ans:1}],
+ hint:'Пусни Милко и брой <b>разстоянията между стълбовете</b> (оранжевите дъги), а не самите стълбове.',
+ steps:['4 стълба образуват само <b>3 разстояния</b>: 1–2, 2–3 и 3–4.','12-те минути се разпределят поравно на 3 разстояния.','12 : 3 = <b>4 минути</b> → отговор <b>Б</b>'],
+ why:'Изчислено е 12 : 4 = 3 – делено е на броя на <b>стълбовете</b>. Но Милко върви по <b>разстоянията</b>, а те винаги са с 1 по-малко от стълбовете.'},
+
+{n:7,pts:2,color:'#ff7a59',title:'Колата на лизинг',
+ art:artVehicle('🚗','5 150 €','565 €','36'),
+ text:'При купуване на кола на лизинг се плаща първоначална вноска <b>5 150 евро</b> и <b>36 месечни вноски по 565 евро</b>. Цената на колата е:',
+ wrong:'Г) 20 340',
+ parts:[{type:'mc',options:['15 190','25 490','10 235','20 340'],ans:1}],
+ hint:'Цената = <b>първоначалната вноска</b> + <b>всички месечни вноски</b>. Не забравяй нито едната част!',
+ steps:['Всички месечни вноски: 36 · 565 = <b>20 340</b> евро','Прибавяме първоначалната вноска: 20 340 + 5 150 = <b>25 490</b> евро','Отговор <b>Б</b>'],
+ why:'20 340 евро са <b>само месечните вноски</b>. Първоначалната вноска от 5 150 евро е забравена.'},
+
+{n:8,pts:6,color:'#ef4b7f',title:'Розите в цветарския магазин',
+ art:artThree('flower',[{c:'#e63950',l:'червени'},{c:'#ffffff',l:'бели'},{c:'#ffd23f',l:'жълти'}]),
+ text:'В цветарски магазин има три вида рози – червени, бели и жълти. Цената на всяка от тях е <b>3 евро</b>. Червените рози са <b>336</b>, жълтите са <b>3 пъти по-малко</b> от червените, а белите са <b>2 пъти повече</b> от жълтите.',
+ wrong:'а) 336 + 112 + 6 = 504 бр. &nbsp;·&nbsp; б) 504 · 3 = 1 512 евро',
+ parts:[{q:'а) Колко рози има в магазина?',type:'num',ans:672,unit:'бр.'},{q:'б) Колко евро струват всички рози?',type:'num',ans:2016,unit:'евро'}],
+ hint:'Намери поотделно колко са жълтите и колко са белите. „3 пъти по-малко“ → <b>делим</b> на 3. „2 пъти повече“ → <b>умножаваме</b> по 2.',
+ steps:['Жълти: 336 : 3 = <b>112</b>','Бели: 112 · 2 = <b>224</b>',
+  'Моделът с отсечки:'+barModel([{label:'Червени 336',segs:rep(3,112,'#ffb3bd','112')},{label:'Жълти 112',segs:rep(1,112,'#ffe58a','112')},{label:'Бели 224',segs:rep(2,112,'#ffffff','112')}]),
+  'Всички: 336 + 112 + 224 = <b>672</b> рози','Цена: 672 · 3 = <b>2 016</b> евро'],
+ why:'Белите рози са записани като 6, а те са 112 · 2 = <b>224</b>. Начинът за б) е верен (брой · 3) – грешката идва само от подточка а).'},
+
+{n:9,pts:6,color:'#3a86ff',title:'Задачите на Драго',
+ art:artDays('✏️ 240 задачи за 3 дни'),
+ text:'За три дни Драго решил общо <b>240 задачи</b>. През първия ден решил <b>четвъртинката</b> от всички задачи, през втория ден – <b>третинката от останалите</b>.',
+ wrong:'б) 60 : 3 = 20 &nbsp;·&nbsp; в) 240 − (60 + 20) = 160',
+ parts:[{q:'а) Колко задачи е решил през първия ден?',type:'num',ans:60,unit:'задачи'},{q:'б) Колко задачи е решил през втория ден?',type:'num',ans:60,unit:'задачи'},{q:'в) Колко задачи е решил през третия ден?',type:'num',ans:120,unit:'задачи'}],
+ hint:'„От останалите“ – първо извади задачите от първия ден от всички 240. Третинката се взима от <b>остатъка</b>, не от първия ден.',
+ steps:['Ден 1: 240 : 4 = <b>60</b> задачи','Останали: 240 − 60 = <b>180</b> задачи','Ден 2: 180 : 3 = <b>60</b> задачи',
+  barModel([{label:'Всички 240',segs:[{v:60,c:'#9cc3ff',t:'Ден 1'},...rep(3,60,'#eef3ff','60')]},{label:'Остатък 180',segs:[{v:60,c:'#ffd6a5',t:'Ден 2'},...rep(2,60,'#eef3ff','60')]},{label:'Ден 3',segs:rep(2,60,'#b9f6ca','60')}]),
+  'Ден 3: 240 − (60 + 60) = <b>120</b> задачи'],
+ why:'Третинката е взета от задачите на <b>първия ден</b> (60 : 3), а трябва от <b>останалите 180</b>. Затова и подточка в) излиза грешно.'},
+
+{n:10,pts:10,color:'#16a34a',title:'Четните числа между x и y',
+ art:artXY('четни'),
+ text:'Намерете сбора на всички <b>четни</b> числа, които се намират между <b>x</b> и <b>y</b>, ако<br><span class="expr">35 : x + 38 = 45</span><br><span class="expr">y = (33 · 35 − 12 · 35) : 35</span>',
+ wrong:'38 + 12 = 50',
+ parts:[{q:'x = ?',type:'num',ans:5},{q:'y = ?',type:'num',ans:21},{q:'Сборът на четните числа между x и y = ?',type:'num',ans:104}],
+ hint:'Започни с x: какво трябва да прибавиш към 38, за да стане 45? После пресметни y по реда на действията. Числата x и y <b>не се включват</b> – търсим числата <b>между</b> тях.',
+ steps:['35 : x + 38 = 45 → 35 : x = 45 − 38 = 7','35 : x = 7 → x = 35 : 7 = <b>5</b>','y = (1 155 − 420) : 35 = 735 : 35 = <b>21</b>',
+  'Четните числа между 5 и 21:'+numberLine(5,21,0),
+  '6 + 8 + 10 + 12 + 14 + 16 + 18 + 20 — събираме по двойки: (6+20) + (8+18) + (10+16) + (12+14) = 4 · 26 = <b>104</b>'],
+ why:'Събрани са числа от условието, без да се намерят x и y. Редът е: първо уравнението, после изразът, и чак тогава четните числа между тях.'}
+]
+;
+
+/* ---------- логика ---------- */
+const L=["А","Б","В","Г"],done=new Set(),maxPts=TASKS.reduce((s,t)=>s+t.pts,0);
+const praises=['Браво! ✔','Супер! 🌟','Точно така! 🎉','Отлично! 👏'];
+const praise=()=>praises[Math.floor(Math.random()*praises.length)];
+function upd(){const p=TASKS.filter((t,i)=>done.has(i)).reduce((s,t)=>s+t.pts,0);
+document.getElementById('sc').textContent=p;document.getElementById('mx').textContent=maxPts;
+document.getElementById('fill').style.width=(p/maxPts*100)+'%';
+if(done.size===TASKS.length){document.getElementById('final').style.display='block';confetti();}}
+function render(){const app=document.getElementById('app');
+TASKS.forEach((t,i)=>{const c=document.createElement('section');c.className='card';c.style.setProperty('--c',t.color);
+let h=`<div class="head"><span class="badge">${t.n}</span><div><h2>${t.title}</h2><span class="pts">${t.pts} точки</span></div></div><div class="art">${t.art}</div>`;
+if(t.action)h+=`<button class="act" data-after="${t.action.after}">${t.action.label}</button>`;
+h+=`<div class="text">${t.text}</div>`;
+if(t.wrong)h+=`<div class="mistake"><b>В теста:</b> <s>${t.wrong}</s> ✗</div>`;
+t.parts.forEach((p,j)=>{h+=`<div class="part">${p.q?`<div class="q">${p.q}</div>`:''}`;
+if(p.type==='mc')h+=`<div class="opts">`+p.options.map((o,k)=>`<button class="opt" data-k="${k}"><b>${L[k]})</b> ${o}</button>`).join('')+`</div>`;
+else h+=`<div class="numrow"><input type="text" inputmode="decimal" placeholder="Твоят отговор"><span class="unit">${p.unit||''}</span><button class="chk">Провери</button></div>`;
+h+=`<div class="fb"></div></div>`});
+h+=`<div class="tools"><button class="hintb">💡 Подсказка</button><button class="solb">🧭 Решение стъпка по стъпка</button></div><div class="hint" hidden>${t.hint}</div>
+<div class="sol" hidden><ol>${t.steps.map(s=>`<li>${s}</li>`).join('')}</ol><button class="next">Следваща стъпка ➜</button>${t.why?`<div class="why" hidden><b>🔎 Къде беше капанът?</b> ${t.why}</div>`:''}</div>`;
+c.innerHTML=h;app.appendChild(c);wire(c,t,i)});upd()}
+function wire(c,t,i){const pd=t.parts.map(()=>false);
+const finish=j=>{pd[j]=true;if(pd.every(Boolean)&&!done.has(i)){done.add(i);c.classList.add('done');upd()}};
+c.querySelectorAll('.part').forEach((el,j)=>{const p=t.parts[j],fb=el.querySelector('.fb');
+if(p.type==='mc'){el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(pd[j])return;
+if(+b.dataset.k===p.ans){b.classList.add('ok');el.querySelectorAll('.opt').forEach(x=>x.disabled=true);fb.className='fb ok';fb.textContent=praise();finish(j)}
+else{b.classList.remove('no');void b.offsetWidth;b.classList.add('no');fb.className='fb no';fb.textContent='Не е това. Опитай пак! 💪'}})}
+else{const inp=el.querySelector('input'),btn=el.querySelector('.chk');
+const go=()=>{if(pd[j])return;const raw=inp.value.trim(),v=Number(raw.replace(/\s/g,'').replace(',','.'));
+if(raw!==''&&v===p.ans){inp.className='ok';inp.disabled=true;btn.disabled=true;fb.className='fb ok';fb.textContent=praise();finish(j)}
+else{inp.className='';void inp.offsetWidth;inp.className='no';fb.className='fb no';fb.textContent=raw===''?'Напиши отговор 🙂':'Още не е вярно. Провери сметките!'}};
+btn.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()}}});
+c.querySelector('.hintb').onclick=()=>{const h=c.querySelector('.hint');h.hidden=!h.hidden};
+const sol=c.querySelector('.sol'),lis=[...sol.querySelectorAll('li')],nx=sol.querySelector('.next');let s=0;
+const reveal=()=>{if(s<lis.length)lis[s++].classList.add('show');if(s>=lis.length){nx.style.display='none';const w=sol.querySelector('.why');if(w)w.hidden=false}};
+c.querySelector('.solb').onclick=()=>{if(sol.hidden){sol.hidden=false;if(s===0)reveal()}else sol.hidden=true};
+nx.onclick=reveal;const act=c.querySelector('.act');if(act)act.onclick=()=>walk(c,act)}
+function walk(c,btn){const g=c.querySelector('.walker'),xs=g.dataset.xs.split(',').map(Number),segs=c.querySelectorAll('.seg');
+segs.forEach(x=>x.setAttribute('opacity',0));btn.disabled=true;const per=900,total=per*(xs.length-1);let t0=null;
+const step=ts=>{if(!t0)t0=ts;const e=Math.min(ts-t0,total),k=Math.min(Math.floor(e/per),xs.length-2),f=Math.min((e-k*per)/per,1);
+g.setAttribute('transform',`translate(${xs[k]+(xs[k+1]-xs[k])*f},0)`);for(let m=0;m<k;m++)segs[m].setAttribute('opacity',1);
+if(e<total)requestAnimationFrame(step);else{segs.forEach(x=>x.setAttribute('opacity',1));btn.disabled=false;btn.textContent=btn.dataset.after}};
+requestAnimationFrame(step)}
+function confetti(){const cs=['#7c5cff','#ff7a59','#2bb673','#ffd166','#3a86ff','#ef4b7f'];for(let i=0;i<90;i++){const d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'vw';d.style.background=cs[i%cs.length];d.style.animationDuration=(2+Math.random()*2)+'s';d.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5200)}}
+render();
+</script>
+</body>
+</html>
+
+</body></html>

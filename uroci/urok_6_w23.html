@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вероятности и уравнения · 6. клас</title>
+<meta name="description" content="Интерактивен урок за 6. клас, седмица 23: осем задачи за вероятност с нарисувани зарове и топки и осем двустъпкови уравнения с везна." />
+<!-- =====================================================================
+     Вероятности и уравнения — 6. клас, седмица 23
+     ---------------------------------------------------------------------
+     Осем задачи за вероятност — зарът, монетата, топките в торбата — с
+     нарисувани фигури, и осем уравнения с две стъпки, всяко с везна до
+     себе си. Отговорът на вероятностите се пише като дроб и се приема
+     само съкратен докрай.
+
+     Урокът не иска вход и нищо не предава към платформата.
+     ===================================================================== -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fbf9f3;
+    --line: #d8d2c2;
+    --ink: #2b2a28;
+    --ink-soft: #6b6558;
+    --blue: #2f6fed;
+    --blue-deep: #1c4fb8;
+    --orange: #f2994a;
+    --green: #2ea88a;
+    --red: #e0554f;
+    --purple: #7c5cbf;
+    --card: #ffffff;
+    --shadow: rgba(43, 42, 40, 0.08);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+  }
+  body {
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 42px;
+    padding: 32px 16px 64px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  header {
+    text-align: left;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid var(--ink);
+  }
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    margin: 0 0 6px;
+    color: var(--blue-deep);
+    letter-spacing: -0.5px;
+  }
+  .subtitle { color: var(--ink-soft); font-size: 16px; margin: 0; }
+
+  .scoreboard {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 12px 18px;
+    margin: 18px 0 30px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    box-shadow: 0 6px 16px var(--shadow);
+  }
+  #scoreText { color: var(--paper); }
+  .scoreboard .num { color: #ffd166; font-size: 20px; }
+
+  .section-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 21px;
+    margin: 30px 0 16px;
+    padding-left: 4px;
+    border-left: 6px solid var(--purple);
+    padding-left: 12px;
+  }
+  .section-title.probability { border-left-color: var(--blue); }
+  .section-title.equations { border-left-color: var(--purple); }
+
+  .question {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    padding: 20px 22px 22px;
+    margin-bottom: 22px;
+    box-shadow: 4px 4px 0 var(--shadow);
+  }
+  .question.correct { border-color: var(--green); }
+  .question.incorrect { border-color: var(--red); }
+
+  .qhead { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .qnum {
+    flex: none; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--blue); color: #fff;
+    font-family: 'Baloo 2', sans-serif; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .qnum.eq { background: var(--purple); }
+  .qtext { font-size: 17px; line-height: 1.5; padding-top: 4px; }
+  .visual { margin: 8px 0 16px 46px; overflow-x: auto; }
+  .answer-row { display: flex; align-items: center; gap: 10px; margin-left: 46px; flex-wrap: wrap; }
+
+  .fraction-input { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .fraction-input input {
+    width: 56px; text-align: center;
+    font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 600;
+    border: 2px solid var(--ink); border-radius: 8px; padding: 6px 4px;
+    background: var(--paper); color: var(--ink);
+  }
+  .frac-bar { width: 60px; height: 2px; background: var(--ink); }
+
+  .single-input { display: flex; align-items: center; gap: 8px; }
+  .single-input label {
+    font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px; color: var(--purple);
+  }
+  .single-input input {
+    width: 76px; text-align: center;
+    font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 600;
+    border: 2px solid var(--ink); border-radius: 8px; padding: 8px 6px;
+    background: var(--paper); color: var(--ink);
+  }
+  input:focus { outline: none; border-color: var(--blue); }
+
+  .check-btn {
+    font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 15px;
+    background: var(--orange); color: #fff; border: none; border-radius: 10px;
+    padding: 12px 18px; cursor: pointer; transition: transform 0.1s ease, background 0.15s ease;
+  }
+  .check-btn:hover { background: #e08636; }
+  .check-btn:active { transform: scale(0.96); }
+
+  .feedback { margin: 10px 0 0 46px; font-weight: 700; font-size: 15px; min-height: 20px; }
+  .feedback.correct { color: var(--green); }
+  .feedback.incorrect { color: var(--red); }
+
+  .footer-actions { display: flex; justify-content: center; margin-top: 20px; }
+  .reset-btn {
+    font-family: 'Baloo 2', sans-serif; font-weight: 700;
+    background: transparent; color: var(--blue-deep);
+    border: 2px solid var(--blue-deep); border-radius: 10px;
+    padding: 10px 22px; cursor: pointer; font-size: 15px;
+  }
+  .reset-btn:hover { background: var(--blue-deep); color: #fff; }
+
+  svg { display: block; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1e1c19; --line: #333029; --ink: #f2ede3; --ink-soft: #b6ae9d;
+      --card: #262420; --shadow: rgba(0,0,0,0.4);
+    }
+    body { background-color: var(--paper); }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1e1c19; --line: #333029; --ink: #f2ede3; --ink-soft: #b6ae9d;
+    --card: #262420; --shadow: rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Вероятности и уравнения</h1>
+    <p class="subtitle">16 задачи: първо вероятности (6. клас), после уравнения (5. клас). Реши и провери всяка.</p>
+  </header>
+
+  <div class="scoreboard">
+    <span id="scoreText">Резултат</span>
+    <span class="num"><span id="scoreVal">0</span> / 16</span>
+  </div>
+
+  <div id="questions"></div>
+
+  <div class="footer-actions">
+    <button class="reset-btn" id="resetBtn">Започни отначало</button>
+  </div>
+</div>
+
+<script>
+// ---- SVG helpers ----
+function diceFace(n, x, y, size, fill) {
+  const dotR = size * 0.09;
+  const pos = {
+    1: [[0.5,0.5]],
+    2: [[0.28,0.28],[0.72,0.72]],
+    3: [[0.28,0.28],[0.5,0.5],[0.72,0.72]],
+    4: [[0.28,0.28],[0.72,0.28],[0.28,0.72],[0.72,0.72]],
+    5: [[0.28,0.28],[0.72,0.28],[0.5,0.5],[0.28,0.72],[0.72,0.72]],
+    6: [[0.28,0.25],[0.72,0.25],[0.28,0.5],[0.72,0.5],[0.28,0.75],[0.72,0.75]]
+  };
+  let dots = pos[n].map(p => `<circle cx="${x + p[0]*size}" cy="${y + p[1]*size}" r="${dotR}" fill="#2b2a28"/>`).join('');
+  return `<g><rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${size*0.16}" fill="${fill}" stroke="#2b2a28" stroke-width="2.5"/>${dots}</g>`;
+}
+function ballRow(items, r) {
+  let x = 10, out = '';
+  items.forEach(item => {
+    for (let i = 0; i < item.count; i++) {
+      out += `<circle cx="${x + r}" cy="${r + 6}" r="${r}" fill="${item.color}" stroke="#2b2a28" stroke-width="2"/>`;
+      x += r * 2 + 10;
+    }
+  });
+  return { svg: out, width: x };
+}
+function svgWrap(inner, w, h) {
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${inner}</svg>`;
+}
+// balance-beam visual for equations: left side box(es), right side number
+function balance(leftLabel, rightLabel) {
+  const w = 260, h = 90;
+  return svgWrap(`
+    <line x1="130" y1="14" x2="130" y2="30" stroke="#2b2a28" stroke-width="3"/>
+    <line x1="20" y1="30" x2="240" y2="30" stroke="#2b2a28" stroke-width="3"/>
+    <line x1="20" y1="30" x2="20" y2="46" stroke="#2b2a28" stroke-width="3"/>
+    <line x1="240" y1="30" x2="240" y2="46" stroke="#2b2a28" stroke-width="3"/>
+    <rect x="0" y="46" width="80" height="34" rx="8" fill="#dfe9ff" stroke="#2b2a28" stroke-width="2.5"/>
+    <text x="40" y="68" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="17" fill="#2b2a28">${leftLabel}</text>
+    <rect x="180" y="46" width="80" height="34" rx="8" fill="#ffe6cf" stroke="#2b2a28" stroke-width="2.5"/>
+    <text x="220" y="68" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="17" fill="#2b2a28">${rightLabel}</text>
+    <polygon points="120,0 140,0 130,14" fill="#7c5cbf"/>
+  `, w, h);
+}
+
+// ---- Question data ----
+const questions = [
+  { type:'fraction', text:"Хвърляш зар. Каква е вероятността да падне числото 4?",
+    visual: () => { let s=''; for (let i=1;i<=6;i++) s+=diceFace(i,(i-1)*54,0,46, i===4?'#ffe08a':'#ffffff'); return svgWrap(s,6*54-8,46); },
+    answer: [1,6] },
+  { type:'fraction', text:"В торба има 3 червени и 2 сини топки. Каква е вероятността да извадиш синя топка?",
+    visual: () => { const r=ballRow([{color:'#e0554f',count:3},{color:'#2f6fed',count:2}],16); return svgWrap(r.svg,r.width,44); },
+    answer: [2,5] },
+  { type:'fraction', text:"Хвърляш монета. Каква е вероятността да падне ези?",
+    visual: () => svgWrap(`
+      <circle cx="30" cy="30" r="26" fill="#f2994a" stroke="#2b2a28" stroke-width="2.5"/>
+      <text x="30" y="38" font-family="Baloo 2" font-size="22" font-weight="700" text-anchor="middle" fill="#2b2a28">Е</text>
+      <circle cx="94" cy="30" r="26" fill="#ffffff" stroke="#2b2a28" stroke-width="2.5"/>
+      <text x="94" y="38" font-family="Baloo 2" font-size="22" font-weight="700" text-anchor="middle" fill="#2b2a28">Т</text>
+    `,124,60),
+    answer: [1,2] },
+  { type:'fraction', text:"В кутия има 5 жълти и 5 зелени молива. Каква е вероятността да извадиш зелен молив?",
+    visual: () => { let s='',x=8; const colors=['#ffd166','#ffd166','#ffd166','#ffd166','#ffd166','#2ea88a','#2ea88a','#2ea88a','#2ea88a','#2ea88a'];
+      colors.forEach(c=>{ s+=`<rect x="${x}" y="6" width="14" height="48" rx="3" fill="${c}" stroke="#2b2a28" stroke-width="2"/>`; x+=22; });
+      return svgWrap(s,x,60); },
+    answer: [1,2] },
+  { type:'fraction', text:"Зар се хвърля веднъж. Каква е вероятността да падне четно число?",
+    visual: () => { let s=''; for (let i=1;i<=6;i++) s+=diceFace(i,(i-1)*54,0,46, (i%2===0)?'#bfe3d6':'#ffffff'); return svgWrap(s,6*54-8,46); },
+    answer: [1,2] },
+  { type:'fraction', text:"В клас има 10 момичета и 15 момчета. Ако избереш случайно един ученик, каква е вероятността да е момиче?",
+    visual: () => svgWrap(`<rect x="0" y="0" width="220" height="34" rx="8" fill="#f0ece0" stroke="#2b2a28" stroke-width="2"/>
+      <rect x="0" y="0" width="88" height="34" rx="8" fill="#f2994a"/>
+      <text x="44" y="22" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="13" fill="#2b2a28">10 момичета</text>
+      <text x="154" y="22" text-anchor="middle" font-family="Nunito" font-weight="700" font-size="13" fill="#2b2a28">15 момчета</text>`,220,34),
+    answer: [2,5] },
+  { type:'fraction', text:"В торба има 4 топки, номерирани от 1 до 4. Каква е вероятността да извадиш число, по-голямо от 2?",
+    visual: () => { let s='',x=8; [1,2,3,4].forEach(n=>{ s+=`<circle cx="${x+18}" cy="24" r="18" fill="${n>2?'#bfe3d6':'#ffffff'}" stroke="#2b2a28" stroke-width="2.5"/>
+        <text x="${x+18}" y="30" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="16" fill="#2b2a28">${n}</text>`; x+=46; });
+      return svgWrap(s,x,48); },
+    answer: [1,2] },
+  { type:'fraction', text:"Хвърляш зар. Каква е вероятността да падне число, по-малко от 3?",
+    visual: () => { let s=''; for (let i=1;i<=6;i++) s+=diceFace(i,(i-1)*54,0,46, (i<3)?'#bfe3d6':'#ffffff'); return svgWrap(s,6*54-8,46); },
+    answer: [1,3] },
+
+  // ---- Equations (5th grade, two-step) ----
+  { type:'number', text:"Реши уравнението: 2 · x + 5 = 17. Намери x.",
+    visual: () => balance('2x + 5', '17'),
+    answer: 6 },
+  { type:'number', text:"Реши уравнението: 3 · x − 4 = 11. Намери x.",
+    visual: () => balance('3x − 4', '11'),
+    answer: 5 },
+  { type:'number', text:"Реши уравнението: (x + 3) · 2 = 16. Намери x.",
+    visual: () => balance('(x+3)·2', '16'),
+    answer: 5 },
+  { type:'number', text:"Реши уравнението: 50 − 3 · x = 20. Намери x.",
+    visual: () => balance('50 − 3x', '20'),
+    answer: 10 },
+  { type:'number', text:"Реши уравнението: 4 · x + 6 = 26. Намери x.",
+    visual: () => balance('4x + 6', '26'),
+    answer: 5 },
+  { type:'number', text:"Реши уравнението: (20 − x) : 2 = 6. Намери x.",
+    visual: () => balance('(20−x):2', '6'),
+    answer: 8 },
+  { type:'number', text:"Реши уравнението: 2 · x − 7 = 15. Намери x.",
+    visual: () => balance('2x − 7', '15'),
+    answer: 11 },
+  { type:'number', text:"Реши уравнението: 60 : x + 5 = 11. Намери x.",
+    visual: () => balance('60:x + 5', '11'),
+    answer: 10 }
+];
+
+function gcd(a,b) { return b === 0 ? a : gcd(b, a % b); }
+
+let score = 0;
+let answeredCorrect = new Array(questions.length).fill(false);
+
+const container = document.getElementById('questions');
+
+questions.forEach((q, idx) => {
+  if (idx === 0) {
+    const h = document.createElement('div');
+    h.className = 'section-title probability';
+    h.textContent = 'Вероятности';
+    container.appendChild(h);
+  }
+  if (idx === 8) {
+    const h = document.createElement('div');
+    h.className = 'section-title equations';
+    h.textContent = 'Уравнения — намери неизвестното (по-сложни, две стъпки)';
+    container.appendChild(h);
+  }
+
+  const card = document.createElement('div');
+  card.className = 'question';
+  card.id = 'q' + idx;
+
+  const inputHtml = q.type === 'fraction'
+    ? `<div class="fraction-input">
+         <input type="number" min="0" id="num${idx}" aria-label="числител" inputmode="numeric">
+         <div class="frac-bar"></div>
+         <input type="number" min="1" id="den${idx}" aria-label="знаменател" inputmode="numeric">
+       </div>`
+    : `<div class="single-input">
+         <label for="val${idx}">x =</label>
+         <input type="number" id="val${idx}" aria-label="стойност на x" inputmode="numeric">
+       </div>`;
+
+  card.innerHTML = `
+    <div class="qhead">
+      <div class="qnum ${q.type === 'number' ? 'eq' : ''}">${idx+1}</div>
+      <div class="qtext">${q.text}</div>
+    </div>
+    <div class="visual">${q.visual()}</div>
+    <div class="answer-row">
+      ${inputHtml}
+      <button class="check-btn" data-idx="${idx}">Провери</button>
+    </div>
+    <div class="feedback" id="fb${idx}"></div>
+  `;
+  container.appendChild(card);
+});
+
+container.addEventListener('click', (e) => {
+  const btn = e.target.closest('.check-btn');
+  if (!btn) return;
+  checkAnswer(parseInt(btn.dataset.idx, 10));
+});
+
+function checkAnswer(idx) {
+  const q = questions[idx];
+  const fb = document.getElementById('fb' + idx);
+  const card = document.getElementById('q' + idx);
+  card.classList.remove('correct', 'incorrect');
+  fb.classList.remove('correct', 'incorrect');
+
+  let isCorrect = false;
+  let incomplete = false;
+
+  if (q.type === 'fraction') {
+    const n = parseInt(document.getElementById('num' + idx).value, 10);
+    const d = parseInt(document.getElementById('den' + idx).value, 10);
+    if (isNaN(n) || isNaN(d) || d === 0) { incomplete = true; }
+    else {
+      const g = gcd(Math.abs(n), Math.abs(d)) || 1;
+      const sn = n / g, sd = d / g;
+      const [cn, cd] = q.answer;
+      isCorrect = sn === cn && sd === cd;
+    }
+  } else {
+    const v = parseInt(document.getElementById('val' + idx).value, 10);
+    if (isNaN(v)) { incomplete = true; }
+    else { isCorrect = v === q.answer; }
+  }
+
+  if (incomplete) {
+    fb.textContent = q.type === 'fraction' ? 'Попълни числител и знаменател, различен от 0.' : 'Попълни стойност за x.';
+    fb.classList.add('incorrect');
+    return;
+  }
+
+  if (isCorrect) {
+    if (!answeredCorrect[idx]) { score++; answeredCorrect[idx] = true; updateScore(); }
+    fb.textContent = '✓ Точно така!';
+    fb.classList.add('correct');
+    card.classList.add('correct');
+  } else {
+    if (answeredCorrect[idx]) { score--; answeredCorrect[idx] = false; updateScore(); }
+    fb.textContent = q.type === 'fraction' ? '✗ Опитай пак. Подсказка: съкрати дробта докрай.' : '✗ Опитай пак. Провери действието.';
+    fb.classList.add('incorrect');
+    card.classList.add('incorrect');
+  }
+}
+
+function updateScore() { document.getElementById('scoreVal').textContent = score; }
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  questions.forEach((q, idx) => {
+    if (q.type === 'fraction') {
+      document.getElementById('num' + idx).value = '';
+      document.getElementById('den' + idx).value = '';
+    } else {
+      document.getElementById('val' + idx).value = '';
+    }
+    document.getElementById('fb' + idx).textContent = '';
+    document.getElementById('fb' + idx).classList.remove('correct', 'incorrect');
+    document.getElementById('q' + idx).classList.remove('correct', 'incorrect');
+  });
+  score = 0;
+  answeredCorrect = new Array(questions.length).fill(false);
+  updateScore();
+});
+</script>
+</body>
+</html>

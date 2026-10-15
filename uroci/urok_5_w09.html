@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>НОД, НОК и пицата · 5. клас</title>
+<meta name="description" content="Интерактивен урок за 5. клас, седмица 9: най-голям общ делител и най-малко общо кратно, и как от едно разрязано цяло се ражда обикновената дроб." />
+<!-- =====================================================================
+     НОД, НОК и пицата — 5. клас, седмица 9
+     ---------------------------------------------------------------------
+     Четири глави: машината за делители и плочките в банята (НОД), жабката
+     и зайчето по оста (НОК), нарязаната пица (обикновената дроб) и три
+     задачи за мислене. Покрива и седмица 8 (НОД), и отваря темата на
+     седмица 10 (обикновени дроби).
+
+     Урокът не иска вход и нищо не предава към платформата.
+     ===================================================================== -->
+<style>
+/* основите, които страницата имаше в claude.ai */
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+</style>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Nunito:wght@400;600;800&family=Caveat:wght@600;700&display=swap">
+<style>
+/* Layout: тетрадка в квадратчета – една колона урок, четири глави (НОД → НОК → Дроби → Задачи), всяка с интерактивна „работилница“ */
+:root{
+  --paper:#fbfaf5; --grid:rgba(58,123,213,.09); --card:#ffffff; --ink:#1f2a37; --muted:#5d6878;
+  --line:#e6e2d6; --soft:#f4f1e8;
+  --tomato:#e0483c; --basil:#2c8c58; --cheese:#e8a91c; --sky:#3a7bd5;
+  --tomato-soft:#fde8e5; --basil-soft:#e3f4ea; --cheese-soft:#fdf2d6; --sky-soft:#e6effc;
+  --crust:#d8984c; --mozz:#f7d466; --pepp:#c43a2e; --cream:#fff3dc; --frost:#f59bb5; --sponge:#f0c98a;
+  --display:"Rubik",system-ui,sans-serif; --body:"Nunito",system-ui,sans-serif; --hand:"Caveat","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#14181f; --grid:rgba(255,255,255,.045); --card:#1d232d; --ink:#eef1f5; --muted:#a6b0be;
+  --line:#2e3642; --soft:#252c37;
+  --tomato:#ff6b5e; --basil:#4cc184; --cheese:#ffc94d; --sky:#6ea2ff;
+  --tomato-soft:#3a2224; --basil-soft:#1c3328; --cheese-soft:#3a3120; --sky-soft:#1e2b42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#14181f; --grid:rgba(255,255,255,.045); --card:#1d232d; --ink:#eef1f5; --muted:#a6b0be;
+  --line:#2e3642; --soft:#252c37;
+  --tomato:#ff6b5e; --basil:#4cc184; --cheese:#ffc94d; --sky:#6ea2ff;
+  --tomato-soft:#3a2224; --basil-soft:#1c3328; --cheese-soft:#3a3120; --sky-soft:#1e2b42; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+.hero{padding-block:36px 12px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.hero h1{font-size:clamp(30px,7vw,48px);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--tomato)}
+.hero p{margin:10px 0 0;color:var(--muted);max-width:52ch}
+.hero svg{width:130px;height:130px}
+.spin{animation:spin 18s linear infinite;transform-origin:65px 65px}
+@keyframes spin{to{transform:rotate(360deg)}}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);
+  display:flex;gap:8px;flex-wrap:wrap;padding-block:10px;border-bottom:1px solid var(--line)}
+nav a{font-family:var(--display);font-weight:700;font-size:14px;text-decoration:none;color:var(--ink);padding:6px 12px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
+nav a:hover,nav a:focus-visible{border-color:var(--ink)}
+nav .stars{margin-left:auto;font-weight:800;font-size:14px;align-self:center;color:var(--muted)}
+section.ch{padding-top:34px}
+.eyebrow{font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--sky))}
+.ch h2{font-size:clamp(24px,5vw,32px);margin-top:4px}
+.lead{max-width:62ch}
+.rule{background:var(--cheese-soft);border-radius:14px;padding:12px 16px;margin:14px 0;font-weight:600}
+.rule b{color:var(--ink)}
+.note{font-family:var(--hand);font-size:24px;color:var(--c,var(--sky));line-height:1.1}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+.box h3{font-size:19px;margin-bottom:8px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+label.in{display:flex;align-items:center;gap:6px;font-weight:800}
+input[type=number],input.ans{font:inherit;font-weight:800;font-size:18px;width:90px;padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink)}
+input:focus-visible,button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--c,var(--sky));color:#fff;border:0;border-radius:12px;padding:9px 16px;font-weight:800;font-family:var(--display)}
+.btn.ghost{background:var(--card);color:var(--ink);border:2px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.chip{min-width:38px;text-align:center;padding:5px 9px;border-radius:10px;background:var(--soft);font-weight:800;font-variant-numeric:tabular-nums;transition:transform .3s,background .3s}
+.chip.common{background:var(--basil-soft);color:var(--basil);outline:2px solid var(--basil)}
+.chip.best{background:var(--basil);color:#fff;transform:scale(1.15)}
+.chip.pop{animation:pop .4s backwards}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.lbl{font-weight:800;color:var(--muted);font-size:14px}
+.result{font-family:var(--display);font-size:22px;font-weight:800;margin-top:6px}
+.result span{color:var(--c,var(--sky))}
+.factor{font-variant-numeric:tabular-nums;background:var(--soft);border-radius:12px;padding:10px 14px;margin-top:10px;line-height:1.9}
+.factor .p{display:inline-block;padding:0 7px;border-radius:7px;font-weight:800}
+.factor .p.c{background:var(--basil);color:#fff}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto}
+.tilemsg{font-weight:800;min-height:26px;margin-top:6px}
+.ok{color:var(--basil)} .no{color:var(--tomato)}
+input[type=range]{width:min(320px,100%);accent-color:var(--c,var(--sky))}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two>*{min-width:0}
+@media(max-width:640px){.two{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero svg{display:none}}
+.frac{display:inline-flex;flex-direction:column;align-items:center;font-family:var(--display);font-weight:800;line-height:1;vertical-align:middle;font-variant-numeric:tabular-nums}
+.frac i{font-style:normal;padding:0 6px}
+.frac i:first-child{border-bottom:3px solid currentColor;padding-bottom:3px}
+.frac i:last-child{padding-top:3px}
+.bigfrac{font-size:46px;color:var(--tomato)}
+.fracline{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.legend{font-size:15px;line-height:1.5}
+.legend b{color:var(--tomato)}
+.slice{cursor:pointer;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.slice:hover{filter:brightness(1.06)}
+.piece{cursor:pointer;transition:transform .3s}
+.cut{stroke-dasharray:200;animation:cut .6s ease-out}
+@keyframes cut{from{stroke-dashoffset:200}}
+.chain{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:26px;margin-top:10px;color:var(--tomato)}
+.chain .eq{font-family:var(--display);font-weight:800;color:var(--muted);font-size:22px}
+/* задачи */
+.task{border-top:6px solid var(--c)}
+.task .head{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.badge{width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:19px;flex:none}
+.task.done .badge{background:var(--basil)}
+.task.done .badge::after{content:"★"}
+.task.done .badge span{display:none}
+.art{background:var(--soft);border-radius:14px;padding:6px;margin:8px 0 12px}
+.art svg{display:block;width:100%;height:auto}
+.part{margin-top:12px}
+.q{font-weight:800;margin-bottom:6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;font-weight:700;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--c)}
+.opt.right{background:var(--basil);border-color:var(--basil);color:#fff}
+.opt.wrong,.ans.wrong{border-color:var(--tomato);animation:shake .4s}
+.ans.right{border-color:var(--basil);background:var(--basil-soft)}
+.ans{width:130px}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{min-height:24px;font-weight:800;margin-top:4px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tools button{flex:1;min-width:160px;border:2px dashed var(--c);background:var(--card);color:var(--ink);border-radius:12px;padding:9px;font-weight:800}
+.hint{margin-top:10px;background:var(--cheese-soft);border-radius:12px;padding:10px 14px}
+.sol{margin-top:10px;background:var(--soft);border-radius:12px;padding:10px 14px}
+.sol ol{margin:0;padding-left:22px}
+.sol li{margin:6px 0}
+.sol li:not(.show){display:none}
+.sol li.show{animation:pop .35s}
+.trap{margin-top:8px;background:var(--tomato-soft);border-radius:10px;padding:8px 12px}
+.final{text-align:center;background:var(--basil);color:#fff;border-radius:18px;padding:20px;font-family:var(--display);font-weight:800;font-size:22px;margin-top:16px}
+.confetti{position:fixed;top:-14px;width:9px;height:14px;z-index:99;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.tabs{display:flex;gap:6px;margin-top:8px;border-bottom:2px solid var(--line)}
+.tabs button{flex:1;max-width:240px;font-family:var(--display);font-weight:800;font-size:16px;padding:10px 14px;border:2px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;background:var(--soft);color:var(--muted);margin-bottom:-2px}
+.tabs button[aria-selected="true"]{background:var(--paper);color:var(--ink);border-color:var(--line);border-bottom:2px solid var(--paper)}
+.tag{margin-left:auto;font-family:var(--display);font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:99px;color:var(--c);border:2px solid var(--c);white-space:nowrap}
+.legendtags{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.legendtags .tag{margin:0}
+.mixbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;gap:12px;align-items:center;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);padding-block:10px}
+.track{flex:1;height:12px;background:var(--soft);border-radius:99px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--basil);transition:width .6s}
+.task .head h3{min-width:0}
+footer{color:var(--muted);text-align:center;font-size:14px;margin-top:30px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div>
+    <div class="eyebrow" style="--c:var(--tomato)">Математика · 5. клас</div>
+    <h1>НОД, НОК и <em>пицата</em></h1>
+    <p>Ще открием най-големия общ делител и най-малкото общо кратно, ще нарежем пица и торта и ще видим как се ражда обикновената дроб. Накрая ще решим 3 задачи за мислене.</p>
+  </div>
+  <svg viewBox="0 0 130 130" aria-hidden="true"><g class="spin" id="heroPizza"></g></svg>
+</header>
+
+<div class="tabs" role="tablist">
+  <button role="tab" id="tbL" aria-selected="true">📘 Урок</button>
+  <button role="tab" id="tbM" aria-selected="false">✏️ Смесени задачи</button>
+</div>
+
+<div id="tabLesson">
+<nav aria-label="Глави">
+  <a href="#nod">1 · НОД</a><a href="#nok">2 · НОК</a><a href="#drobi">3 · Дроби</a><a href="#zadachi">4 · Задачи</a>
+  <span class="stars" id="stars">☆☆☆</span>
+</nav>
+
+<!-- ============ НОД ============ -->
+<section class="ch" id="nod" style="--c:var(--basil)">
+  <div class="eyebrow">Глава 1</div>
+  <h2>НОД – най-големият общ делител</h2>
+  <p class="lead"><b>Делител</b> на едно число е число, на което то се дели <b>без остатък</b>. 12 се дели на 1, 2, 3, 4, 6 и 12, затова това са делителите на 12.</p>
+  <div class="rule">НОД(a, b) е <b>най-голямото</b> число, на което се делят <b>и двете</b> числа a и b.</div>
+
+  <div class="box">
+    <h3>🔍 Машината за делители</h3>
+    <div class="row">
+      <label class="in">a = <input type="number" id="na" value="12" min="1" max="60"></label>
+      <label class="in">b = <input type="number" id="nb" value="18" min="1" max="60"></label>
+      <button class="btn" id="nodGo">Намери общите делители</button>
+    </div>
+    <div class="lbl" style="margin-top:12px">Делители на <span id="la">12</span>:</div><div class="chips" id="da"></div>
+    <div class="lbl">Делители на <span id="lb">18</span>:</div><div class="chips" id="db"></div>
+    <div class="result" id="nodRes"></div>
+    <div class="factor" id="nodFac"></div>
+  </div>
+
+  <div class="box">
+    <h3>🟩 Плочките в банята</h3>
+    <p style="margin:0 0 8px">Стената е <b id="tw">18</b> × <b id="th">12</b> квадратчета. Искаме да я покрием с <b>еднакви квадратни плочки</b>, без да режем нито една. Каква е <b>най-голямата</b> плочка, която става?</p>
+    <div class="row"><label class="in" for="ts">Страна на плочката: <span id="tsv" style="color:var(--basil);font-size:22px">1</span></label>
+      <input type="range" id="ts" min="1" max="12" value="1"></div>
+    <div class="svgbox"><svg id="tile" viewBox="0 0 360 240"></svg></div>
+    <div class="tilemsg" id="tmsg"></div>
+  </div>
+</section>
+
+<!-- ============ НОК ============ -->
+<section class="ch" id="nok" style="--c:var(--sky)">
+  <div class="eyebrow">Глава 2</div>
+  <h2>НОК – най-малкото общо кратно</h2>
+  <p class="lead"><b>Кратно</b> на едно число е всяко число, което се получава, като го умножим по 1, 2, 3, … Кратните на 4 са 4, 8, 12, 16, …</p>
+  <div class="rule">НОК(a, b) е <b>най-малкото</b> число (без 0), което се дели <b>и на a, и на b</b>.</div>
+
+  <div class="box">
+    <h3>🐸 Жабката и 🐰 зайчето</h3>
+    <p style="margin:0 0 8px">Двамата тръгват от 0. Жабката скача по <b id="fj">4</b> деления, а зайчето – по <b id="rj">6</b>. На кое число ще стъпят <b>за първи път заедно</b>?</p>
+    <div class="row">
+      <label class="in">🐸 скок <input type="number" id="fa" value="4" min="2" max="12"></label>
+      <label class="in">🐰 скок <input type="number" id="ra" value="6" min="2" max="12"></label>
+      <button class="btn" id="hop">▶ Скачайте!</button>
+    </div>
+    <div class="svgbox"><svg id="line" viewBox="0 0 720 170"></svg></div>
+    <div class="lbl">Кратни на <span id="lf">4</span>:</div><div class="chips" id="mf"></div>
+    <div class="lbl">Кратни на <span id="lr">6</span>:</div><div class="chips" id="mr"></div>
+    <div class="result" id="nokRes"></div>
+  </div>
+  <div class="rule">💡 Забележи: НОД(a, b) · НОК(a, b) = a · b. За 4 и 6: 2 · 12 = 24 = 4 · 6.</div>
+</section>
+
+<!-- ============ ДРОБИ ============ -->
+<section class="ch" id="drobi" style="--c:var(--tomato)">
+  <div class="eyebrow">Глава 3</div>
+  <h2>Обикновената дроб се ражда в кухнята</h2>
+  <p class="lead">Когато разделим нещо цяло на <b>равни части</b> и вземем няколко от тях, записваме това с <b>обикновена дроб</b>.</p>
+
+  <div class="box">
+    <h3>🍕 Пицата</h3>
+    <div class="row" id="cuts" style="margin-bottom:8px"><span class="lbl">Нарежи на:</span></div>
+    <div class="two">
+      <div class="svgbox"><svg id="pizza" viewBox="-20 -20 240 240"></svg></div>
+      <div>
+        <p class="note">Цъкни върху парче, за да го вземеш!</p>
+        <div class="fracline">
+          <span class="frac bigfrac"><i id="pk">0</i><i id="pn">8</i></span>
+          <div class="legend"><b>числител</b> – колко части сме взели<br><b>знаменател</b> – на колко равни части е разделена пицата</div>
+        </div>
+        <p id="pword" style="font-weight:800"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="box">
+    <h3>🎂 Тортата: едно и също парче, различни дроби</h3>
+    <p style="margin:0 0 8px">Цъкни парчета, за да ги оцветиш. После режи всяко парче на още части. Оцветената част <b>не се променя</b>, а дробта само си сменя записа!</p>
+    <div class="svgbox"><svg id="cake" viewBox="0 0 360 170"></svg></div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="cut2">✂ Режи всяко на 2</button>
+      <button class="btn" id="cut3">✂ Режи всяко на 3</button>
+      <button class="btn ghost" id="reduce">🔗 Съкрати с НОД</button>
+      <button class="btn ghost" id="cakeReset">↺ Отначало</button>
+    </div>
+    <div class="chain" id="chain"></div>
+    <p id="cakeMsg" style="font-weight:700;margin:6px 0 0"></p>
+  </div>
+  <div class="rule">💡 Да съкратим дроб означава да разделим числителя и знаменателя на едно и също число. Ако делим на <b>НОД</b>, стигаме до несъкратима дроб с една стъпка: <span class="frac"><i>6</i><i>8</i></span> → НОД(6, 8) = 2 → <span class="frac"><i>3</i><i>4</i></span></div>
+</section>
+
+<!-- ============ ЗАДАЧИ ============ -->
+<section class="ch" id="zadachi" style="--c:var(--cheese)">
+  <div class="eyebrow">Глава 4</div>
+  <h2>3 задачи за мислене</h2>
+  <p class="lead">Прочети внимателно! Във всяка задача има малък капан. Подсказката и решението са там, ако ти потрябват.</p>
+  <div id="tasks"></div>
+  <div class="final" id="final" hidden>🏆 Три звезди! Ти вече владееш НОД, НОК и дробите!</div>
+  <div style="text-align:center;margin-top:18px"><button class="btn" id="toMix" style="--c:var(--ink);color:var(--paper)">Продължи към смесените задачи ➜</button></div>
+</section>
+</div>
+
+<div id="tabMix" hidden>
+<section class="ch" style="--c:var(--tomato)">
+  <div class="eyebrow">Тренировка</div>
+  <h2>Смесени задачи</h2>
+  <p class="lead">Задачи за НОД, НОК, дроби и логика, разбъркани. Преди да смяташ, прочети внимателно какво точно се пита.</p>
+  <div class="legendtags"><span class="tag" style="--c:var(--basil)">НОД</span><span class="tag" style="--c:var(--sky)">НОК</span><span class="tag" style="--c:var(--tomato)">Дроби</span><span class="tag" style="--c:var(--cheese)">Логика</span></div>
+  <div class="mixbar"><b>Решени: <span id="mixN">0</span> / <span id="mixT">12</span></b><div class="track"><div class="fill" id="mixFill"></div></div></div>
+  <div id="mixList"></div>
+  <div class="final" id="mixFinal" hidden>🌟 Всички задачи са решени! Истински майстор на дробите и делимостта!</div>
+</section>
+</div>
+
+<footer>The Light Academy · Математика 5. клас</footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const gcd=(a,b)=>b?gcd(b,a%b):a, lcm=(a,b)=>a/gcd(a,b)*b;
+const divs=n=>{const r=[];for(let i=1;i<=n;i++)if(n%i===0)r.push(i);return r};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v|0||a));
+const primes=n=>{const r=[];for(let p=2;n>1;p++)while(n%p===0){r.push(p);n/=p}return r};
+const NS='http://www.w3.org/2000/svg';
+const fracHTML=(k,n)=>`<span class="frac"><i>${k}</i><i>${n}</i></span>`;
+
+/* ---------- пица (обща) ---------- */
+const TOP=[[30,-45],[-40,-30],[55,15],[-15,10],[10,55],[-55,30],[25,-12],[-20,-65],[60,-30],[-35,65],[40,45],[0,-30],[-65,-5],[15,80],[70,-5]];
+function pizzaSVG(n,taken,cx,cy,R,id){let s='';
+  for(let i=0;i<n;i++){const a0=-Math.PI/2+i*2*Math.PI/n,a1=a0+2*Math.PI/n,m=(a0+a1)/2;
+    const p=a=>`${(cx+R*Math.cos(a)).toFixed(2)} ${(cy+R*Math.sin(a)).toFixed(2)}`;
+    const d=n===1?`M${cx-R} ${cy}a${R} ${R} 0 1 0 ${2*R} 0a${R} ${R} 0 1 0 ${-2*R} 0z`:`M${cx} ${cy}L${p(a0)}A${R} ${R} 0 ${n<=2?0:0} 1 ${p(a1)}Z`;
+    const off=taken&&taken.has(i)?R*.16:0,tx=(off*Math.cos(m)).toFixed(1),ty=(off*Math.sin(m)).toFixed(1);
+    const sel=taken&&taken.has(i);
+    s+=`<g class="slice" data-i="${i}" style="transform:translate(${tx}px,${ty}px)"><clipPath id="${id}c${i}"><path d="${d}"/></clipPath>
+    <path d="${d}" fill="var(--crust)"/><g clip-path="url(#${id}c${i})"><circle cx="${cx}" cy="${cy}" r="${R*.86}" fill="${sel?'#ffe08a':'var(--mozz)'}"/>
+    ${TOP.map(([x,y])=>`<circle cx="${cx+x*R/90}" cy="${cy+y*R/90}" r="${R*.085}" fill="var(--pepp)"/>`).join('')}</g>
+    <path d="${d}" fill="none" stroke="${sel?'var(--tomato)':'#9b6328'}" stroke-width="${sel?3:1.2}"/></g>`}
+  return s}
+$('heroPizza').innerHTML=pizzaSVG(8,null,65,65,58,'h');
+
+/* ---------- НОД ---------- */
+function runNOD(){const a=clamp($('na').value,1,60),b=clamp($('nb').value,1,60);$('na').value=a;$('nb').value=b;
+  $('la').textContent=a;$('lb').textContent=b;const A=divs(a),B=divs(b),g=gcd(a,b);
+  const draw=(arr,other,el)=>{el.innerHTML=arr.map((d,i)=>`<span class="chip pop ${other.includes(d)?'common':''} ${d===g?'best':''}" style="animation-delay:${i*60}ms">${d}</span>`).join('')};
+  draw(A,B,$('da'));draw(B,A,$('db'));
+  const common=A.filter(d=>B.includes(d));
+  $('nodRes').innerHTML=`Общи делители: ${common.join(', ')} → НОД(${a}, ${b}) = <span>${g}</span>`;
+  const pa=primes(a),pb=primes(b),used=[...pb],com=[];
+  const markA=pa.map(p=>{const k=used.indexOf(p);if(k>=0){used.splice(k,1);com.push(p);return`<span class="p c">${p}</span>`}return`<span class="p">${p}</span>`});
+  const used2=[...com];const markB=pb.map(p=>{const k=used2.indexOf(p);if(k>=0){used2.splice(k,1);return`<span class="p c">${p}</span>`}return`<span class="p">${p}</span>`});
+  $('nodFac').innerHTML=(a===1||b===1)?'Числото 1 няма прости множители, затова НОД = 1.':
+   `Чрез прости множители:<br>${a} = ${markA.join(' · ')}<br>${b} = ${markB.join(' · ')}<br>НОД = произведението на общите (зелените) = ${com.length?com.join(' · '):'1'} = <b>${g}</b>`;
+  setupTiles(Math.max(a,b),Math.min(a,b))}
+$('nodGo').onclick=runNOD;['na','nb'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')runNOD()}));
+
+let TW=18,TH=12;
+function setupTiles(w,h){TW=w;TH=h;$('tw').textContent=w;$('th').textContent=h;$('ts').max=h;$('ts').value=1;drawTiles()}
+function drawTiles(){const s=+$('ts').value;$('tsv').textContent=s;
+  const sc=Math.min(340/TW,220/TH),ox=(360-TW*sc)/2,oy=(240-TH*sc)/2,nx=Math.floor(TW/s),ny=Math.floor(TH/s);
+  let o=`<rect x="${ox}" y="${oy}" width="${TW*sc}" height="${TH*sc}" fill="var(--soft)" stroke="var(--muted)" stroke-width="2"/>`;
+  const total=nx*ny,step=Math.min(40,900/Math.max(total,1));let k=0;
+  for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){o+=`<rect class="chip pop" x="${ox+x*s*sc+1}" y="${oy+y*s*sc+1}" width="${s*sc-2}" height="${s*sc-2}" rx="${Math.min(4,s*sc/5)}" fill="${(x+y)%2?'#5fbf8a':'#2c8c58'}" style="animation-delay:${k++*step}ms;transform-box:fill-box;transform-origin:center"/>`}
+  if(TW%s)o+=`<rect x="${ox+nx*s*sc}" y="${oy}" width="${(TW-nx*s)*sc}" height="${TH*sc}" fill="var(--tomato)" opacity=".35"/>`;
+  if(TH%s)o+=`<rect x="${ox}" y="${oy+ny*s*sc}" width="${TW*sc}" height="${(TH-ny*s)*sc}" fill="var(--tomato)" opacity=".35"/>`;
+  $('tile').innerHTML=o;const g=gcd(TW,TH),fits=TW%s===0&&TH%s===0,m=$('tmsg');
+  if(!fits){m.className='tilemsg no';m.textContent=`✗ Плочка ${s}×${s} не става. Остава празно място (червено), защото ${TW%s?TW:TH} не се дели на ${s}.`}
+  else if(s===g){m.className='tilemsg ok';m.textContent=`🏆 ${s}×${s} е най-голямата плочка! Отговорът е НОД(${TW}, ${TH}) = ${g}. Трябват ${total} плочки.`}
+  else{m.className='tilemsg ok';m.textContent=`✓ Плочка ${s}×${s} става (${total} плочки). А може ли и по-голяма?`}}
+$('ts').oninput=drawTiles;
+
+/* ---------- НОК ---------- */
+let hopTimer=null;
+function runNOK(animate){clearTimeout(hopTimer);const a=clamp($('fa').value,2,12),b=clamp($('ra').value,2,12);$('fa').value=a;$('ra').value=b;
+  ['fj','lf'].forEach(i=>$(i).textContent=a);['rj','lr'].forEach(i=>$(i).textContent=b);
+  const L=lcm(a,b),max=Math.min(Math.max(L+Math.max(a,b),24),Math.ceil((L+Math.max(a,b))/1)),X=v=>30+v*660/max;
+  let o=`<line x1="20" y1="90" x2="705" y2="90" stroke="var(--ink)" stroke-width="2"/>`;
+  for(let v=0;v<=max;v++){const big=v%5===0||max<=30;o+=`<line x1="${X(v)}" y1="${v%5?84:80}" x2="${X(v)}" y2="${v%5?96:100}" stroke="var(--muted)"/>`;
+    if(big)o+=`<text x="${X(v)}" y="116" text-anchor="middle" font-size="${max>40?10:12}" fill="var(--muted)" font-family="Nunito,sans-serif" font-weight="${v%a===0||v%b===0?800:400}">${v}</text>`}
+  o+=`<g id="arcs"></g><circle id="meet" cx="${X(L)}" cy="90" r="16" fill="none" stroke="var(--cheese)" stroke-width="4" opacity="0"/>
+  <text id="frog" x="0" y="0" font-size="26" text-anchor="middle" style="transition:transform .55s ease-in-out;transform:translate(${X(0)}px,58px)">🐸</text>
+  <text id="bun" x="0" y="0" font-size="26" text-anchor="middle" style="transition:transform .55s ease-in-out;transform:translate(${X(0)}px,150px)">🐰</text>`;
+  $('line').innerHTML=o;$('mf').innerHTML='';$('mr').innerHTML='';$('nokRes').textContent='';
+  const arcs=$('arcs');const arc=(from,to,up,col)=>{const p=document.createElementNS(NS,'path'),m=(X(from)+X(to))/2,h=up?-Math.min(60,(X(to)-X(from))*.5):Math.min(40,(X(to)-X(from))*.4);
+    p.setAttribute('d',`M${X(from)} ${up?84:96} Q${m} ${(up?84:96)+h} ${X(to)} ${up?84:96}`);p.setAttribute('fill','none');p.setAttribute('stroke',col);p.setAttribute('stroke-width','3');p.setAttribute('class','cut');arcs.appendChild(p)};
+  const fin=()=>{const MF=[],MR=[];for(let v=a;v<=L*2&&MF.length<12;v+=a)MF.push(v);for(let v=b;v<=L*2&&MR.length<12;v+=b)MR.push(v);
+    const ch=(arr,o)=>arr.map((v,i)=>`<span class="chip pop ${v%o===0?'common':''} ${v===L?'best':''}" style="animation-delay:${i*50}ms">${v}</span>`).join('');
+    $('mf').innerHTML=ch(MF,b);$('mr').innerHTML=ch(MR,a);$('meet').setAttribute('opacity',1);
+    $('nokRes').innerHTML=`Първото общо кратно: НОК(${a}, ${b}) = <span>${L}</span>`};
+  if(!animate){fin();return}
+  $('hop').disabled=true;let t=0;
+  const tick=()=>{t++;const fp=t,bp=t;let moved=false;
+    // всеки скача докато не стигне L
+    const fPos=Math.min(fp*a,L),bPos=Math.min(bp*b,L);
+    if((fp-1)*a<L){arc((fp-1)*a,fPos,true,'var(--basil)');$('frog').style.transform=`translate(${X(fPos)}px,58px)`;moved=true}
+    if((bp-1)*b<L){arc((bp-1)*b,bPos,false,'var(--sky)');$('bun').style.transform=`translate(${X(bPos)}px,150px)`;moved=true}
+    if(moved&&(fPos<L||bPos<L))hopTimer=setTimeout(tick,650);else{hopTimer=setTimeout(()=>{fin();$('hop').disabled=false},500)}};
+  hopTimer=setTimeout(tick,200)}
+$('hop').onclick=()=>runNOK(true);['fa','ra'].forEach(i=>$(i).addEventListener('change',()=>runNOK(false)));
+
+/* ---------- пица ---------- */
+let PN=8,taken=new Set();
+const words={1:'цяла',2:'половини',3:'третини',4:'четвъртини',6:'шестини',8:'осмини',12:'дванадесетини'};
+function drawPizza(){$('pizza').innerHTML=pizzaSVG(PN,taken,100,100,90,'p');$('pk').textContent=taken.size;$('pn').textContent=PN;
+  const k=taken.size,g=gcd(k,PN);
+  $('pword').innerHTML=k===0?`Пицата е разделена на ${PN} равни части (${words[PN]}).`:k===PN?`Взе цялата пица! ${fracHTML(PN,PN)} = 1 цяло 🎉`:
+   `Взе ${k} от ${PN} равни части.`+(g>1?` Това е същото като ${fracHTML(k/g,PN/g)}!`:'');
+  $('pizza').querySelectorAll('.slice').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;taken.has(i)?taken.delete(i):taken.add(i);drawPizza()})}
+[2,3,4,6,8,12].forEach(n=>{const b=document.createElement('button');b.className='btn'+(n===8?'':' ghost');b.textContent=n;b.onclick=()=>{PN=n;taken=new Set();
+  document.querySelectorAll('#cuts button').forEach(x=>x.className='btn ghost');b.className='btn';drawPizza()};$('cuts').appendChild(b)});
+
+/* ---------- торта ---------- */
+let CN=4,csel=new Set([0,1]),chain=[],fresh=false;
+function cakeDraw(){const W=320,x0=20,y0=40,H=96,w=W/CN;let o=`<ellipse cx="180" cy="${y0+H+14}" rx="175" ry="10" fill="var(--line)"/>
+  <rect x="10" y="${y0+H}" width="340" height="12" rx="6" fill="var(--muted)" opacity=".4"/>`;
+  for(let i=0;i<CN;i++){const s=csel.has(i),x=x0+i*w;
+    o+=`<g class="piece" data-i="${i}" style="transform:translateY(${s?-8:0}px)"><rect x="${x}" y="${y0}" width="${w}" height="${H}" fill="${s?'var(--sponge)':'var(--cream)'}" stroke="#c99b5a"/>
+    <path d="M${x} ${y0}h${w}v14q${-w/4} 10 ${-w/2} 0t${-w/2} 0z" fill="${s?'var(--frost)':'#fbe3ea'}"/>
+    <rect x="${x}" y="${y0+H*.55}" width="${w}" height="6" fill="${s?'#e0607f':'#f3c6d2'}"/>`+
+    (w>14?`<circle cx="${x+w/2}" cy="${y0-4}" r="${Math.min(9,w/4)}" fill="${s?'#e0483c':'#f2a3a0'}"/><path d="M${x+w/2-3} ${y0-12}l3 -4l3 4" fill="#2c8c58"/>`:'')+`</g>`}
+  for(let i=1;i<CN;i++)o+=`<line ${fresh?'class="cut"':''} x1="${x0+i*w}" y1="${y0-14}" x2="${x0+i*w}" y2="${y0+H}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="${fresh?200:'none'}"/>`;
+  o+=`<text x="180" y="22" text-anchor="middle" font-size="15" font-weight="800" fill="var(--ink)" font-family="Rubik,sans-serif">Оцветени: ${csel.size} от ${CN} парчета</text>`;
+  $('cake').innerHTML=o;fresh=false;
+  $('cake').querySelectorAll('.piece').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;csel.has(i)?csel.delete(i):csel.add(i);chain=[];cakeInfo()});
+  const k=csel.size,g=gcd(k,CN);$('reduce').disabled=!(k>0&&g>1);$('cut2').disabled=CN*2>48;$('cut3').disabled=CN*3>48}
+function cakeInfo(msg){const k=csel.size;if(!chain.length||chain.at(-1).join()!==[k,CN].join())chain.push([k,CN]);
+  $('chain').innerHTML=chain.map(([a,b])=>fracHTML(a,b)).join('<span class="eq">=</span>');
+  $('cakeMsg').textContent=msg||'';cakeDraw()}
+function cutAll(m){csel=new Set([...csel].flatMap(i=>Array.from({length:m},(_,j)=>i*m+j)));CN*=m;fresh=true;
+  cakeInfo(`Всяко парче стана на ${m}. Числителят и знаменателят се умножиха по ${m}, но тортата е същата!`)}
+$('cut2').onclick=()=>cutAll(2);$('cut3').onclick=()=>cutAll(3);
+$('reduce').onclick=()=>{const k=csel.size,n=CN,g=gcd(k,n);if(g<2)return;CN=n/g;csel=new Set(Array.from({length:k/g},(_,i)=>i));fresh=true;
+  cakeInfo(`НОД(${k}, ${n}) = ${g}. Делим и двете на ${g}: ${k} : ${g} = ${k/g} и ${n} : ${g} = ${CN}.`)};
+$('cakeReset').onclick=()=>{CN=4;csel=new Set([0,1]);chain=[];fresh=true;cakeInfo()};
+
+/* ---------- задачи ---------- */
+const bus=`<svg viewBox="0 0 320 130"><rect x="0" y="100" width="320" height="30" fill="var(--muted)" opacity=".35"/>
+<g><rect x="14" y="44" width="130" height="54" rx="10" fill="#e0483c"/><rect x="24" y="54" width="22" height="18" rx="3" fill="#dff1ff"/><rect x="52" y="54" width="22" height="18" rx="3" fill="#dff1ff"/><rect x="80" y="54" width="22" height="18" rx="3" fill="#dff1ff"/><rect x="112" y="54" width="24" height="30" rx="3" fill="#dff1ff"/><circle cx="42" cy="100" r="10" fill="#333"/><circle cx="118" cy="100" r="10" fill="#333"/><text x="70" y="40" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)" font-family="Rubik">№ 1 · 12 мин</text></g>
+<g><rect x="176" y="44" width="130" height="54" rx="10" fill="#3a7bd5"/><rect x="186" y="54" width="22" height="18" rx="3" fill="#dff1ff"/><rect x="214" y="54" width="22" height="18" rx="3" fill="#dff1ff"/><rect x="242" y="54" width="22" height="18" rx="3" fill="#dff1ff"/><rect x="274" y="54" width="24" height="30" rx="3" fill="#dff1ff"/><circle cx="204" cy="100" r="10" fill="#333"/><circle cx="280" cy="100" r="10" fill="#333"/><text x="240" y="40" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)" font-family="Rubik">№ 2 · 18 мин</text></g>
+<text x="160" y="20" text-anchor="middle" font-size="15" font-weight="800" fill="var(--ink)" font-family="Rubik">🕖 7:00 – тръгват заедно</text></svg>`;
+const gifts=(()=>{let s=`<svg viewBox="0 0 320 130">`;for(let i=0;i<24;i++)s+=`<circle cx="${18+(i%8)*16}" cy="${30+Math.floor(i/8)*16}" r="6" fill="#7a4a24"/>`;
+ for(let i=0;i<36;i++){const x=180+(i%9)*15,y=24+Math.floor(i/9)*16;s+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+12}" stroke="var(--muted)" stroke-width="2"/><circle cx="${x}" cy="${y}" r="5" fill="${['#e0483c','#e8a91c','#3a7bd5'][i%3]}"/>`}
+ s+=`<text x="74" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="var(--ink)" font-family="Rubik">24 шоколадови бонбона</text><text x="245" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="var(--ink)" font-family="Rubik">36 близалки</text>`;
+ for(let i=0;i<4;i++)s+=`<rect x="${100+i*32}" y="108" width="22" height="18" rx="3" fill="var(--basil)"/><rect x="${110+i*32}" y="108" width="3" height="18" fill="var(--cheese)"/>`;return s+`</svg>`})();
+const pizzas=`<svg viewBox="0 0 320 130">${pizzaSVG(8,null,80,64,55,'t1')}${pizzaSVG(8,null,240,64,55,'t2')}</svg>`;
+
+const TASKS=[
+{c:'var(--sky)',title:'Двата автобуса',art:bus,
+ text:'Два автобуса тръгват заедно от последната спирка в <b>7:00</b> ч. Първият се връща и тръгва отново на всеки <b>12 минути</b>, а вторият – на всеки <b>18 минути</b>.',
+ parts:[{q:'а) В колко часа двата автобуса ще тръгнат отново заедно?',type:'mc',options:['7:30','7:36','7:54','10:36'],ans:1},
+        {q:'б) Колко пъти след 7:00 ще тръгнат заедно до 9:00 ч. включително?',type:'num',ans:3}],
+ hint:'Търсим първото число, което е кратно и на 12, и на 18. Това е НОК. После прибавяй това време към 7:00, докато не минеш 9:00.',
+ steps:['Кратни на 12: 12, 24, <b>36</b>, 48 …','Кратни на 18: 18, <b>36</b>, 54 …','НОК(12, 18) = 36 → тръгват заедно в <b>7:36</b>.','После в 8:12, 8:48, а следващият път е 9:24 – вече е след 9:00.','Значи до 9:00 тръгват заедно <b>3 пъти</b>: 7:36, 8:12 и 8:48.'],
+ trap:'12 · 18 = 216 минути (10:36) също е общо кратно, но не е <b>първото</b>. Затова търсим <b>най-малкото</b> общо кратно.'},
+{c:'var(--basil)',title:'Подаръчните пакетчета',art:gifts,
+ text:'Учителката има <b>24 шоколадови бонбона</b> и <b>36 близалки</b>. Иска да ги раздели в еднакви пакетчета така, че във всички пакетчета да има еднакво съдържание и да не остане нищо. Колко най-много пакетчета може да направи?',
+ parts:[{q:'а) Колко най-много пакетчета може да направи?',type:'num',ans:12,unit:'пакетчета'},
+        {q:'б) Колко близалки ще има в едно пакетче?',type:'num',ans:3,unit:'близалки'},
+        {q:'в) А колко шоколадови бонбона ще има в едно пакетче?',type:'num',ans:2,unit:'бонбона'}],
+ hint:'Броят на пакетчетата трябва да дели и 24, и 36. Търсим най-голямото такова число, тоест НОД.',
+ steps:['Делители на 24: 1, 2, 3, 4, 6, 8, <b>12</b>, 24','Делители на 36: 1, 2, 3, 4, 6, 9, <b>12</b>, 18, 36','НОД(24, 36) = <b>12</b> пакетчета','Близалки в пакетче: 36 : 12 = <b>3</b>','Бонбони в пакетче: 24 : 12 = <b>2</b>'],
+ trap:'Числото 6 също дели и 24, и 36, но въпросът е за <b>най-много</b> пакетчета. Затова търсим <b>най-големия</b> общ делител.'},
+{c:'var(--tomato)',title:'Пиците на рождения ден',art:pizzas,
+ text:'Трима приятели поръчали <b>2 еднакви пици</b>, всяка нарязана на <b>8 равни парчета</b>. Иво изял <span class="frac"><i>1</i><i>4</i></span> от първата пица, Мая изяла <b>3 парчета</b>, а Тео изял <b>половината</b> от втората пица.',
+ parts:[{q:'а) Колко парчета са изяли общо?',type:'num',ans:9,unit:'парчета'},
+        {q:'б) Колко парчета са останали?',type:'num',ans:7,unit:'парчета'},
+        {q:'в) Каква част от всичката пица е останала? Запиши дробта, например 3/5.',type:'frac',ans:[7,16],trapFrac:[7,8],trapMsg:'Внимавай: пиците са две! Колко парчета има общо?'}],
+ hint:'Преобразувай всичко в парчета. Четвъртинка от 8 парчета е колко парчета? А половина от 8? Колко парчета има общо в двете пици?',
+ steps:['Иво: <span class="frac"><i>1</i><i>4</i></span> от 8 = 8 : 4 = <b>2</b> парчета','Мая: <b>3</b> парчета','Тео: <span class="frac"><i>1</i><i>2</i></span> от 8 = 8 : 2 = <b>4</b> парчета','Изядени: 2 + 3 + 4 = <b>9</b>. Всички парчета: 2 · 8 = 16','Останали: 16 − 9 = <b>7</b> парчета → <span class="frac"><i>7</i><i>16</i></span> от всичката пица'],
+ trap:'Пиците са <b>две</b>, затова знаменателят е 16, а не 8. Ако напишеш <span class="frac"><i>7</i><i>8</i></span>, това е част от <b>една</b> пица.'}
+];
+const L4=['А','Б','В','Г'],praise=()=>['Браво! ✔','Супер! 🌟','Точно така! 🎉','Отлично! 👏'][Math.random()*4|0];
+const done=new Set();
+function stars(){$('stars').textContent='★'.repeat(done.size)+'☆'.repeat(3-done.size);if(done.size===3){$('final').hidden=false;confetti()}}
+buildTasks(TASKS,$('tasks'),i=>{done.add(i);stars()},'t');
+function buildTasks(LIST,box,onSolved,pre){LIST.forEach((t,i)=>{const c=document.createElement('div');c.className='box task';c.style.setProperty('--c',t.c);
+ let h=`<div class="head"><span class="badge"><span>${i+1}</span></span><h3 style="margin:0">${t.icon?t.icon+' ':''}${t.title}</h3>${t.tag?`<span class="tag">${t.tag}</span>`:''}</div>${t.art?`<div class="art">${t.art}</div>`:''}<div>${t.text}</div>`;
+ t.parts.forEach((p,j)=>{h+=`<div class="part"><div class="q">${p.q}</div>`;
+  h+=p.type==='mc'?`<div class="opts">${p.options.map((o,k)=>`<button class="opt" data-k="${k}"><b>${L4[k]})</b> ${o}</button>`).join('')}</div>`
+   :`<div class="row"><input class="ans" id="${pre}${i}p${j}"type="text" inputmode="${p.type==='frac'?'text':'numeric'}" placeholder="${p.type==='frac'?'?/?':'?'}" aria-label="Отговор"><span class="lbl">${p.unit||''}</span><button class="btn chk">Провери</button></div>`;
+  h+=`<div class="fb"></div></div>`});
+ h+=`<div class="tools"><button class="hb">💡 Подсказка</button><button class="sb">🧭 Решение стъпка по стъпка</button></div><div class="hint" hidden>${t.hint}</div>
+ <div class="sol" hidden><ol>${t.steps.map(s=>`<li>${s}</li>`).join('')}</ol><button class="btn nx" style="margin-top:6px">Следваща стъпка ➜</button><div class="trap" hidden><b>🪤 Капанът:</b> ${t.trap}</div></div>`;
+ c.innerHTML=h;box.appendChild(c);
+ let solved=false;const pd=t.parts.map(()=>false),fin=j=>{pd[j]=true;if(pd.every(Boolean)&&!solved){solved=true;c.classList.add('done');onSolved(i)}};
+ c.querySelectorAll('.part').forEach((el,j)=>{const p=t.parts[j],fb=el.querySelector('.fb');
+  const bad=(x,m)=>{x.classList.remove('wrong');void x.offsetWidth;x.classList.add('wrong');fb.className='fb no';fb.textContent=m};
+  if(p.type==='mc')el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(pd[j])return;if(+b.dataset.k===p.ans){b.classList.add('right');el.querySelectorAll('.opt').forEach(x=>x.disabled=true);fb.className='fb ok';fb.textContent=praise();fin(j)}else bad(b,'Не е това. Помисли пак! 💪')});
+  else{const inp=el.querySelector('input'),btn=el.querySelector('.chk');
+   const go=()=>{if(pd[j])return;const raw=inp.value.replace(/\s/g,'');if(!raw){bad(inp,'Напиши отговор 🙂');return}
+    let ok;if(p.type==='frac'){const m=raw.match(/^(\d+)[\/:](\d+)$/);ok=m&&+m[1]===p.ans[0]&&+m[2]===p.ans[1];
+      if(!ok&&m&&p.trapFrac&&+m[1]===p.trapFrac[0]&&+m[2]===p.trapFrac[1]){bad(inp,p.trapMsg);return}
+      if(!ok&&m&&+m[2]>0&&+m[1]*p.ans[1]===+m[2]*p.ans[0]){bad(inp,'Почти! Дробта е вярна, но може да се съкрати още. 😉');return}}
+    else ok=+raw===p.ans;
+    if(ok){inp.className='ans right';inp.disabled=btn.disabled=true;fb.className='fb ok';fb.textContent=praise();fin(j)}else bad(inp,'Още не е вярно. Провери сметките!')};
+   btn.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()}}});
+ c.querySelector('.hb').onclick=()=>{const x=c.querySelector('.hint');x.hidden=!x.hidden};
+ const sol=c.querySelector('.sol'),lis=[...sol.querySelectorAll('li')],nx=sol.querySelector('.nx');let s=0;
+ const rev=()=>{if(s<lis.length)lis[s++].classList.add('show');if(s>=lis.length){nx.hidden=true;sol.querySelector('.trap').hidden=false}};
+ c.querySelector('.sb').onclick=()=>{if(sol.hidden){sol.hidden=false;if(!s)rev()}else sol.hidden=true};nx.onclick=rev})}
+
+/* ---------- смесени задачи ---------- */
+const NOD='var(--basil)',NOK='var(--sky)',DR='var(--tomato)',LOG='var(--cheese)';
+const F=(a,b)=>fracHTML(a,b);
+const MIX=[
+{c:NOD,tag:'НОД',icon:'🔍',title:'Бърза сметка',text:'Намери НОД(48, 36).',
+ parts:[{q:'НОД(48, 36) = ?',type:'num',ans:12}],hint:'Разложи двете числа на прости множители и вземи общите.',
+ steps:['48 = 2 · 2 · 2 · 2 · 3','36 = 2 · 2 · 3 · 3','Общи: 2 · 2 · 3 = <b>12</b>'],trap:'36 дели ли 48? Не, затова НОД не е 36.'},
+{c:NOK,tag:'НОК',icon:'🐸',title:'Бърза сметка',text:'Намери НОК(8, 12).',
+ parts:[{q:'НОК(8, 12) = ?',type:'num',ans:24}],hint:'Изреждай кратните на по-голямото число 12 и спри при първото, което се дели на 8.',
+ steps:['Кратни на 12: 12, <b>24</b>, 36 …','12 не се дели на 8, а 24 : 8 = 3','НОК(8, 12) = <b>24</b>'],trap:'8 · 12 = 96 също е общо кратно, но не е най-малкото.'},
+{c:DR,tag:'Дроби',icon:'✂️',title:'Съкрати дробта',text:`Съкрати дробта ${F(18,24)} до несъкратима.`,
+ parts:[{q:'Запиши резултата, например 2/5:',type:'frac',ans:[3,4]}],hint:'Раздели числителя и знаменателя на НОД(18, 24).',
+ steps:['НОД(18, 24) = 6','18 : 6 = 3 и 24 : 6 = 4',`${F(18,24)} = ${F(3,4)}`],trap:`Ако делиш само на 2, получаваш ${F(9,12)}, а тя може да се съкрати още.`},
+{c:LOG,tag:'Логика',icon:'🕵️',title:'Тайното число',text:'Кое число е <b>делител на 30</b>, <b>кратно на 3</b> и е <b>четно</b>?',
+ parts:[{type:'mc',options:['6','9','15','10'],ans:0}],hint:'Провери всяко условие поотделно за всеки отговор.',
+ steps:['9 не е делител на 30.','15 не е четно.','10 не е кратно на 3.','Остава <b>6</b>: 30 : 6 = 5, 6 = 2 · 3 и е четно.'],trap:'Трябва да са изпълнени и трите условия едновременно.'},
+{c:NOK,tag:'НОК',icon:'🚦',title:'Двата фара',text:'Два фара светват едновременно. Първият светва на всеки <b>6 секунди</b>, вторият – на всеки <b>10 секунди</b>. След колко секунди ще светнат отново заедно?',
+ parts:[{q:'След колко секунди?',type:'num',ans:30,unit:'сек.'}],hint:'Търсим първото общо кратно на 6 и 10.',
+ steps:['Кратни на 10: 10, 20, <b>30</b> …','30 : 6 = 5 ✓','НОК(6, 10) = <b>30</b> секунди'],trap:'6 · 10 = 60 е общо кратно, но фаровете ще светнат заедно още на 30-ата секунда.'},
+{c:DR,tag:'Дроби',icon:'🍕',title:'Пицата на Ани и Бобо',text:`Пица е нарязана на <b>12</b> равни парчета. Ани изяла ${F(1,3)} от пицата, а Бобо изял ${F(1,4)} от пицата.`,
+ parts:[{q:'а) Колко парчета са останали?',type:'num',ans:5,unit:'парчета'},{q:'б) Каква част от пицата е останала?',type:'frac',ans:[5,12]}],
+ hint:'Пресметни колко парчета е изял всеки: каква е третината на 12? А четвъртината?',
+ steps:[`Ани: ${F(1,3)} от 12 = 12 : 3 = <b>4</b> парчета`,`Бобо: ${F(1,4)} от 12 = 12 : 4 = <b>3</b> парчета`,'Остават: 12 − 4 − 3 = <b>5</b> парчета',`Част: ${F(5,12)}`],
+ trap:`${F(1,3)} и ${F(1,4)} не се събират като 1 + 1 и 3 + 4. Превърни ги в парчета.`},
+{c:NOD,tag:'НОД',icon:'🎀',title:'Панделките',text:'Имаме <b>42 cm</b> червена и <b>56 cm</b> синя панделка. Искаме да ги нарежем на парчета с <b>еднаква дължина</b>, възможно най-дълги и без остатък.',
+ parts:[{q:'а) Колко cm е дълго едно парче?',type:'num',ans:14,unit:'cm'},{q:'б) Колко парчета ще получим общо?',type:'num',ans:7,unit:'парчета'}],
+ hint:'Дължината трябва да дели и 42, и 56, и да е възможно най-голяма.',
+ steps:['42 = 2 · 3 · 7, а 56 = 2 · 2 · 2 · 7','НОД(42, 56) = 2 · 7 = <b>14</b> cm','Червена: 42 : 14 = 3 парчета; синя: 56 : 14 = 4 парчета','Общо: 3 + 4 = <b>7</b> парчета'],
+ trap:'Най-дългото парче е НОД. НОК би било по-дълго от самите панделки!'},
+{c:DR,tag:'Дроби',icon:'⚖️',title:'Равни дроби',text:`Коя дроб е равна на ${F(2,3)}?`,
+ parts:[{type:'mc',options:[F(4,9),F(6,9),F(3,2),F(2,6)],ans:1}],hint:'Умножи числителя и знаменателя на едно и също число.',
+ steps:[`${F(2,3)} → умножаваме по 3 → ${F(6,9)}`,`${F(4,9)}: 4 = 2 · 2, но 9 = 3 · 3, а не 3 · 2.`],trap:`${F(3,2)} е „обърнатата“ дроб. Тя е по-голяма от 1 цяло.`},
+{c:DR,tag:'Дроби',icon:'🎂',title:'Остатъкът от тортата',text:'Торта е нарязана на <b>8</b> равни парчета. На празника изяли <b>6</b> парчета. Каква част от тортата е останала? Запиши я като <b>несъкратима</b> дроб.',
+ parts:[{q:'Останала част:',type:'frac',ans:[1,4],trapFrac:[6,8],trapMsg:'Това е изядената част! Питаме за останалата. 🙂'}],
+ hint:'Колко парчета остават? После съкрати дробта.',steps:['Остават 8 − 6 = 2 парчета',`${F(2,8)} → НОД(2, 8) = 2`,`${F(2,8)} = ${F(1,4)}`],trap:'Внимавай: питаме за останалата, а не за изядената част.'},
+{c:LOG,tag:'Логика',icon:'🍬',title:'Бонбоните с остатък',text:'Мама има бонбони. Ако ги раздели по <b>4</b>, остава <b>1</b> бонбон. Ако ги раздели по <b>6</b>, пак остава <b>1</b>. Колко е <b>най-малкият</b> възможен брой бонбони (повече от 1)?',
+ parts:[{q:'Най-малкият брой:',type:'num',ans:13,unit:'бонбона'}],hint:'Ако махнем 1 бонбон, останалите се делят точно и на 4, и на 6.',
+ steps:['Без 1 бонбон броят се дели и на 4, и на 6.','НОК(4, 6) = 12','12 + 1 = <b>13</b> бонбона','Проверка: 13 = 3 · 4 + 1 = 2 · 6 + 1 ✓'],trap:'Отговорът не е 12, защото тогава няма остатък.'},
+{c:LOG,tag:'Логика',icon:'🧩',title:'Липсващото число',text:'За две числа знаем, че НОД = <b>4</b>, НОК = <b>24</b>, а едното число е <b>8</b>. Кое е другото число?',
+ parts:[{q:'Другото число е:',type:'num',ans:12}],hint:'Спомни си правилото: НОД · НОК = a · b.',
+ steps:['НОД · НОК = 4 · 24 = 96','8 · b = 96 → b = 96 : 8 = <b>12</b>','Проверка: НОД(8, 12) = 4 и НОК(8, 12) = 24 ✓'],trap:'24 не е решение: НОД(8, 24) = 8, а не 4.'},
+{c:NOD,tag:'НОД',icon:'⚽',title:'Отборите',text:'В спортния клуб има <b>24 момичета</b> и <b>18 момчета</b>. Треньорът иска да ги раздели на отбори така, че във всеки отбор да има еднакъв брой момичета и еднакъв брой момчета. Всяко дете трябва да е в отбор.',
+ parts:[{q:'а) Колко най-много отбора може да направи?',type:'num',ans:6,unit:'отбора'},{q:'б) Колко деца ще има в един отбор?',type:'num',ans:7,unit:'деца'}],
+ hint:'Броят отбори трябва да дели и 24, и 18.',
+ steps:['НОД(24, 18) = <b>6</b> отбора','Момичета в отбор: 24 : 6 = 4; момчета: 18 : 6 = 3','В отбор: 4 + 3 = <b>7</b> деца'],trap:'Въпрос б) пита за всички деца в отбора, а не само за момичетата.'}
+];
+const mixDone=new Set();
+buildTasks(MIX,$('mixList'),i=>{mixDone.add(i);$('mixN').textContent=mixDone.size;$('mixFill').style.width=mixDone.size/MIX.length*100+'%';
+  if(mixDone.size===MIX.length){$('mixFinal').hidden=false;confetti()}},'m');
+$('mixT').textContent=MIX.length;
+
+/* ---------- табове ---------- */
+function showTab(name){const mix=name==='mix';$('tabLesson').hidden=mix;$('tabMix').hidden=!mix;
+  $('tbL').setAttribute('aria-selected',!mix);$('tbM').setAttribute('aria-selected',mix);
+  try{history.replaceState(null,'',mix?'#smesica':'#urok')}catch(e){}}
+$('tbL').onclick=()=>showTab('lesson');$('tbM').onclick=()=>{showTab('mix');window.scrollTo({top:0})};
+$('toMix').onclick=()=>{showTab('mix');window.scrollTo({top:0})};
+if(location.hash==='#smesica')showTab('mix');
+function confetti(){const cs=['#e0483c','#e8a91c','#2c8c58','#3a7bd5','#f59bb5'];for(let i=0;i<90;i++){const d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'vw';d.style.background=cs[i%5];d.style.animationDuration=2+Math.random()*2+'s';d.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5200)}}
+
+runNOD();runNOK(false);drawPizza();cakeInfo();
+</script>
+
+</body>
+</html>

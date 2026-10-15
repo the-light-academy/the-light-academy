@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Математическо приключение · 4. клас</title>
+<meta name="description" content="Интерактивен урок за 4. клас, седмица 18: 25 задачи от целия първи срок — числа и действия, умножение и деление, ред на действията, мерни единици, геометрия и предизвикателства." />
+<!-- =====================================================================
+     Математическо приключение — 4. клас, седмица 18
+     ---------------------------------------------------------------------
+     25 задачи в шест раздела, подредени от лесни към трудни: числа и
+     действия, умножение и деление, ред на действията, мерни единици и
+     време, геометрия и предизвикателства. Всяка се проверява поотделно и
+     носи звезда.
+
+     Прави се в обобщението на първия срок. Урокът не иска вход и нищо не
+     предава към платформата.
+     ===================================================================== -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1: #fef6e4;
+    --bg2: #e0f7ff;
+    --ink: #2b2a4a;
+    --ink-soft: #6a6790;
+    --card: #ffffff;
+    --pink: #f2731c;
+    --orange: #ffa94d;
+    --yellow: #ffd166;
+    --green: #51cf66;
+    --teal: #22c3a6;
+    --blue: #4d7cfe;
+    --purple: #9b6bff;
+    --red: #ff5c5c;
+    --shadow: rgba(43, 42, 74, 0.12);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; font-family: 'Nunito', sans-serif; color: var(--ink); }
+  body {
+    background: linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 100%);
+    min-height: 100%;
+    padding: 28px 14px 80px;
+    position: relative;
+    overflow-x: hidden;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(0px);
+    opacity: 0.35;
+    z-index: 0;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+
+  header {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--purple);
+    color: #fff;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 34px;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  h1 span { color: var(--pink); }
+  .subtitle { color: var(--ink-soft); font-size: 16px; margin: 0; max-width: 480px; margin: 0 auto; }
+
+  .progress-wrap {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin: 20px 0 28px;
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+  .progress-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .progress-top .stars { color: var(--orange); }
+  .progress-bar-bg {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: #eef0fb;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    transition: width 0.35s ease;
+  }
+
+  .section-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    margin: 34px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    flex: none;
+  }
+
+  .question {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 20px 20px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 18px var(--shadow);
+    border: 3px solid transparent;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+  }
+  .question.correct { border-color: var(--green); }
+  .question.incorrect { border-color: var(--red); }
+
+  .qhead { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .qnum {
+    flex: none; width: 36px; height: 36px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 16px;
+    color: #fff;
+  }
+  .qtext { font-size: 16.5px; line-height: 1.5; padding-top: 5px; font-weight: 600; }
+
+  .answer-row { display: flex; align-items: center; gap: 10px; margin: 14px 0 0 48px; flex-wrap: wrap; }
+  .answer-row input {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #d9d7ee;
+    border-radius: 12px;
+    padding: 10px 8px;
+    background: #fbfbff;
+    color: var(--ink);
+    width: 110px;
+  }
+  .answer-row input:focus { outline: none; border-color: var(--blue); background: #fff; }
+  .unit-label { font-weight: 700; color: var(--ink-soft); font-size: 14px; }
+
+  .check-btn {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 14px;
+    background: var(--pink); color: #fff; border: none; border-radius: 12px;
+    padding: 11px 20px; cursor: pointer; transition: transform 0.1s ease, background 0.15s ease;
+  }
+  .check-btn:hover { transform: translateY(-1px); }
+  .check-btn:active { transform: scale(0.95); }
+
+  .feedback {
+    margin: 10px 0 0 48px;
+    font-weight: 800;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 15px;
+    min-height: 20px;
+  }
+  .feedback.correct { color: var(--green); }
+  .feedback.incorrect { color: var(--red); }
+
+  .footer-actions { display: flex; justify-content: center; margin-top: 30px; }
+  .reset-btn {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    background: var(--ink); color: #fff;
+    border: none; border-radius: 14px;
+    padding: 13px 26px; cursor: pointer; font-size: 15px;
+  }
+  .reset-btn:hover { background: #43426a; }
+
+  .celebrate-banner {
+    display: none;
+    text-align: center;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #fff;
+    background: linear-gradient(90deg, var(--pink), var(--purple));
+    border-radius: 18px;
+    padding: 20px;
+    margin: 0 0 24px;
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+
+  canvas#confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg1: #221f36; --bg2: #1a2a3a; --ink: #f1efff; --ink-soft: #b6b2d6;
+      --card: #2a2846; --shadow: rgba(0,0,0,0.4);
+    }
+    .answer-row input { background: #201e38; border-color: #423f66; color: var(--ink); }
+  }
+  :root[data-theme="dark"] {
+    --bg1: #221f36; --bg2: #1a2a3a; --ink: #f1efff; --ink-soft: #b6b2d6;
+    --card: #2a2846; --shadow: rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <header>
+    <div class="badge">Първи срок · 4. клас</div>
+    <h1>Математическо <span>приключение</span></h1>
+    <p class="subtitle">25 задачи, подредени от лесни към трудни. Реши, натисни "Провери" и събирай звезди!</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>Напредък</span>
+      <span class="stars">⭐ <span id="scoreVal">0</span> / 25</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="celebrate-banner" id="celebrateBanner">🎉 Браво! Реши всички задачи правилно! 🎉</div>
+
+  <div id="questions"></div>
+
+  <div class="footer-actions">
+    <button class="reset-btn" id="resetBtn">🔄 Започни отначало</button>
+  </div>
+</div>
+
+<script>
+const sections = [
+  { title: "Числа и действия", color: "#f2731c", from: 0, to: 5 },
+  { title: "Умножение и деление", color: "#ffa94d", from: 5, to: 10 },
+  { title: "Ред на действията", color: "#ffd166", from: 10, to: 13 },
+  { title: "Мерни единици и време", color: "#22c3a6", from: 13, to: 16 },
+  { title: "Геометрия", color: "#4d7cfe", from: 16, to: 19 },
+  { title: "Предизвикателства", color: "#9b6bff", from: 19, to: 25 }
+];
+
+function colorForIndex(idx) {
+  const s = sections.find(s => idx >= s.from && idx < s.to);
+  return s ? s.color : "#4d7cfe";
+}
+
+// Each question: text, type ('number' or 'time'), unit label (optional), answer
+const questions = [
+  { text: "Запиши с цифри числото: седемнадесет хиляди и двадесет и три.", type: "number", answer: 17023 },
+  { text: "Кое е най-голямото от числата 45 302, 45 032, 45 320 и 45 023?", type: "number", answer: 45320 },
+  { text: "Пресметни: 3458 + 2764 =", type: "number", answer: 6222 },
+  { text: "Пресметни: 9000 − 3675 =", type: "number", answer: 5325 },
+  { text: "Едно списание с комикси струва 4 лв. Колко лева ще платиш за 7 списания?", type: "number", unit: "лв.", answer: 28 },
+
+  { text: "Пресметни: 8 × 9 =", type: "number", answer: 72 },
+  { text: "Пресметни: 72 : 8 =", type: "number", answer: 9 },
+  { text: "Костенурка изминава 6 м на минута. Колко метра ще измине за 12 минути?", type: "number", unit: "м", answer: 72 },
+  { text: "Пресметни: 234 × 3 =", type: "number", answer: 702 },
+  { text: "156 бонбона се разделят по равно между 4 деца. По колко получава всяко дете?", type: "number", unit: "бонбона", answer: 39 },
+
+  { text: "Пресметни: 24 + 6 × 5 =", type: "number", answer: 54 },
+  { text: "Пресметни: (18 − 8) × 4 =", type: "number", answer: 40 },
+  { text: "Пресметни: 100 − 15 × 4 + 20 =", type: "number", answer: 60 },
+
+  { text: "Едно куче тежи 12 кг 300 г. Колко грама тежи то общо?", type: "number", unit: "г", answer: 12300 },
+  { text: "Филм започва в 15:40 ч. и продължава 1 ч. и 35 мин. В колко часа свършва? (запиши като ЧЧ:ММ)", type: "time", answer: "17:15" },
+  { text: "Панделка е дълга 2 м 40 см. Отрязват парче от 85 см. Колко сантиметра остават?", type: "number", unit: "см", answer: 155 },
+
+  { text: "Правоъгълник има страни 8 см и 5 см. Намери периметъра му.", type: "number", unit: "см", answer: 26 },
+  { text: "Квадрат има периметър 36 см. Колко сантиметра е дължината на едната му страна?", type: "number", unit: "см", answer: 9 },
+  { text: "Двор с форма на правоъгълник е с дължина 15 м и ширина 6 м. Каква е площта му?", type: "number", unit: "м²", answer: 90 },
+
+  { text: "В зоопарк има 3 пъти повече птици, отколкото маймуни. Ако маймуните са 14, колко са птиците?", type: "number", answer: 42 },
+  { text: "Мама купува 5 кутии сок по 3 лв. и получава 10 лв. отстъпка. Колко лева плаща накрая?", type: "number", unit: "лв.", answer: 5 },
+  { text: "Влак тръгва от гара А в 9:15 ч. и пристига в гара Б в 11:50 ч. Колко минути е продължило пътуването?", type: "number", unit: "мин", answer: 155 },
+  { text: "Три деца събират гъби. Първото събра 24, второто — два пъти повече от първото, а третото — с 15 по-малко от второто. Колко гъби е събрало третото дете?", type: "number", unit: "гъби", answer: 33 },
+  { text: "Работник изкопава изкоп с дължина 240 м за 6 дни, като работи по равно всеки ден. С колко метра повече трябва да копае на ден, ако иска да свърши за 4 дни вместо за 6?", type: "number", unit: "м", answer: 20 },
+  { text: "Мисля си число. Ако го умножа по 3 и прибавя 7, получавам 40. Кое е числото?", type: "number", answer: 11 }
+];
+
+let score = 0;
+let answeredCorrect = new Array(questions.length).fill(false);
+const container = document.getElementById('questions');
+
+questions.forEach((q, idx) => {
+  const sec = sections.find(s => idx === s.from);
+  if (sec) {
+    const h = document.createElement('div');
+    h.className = 'section-title';
+    h.innerHTML = `<span class="dot" style="background:${sec.color}"></span>${sec.title}`;
+    container.appendChild(h);
+  }
+
+  const card = document.createElement('div');
+  card.className = 'question';
+  card.id = 'q' + idx;
+
+  const inputHtml = q.type === 'time'
+    ? `<input type="text" id="val${idx}" placeholder="ЧЧ:ММ" maxlength="5" aria-label="час">`
+    : `<input type="number" id="val${idx}" aria-label="отговор">`;
+
+  const unitHtml = q.unit ? `<span class="unit-label">${q.unit}</span>` : '';
+
+  card.innerHTML = `
+    <div class="qhead">
+      <div class="qnum" style="background:${colorForIndex(idx)}">${idx+1}</div>
+      <div class="qtext">${q.text}</div>
+    </div>
+    <div class="answer-row">
+      ${inputHtml}
+      ${unitHtml}
+      <button class="check-btn" data-idx="${idx}">Провери</button>
+    </div>
+    <div class="feedback" id="fb${idx}"></div>
+  `;
+  container.appendChild(card);
+});
+
+container.addEventListener('click', (e) => {
+  const btn = e.target.closest('.check-btn');
+  if (!btn) return;
+  checkAnswer(parseInt(btn.dataset.idx, 10));
+});
+container.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+    const card = e.target.closest('.question');
+    const idx = parseInt(card.id.replace('q',''), 10);
+    checkAnswer(idx);
+  }
+});
+
+function normalizeTime(str) {
+  if (!str) return null;
+  const m = str.trim().match(/^(\d{1,2}):(\d{2})$/);
+  if (!m) return null;
+  const hh = m[1].padStart(2, '0');
+  const mm = m[2];
+  return `${hh}:${mm}`;
+}
+
+function checkAnswer(idx) {
+  const q = questions[idx];
+  const fb = document.getElementById('fb' + idx);
+  const card = document.getElementById('q' + idx);
+  const input = document.getElementById('val' + idx);
+  card.classList.remove('correct', 'incorrect');
+  fb.classList.remove('correct', 'incorrect');
+
+  let isCorrect = false;
+  let incomplete = false;
+
+  if (q.type === 'time') {
+    const norm = normalizeTime(input.value);
+    if (!norm) incomplete = true;
+    else isCorrect = norm === q.answer;
+  } else {
+    const v = parseInt(input.value, 10);
+    if (isNaN(v)) incomplete = true;
+    else isCorrect = v === q.answer;
+  }
+
+  if (incomplete) {
+    fb.textContent = q.type === 'time' ? '⏰ Въведи час във формат ЧЧ:ММ.' : '✏️ Въведи отговор.';
+    fb.classList.add('incorrect');
+    return;
+  }
+
+  if (isCorrect) {
+    if (!answeredCorrect[idx]) { score++; answeredCorrect[idx] = true; updateScore(); }
+    fb.textContent = pickPraise();
+    fb.classList.add('correct');
+    card.classList.add('correct');
+    burstConfettiAt(card);
+  } else {
+    if (answeredCorrect[idx]) { score--; answeredCorrect[idx] = false; updateScore(); }
+    fb.textContent = '🤔 Не съвсем — опитай пак!';
+    fb.classList.add('incorrect');
+    card.classList.add('incorrect');
+  }
+
+  if (score === questions.length) {
+    document.getElementById('celebrateBanner').style.display = 'block';
+    bigConfetti();
+  } else {
+    document.getElementById('celebrateBanner').style.display = 'none';
+  }
+}
+
+const praises = ['🎉 Точно така!', '✅ Отлично!', '⭐ Браво, вярно е!', '🚀 Супер, продължавай!', '👏 Правилно!'];
+function pickPraise() { return praises[Math.floor(Math.random() * praises.length)]; }
+
+function updateScore() {
+  document.getElementById('scoreVal').textContent = score;
+  const pct = Math.round((score / questions.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  questions.forEach((q, idx) => {
+    document.getElementById('val' + idx).value = '';
+    document.getElementById('fb' + idx).textContent = '';
+    document.getElementById('fb' + idx).classList.remove('correct', 'incorrect');
+    document.getElementById('q' + idx).classList.remove('correct', 'incorrect');
+  });
+  score = 0;
+  answeredCorrect = new Array(questions.length).fill(false);
+  updateScore();
+  document.getElementById('celebrateBanner').style.display = 'none';
+});
+
+// ---- lightweight confetti ----
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let particles = [];
+const confettiColors = ['#f2731c', '#ffa94d', '#ffd166', '#51cf66', '#22c3a6', '#4d7cfe', '#9b6bff'];
+
+function makeParticles(x, y, count, spread) {
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * spread,
+      vy: -Math.random() * spread - 2,
+      size: Math.random() * 6 + 4,
+      color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+      rot: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.3,
+      life: 0,
+      maxLife: 60 + Math.random() * 30
+    });
+  }
+}
+
+function burstConfettiAt(el) {
+  const rect = el.getBoundingClientRect();
+  makeParticles(rect.left + rect.width / 2, rect.top + 20, 22, 6);
+  requestAnimationFrame(animateParticles);
+}
+
+function bigConfetti() {
+  const w = window.innerWidth;
+  makeParticles(w * 0.2, 60, 40, 8);
+  makeParticles(w * 0.5, 40, 40, 8);
+  makeParticles(w * 0.8, 60, 40, 8);
+  requestAnimationFrame(animateParticles);
+}
+
+let animating = false;
+function animateParticles() {
+  if (animating) return;
+  animating = true;
+  function step() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.18;
+      p.rot += p.vr;
+      p.life++;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, 1 - p.life / p.maxLife);
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    particles = particles.filter(p => p.life < p.maxLife);
+    if (particles.length > 0) {
+      requestAnimationFrame(step);
+    } else {
+      animating = false;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  step();
+}
+</script>
+</body>
+</html>
