@@ -410,13 +410,25 @@
 
     /* ---- data ----------------------------------------------------- */
 
+    /* description идва от supabase/schema-v14.sql. Докато файлът не е
+       пуснат, колоната я няма и PostgREST отказва ЦЯЛАТА заявка с 42703
+       — тоест списъкът със задания би изчезнал заради един ред под
+       заглавието. Затова се пита два пъти: с описанието и без него. */
+    ASSIGN_CORE: 'id, slug, title, kind, url, max_points, published, due_at, ' +
+                 'sort_order, week, subject_id, grades, track, section',
+    ASSIGN_EXTRA: 'description',
+
     listAssignments: async function () {
       if (!client) return [];
-      var res = await client
-        .from('assignments')
-        .select('id, slug, title, kind, url, max_points, published, due_at, sort_order, week, subject_id, grades, track, section')
-        .order('sort_order', { ascending: true })
-        .order('title', { ascending: true });
+      var q = function (cols) {
+        return client
+          .from('assignments')
+          .select(cols)
+          .order('sort_order', { ascending: true })
+          .order('title', { ascending: true });
+      };
+      var res = await q(TLA.ASSIGN_CORE + ', ' + TLA.ASSIGN_EXTRA);
+      if (res.error && TLA.isMissingColumn(res.error)) res = await q(TLA.ASSIGN_CORE);
       if (res.error) throw res.error;
       return res.data || [];
     },

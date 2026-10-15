@@ -2100,13 +2100,23 @@
          fails and the slot says so rather than taking the panel down. */
       var calAll = [], calWeekColumn = true;
 
+      /* url се чете, защото редът в календара вика previewLink(), а тя
+         връща празно без него — точно заради това бутонът „Отвори“ го
+         нямаше тук, докато в „Задания“ си беше на място. */
+      var CAL_CORE = 'id, slug, title, kind, url, published, week, grades, ' +
+                     'track, section, subject_id';
+
       async function loadCalendar() {
-        var res = await TLA.client.from('assignments')
-          /* url се чете, защото редът в календара вика previewLink(), а тя
-             връща празно без него — точно заради това бутонът „Отвори“ го
-             нямаше тук, докато в „Задания“ си беше на място. */
-          .select('id, slug, title, kind, url, published, week, grades, track, section, subject_id')
-          .order('sort_order', { ascending: true });
+        var q = function (cols) {
+          return TLA.client.from('assignments').select(cols)
+            .order('sort_order', { ascending: true });
+        };
+        /* description идва от supabase/schema-v14.sql. Ако файлът още не е
+           пуснат, заявката с него пада с 42703 — а това тук значи
+           calWeekColumn = false, тоест целият календар се скрива заради
+           един ред под заглавието. Затова се пита и без описанието. */
+        var res = await q(CAL_CORE + ', description');
+        if (res.error && TLA.isMissingColumn(res.error)) res = await q(CAL_CORE);
         if (res.error) { calWeekColumn = false; calAll = []; renderCalendar(); return; }
         calAll = res.data || [];
         renderCalendar();
@@ -2168,7 +2178,13 @@
         return '<div class="tlc__hw-row">' +
           '<span class="tla-badge tla-badge--' + a.kind + '">' +
             esc(TLA.kindLabel(a.kind)) + '</span>' +
-          '<span class="tlc__hw-t">' + esc(a.title) + '</span>' +
+          '<span class="tlc__hw-t">' + esc(a.title) +
+            /* Описанието стои ПОД заглавието, в същата клетка: заглавието
+               казва какво е, описанието — какво ще се случи в часа. */
+            (a.description
+              ? '<small class="tlc__hw-d">' + esc(a.description) + '</small>'
+              : '') +
+          '</span>' +
           /* Урокът няма какво да се „предава“, затова се отваря направо,
              без preview=1. */
           (isLesson(a) ? openLink(a) : previewLink(a)) +
