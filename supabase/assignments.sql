@@ -522,6 +522,39 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва тук: то се управлява от таблото.
+-- 5. клас, седмица 9 — ВТОРИ лист за същата седмица: дванайсет текстови
+-- задачи върху целия материал до НОД и НОК (делимост, прости числа,
+-- разлагане, НОД, НОК и ред на действията). Четири с избор и осем
+-- писани, по една точка всяка.
+-- sort_order е същият като на първия лист за седмица 9: двата стоят в
+-- една седмица и редът между тях няма значение — подреждат се по име.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('hw5-w09b',
+   'Домашно 9б — Текстови задачи: делимост, НОД и НОК',
+   'homework',
+   'homework_5_w09b.html',
+   'Дванайсет задачи с условие от живота — целият материал до НОК',
+   12,
+   false,
+   387,
+   9,
+   (select id from public.subjects where slug = 'matematika'),
+   '{5}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
 -- 5. клас, седмица 10 — понятие за обикновена дроб, правилни и неправилни дроби, смесени числа.
 -- Пет задачи с избор и пет писани, по една точка всяка.
 insert into public.assignments
