@@ -14,7 +14,7 @@
        ги дава с десетминутен кеш, а браузърът често ги пази и по-дълго —
        без този белег детето може да гледа вчерашния файл и да се чуди къде
        е новото. Сменя се, когато се пипне някой от тях. -->
-  <link rel="stylesheet" href="assets/portal.css?v=2026-10-15" />
+  <link rel="stylesheet" href="assets/portal.css?v=2026-10-16" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background.webp" media="(min-aspect-ratio: 1/1)" />
   <link rel="preload" as="image" type="image/webp" href="photos/lightSpace_background_mobile.webp" media="(max-aspect-ratio: 1/1)" />
 </head>
@@ -5210,10 +5210,135 @@
         say('ok', 'Отбелязан като изпратен.');
       }
 
-      /* ---- листът за родителя --------------------------------------
+      /* ---- листът за родителя ---------------------------------------
          През печата на браузъра, не с външна библиотека: кирилицата
          излиза вярна, защото я рисува самият браузър, текстът остава
-         вектор, и няма чужд CDN, който да не отговори. */
+         вектор и се маркира, и няма чужд CDN, който да не отговори.
+
+         ДВЕТЕ ГРАФИКИ са рисувани на ръка в SVG, по правилата за
+         диаграми:
+
+         · „По теми“ е лентова диаграма с мярка: един-единствен цвят за
+           всички ленти (дължината носи големината — да се оцветява
+           всяка лента според стойността си значи да се каже два пъти
+           едно и също), светла писта отзад за скалата 0–100%, заоблен
+           само предният край, и числото в своя колона вдясно. На хартия
+           няма подсказка при посочване, затова стойността на ВСЯКА
+           лента е изписана — тя е единственият начин да се прочете.
+
+         · „Движение“ е гира (dumbbell): един и същ цвят в два тона —
+           по-светлият е предходният период, по-тъмният е сегашният, —
+           свързани с линия. Стрелката и числото до нея казват колко е
+           разликата, за да не се разчита само на цвят. В сиво копие
+           по-светлата точка пак си личи: тоновете са избрани така.
+
+         Цветовете са минали през проверката за контраст и за четене при
+         далтонизъм (синьото #256abf върху бяло, и двата тона за гирата
+         като подредена стълбица). Текстът никъде не носи цвета на
+         данните — той е мастило, а цветът стои в самата лента. */
+
+      /* Лента със заоблен само преден край: отзад е базовата линия и там
+         ъглите остават прави, инак лентата „плува“ и не личи откъде
+         тръгва. */
+      function fbBarPath(x, y, w, h, r) {
+        var rr = Math.max(0, Math.min(r, w));
+        return 'M' + x + ' ' + y +
+               'H' + (x + w - rr) +
+               'a' + rr + ' ' + rr + ' 0 0 1 ' + rr + ' ' + rr +
+               'V' + (y + h - rr) +
+               'a' + rr + ' ' + rr + ' 0 0 1 ' + (-rr) + ' ' + rr +
+               'H' + x + 'Z';
+      }
+
+      /* Колко да се покажат: пет реда стигат за един лист, а останалото
+         се казва с дума, не се реже мълчаливо. */
+      var FB_TOPIC_ROWS = 5;
+
+      function fbTopicsChart(st) {
+        var all = (st.topics || []).filter(function (t) { return t.total >= 3; });
+        if (all.length < 2) return '';
+        var rows = all.slice().sort(function (a, b) { return b.pct - a.pct; });
+        var more = Math.max(0, rows.length - FB_TOPIC_ROWS);
+        rows = rows.slice(0, FB_TOPIC_ROWS);
+
+        /* Колоната с имената е широка колкото най-дългото име на тема,
+           което искаме да се чете цяло („Събиране и изваждане на
+           десетични дроби“ е 38 знака); оттам нататък пистата и двете
+           числа се побират в останалото. */
+        var W = 680, RH = 24, BH = 11, NAME = 268, X0 = NAME + 12, TRACK = 300;
+        var H = rows.length * RH + 6;
+        var body = rows.map(function (t, i) {
+          var y = i * RH + 4, w = Math.max(3, Math.round(TRACK * t.pct / 100));
+          var name = t.name.length > 42 ? t.name.slice(0, 41) + '…' : t.name;
+          return '<text x="0" y="' + (y + BH - 1) + '" class="fbc-name">' + esc(name) + '</text>' +
+            '<rect x="' + X0 + '" y="' + y + '" width="' + TRACK + '" height="' + BH +
+              '" rx="4" class="fbc-track"/>' +
+            '<path d="' + fbBarPath(X0, y, w, BH, 4) + '" class="fbc-bar"/>' +
+            '<text x="' + (X0 + TRACK + 12) + '" y="' + (y + BH - 1) + '" class="fbc-val">' +
+              t.pct + '%</text>' +
+            '<text x="' + W + '" y="' + (y + BH - 1) + '" class="fbc-note" text-anchor="end">' +
+              t.correct + ' от ' + t.total + '</text>';
+        }).join('');
+
+        return '<section class="fbp-s fbp-chart">' +
+          '<h2>Как се справя по теми</h2>' +
+          '<p class="fbp-sub">Дял верни отговори от решените задачи по всяка тема' +
+            (more ? ' · първите ' + FB_TOPIC_ROWS + ' от ' + (rows.length + more) : '') + '.</p>' +
+          '<svg class="fbc" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+            'aria-label="Дял верни отговори по теми">' + body + '</svg>' +
+        '</section>';
+      }
+
+      function fbMoveChart(st) {
+        if (st.avg == null) return '';
+        var W = 680, H = 50, X0 = 8, X1 = W - 8, SPAN = X1 - X0;
+        var at = function (p) { return X0 + SPAN * Math.max(0, Math.min(100, p)) / 100; };
+        var yb = 34;                                  /* линията на точките */
+        var now = at(st.avg);
+
+        if (st.prevAvg == null) {
+          return '<section class="fbp-s fbp-move">' +
+            '<h2>Движение</h2>' +
+            '<svg class="fbc" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+              'aria-label="Среден резултат ' + st.avg + ' процента">' +
+              '<line x1="' + X0 + '" y1="' + yb + '" x2="' + X1 + '" y2="' + yb + '" class="fbc-axis"/>' +
+              '<circle cx="' + now + '" cy="' + yb + '" r="7" class="fbc-dot-now"/>' +
+              '<text x="' + now + '" y="' + (yb - 14) + '" class="fbc-pin" text-anchor="middle">' +
+                'сега ' + st.avg + '%</text>' +
+            '</svg>' +
+            '<p class="fbp-sub">Това е първият отчет за този ученик — няма предходен период, с който да се сравни.</p>' +
+          '</section>';
+        }
+
+        var prev = at(st.prevAvg), d = st.delta;
+        var mid = (prev + now) / 2;
+        var up = d > 0, flat = d === 0;
+        var arrow = flat ? '—' : (up ? '▲' : '▼');
+        var word = flat ? 'без промяна' : (up ? 'нагоре с ' : 'надолу с ') +
+                   Math.abs(d) + ' пункта';
+        /* Етикетите на двете точки се разминават, ако са се сближили:
+           по-малката отива вляво, по-голямата вдясно, за да не се наложи
+           да се вдигат един над друг и да се откачат от точките си. */
+        var far = Math.abs(now - prev) > 110;
+        return '<section class="fbp-s fbp-move">' +
+          '<h2>Движение спрямо предходния период</h2>' +
+          '<svg class="fbc" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+            'aria-label="Среден резултат: преди ' + st.prevAvg + ' процента, сега ' +
+            st.avg + ' процента">' +
+            '<line x1="' + X0 + '" y1="' + yb + '" x2="' + X1 + '" y2="' + yb + '" class="fbc-axis"/>' +
+            '<line x1="' + prev + '" y1="' + yb + '" x2="' + now + '" y2="' + yb + '" class="fbc-link"/>' +
+            '<circle cx="' + prev + '" cy="' + yb + '" r="6" class="fbc-dot-prev"/>' +
+            '<circle cx="' + now + '" cy="' + yb + '" r="7" class="fbc-dot-now"/>' +
+            '<text x="' + prev + '" y="' + (yb + 17) + '" class="fbc-note" text-anchor="' +
+              (far ? 'middle' : (prev <= now ? 'end' : 'start')) + '">преди ' + st.prevAvg + '%</text>' +
+            '<text x="' + now + '" y="' + (yb + 17) + '" class="fbc-pin" text-anchor="' +
+              (far ? 'middle' : (now >= prev ? 'start' : 'end')) + '">сега ' + st.avg + '%</text>' +
+            '<text x="' + mid + '" y="' + (yb - 15) + '" text-anchor="middle" class="fbc-delta ' +
+              (flat ? 'is-same' : (up ? 'is-up' : 'is-down')) + '">' + arrow + ' ' + esc(word) + '</text>' +
+          '</svg>' +
+        '</section>';
+      }
+
       function fbPaperHtml() {
         var st = fb.stats, txt = fbReadForm();
         var pr = state.profiles[fb.kid] || {};
@@ -5222,49 +5347,69 @@
           return body ? '<section class="fbp-s"><h2>' + esc(title) + '</h2><p>' +
             esc(body).replace(/\n+/g, '</p><p>') + '</p></section>' : '';
         };
-        var numbers = '';
+
+        var tiles = '', charts = '';
         if (st) {
-          var move = (st.delta == null) ? 'няма с какво да се сравни'
-            : (st.delta > 0 ? 'нагоре с ' + st.delta + ' пункта'
-              : (st.delta < 0 ? 'надолу с ' + Math.abs(st.delta) + ' пункта' : 'без промяна')) +
-              (st.prevAvg == null ? '' : ' (преди: ' + st.prevAvg + '%)');
           var strong = fbStrong(st), weak = fbWeak(st);
-          numbers =
-            '<section class="fbp-s"><h2>Как върви по числа</h2>' +
-            '<div class="fbp-nums">' +
-              '<div><b>' + (st.given ? st.handed + ' от ' + st.given : String(st.works)) +
-                '</b><span>предадени работи</span></div>' +
-              '<div><b>' + (st.avg == null ? '—' : st.avg + '%') + '</b><span>среден резултат</span></div>' +
-              '<div><b>' + (st.delta == null ? '—' : (st.delta > 0 ? '▲ +' : (st.delta < 0 ? '▼ ' : '')) + st.delta + ' п.') +
-                '</b><span>' + esc(move) + '</span></div>' +
-            '</div>' +
-            (strong.length ? '<p class="fbp-t"><b>Уверено се справя с:</b> ' +
-              esc(strong.map(function (t) { return t.name; }).join(', ')) + '.</p>' : '') +
-            (weak.length ? '<p class="fbp-t"><b>Още се упражняваме върху:</b> ' +
-              esc(weak.map(function (t) { return t.name; }).join(', ')) + '.</p>' : '') +
-            '</section>';
+          var deltaTxt = (st.delta == null) ? 'първи отчет'
+            : (st.delta > 0 ? '▲ +' + st.delta : (st.delta < 0 ? '▼ ' + st.delta : '— 0')) + ' пункта';
+          tiles =
+            '<div class="fbp-kpis">' +
+              '<div class="fbp-kpi"><span class="fbp-kpi__lab">Предадени работи</span>' +
+                '<b>' + (st.given ? st.handed + '<i>/' + st.given + '</i>' : String(st.works)) + '</b>' +
+                '<span class="fbp-kpi__sub">' + (st.given
+                  ? (st.missing.length ? 'непредадени: ' + st.missing.length : 'всичко е предадено')
+                  : 'за периода') + '</span></div>' +
+              '<div class="fbp-kpi is-hero"><span class="fbp-kpi__lab">Среден резултат</span>' +
+                '<b>' + (st.avg == null ? '—' : st.avg + '<i>%</i>') + '</b>' +
+                '<span class="fbp-kpi__sub">' + st.points + ' от ' + st.max + ' точки · ' +
+                  st.works + (st.works === 1 ? ' работа' : ' работи') + '</span></div>' +
+              '<div class="fbp-kpi"><span class="fbp-kpi__lab">Движение</span>' +
+                '<b class="fbp-kpi__d ' + (st.delta == null ? '' :
+                   (st.delta > 0 ? 'is-up' : (st.delta < 0 ? 'is-down' : ''))) + '">' +
+                  esc(deltaTxt) + '</b>' +
+                '<span class="fbp-kpi__sub">' + (st.prevAvg == null ? 'няма предходен период'
+                  : 'предходен период: ' + st.prevAvg + '%') + '</span></div>' +
+            '</div>';
+          var topicChart = fbTopicsChart(st);
+          /* Изреченията „върви / куца“ казват същото, което диаграмата
+             вече показва. Остават само когато диаграмата я няма — при
+             малко решени задачи. */
+          charts = fbMoveChart(st) + topicChart +
+            ((!topicChart && (strong.length || weak.length))
+              ? '<section class="fbp-s fbp-read">' +
+                (strong.length ? '<p><b>Уверено се справя с:</b> ' +
+                  esc(strong.map(function (t) { return t.name; }).join(', ')) + '.</p>' : '') +
+                (weak.length ? '<p><b>Още се упражняваме върху:</b> ' +
+                  esc(weak.map(function (t) { return t.name; }).join(', ')) + '.</p>' : '') +
+                '</section>'
+              : '');
         }
+
         return '<div class="fbp">' +
-          '<div class="fbp-head">' +
-            '<div class="fbp-brand">THE LIGHT ACADEMY</div>' +
-            '<div class="fbp-kind">Обратна връзка за родителя</div>' +
-          '</div>' +
+          '<header class="fbp-head">' +
+            '<img class="fbp-logo" src="theLightAcademyLogo.png" alt="">' +
+            '<div class="fbp-head__t"><span class="fbp-brand">THE LIGHT ACADEMY</span>' +
+              '<span class="fbp-kind">Обратна връзка за родителя</span></div>' +
+            '<span class="fbp-period">' + esc(fbHuman(fb.from)) + ' – ' + esc(fbHuman(fb.to)) + '</span>' +
+          '</header>' +
           '<h1 class="fbp-kid">' + esc(pr.full_name || '—') + '</h1>' +
           '<div class="fbp-meta">' +
-            esc(TLA.gradeLabel(gradeOf(pr))) +
-            ' · период ' + esc(fbHuman(fb.from)) + ' – ' + esc(fbHuman(fb.to)) +
-            (me ? ' · преподавател: ' + esc(me) : '') +
+            '<span>' + esc(TLA.gradeLabel(gradeOf(pr))) + '</span>' +
+            (me ? '<span>преподавател: ' + esc(me) + '</span>' : '') +
+            '<span>' + esc(new Date().toLocaleDateString('bg-BG',
+              { day: 'numeric', month: 'long', year: 'numeric' })) + '</span>' +
           '</div>' +
-          sec('Накратко', txt.summary) +
-          numbers +
+          (txt.summary ? '<p class="fbp-lead">' + esc(txt.summary) + '</p>' : '') +
+          tiles + charts +
           sec('Какво се подобри', txt.improved) +
           sec('Върху какво наблягаме', txt.focus) +
           sec('Какво забелязвам', txt.noticed) +
           sec('Какво предстои и какво може вкъщи', txt.next_steps) +
-          '<div class="fbp-foot">The Light Academy · Лозенец, София · ' +
-            'the.light.academy56@gmail.com · ' +
-            esc(new Date().toLocaleDateString('bg-BG', { day: 'numeric', month: 'long', year: 'numeric' })) +
-          '</div>' +
+          '<footer class="fbp-foot">' +
+            '<span>The Light Academy · Лозенец, София · the.light.academy56@gmail.com</span>' +
+            '<span class="fbp-foot__r">Числата идват от платформата.</span>' +
+          '</footer>' +
         '</div>';
       }
 
