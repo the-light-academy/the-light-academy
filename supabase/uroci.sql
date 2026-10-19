@@ -394,6 +394,43 @@ on conflict (slug) do update set
   grades      = excluded.grades;
   -- published нарочно липсва: решава се от таблото.
 
+
+-- 7. клас, седмица 6 — „Лего сейфът“: умножение на многочлен с едночлен
+-- и на многочлен с многочлен, за ДВАМА на един екран. Дванайсет задачи
+-- от лесни към трудни; първите три минават през лего плоча, на която
+-- произведението се вижда като площ, разделена на парчета. По средата
+-- има пауза — игра на бързина с две клавиша (F и J), без математика.
+-- Накрая escape ключалка: четирите цифри на кода излизат от техните
+-- собствени отговори, а при грешка сейфът казва само КОЛКО цифри са на
+-- вярно място.
+-- Страницата е ЗА ЧАСА: не иска вход и нищо не предава — урокът не се
+-- оценява.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('urok-7-w06',
+   'Урок — Лего сейфът',
+   'lesson',
+   'uroci/urok_7_w06.html',
+   'Умножение на многочлени през площта на лего плоча, за двама',
+   0,
+   false,
+   10706,
+   6,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва: решава се от таблото.
 -- Какво има до момента:
 select kind as вид,
        count(*) as брой,
