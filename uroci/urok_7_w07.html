@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Урок — Разходка из Париж · 7. клас</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Интерактивен урок за 7. клас: формулите за съкратено умножение през четири спирки в Париж — Айфеловата кула, Лувърът, Сена и Монмартър." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* =====================================================================
+   УРОК ЗА ДЪСКАТА — „Разходка из Париж“, 7. клас, седмица 7
+   ---------------------------------------------------------------------
+   Темата е съкратеното умножение: (a + b)², (a − b)² и (a − b)(a + b).
+   Четири спирки, по една формула на спирка и четвърта за смесените.
+
+   Както и „Лего сейфът“: НИКЪДЕ НЯМА ПОЛЕ ЗА ВЪВЕЖДАНЕ НА ОТГОВОР.
+   Задачата се чете на глас, класът отговаря, а бутонът „Отговор“
+   показва верния отговор и едно изречение „защо“. Учителят не въвежда
+   нищо — само показва.
+
+   Всяка формула си има картинка: квадратът, разглобен на парчета.
+   Оттам идва и двойката в 2ab — вижда се, не се помни.
+
+   Отговорите са пресметнати числено, докато урокът се пишеше:
+   scratchpad/parizh.js смята всяка задача и всеки пример и ги сверява
+   с написаното тук.
+   ===================================================================== */
+
+:root{
+  --ink:#16233F;
+  --ink-soft:#55658A;
+  --paper:#FFFDF7;
+  --paper-raised:#FFFFFF;
+  --line:#E7E0D0;
+  --accent:#F7AD19;          /* светлините на кулата */
+  --accent-ink:#A1661B;
+  --nuit:#23407A;            /* парижка вечер */
+  --nuit-soft:#E4EAF7;
+  --seine:#2E8FA8;           /* Сена */
+  --seine-soft:#E2F1F5;
+  --rose:#E0719C;            /* Монмартър */
+  --rose-soft:#FDEBF2;
+  --ok:#1F7A4C;  --ok-soft:#E4F2EA;
+  --bad:#C0392B; --bad-soft:#FBE9E7;
+}
+*{ box-sizing:border-box; }
+/* Фонът стои само на <html>: сложим ли го и на <body>, плътният цвят на
+   body покрива .sky (z-index:-1) и небето изчезва. */
+html{ background:var(--paper); }
+html,body{ margin:0; color:var(--ink); }
+body{ font-family:'Nunito',system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.55; }
+
+/* ── вечерното небе и силуетът на града ──────────────────────── */
+.sky{ position:fixed; inset:0; z-index:-1; overflow:hidden;
+  background:linear-gradient(180deg,#FFF7E6 0%, #FFFDF7 42%, #FFFDF7 100%); }
+.sky .town{ position:absolute; left:0; right:0; bottom:0; width:100%; height:200px;
+  opacity:.17; display:block; }
+.sky .star{ position:absolute; width:3px; height:3px; border-radius:50%;
+  background:var(--accent); opacity:.55; }
+
+/* ── лентата горе ─────────────────────────────────────────────── */
+.bar{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.55rem clamp(0.8rem,3vw,1.4rem);
+  background:rgba(255,253,247,0.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.bar b{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.05rem; }
+.bar b em{ font-style:normal; color:var(--nuit); }
+.bar small{ color:var(--ink-soft); font-size:0.82rem; }
+.bar .sp{ flex:1 1 auto; }
+.tower{ width:28px; height:34px; flex:none; }
+
+.wrap{ max-width:1000px; margin:0 auto; padding:1rem 1rem 4rem; }
+
+/* ── спирките ─────────────────────────────────────────────────── */
+.tabs{ display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab{
+  display:flex; align-items:center; gap:0.5rem; text-align:left;
+  padding:0.5rem 0.8rem; border:1.5px solid var(--line); border-radius:14px;
+  background:var(--paper-raised); cursor:pointer; font:inherit; min-height:52px;
+}
+.tab b{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.98rem; display:block; }
+.tab small{ display:block; color:var(--ink-soft); font-size:0.78rem; }
+.tab .pin{ width:26px; height:26px; flex:none; border-radius:50%;
+  display:grid; place-items:center; font-size:0.8rem; font-weight:800; color:#fff; }
+.tab:nth-child(1) .pin{ background:var(--accent); color:var(--ink); }
+.tab:nth-child(2) .pin{ background:var(--nuit); }
+.tab:nth-child(3) .pin{ background:var(--seine); }
+.tab:nth-child(4) .pin{ background:var(--rose); }
+.tab[aria-selected="true"]{ border-color:var(--accent); background:#FFF7E6;
+  box-shadow:0 6px 18px rgba(161,102,27,0.12); }
+
+/* ── картите ──────────────────────────────────────────────────── */
+.card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:18px; padding:1rem 1.1rem; margin-bottom:1rem;
+  box-shadow:0 10px 26px rgba(22,35,63,0.05);
+}
+h1{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(26px,5vw,38px);
+  margin:0 0 0.3rem; line-height:1.1; }
+h1 em{ font-style:normal; color:var(--nuit); }
+h2{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.2rem;
+  margin:1.2rem 0 0.5rem; display:flex; align-items:center; gap:0.5rem; }
+h2:first-child{ margin-top:0; }
+h3{ font-size:1rem; font-weight:800; margin:0 0 0.3rem; }
+p{ margin:0 0 0.7rem; }
+.muted{ color:var(--ink-soft); }
+.small{ font-size:0.9rem; }
+.mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
+
+.goal{ border-left:5px solid var(--accent); background:#FFF8EA;
+  border-radius:0 14px 14px 0; padding:0.7rem 0.9rem; margin-bottom:1rem; }
+.hero{ display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.hero .t{ flex:1 1 260px; min-width:0; }
+.hero svg{ width:210px; height:auto; flex:none; }
+
+.btn{ font:inherit; font-weight:800; cursor:pointer; border:1px solid transparent;
+  border-radius:999px; padding:0.45rem 1rem; min-height:40px;
+  background:var(--accent); color:var(--ink); }
+.btn:hover{ transform:translateY(-1px); }
+.btn.ghost{ background:transparent; border-color:var(--line); }
+.btn.ghost:hover{ background:#FFF6E4; }
+.btn[disabled]{ opacity:.45; cursor:not-allowed; transform:none; }
+.row{ display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+
+/* ── формулата ────────────────────────────────────────────────── */
+.rule{ background:var(--nuit-soft); border:1px solid #C9D6EE; border-radius:14px;
+  padding:0.8rem 0.9rem; }
+.rule .mono{ font-size:1.05rem; font-weight:700; }
+.rule.seine{ background:var(--seine-soft); border-color:#BFE2EA; }
+.rule.rose{ background:var(--rose-soft); border-color:#F5D2E0; }
+.rule.warm{ background:#FFF4DE; border-color:#F3DCAE; }
+
+/* ── квадратът, който се разглобява ───────────────────────────── */
+.fig{ display:block; width:100%; max-width:420px; height:auto; margin:0.6rem auto 0.2rem; }
+.fg-a{ fill:#FDE9BE; }        /* a² */
+.fg-ab{ fill:var(--nuit-soft); }
+.fg-b{ fill:var(--rose-soft); }
+.fg-cut{ fill:var(--bad-soft); }
+.fg-line{ stroke:var(--accent-ink); stroke-width:1.6; fill:none; }
+.fg-txt{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px; fill:var(--ink); }
+.fg-side{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px; fill:var(--accent-ink); }
+.fg-piece{ transition:transform .45s ease; }
+
+/* ── примерът стъпка по стъпка ────────────────────────────────── */
+.steps{ list-style:none; margin:0.6rem 0 0; padding:0; }
+.steps li{ display:flex; gap:0.6rem; align-items:flex-start; padding:0.4rem 0;
+  border-top:1px dashed var(--line); font-family:'JetBrains Mono',monospace; font-size:1rem; }
+.steps li:first-child{ border-top:0; }
+.steps li.hid{ display:none; }
+.steps .n{ width:24px; height:24px; flex:none; border-radius:7px; background:var(--accent);
+  display:grid; place-items:center; font-size:0.78rem; font-weight:700; font-family:'Nunito',sans-serif; }
+.steps li.fin{ font-weight:700; color:var(--ok); }
+.steps li.fin .n{ background:var(--ok); color:#fff; }
+
+/* ── задачите ─────────────────────────────────────────────────── */
+.tasks{ display:grid; gap:0.6rem; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); }
+.task{ border:1px solid var(--line); border-radius:14px; padding:0.7rem 0.8rem; background:var(--paper); }
+.task .top{ display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem; }
+.task .n{ font-size:0.78rem; font-weight:800; color:var(--ink-soft); letter-spacing:.04em; text-transform:uppercase; }
+.lvl{ font-size:0.7rem; font-weight:800; border-radius:999px; padding:0.1rem 0.5rem; }
+.lvl.l1{ background:var(--ok-soft); color:var(--ok); }
+.lvl.l2{ background:#FFF1D6; color:var(--accent-ink); }
+.lvl.l3{ background:var(--bad-soft); color:var(--bad); }
+.lvl.l4{ background:#EDE6FB; color:#5B3FA8; }
+.task .q{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.06rem; margin:0.2rem 0 0.5rem; }
+.task .a{ background:var(--ok-soft); border-radius:10px; padding:0.5rem 0.7rem; margin-top:0.5rem; }
+.task .a .mono{ font-weight:700; }
+.task .a .why{ display:block; font-family:'Nunito',sans-serif; font-weight:600; font-size:0.88rem;
+  color:var(--ink-soft); margin-top:0.25rem; white-space:pre-line; }
+
+/* ── игрите ───────────────────────────────────────────────────── */
+.game{ border:1px solid var(--line); border-radius:16px; padding:0.9rem;
+  background:linear-gradient(#FFFDF7,#FFF4DF); }
+.fb{ font-weight:800; min-height:1.5rem; margin-top:0.5rem; }
+.fb.ok{ color:var(--ok); } .fb.bad{ color:var(--bad); }
+.score{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.3rem; }
+.qbig{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.25rem; margin:0.5rem 0; }
+
+/* асансьорът */
+.lift{ display:flex; gap:1rem; align-items:flex-end; }
+.lift .shaft{ position:relative; width:74px; height:260px; flex:none;
+  border-left:3px dashed var(--line); border-right:3px dashed var(--line); }
+.lift .floor{ position:absolute; left:0; right:0; border-top:1px dashed var(--line);
+  font-size:0.68rem; color:var(--ink-soft); padding-left:4px; }
+.lift .cab{ position:absolute; left:8px; width:58px; height:34px; border-radius:8px;
+  background:var(--accent); border:2px solid var(--accent-ink); transition:bottom .5s ease;
+  display:grid; place-items:center; font-size:1.1rem; }
+.lift .side{ flex:1 1 220px; min-width:0; }
+
+/* фалшификатите в Лувъра */
+.frame{ border:6px solid var(--accent-ink); border-radius:4px; background:#FFFBF0;
+  padding:1rem; text-align:center; box-shadow:0 10px 24px rgba(22,35,63,.12); }
+.frame .mono{ font-size:1.2rem; font-weight:700; }
+
+/* мостовете на Сена */
+.bridge{ display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; align-items:start; }
+.pier{ display:grid; gap:0.4rem; }
+.stone{ border:1.5px solid var(--line); border-radius:10px; background:var(--paper-raised);
+  padding:0.45rem 0.6rem; font-family:'JetBrains Mono',monospace; font-weight:700;
+  cursor:pointer; font-size:0.95rem; text-align:left; }
+.stone[aria-pressed="true"]{ border-color:var(--seine); background:var(--seine-soft); }
+.stone.done{ border-color:var(--ok); background:var(--ok-soft); color:var(--ok); cursor:default; }
+.stone.miss{ border-color:var(--bad); background:var(--bad-soft); }
+
+/* ателието на Монмартър */
+.easel{ display:grid; gap:0.6rem; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+.canvasy{ border:1px solid var(--line); border-left:5px solid var(--rose); border-radius:0 14px 14px 0;
+  background:var(--rose-soft); padding:0.7rem 0.9rem; }
+.canvasy h3{ color:#9B3A66; }
+
+/* ── бележките ────────────────────────────────────────────────── */
+.notes{ background:#FFF4DE; border:1px solid #F3DCAE; border-radius:14px; padding:0.8rem 0.9rem; }
+.notes ul{ margin:0.3rem 0 0; padding-left:1.1rem; }
+.notes li{ margin-bottom:0.35rem; }
+.page-legal{ text-align:center; color:var(--ink-soft); font-size:0.8rem; margin:2rem 0 1rem; }
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"><svg class="town" id="town" viewBox="0 0 1200 200" preserveAspectRatio="none"></svg></div>
+
+<header class="bar">
+  <svg class="tower" data-tower="1" aria-hidden="true"></svg>
+  <b>Разходка из <em>Париж</em></b>
+  <small>7. клас · съкратено умножение</small>
+  <span class="sp"></span>
+  <small class="mono" id="barTab"></small>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="panels"></main>
+  <p class="page-legal">© 2026 The Light Academy</p>
+</div>
+
+<script>
+/* ===================================================================
+   Четирите спирки
+   -------------------------------------------------------------------
+   `a` е отговорът, който се ПОКАЗВА с бутон, `why` е изречението под
+   него. Никъде няма поле за писане.
+   =================================================================== */
+var STOPS = [
+{
+  id:'kula',
+  pin:'1',
+  tab:{ b:'Айфеловата кула', s:'(a + b)²' },
+  goal:'Докрая на спирката всеки трябва да може да повдигне сбор на квадрат — и да каже '
+      +'откъде идва средният член 2ab, без да го е зубрил.',
+  hero:true,
+  rule:'<p>Кулата стъпва на квадрат. Ако страната му е <span class="mono">a + b</span>, '
+      +'лицето се разпада на четири парчета:</p>'
+      +'<p class="mono">(a + b)² = a² + 2ab + b²</p>'
+      +'<p class="small muted">Парчетата <b>ab</b> са две — затова в отговора стои 2ab. '
+      +'Натиснете „Разглоби квадрата“ и ще се видят.</p>',
+  fig:'plus',
+  examples:[
+    { expr:'(x + 5)²', steps:['a = x, b = 5','a² = x²','2ab = 2 · x · 5 = 10x','b² = 25'],
+      answer:'x² + 10x + 25' },
+    { expr:'(3m + 2)²', steps:['a = 3m, b = 2','(3m)² = 9m²','2ab = 2 · 3m · 2 = 12m','b² = 4'],
+      answer:'9m² + 12m + 4' },
+    { expr:'(2x + 3y)²', steps:['a = 2x, b = 3y','(2x)² = 4x²','2ab = 2 · 2x · 3y = 12xy','(3y)² = 9y²'],
+      answer:'4x² + 12xy + 9y²' }
+  ],
+  tasks:[
+    { q:'(x + 1)²', a:'x² + 2x + 1', lvl:1, why:'2ab = 2 · x · 1 = 2x.' },
+    { q:'(a + 7)²', a:'a² + 14a + 49', lvl:1, why:'2 · a · 7 = 14a, а 7² = 49.' },
+    { q:'(4 + y)²', a:'16 + 8y + y²', lvl:1, why:'Редът не пречи: първият член е 4² = 16.' },
+    { q:'(2x + 5)²', a:'4x² + 20x + 25', lvl:2, why:'(2x)² = 4x². Двойката се повдига заедно с буквата.' },
+    { q:'(3a + 2b)²', a:'9a² + 12ab + 4b²', lvl:2, why:'2 · 3a · 2b = 12ab.' },
+    { q:'(x² + 3)²', a:'x⁴ + 6x² + 9', lvl:3, why:'(x²)² = x⁴ — показателите се умножават.' },
+    { q:'(0,5x + 4)²', a:'0,25x² + 4x + 16', lvl:3, why:'0,5² = 0,25, а 2 · 0,5x · 4 = 4x.' },
+    { q:'Квадратно платно има страна (x + 6) метра.\nКолко е лицето му?', a:'x² + 12x + 36', lvl:2,
+      why:'Лицето на квадрат е страната на квадрат: (x + 6)².' },
+    { q:'Пресметнете наум: 41²', a:'1681', lvl:4,
+      why:'41² = (40 + 1)² = 1600 + 2 · 40 · 1 + 1 = 1600 + 80 + 1.' }
+  ],
+  game:'lift',
+  notes:[
+    'Разглобете квадрата на дъската заедно с тях — после децата сами ще го чертаят настрани, когато се объркат.',
+    'Най-честата грешка е (a + b)² = a² + b². Покажете я с числа: (3 + 4)² = 49, а 9 + 16 = 25.',
+    'Задача 9 е за наум — дайте я на най-бързите, докато другите довършват 8.'
+  ]
+},
+{
+  id:'luvur',
+  pin:'2',
+  tab:{ b:'Лувърът', s:'(a − b)²' },
+  goal:'Същата картинка, но отрязана: целта е децата да видят защо средният член е с минус, '
+      +'а последният пак е с плюс.',
+  rule:'<p>От голям квадрат със страна <span class="mono">a</span> отрязваме ивица <span class="mono">b</span> '
+      +'отдясно и ивица <span class="mono">b</span> отдолу. Ъгълът се маха два пъти, затова се връща веднъж:</p>'
+      +'<p class="mono">(a − b)² = a² − 2ab + b²</p>'
+      +'<p class="small muted">Последният член е ПЛЮС, защото (−b)² = b². Минусът стои само в средата.</p>',
+  fig:'minus',
+  examples:[
+    { expr:'(x − 4)²', steps:['a = x, b = 4','a² = x²','2ab = 2 · x · 4 = 8x, със знак минус','b² = 16'],
+      answer:'x² − 8x + 16' },
+    { expr:'(5a − 3)²', steps:['a = 5a, b = 3','(5a)² = 25a²','2ab = 2 · 5a · 3 = 30a, със знак минус','b² = 9'],
+      answer:'25a² − 30a + 9' },
+    { expr:'(2x − 7y)²', steps:['(2x)² = 4x²','2 · 2x · 7y = 28xy, със знак минус','(7y)² = 49y²'],
+      answer:'4x² − 28xy + 49y²' }
+  ],
+  tasks:[
+    { q:'(x − 2)²', a:'x² − 4x + 4', lvl:1, why:'Средният е с минус, последният с плюс: (−2)² = 4.' },
+    { q:'(m − 9)²', a:'m² − 18m + 81', lvl:1, why:'2 · m · 9 = 18m.' },
+    { q:'(6 − y)²', a:'36 − 12y + y²', lvl:1, why:'Тук a = 6, b = y: 36 − 2 · 6 · y + y².' },
+    { q:'(3x − 1)²', a:'9x² − 6x + 1', lvl:2, why:'(3x)² = 9x², 2 · 3x · 1 = 6x.' },
+    { q:'(4a − 5b)²', a:'16a² − 40ab + 25b²', lvl:2, why:'2 · 4a · 5b = 40ab, а (5b)² = 25b².' },
+    { q:'(x³ − 2)²', a:'x⁶ − 4x³ + 4', lvl:3, why:'(x³)² = x⁶, а 2 · x³ · 2 = 4x³.' },
+    { q:'(0,2x − 3)²', a:'0,04x² − 1,2x + 9', lvl:3, why:'0,2² = 0,04, а 2 · 0,2x · 3 = 1,2x.' },
+    { q:'Къде е грешката?\n(x − 3)² = x² − 9', a:'x² − 6x + 9', lvl:2,
+      why:'x² − 9 е разлика на квадрати, не квадрат на разлика.\nЛипсва средният член −6x.' },
+    { q:'Пресметнете наум: 39²', a:'1521', lvl:4,
+      why:'39² = (40 − 1)² = 1600 − 2 · 40 · 1 + 1 = 1600 − 80 + 1.' }
+  ],
+  game:'fake',
+  notes:[
+    'Питайте защо последният член не е с минус. Отговорът е в едно действие: (−3)² = 9.',
+    'Задача 8 е „намери грешката“ — най-добре се решава на дъската, с числа вместо x.',
+    'Ако някой каже „значи (a − b)² и (b − a)² са различни“ — проверете с числа: равни са.'
+  ]
+},
+{
+  id:'sena',
+  pin:'3',
+  tab:{ b:'Сена и мостовете', s:'(a − b)(a + b)' },
+  goal:'Разликата на квадрати е най-полезната формула за наум. Целта е децата да я разпознават '
+      +'и в двете посоки — и да смятат с нея, преди да са извадили лист.',
+  rule:'<p>Сбор по разлика. Средните членове се унищожават — като две лодки, които се разминават:</p>'
+      +'<p class="mono">(a − b)(a + b) = a² − b²</p>'
+      +'<p class="small muted">ab и −ab се събират в нула. Затова в отговора няма среден член.</p>',
+  fig:'diff',
+  examples:[
+    { expr:'(x − 6)(x + 6)', steps:['Сбор по разлика','a² = x²','b² = 36','Средните членове изчезват'],
+      answer:'x² − 36' },
+    { expr:'(3a − 4)(3a + 4)', steps:['a = 3a, b = 4','(3a)² = 9a²','4² = 16'], answer:'9a² − 16' },
+    { expr:'102 · 98', steps:['102 = 100 + 2, а 98 = 100 − 2','(100 − 2)(100 + 2) = 100² − 2²','10 000 − 4'],
+      answer:'9996' }
+  ],
+  tasks:[
+    { q:'(x − 1)(x + 1)', a:'x² − 1', lvl:1, why:'a² − b² = x² − 1.' },
+    { q:'(y + 8)(y − 8)', a:'y² − 64', lvl:1, why:'Редът на скобите не пречи.' },
+    { q:'(5 − a)(5 + a)', a:'25 − a²', lvl:1, why:'Тук a = 5, b = a: 25 − a².' },
+    { q:'(2x − 3)(2x + 3)', a:'4x² − 9', lvl:2, why:'(2x)² = 4x².' },
+    { q:'(3m + 7n)(3m − 7n)', a:'9m² − 49n²', lvl:2, why:'(3m)² − (7n)².' },
+    { q:'(x² − 5)(x² + 5)', a:'x⁴ − 25', lvl:3, why:'(x²)² = x⁴.' },
+    { q:'(0,3x − 2)(0,3x + 2)', a:'0,09x² − 4', lvl:3, why:'0,3² = 0,09.' },
+    { q:'Пресметнете наум: 51 · 49', a:'2499', lvl:4, why:'(50 + 1)(50 − 1) = 2500 − 1.' },
+    { q:'Защо в отговора няма среден член?', a:'Защото ab и −ab се унищожават', lvl:3,
+      why:'(a − b)(a + b) = a² + ab − ab − b². Двата средни члена са противоположни.' }
+  ],
+  game:'bridge',
+  notes:[
+    'Тази формула е най-полезната за наум. Покажете 102 · 98 и изчакайте реакцията.',
+    'Карайте ги да четат задачата отдясно наляво: x² − 25 също е (x − 5)(x + 5).',
+    'Задача 9 е разговор, не сметка — нека някой го обясни на дъската със свои думи.'
+  ]
+},
+{
+  id:'monmartur',
+  pin:'4',
+  tab:{ b:'Монмартър', s:'трите заедно + ателие' },
+  goal:'Трите формули една до друга. Целта е децата първо да РАЗПОЗНАЯТ коя е, а чак после да смятат.',
+  rule:'<p class="mono">(a + b)² = a² + 2ab + b²</p>'
+      +'<p class="mono">(a − b)² = a² − 2ab + b²</p>'
+      +'<p class="mono">(a − b)(a + b) = a² − b²</p>'
+      +'<p class="small muted">Въпросът е един: има ли СБОР ПО РАЗЛИКА, или е КВАДРАТ на скоба?</p>',
+  fig:'mix',
+  examples:[
+    { expr:'(x + 3)² − (x − 3)²', steps:['(x + 3)² = x² + 6x + 9','(x − 3)² = x² − 6x + 9','x² − x² = 0, 9 − 9 = 0','6x − (−6x) = 12x'],
+      answer:'12x' },
+    { expr:'63² − 37²', steps:['Разлика на квадрати: a = 63, b = 37','(63 − 37)(63 + 37)','26 · 100'],
+      answer:'2600' },
+    { expr:'(2a + 5)(2a − 5) + (a + 5)²', steps:['(2a + 5)(2a − 5) = 4a² − 25','(a + 5)² = a² + 10a + 25','4a² + a² = 5a², а −25 + 25 = 0'],
+      answer:'5a² + 10a' }
+  ],
+  tasks:[
+    { q:'(x + 4)² − x²', a:'8x + 16', lvl:2, why:'x² + 8x + 16 − x². Квадратите се унищожават.' },
+    { q:'(a − 6)(a + 6) + 36', a:'a²', lvl:2, why:'a² − 36 + 36.' },
+    { q:'(m + 2)² + (m − 2)²', a:'2m² + 8', lvl:3, why:'Средните членове са противоположни и се унищожават.' },
+    { q:'(2x + 1)² − (2x − 1)²', a:'8x', lvl:3, why:'4x² + 4x + 1 − (4x² − 4x + 1) = 8x.' },
+    { q:'(x + y)² − (x² + y²)', a:'2xy', lvl:3, why:'Остава точно средният член.' },
+    { q:'(3x − 2)(3x + 2) − (3x − 2)²', a:'12x − 8', lvl:4,
+      why:'9x² − 4 − (9x² − 12x + 4) = 12x − 8.' },
+    { q:'Пресметнете наум: 87² − 13²', a:'7400', lvl:4, why:'(87 − 13)(87 + 13) = 74 · 100.' },
+    { q:'Пресметнете наум: 101² − 99²', a:'400', lvl:4, why:'(101 − 99)(101 + 99) = 2 · 200.' },
+    { q:'Кое е по-голямо: 25 · 35 или 30²?', a:'30²', lvl:4,
+      why:'25 · 35 = (30 − 5)(30 + 5) = 900 − 25 = 875, а 30² = 900.\nПроизведението винаги губи 25.' }
+  ],
+  game:'street',
+  atelier:[
+    { t:'Квадратът на витрината',
+      d:'Начертайте квадрат със страна (a + b) и оцветете четирите парчета в четири цвята. '
+       +'Напишете лицето на всяко парче вътре в него. Отдолу напишете едно изречение: защо парчетата ab са две?' },
+    { t:'Картичка от Париж',
+      d:'Измислете произведение на две числа, което се смята наум с разликата на квадрати — '
+       +'например 48 · 52. Напишете го като картичка и я дайте на съседа да я „отвори“ наум.' },
+    { t:'Менюто на кафенето',
+      d:'Напишете трите формули като меню на парижко кафене: име на ястието, съставки (от какво се прави) '
+       +'и цена (колко члена има отговорът). Най-хубавото меню остава на дъската.' }
+  ],
+  notes:[
+    'Първо РАЗПОЗНАВАНЕ, после смятане. Прочетете задачата и питайте само „коя формула е това?“.',
+    'Задачи 7 и 8 са за наум и правят най-силно впечатление — оставете ги за финал.',
+    'Ателието е домашното за часа: нека всяка група покаже своето пред класа.'
+  ]
+}
+];
+
+/* Етажите на асансьора — въпрос и отговор, нищо за въвеждане. */
+var LIFT = [
+  ['(x + 2)²', 'x² + 4x + 4'],
+  ['(x − 5)²', 'x² − 10x + 25'],
+  ['(x − 7)(x + 7)', 'x² − 49'],
+  ['(2a + 1)²', '4a² + 4a + 1'],
+  ['(3y − 2)²', '9y² − 12y + 4'],
+  ['(4m − 3)(4m + 3)', '16m² − 9'],
+  ['(a + b)² − 2ab', 'a² + b²'],
+  ['99² (наум)', '9801']
+];
+
+/* Картините в Лувъра: вярно равенство или фалшификат. */
+var FAKES = [
+  ['(a + b)² = a² + b²', false, 'Липсва 2ab. С числа: (3 + 4)² = 49, а 9 + 16 = 25.'],
+  ['(x + 6)² = x² + 12x + 36', true, '2 · x · 6 = 12x — всичко е на мястото си.'],
+  ['(x − 4)² = x² − 16', false, 'Това е разлика на квадрати. Квадратът на разлика е x² − 8x + 16.'],
+  ['(2x − 3)² = 4x² − 12x + 9', true, '(2x)² = 4x², 2 · 2x · 3 = 12x, (−3)² = 9.'],
+  ['(a − b)(a + b) = a² + b²', false, 'Знакът е минус: a² − b².'],
+  ['(5 − y)(5 + y) = 25 − y²', true, 'Сбор по разлика — средните членове се унищожават.'],
+  ['(x − 1)² = x² − 2x − 1', false, 'Последният член е ПЛЮС: (−1)² = 1.'],
+  ['(3a + 4b)² = 9a² + 24ab + 16b²', true, '2 · 3a · 4b = 24ab.']
+];
+
+/* Мостовете: израз ↔ отговор. */
+var BRIDGE = [
+  ['(x + 3)²', 'x² + 6x + 9'],
+  ['(x − 3)²', 'x² − 6x + 9'],
+  ['(x − 3)(x + 3)', 'x² − 9'],
+  ['(3 − x)(3 + x)', '9 − x²'],
+  ['(2x + 3)²', '4x² + 12x + 9'],
+  ['(2x − 3)(2x + 3)', '4x² − 9']
+];
+
+/* Уличният художник: сметки наум за шейсет секунди. */
+var STREET = [
+  ['21²', '441'], ['19²', '361'], ['101 · 99', '9999'], ['52 · 48', '2496'],
+  ['31²', '961'], ['98²', '9604'], ['45 · 55', '2475'], ['12² − 8²', '80'],
+  ['70² − 30²', '4000'], ['205 · 195', '39975']
+];
+</script>
+
+<script>
+/* ===================================================================
+   Рисунките, подредбата и игрите
+   =================================================================== */
+(function(){
+  'use strict';
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function el(tag, cls, html){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(html != null) n.innerHTML = html;
+    return n;
+  }
+  var LVL = { 1:'лесно', 2:'средно', 3:'трудно', 4:'за най-смелите' };
+
+  /* ── Айфеловата кула ─────────────────────────────────────────── */
+  function towerSvg(){
+    var s = '';
+    s += '<path d="M32 4 L36 20 L44 44 L52 60 H12 L20 44 L28 20 Z" fill="none" stroke="#A1661B" stroke-width="2.2" stroke-linejoin="round"/>';
+    s += '<path d="M22 32 H42" stroke="#A1661B" stroke-width="2"/>';
+    s += '<path d="M17 44 H47" stroke="#A1661B" stroke-width="2"/>';
+    s += '<path d="M28 20 L36 20 L44 44 L20 44 Z" fill="#F7AD19" opacity=".35"/>';
+    s += '<path d="M32 4 V0" stroke="#A1661B" stroke-width="2"/>';
+    s += '<circle cx="32" cy="2" r="2" fill="#F7AD19"/>';
+    return s;
+  }
+  (function fillTowers(){
+    var list = document.querySelectorAll('[data-tower]');
+    for(var i = 0; i < list.length; i++){
+      list[i].setAttribute('viewBox', '0 0 64 64');
+      list[i].innerHTML = towerSvg();
+    }
+  })();
+
+  /* ── силуетът на града отзад ─────────────────────────────────── */
+  (function town(){
+    var sv = document.getElementById('town');
+    if(!sv) return;
+    var s = '<g fill="#23407A">';
+    /* покриви */
+    s += '<rect x="0" y="150" width="1200" height="50"/>';
+    for(var x = 0; x < 1200; x += 60){
+      s += '<rect x="' + x + '" y="' + (128 + (x % 120 ? 10 : 0)) + '" width="46" height="30"/>';
+      s += '<rect x="' + (x + 16) + '" y="' + (112 + (x % 120 ? 10 : 0)) + '" width="8" height="18"/>';
+    }
+    /* Айфеловата кула */
+    s += '<path d="M250 150 L268 72 L272 40 L276 72 L294 150 Z"/>';
+    s += '<rect x="258" y="100" width="28" height="5"/>';
+    /* Триумфалната арка */
+    s += '<path d="M470 150 V92 h86 v58 h-22 v-34 a21 21 0 0 0 -42 0 v34 Z"/>';
+    /* Нотр Дам */
+    s += '<path d="M700 150 V96 h20 V74 h16 v22 h26 V74 h16 v22 h20 v54 Z"/>';
+    /* Сакре Кьор */
+    s += '<path d="M940 150 V118 a26 26 0 0 1 52 0 v32 Z"/>';
+    s += '<path d="M960 92 a6 6 0 0 1 12 0 v26 h-12 Z"/>';
+    /* пирамидата на Лувъра */
+    s += '<path d="M1090 150 L1130 104 L1170 150 Z"/>';
+    s += '</g>';
+    sv.innerHTML = s;
+    var sky = sv.parentNode;
+    for(var i = 0; i < 26; i++){
+      var st = el('span', 'star');
+      st.style.left = (Math.random() * 98).toFixed(1) + '%';
+      st.style.top = (Math.random() * 46).toFixed(1) + '%';
+      st.style.opacity = (0.25 + Math.random() * 0.4).toFixed(2);
+      sky.appendChild(st);
+    }
+  })();
+
+  /* ── квадратът (a + b)², който се разглобява ─────────────────── */
+  function figPlus(){
+    var A = 170, B = 90, X = 40, Y = 30, W = X + A + B + 24, H = Y + A + B + 26;
+    function piece(cls, x, y, w, h, lab, dx, dy){
+      return '<g class="fg-piece" data-dx="' + dx + '" data-dy="' + dy + '">'
+        + '<rect class="' + cls + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4"/>'
+        + '<rect class="fg-line" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4"/>'
+        + '<text class="fg-txt" x="' + (x + w / 2) + '" y="' + (y + h / 2 + 5) + '" text-anchor="middle">'
+        + lab + '</text></g>';
+    }
+    var s = '<svg class="fig" viewBox="0 0 ' + W + ' ' + H + '" role="img" '
+          + 'aria-label="Квадрат със страна a + b, разделен на a², две ab и b²">';
+    s += piece('fg-a', X, Y, A, A, 'a²', -8, -8);
+    s += piece('fg-ab', X + A, Y, B, A, 'ab', 8, -8);
+    s += piece('fg-ab', X, Y + A, A, B, 'ab', -8, 8);
+    s += piece('fg-b', X + A, Y + A, B, B, 'b²', 8, 8);
+    s += '<text class="fg-side" x="' + (X + A / 2) + '" y="' + (Y - 10) + '" text-anchor="middle">a</text>';
+    s += '<text class="fg-side" x="' + (X + A + B / 2) + '" y="' + (Y - 10) + '" text-anchor="middle">b</text>';
+    s += '<text class="fg-side" x="' + (X - 12) + '" y="' + (Y + A / 2) + '" text-anchor="end">a</text>';
+    s += '<text class="fg-side" x="' + (X - 12) + '" y="' + (Y + A + B / 2) + '" text-anchor="end">b</text>';
+    return s + '</svg>';
+  }
+
+  /* ── (a − b)²: отрязваме две ивици, ъгълът се връща ──────────── */
+  function figMinus(){
+    var A = 240, B = 72, X = 44, Y = 30, W = X + A + 26, H = Y + A + 26;
+    var s = '<svg class="fig" viewBox="0 0 ' + W + ' ' + H + '" role="img" '
+          + 'aria-label="Квадрат a², от който са отрязани две ивици ab, а ъгълът b² е махнат два пъти">';
+    s += '<rect class="fg-a" x="' + X + '" y="' + Y + '" width="' + (A - B) + '" height="' + (A - B) + '" rx="4"/>';
+    s += '<rect class="fg-cut" x="' + (X + A - B) + '" y="' + Y + '" width="' + B + '" height="' + (A - B) + '" rx="4"/>';
+    s += '<rect class="fg-cut" x="' + X + '" y="' + (Y + A - B) + '" width="' + (A - B) + '" height="' + B + '" rx="4"/>';
+    s += '<rect class="fg-b" x="' + (X + A - B) + '" y="' + (Y + A - B) + '" width="' + B + '" height="' + B + '" rx="4"/>';
+    s += '<rect class="fg-line" x="' + X + '" y="' + Y + '" width="' + A + '" height="' + A + '" rx="4"/>';
+    s += '<text class="fg-txt" x="' + (X + (A - B) / 2) + '" y="' + (Y + (A - B) / 2 + 5) + '" text-anchor="middle">(a − b)²</text>';
+    s += '<text class="fg-txt" x="' + (X + A - B / 2) + '" y="' + (Y + (A - B) / 2 + 5) + '" text-anchor="middle">ab</text>';
+    s += '<text class="fg-txt" x="' + (X + (A - B) / 2) + '" y="' + (Y + A - B / 2 + 5) + '" text-anchor="middle">ab</text>';
+    s += '<text class="fg-txt" x="' + (X + A - B / 2) + '" y="' + (Y + A - B / 2 + 5) + '" text-anchor="middle">b²</text>';
+    s += '<text class="fg-side" x="' + (X + A / 2) + '" y="' + (Y - 10) + '" text-anchor="middle">a</text>';
+    s += '<text class="fg-side" x="' + (X - 12) + '" y="' + (Y + A / 2) + '" text-anchor="end">a</text>';
+    return s + '</svg>';
+  }
+
+  /* ── a² − b² става правоъгълник (a − b)(a + b) ───────────────── */
+  function figDiff(){
+    var A = 150, B = 60, G = 46, X = 30, Y = 34;
+    var W = X + A + G + (A + B) + 72, H = Y + A + 30;   /* място и за надписа „a − b“ вдясно */
+    var s = '<svg class="fig" viewBox="0 0 ' + W + ' ' + H + '" style="max-width:560px" role="img" '
+          + 'aria-label="Квадрат a² без ъгъл b², пренареден в правоъгълник със страни a − b и a + b">';
+    /* лявата картинка */
+    s += '<rect class="fg-a" x="' + X + '" y="' + Y + '" width="' + A + '" height="' + A + '" rx="4"/>';
+    s += '<rect class="fg-cut" x="' + (X + A - B) + '" y="' + (Y + A - B) + '" width="' + B + '" height="' + B + '" rx="4"/>';
+    s += '<rect class="fg-line" x="' + X + '" y="' + Y + '" width="' + A + '" height="' + A + '" rx="4"/>';
+    s += '<text class="fg-txt" x="' + (X + A / 2 - 20) + '" y="' + (Y + 40) + '" text-anchor="middle">a²</text>';
+    s += '<text class="fg-txt" x="' + (X + A - B / 2) + '" y="' + (Y + A - B / 2 + 5) + '" text-anchor="middle">b²</text>';
+    s += '<text class="fg-side" x="' + (X + A / 2) + '" y="' + (Y - 12) + '" text-anchor="middle">a</text>';
+    s += '<text class="fg-side" x="' + (X - 8) + '" y="' + (Y + A / 2) + '" text-anchor="end">a</text>';
+    /* стрелката */
+    s += '<path d="M' + (X + A + 10) + ' ' + (Y + A / 2) + ' h' + (G - 24) + '" class="fg-line" stroke-width="2.4"/>';
+    s += '<path d="M' + (X + A + G - 12) + ' ' + (Y + A / 2) + ' l-9 -5 v10 z" fill="#A1661B"/>';
+    /* дясната картинка */
+    var RX = X + A + G, RW = A + B, RH = A - B;
+    s += '<rect class="fg-ab" x="' + RX + '" y="' + (Y + B / 2) + '" width="' + RW + '" height="' + RH + '" rx="4"/>';
+    s += '<rect class="fg-line" x="' + RX + '" y="' + (Y + B / 2) + '" width="' + RW + '" height="' + RH + '" rx="4"/>';
+    s += '<text class="fg-txt" x="' + (RX + RW / 2) + '" y="' + (Y + B / 2 + RH / 2 + 5) + '" text-anchor="middle">a² − b²</text>';
+    s += '<text class="fg-side" x="' + (RX + RW / 2) + '" y="' + (Y + B / 2 - 10) + '" text-anchor="middle">a + b</text>';
+    s += '<text class="fg-side" x="' + (RX + RW + 6) + '" y="' + (Y + B / 2 + RH / 2) + '">a − b</text>';
+    return s + '</svg>';
+  }
+
+  /* ── разпознаването: не рисунка, а три въпроса ───────────────── */
+  function figMix(){
+    return '<div class="rule warm"><h3>Как се познава коя формула е</h3>'
+      + '<ol class="small" style="margin:0.4rem 0 0; padding-left:1.1rem">'
+      + '<li><b>Скоба на квадрат?</b> Тогава има среден член — 2ab. Знакът му е знакът вътре в скобата.</li>'
+      + '<li><b>Две еднакви скоби, но с различни знаци?</b> Сбор по разлика — остава само a² − b².</li>'
+      + '<li><b>Нито едното?</b> Тогава умножаваме член по член, както винаги.</li>'
+      + '</ol></div>';
+  }
+
+  var FIGS = { plus:figPlus, minus:figMinus, diff:figDiff, mix:figMix };
+
+  /* ── примерът стъпка по стъпка ────────────────────────────────── */
+  function exampleBlock(ex){
+    var box = el('div', 'rule warm');
+    box.appendChild(el('p', 'mono', esc(ex.expr) + ' = ?'));
+    var ol = el('ol', 'steps'), i;
+    for(i = 0; i < ex.steps.length; i++){
+      ol.appendChild(el('li', 'hid',
+        '<span class="n">' + (i + 1) + '</span><span>' + esc(ex.steps[i]) + '</span>'));
+    }
+    ol.appendChild(el('li', 'hid fin',
+      '<span class="n">=</span><span>' + esc(ex.expr) + ' = ' + esc(ex.answer) + '</span>'));
+    box.appendChild(ol);
+
+    var row = el('div', 'row');
+    var bNext = el('button', 'btn ghost', 'Следваща стъпка');
+    var bAll = el('button', 'btn ghost', 'Покажи всичко');
+    var bOff = el('button', 'btn ghost', 'Отначало');
+    row.appendChild(bNext); row.appendChild(bAll); row.appendChild(bOff);
+    box.appendChild(row);
+
+    var items = ol.querySelectorAll('li');
+    function shown(){
+      var n = 0;
+      for(var i = 0; i < items.length; i++){ if(!items[i].classList.contains('hid')) n++; }
+      return n;
+    }
+    function sync(){ bNext.disabled = shown() >= items.length; }
+    bNext.addEventListener('click', function(){
+      var k = shown();
+      if(k < items.length) items[k].classList.remove('hid');
+      sync();
+    });
+    bAll.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.remove('hid');
+      sync();
+    });
+    bOff.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.add('hid');
+      sync();
+    });
+    sync();
+    return box;
+  }
+
+  /* ── задачите: отговорът се ПОКАЗВА, не се въвежда ────────────── */
+  function taskBlock(t, i){
+    var d = el('div', 'task');
+    d.appendChild(el('div', 'top', '<span class="n">Задача ' + (i + 1) + '</span>' +
+      '<span class="lvl l' + t.lvl + '">' + LVL[t.lvl] + '</span>'));
+    var q = el('div', 'q');
+    q.style.whiteSpace = 'pre-line';
+    q.textContent = t.q;
+    d.appendChild(q);
+    var btn = el('button', 'btn ghost', 'Отговор');
+    var ans = el('div', 'a', '<span class="mono">= ' + esc(t.a) + '</span>' +
+      '<span class="why">' + esc(t.why) + '</span>');
+    ans.hidden = true;
+    btn.addEventListener('click', function(){
+      ans.hidden = !ans.hidden;
+      btn.textContent = ans.hidden ? 'Отговор' : 'Скрий';
+    });
+    d.appendChild(btn); d.appendChild(ans);
+    d.__show = function(on){ ans.hidden = !on; btn.textContent = on ? 'Скрий' : 'Отговор'; };
+    return d;
+  }
+
+  /* ── игра 1: асансьорът на Айфеловата кула ───────────────────── */
+  function liftGame(){
+    var g = el('div', 'game');
+    var floors = '';
+    for(var f = LIFT.length; f >= 0; f--){
+      floors += '<div class="floor" style="bottom:' + (f * 30) + 'px">' +
+        (f === 0 ? 'партер' : f + '. етаж') + '</div>';
+    }
+    g.innerHTML =
+      '<h3>Асансьорът на кулата · цял клас</h3>'
+      + '<p class="small muted">Класът казва отговора на глас. Чак тогава натискате „Покажи отговора“ — '
+      + 'и ако са го познали, асансьорът се качва на следващия етаж.</p>'
+      + '<div class="lift"><div class="shaft">' + floors
+      + '<div class="cab" style="bottom:2px">🛗</div></div>'
+      + '<div class="side"><p class="qbig" data-q></p><div class="row">'
+      + '<button class="btn" data-show>Покажи отговора</button>'
+      + '<button class="btn ghost" data-up disabled>Качи асансьора ↑</button>'
+      + '<button class="btn ghost" data-reset>Отначало</button></div>'
+      + '<p class="fb" data-fb></p></div></div>';
+    var qEl = g.querySelector('[data-q]'), fb = g.querySelector('[data-fb]');
+    var cab = g.querySelector('.cab');
+    var bShow = g.querySelector('[data-show]'), bUp = g.querySelector('[data-up]');
+    var i = 0;
+
+    function draw(){
+      qEl.textContent = (i < LIFT.length) ? LIFT[i][0] : 'Горе сте!';
+      fb.className = 'fb'; fb.textContent = '';
+      bShow.disabled = (i >= LIFT.length);
+      bUp.disabled = true;
+      cab.style.bottom = (2 + i * 30) + 'px';
+    }
+    bShow.addEventListener('click', function(){
+      if(i >= LIFT.length) return;
+      fb.className = 'fb ok';
+      fb.textContent = '= ' + LIFT[i][1];
+      bUp.disabled = false;
+      bShow.disabled = true;
+    });
+    bUp.addEventListener('click', function(){
+      i++;
+      draw();
+      if(i >= LIFT.length){
+        cab.style.bottom = (2 + LIFT.length * 30) + 'px';
+        fb.className = 'fb ok';
+        fb.textContent = '🎉 Стигнахте върха. Оттук се вижда целият Париж — и трите формули.';
+      }
+    });
+    g.querySelector('[data-reset]').addEventListener('click', function(){ i = 0; draw(); });
+    draw();
+    return g;
+  }
+
+  /* ── игра 2: фалшификатите в Лувъра ──────────────────────────── */
+  function fakeGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Фалшификатът в Лувъра · цял клас</h3>'
+      + '<p class="small muted">На стената виси равенство. Класът решава: оригинал ли е, или фалшификат? '
+      + 'Вие натискате отговора на класа.</p>'
+      + '<div class="frame"><span class="mono" data-q></span></div>'
+      + '<div class="row" style="margin-top:0.7rem">'
+      + '<button class="btn" data-v="1">Оригинал</button>'
+      + '<button class="btn ghost" data-v="0">Фалшификат</button>'
+      + '<button class="btn ghost" data-next>Следваща картина</button>'
+      + '<span class="score" data-sc>0 / 0</span></div>'
+      + '<p class="fb" data-fb></p>';
+    var qEl = g.querySelector('[data-q]'), fb = g.querySelector('[data-fb]'), sc = g.querySelector('[data-sc]');
+    var i = -1, done = 0, ok = 0, locked = false;
+    function next(){
+      i = (i + 1) % FAKES.length;
+      qEl.textContent = FAKES[i][0];
+      fb.className = 'fb'; fb.textContent = '';
+      locked = false;
+    }
+    g.addEventListener('click', function(e){
+      var b = e.target.closest('[data-v]');
+      if(!b || locked) return;
+      locked = true; done++;
+      var right = (b.getAttribute('data-v') === '1') === FAKES[i][1];
+      if(right) ok++;
+      sc.textContent = ok + ' / ' + done;
+      fb.className = 'fb ' + (right ? 'ok' : 'bad');
+      fb.textContent = (right ? '✓ Точно така. ' : '✗ Не. ') + FAKES[i][2];
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра 3: мостовете на Сена ───────────────────────────────── */
+  function bridgeGame(){
+    var g = el('div', 'game');
+    function shuffle(a){
+      a = a.slice();
+      for(var i = a.length - 1; i > 0; i--){
+        var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+    var left = shuffle(BRIDGE.map(function(p, i){ return { k:i, t:p[0] }; }));
+    var right = shuffle(BRIDGE.map(function(p, i){ return { k:i, t:p[1] }; }));
+    g.innerHTML =
+      '<h3>Мостовете на Сена · за двама или за целия клас</h3>'
+      + '<p class="small muted">Единият бряг са изразите, другият — отговорите. Щракнете по един камък '
+      + 'отляво и по неговата двойка отдясно, за да построите мост.</p>'
+      + '<div class="bridge"><div class="pier" data-side="l">'
+      + left.map(function(o){ return '<button type="button" class="stone" data-side="l" data-k="' + o.k +
+          '" aria-pressed="false">' + esc(o.t) + '</button>'; }).join('')
+      + '</div><div class="pier" data-side="r">'
+      + right.map(function(o){ return '<button type="button" class="stone" data-side="r" data-k="' + o.k +
+          '" aria-pressed="false">' + esc(o.t) + '</button>'; }).join('')
+      + '</div></div>'
+      + '<div class="row" style="margin-top:0.6rem"><span class="score" data-sc>0 / ' + BRIDGE.length + ' моста</span>'
+      + '<button class="btn ghost" data-reset>Разбъркай отново</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var fb = g.querySelector('[data-fb]'), sc = g.querySelector('[data-sc]');
+    var picked = null, built = 0;
+
+    g.addEventListener('click', function(e){
+      var st = e.target.closest('.stone');
+      if(!st || st.classList.contains('done')) return;
+      if(!picked || picked.getAttribute('data-side') === st.getAttribute('data-side')){
+        if(picked) picked.setAttribute('aria-pressed', 'false');
+        picked = st;
+        st.setAttribute('aria-pressed', 'true');
+        return;
+      }
+      var same = picked.getAttribute('data-k') === st.getAttribute('data-k');
+      if(same){
+        picked.classList.add('done'); st.classList.add('done');
+        picked.setAttribute('aria-pressed', 'false');
+        built++;
+        sc.textContent = built + ' / ' + BRIDGE.length + ' моста';
+        fb.className = 'fb ok';
+        fb.textContent = built === BRIDGE.length
+          ? '🎉 Всички мостове са построени — Сена е преминат.'
+          : 'Мостът е построен!';
+      } else {
+        var a = picked, b = st;
+        a.classList.add('miss'); b.classList.add('miss');
+        fb.className = 'fb bad';
+        fb.textContent = 'Този камък е от друг мост.';
+        setTimeout(function(){ a.classList.remove('miss'); b.classList.remove('miss'); }, 700);
+        a.setAttribute('aria-pressed', 'false');
+      }
+      picked = null;
+    });
+    g.querySelector('[data-reset]').addEventListener('click', function(){
+      var fresh = bridgeGame();
+      g.parentNode.replaceChild(fresh, g);
+    });
+    return g;
+  }
+
+  /* ── игра 4: уличният художник на Монмартър ──────────────────── */
+  function streetGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Уличният художник · шейсет секунди наум</h3>'
+      + '<p class="small muted">Художникът рисува по една сметка. Класът я смята НАУМ и вика отговора; '
+      + 'вие отмятате дали е познат. Без лист и химикал.</p>'
+      + '<p class="qbig" data-q>Натиснете „Старт“.</p>'
+      + '<div class="row"><button class="btn" data-go>Старт</button>'
+      + '<button class="btn ghost" data-show disabled>Покажи</button>'
+      + '<button class="btn ghost" data-hit disabled>Позна ✓</button>'
+      + '<button class="btn ghost" data-miss disabled>Не позна ✗</button>'
+      + '<span class="score" data-sc>0 / 0</span><span class="mono" data-clock>60</span></div>'
+      + '<p class="fb" data-fb></p>';
+    var qEl = g.querySelector('[data-q]'), fb = g.querySelector('[data-fb]');
+    var sc = g.querySelector('[data-sc]'), clock = g.querySelector('[data-clock]');
+    var go = g.querySelector('[data-go]'), bShow = g.querySelector('[data-show]');
+    var bHit = g.querySelector('[data-hit]'), bMiss = g.querySelector('[data-miss]');
+    var i = 0, ok = 0, done = 0, left = 60, ticker = null, running = false;
+
+    function card(){
+      if(!running) return;
+      qEl.textContent = STREET[i % STREET.length][0];
+      fb.className = 'fb'; fb.textContent = '';
+      bShow.disabled = false; bHit.disabled = false; bMiss.disabled = false;
+    }
+    function stop(){
+      running = false;
+      clearInterval(ticker); ticker = null;
+      bShow.disabled = true; bHit.disabled = true; bMiss.disabled = true;
+      go.disabled = false; go.textContent = 'Още веднъж';
+      qEl.textContent = 'Времето свърши.';
+      fb.className = 'fb ok';
+      fb.textContent = 'Познати ' + ok + ' от ' + done + '. Най-хубавата сметка я напишете на дъската.';
+    }
+    go.addEventListener('click', function(){
+      i = 0; ok = 0; done = 0; left = 60;
+      sc.textContent = '0 / 0'; clock.textContent = '60';
+      running = true; go.disabled = true; go.textContent = 'Тече…';
+      clearInterval(ticker);
+      ticker = setInterval(function(){
+        left--; clock.textContent = left;
+        if(left <= 0) stop();
+      }, 1000);
+      card();
+    });
+    bShow.addEventListener('click', function(){
+      fb.className = 'fb ok';
+      fb.textContent = '= ' + STREET[i % STREET.length][1];
+    });
+    function mark(right){
+      if(!running) return;
+      done++; if(right) ok++;
+      sc.textContent = ok + ' / ' + done;
+      i++;
+      card();
+    }
+    bHit.addEventListener('click', function(){ mark(true); });
+    bMiss.addEventListener('click', function(){ mark(false); });
+    return g;
+  }
+
+  var GAMES = { lift:liftGame, fake:fakeGame, bridge:bridgeGame, street:streetGame };
+
+  /* ── една спирка ──────────────────────────────────────────────── */
+  function buildPanel(st){
+    var p = el('section', null, '');
+    p.id = 'p-' + st.id;
+    p.setAttribute('role', 'tabpanel');
+
+    var head = el('div', 'card');
+    if(st.hero){
+      head.innerHTML = '<div class="hero"><svg data-tower="1" aria-hidden="true"></svg>'
+        + '<div class="t"><h1>Разходка из <em>Париж</em></h1>'
+        + '<p class="muted">Четири спирки, три формули. На всяка спирка формулата първо се ВИЖДА '
+        + 'на картинка, после се смята, а накрая се играе.</p></div></div>';
+      var t = head.querySelector('[data-tower]');
+      t.setAttribute('viewBox', '0 0 64 64');
+      t.innerHTML = towerSvg();
+      t.style.width = '150px';
+    } else {
+      head.innerHTML = '<h1>' + esc(st.tab.b) + ' <em>· ' + esc(st.tab.s) + '</em></h1>';
+    }
+    head.appendChild(el('div', 'goal', '<b>Целта на спирката:</b> ' + esc(st.goal)));
+    var ruleCls = st.id === 'sena' ? 'rule seine' : (st.id === 'monmartur' ? 'rule rose' : 'rule');
+    head.appendChild(el('div', ruleCls, st.rule));
+
+    var fig = FIGS[st.fig];
+    if(fig){
+      var box = el('div', null, fig());
+      if(st.fig === 'plus'){
+        var b = el('button', 'btn ghost', 'Разглоби квадрата');
+        var on = false;
+        b.addEventListener('click', function(){
+          on = !on;
+          var ps = box.querySelectorAll('.fg-piece');
+          for(var i = 0; i < ps.length; i++){
+            ps[i].setAttribute('transform', on
+              ? 'translate(' + ps[i].getAttribute('data-dx') + ',' + ps[i].getAttribute('data-dy') + ')'
+              : 'translate(0,0)');
+          }
+          b.textContent = on ? 'Сглоби квадрата' : 'Разглоби квадрата';
+        });
+        box.appendChild(el('p', 'small muted',
+          'Четирите парчета са a², ab, ab и b². Двете еднакви парчета ab дават 2ab.'));
+        box.appendChild(b);
+      } else if(st.fig === 'minus'){
+        box.appendChild(el('p', 'small muted',
+          'Двете червени ивици са 2ab. Ъгълът b² е махнат ДВА пъти — затова се връща веднъж със знак плюс.'));
+      } else if(st.fig === 'diff'){
+        box.appendChild(el('p', 'small muted',
+          'Махаме ъгълче b² от квадрата a². Останалото парче се пренарежда в правоъгълник със страни ' +
+          '(a + b) и (a − b) — същото лице, друга форма.'));
+      }
+      head.appendChild(box);
+    }
+    p.appendChild(head);
+
+    var ex = el('div', 'card'), k;
+    ex.appendChild(el('h2', null, '<span>📐</span> На дъската, стъпка по стъпка'));
+    for(k = 0; k < st.examples.length; k++) ex.appendChild(exampleBlock(st.examples[k]));
+    p.appendChild(ex);
+
+    var tk = el('div', 'card');
+    tk.appendChild(el('h2', null, '<span>🥐</span> Задачи — от лесни към по-сложни'));
+    var bar = el('div', 'row');
+    var bAll = el('button', 'btn ghost', 'Покажи всички отговори');
+    var bNone = el('button', 'btn ghost', 'Скрий всички');
+    bar.appendChild(bAll); bar.appendChild(bNone);
+    tk.appendChild(bar);
+    var list = el('div', 'tasks'), cards = [];
+    for(k = 0; k < st.tasks.length; k++){
+      var c = taskBlock(st.tasks[k], k);
+      cards.push(c); list.appendChild(c);
+    }
+    tk.appendChild(list);
+    bAll.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(true); }); });
+    bNone.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(false); }); });
+    p.appendChild(tk);
+
+    var gm = el('div', 'card');
+    gm.appendChild(el('h2', null, '<span>🎡</span> Пауза за игра'));
+    gm.appendChild(GAMES[st.game]());
+    p.appendChild(gm);
+
+    if(st.atelier){
+      var at = el('div', 'card');
+      at.appendChild(el('h2', null, '<span>🎨</span> Ателие Монмартър'));
+      at.appendChild(el('p', 'muted',
+        'Три творчески задачи. Правят се на хартия, по двойки или по групи — и остават на стената.'));
+      var easel = el('div', 'easel');
+      st.atelier.forEach(function(a){
+        easel.appendChild(el('div', 'canvasy', '<h3>' + esc(a.t) + '</h3><p class="small">' + esc(a.d) + '</p>'));
+      });
+      at.appendChild(easel);
+      p.appendChild(at);
+    }
+
+    var nt = el('div', 'card'), li = '';
+    for(k = 0; k < st.notes.length; k++) li += '<li>' + esc(st.notes[k]) + '</li>';
+    nt.appendChild(el('h2', null, '<span>📝</span> За учителя'));
+    nt.appendChild(el('div', 'notes', '<ul>' + li + '</ul>'));
+    p.appendChild(nt);
+    return p;
+  }
+
+  /* ── спирките ─────────────────────────────────────────────────── */
+  var tabs = document.getElementById('tabs');
+  var panels = document.getElementById('panels');
+  var barTab = document.getElementById('barTab');
+  var btns = [], secs = [];
+
+  STOPS.forEach(function(st, i){
+    var b = el('button', 'tab', '<span class="pin">' + esc(st.pin) + '</span><span><b>' +
+      esc(st.tab.b) + '</b><small>' + esc(st.tab.s) + '</small></span>');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-controls', 'p-' + st.id);
+    b.addEventListener('click', function(){ open(i, true); });
+    tabs.appendChild(b);
+    btns.push(b);
+
+    var s = buildPanel(st);
+    s.hidden = (i !== 0);
+    panels.appendChild(s);
+    secs.push(s);
+  });
+
+  function open(i, push){
+    for(var k = 0; k < btns.length; k++){
+      btns[k].setAttribute('aria-selected', k === i ? 'true' : 'false');
+      secs[k].hidden = (k !== i);
+    }
+    barTab.textContent = STOPS[i].tab.b;
+    if(push && history.replaceState) history.replaceState(null, '', '#' + STOPS[i].id);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  var want = (location.hash || '').replace('#', ''), start = 0;
+  for(var i = 0; i < STOPS.length; i++){ if(STOPS[i].id === want) start = i; }
+  open(start, false);
+})();
+</script>
+</body>
+</html>
