@@ -2929,6 +2929,34 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
+-- 6. клас, седмица 9 — диагностика 1 — материал от седмици 1–9.
+-- Двайсет и шест задачи, трийсет точки: двайсет и четири къси по една
+-- точка и две текстови с по три подточки. Четирийсет минути с часовник.
+insert into public.assignments
+  (slug, title, kind, url, max_points, published, sort_order, week, subject_id, grades)
+values
+  ('diag6-01',
+   'Диагностика 1 — седмици 1–9 (с време)',
+   'exam',
+   'diag_6_01.html',
+   30,
+   false,
+   399,
+   9,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
+
 -- 7. клас, седмица 5 — диагностика 1 — материал от седмици 1–5.
 -- Десет задачи, по една точка всяка.
 insert into public.assignments
