@@ -53,6 +53,17 @@ with proverki(подредба, какво, готово, файл) as (
     (12, '6. клас: рационалните числа преди степенуването',
         (select count(*) > 0 from public.assignments
           where slug = 'hw6-w07' and week = 4),
+        'supabase/assignments.sql'),
+    (13, 'Час с група деца (няколко имена в един час)',
+        (select coalesce(
+          (select substring(pg_get_constraintdef(oid) from '<= ([0-9]+)')::int >= 200
+             from pg_constraint
+            where conrelid = 'public.lessons'::regclass
+              and conname = 'lessons_child_name_ok'), false)),
+        'supabase/schema-v16.sql'),
+    (14, 'Трите нови листа (НОД/НОК, рационални ниво 2, многочлени)',
+        (select count(*) = 3 from public.assignments
+          where slug in ('hw5-w09b','hw6-w10b','hw7-w06b')),
         'supabase/assignments.sql')
 )
 select подредба                                   as "№",

@@ -197,14 +197,20 @@
         </label>
 
         <label class="tlu-f">
-          <span>Ученик</span>
+          <span>Ученик (или група)</span>
           <!-- Падащото меню е със собствените ученици на преподавателя.
                „друго име…“ отваря полето за писане — за пробен час или за
-               дете, което още не е в платформата. В базата и в двата
-               случая отива име, затова старите часове се отварят както си
-               бяха. -->
+               дете, което още не е в платформата. Избраните стоят като
+               хрупчета отдолу: за група се избират няколко едно след
+               друго. В базата отиват имената, разделени със запетая —
+               затова старите часове се отварят както си бяха. -->
           <select id="luChildPick"></select>
-          <input type="text" id="luChild" maxlength="80" placeholder="напр. Мария" hidden />
+          <div class="tlu-other" id="luOtherRow" hidden>
+            <input type="text" id="luChild" maxlength="80" placeholder="напр. Мария" />
+            <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="luChildAdd">Добави</button>
+          </div>
+          <div class="tlu-kids" id="luKids"></div>
+          <p class="tlu-kidshint" id="luKidsHint"></p>
         </label>
 
         <div class="tlu-f3">
@@ -2529,7 +2535,7 @@
       var LU_MONTHS = ['януари', 'февруари', 'март', 'април', 'май', 'юни', 'юли',
                        'август', 'септември', 'октомври', 'ноември', 'декември'];
 
-      var lu = { monday: null, rows: [], editing: null };
+      var lu = { monday: null, rows: [], editing: null, kids: [] };
 
       function luMonday(d) {
         var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -2871,44 +2877,106 @@
          отваря полето за писане. Списъкът е същият като в „Обратна
          връзка“ — моите ученици, а за админа всички. */
       var LU_OTHER = '__other__';
+      var LU_MAX_KIDS = 12;         /* повече деца в един час няма */
+      var LU_NAME_LIMIT = 200;      /* толкова пуска базата след schema-v16.sql */
+      var LU_OLD_LIMIT = 80;        /* толкова пуска, ако файлът още не е пуснат */
+
+      /* Имената на часа са списък: за урок на четири ръце в полето стоят
+         две, за група — повече. В базата отиват едно след друго, разделени
+         със запетая, затова и оттам се четат по същия начин. */
+      function luKidsFrom(text) {
+        return String(text || '').split(',').map(function (n) { return n.trim(); })
+          .filter(function (n) { return n; });
+      }
+
+      function luKidAdd(name) {
+        var n = String(name || '').trim().replace(/\s+/g, ' ').replace(/,/g, '');
+        if (!n) return false;
+        var same = lu.kids.some(function (k) { return k.toLowerCase() === n.toLowerCase(); });
+        if (same) { luKidsRender(); return false; }
+        if (lu.kids.length >= LU_MAX_KIDS) {
+          luErr('Повече от ' + LU_MAX_KIDS + ' деца в един час не се записват.');
+          return false;
+        }
+        lu.kids.push(n);
+        luKidsRender();
+        return true;
+      }
+
+      function luKidsRender(locked) {
+        var box = document.getElementById('luKids');
+        var hint = document.getElementById('luKidsHint');
+        box.innerHTML = lu.kids.map(function (n, i) {
+          return '<span class="tlu-kid">' + esc(n) +
+            (locked ? '' : '<button type="button" data-rmkid="' + i + '" ' +
+              'aria-label="Махни ' + esc(n) + '">×</button>') + '</span>';
+        }).join('');
+        var len = lu.kids.join(', ').length;
+        if (!lu.kids.length) {
+          hint.textContent = 'Избери ученик. За група избери няколко едно след друго.';
+          hint.className = 'tlu-kidshint';
+        } else if (len > LU_OLD_LIMIT) {
+          /* Докато schema-v16.sql не е пуснат, базата спира дългия списък.
+             По-добре да се каже тук, отколкото часът да падне при запис. */
+          hint.textContent = 'Група от ' + lu.kids.length + ' деца · ' + len +
+            ' знака. Ако записът не мине, пусни supabase/schema-v16.sql.';
+          hint.className = 'tlu-kidshint is-warn';
+        } else {
+          hint.textContent = lu.kids.length === 1 ? 'Един ученик.'
+            : 'Група от ' + lu.kids.length + ' деца.';
+          hint.className = 'tlu-kidshint';
+        }
+      }
 
       function luFillChildren(current) {
         var sel = document.getElementById('luChildPick');
         var inp = document.getElementById('luChild');
-        var kids = fbStudents().filter(function (p) {
+        var mine = fbStudents().filter(function (p) {
           return String(p.full_name || '').trim() && String(p.full_name).trim() !== LU_OTHER;
         });
-        var cur = String(current || '').trim();
-        var known = kids.some(function (p) { return String(p.full_name).trim() === cur; });
+        lu.kids = luKidsFrom(current);
 
         sel.innerHTML =
           '<option value="">— избери ученик —</option>' +
-          kids.map(function (p) {
+          mine.map(function (p) {
             var name = String(p.full_name).trim();
-            return '<option value="' + esc(name) + '"' + (name === cur ? ' selected' : '') + '>' +
+            return '<option value="' + esc(name) + '">' +
               esc(name) + ' · ' + esc(TLA.gradeLabel(gradeOf(p))) + '</option>';
           }).join('') +
-          '<option value="' + LU_OTHER + '"' + ((cur && !known) || !kids.length ? ' selected' : '') +
-          '>друго име…</option>';
+          '<option value="' + LU_OTHER + '">друго име…</option>';
+        sel.value = '';
 
-        inp.value = (cur && !known) ? cur : '';
-        inp.hidden = !(sel.value === LU_OTHER);
-        /* Преподавател без зададени ученици вижда същото поле както преди:
-           менюто веднага стои на „друго име…“. */
+        inp.value = '';
+        /* Преподавател без зададени ученици вижда полето за писане още с
+           отварянето — за него менюто няма какво да предложи. */
+        document.getElementById('luOtherRow').hidden = !(!mine.length && !lu.kids.length);
+        luKidsRender();
       }
 
+      /* Избор от менюто: името отива в списъка, а менюто се връща на
+         „— избери ученик —“, за да се добави веднага следващото дете. */
       function luChildSync() {
         var sel = document.getElementById('luChildPick');
+        var row = document.getElementById('luOtherRow');
         var inp = document.getElementById('luChild');
-        inp.hidden = (sel.value !== LU_OTHER);
-        if (!inp.hidden && !inp.disabled) inp.focus();
+        if (sel.value === LU_OTHER) {
+          row.hidden = false;
+          sel.value = '';
+          if (!inp.disabled) inp.focus();
+          return;
+        }
+        if (sel.value) { luKidAdd(sel.value); sel.value = ''; }
       }
 
-      function luChildValue() {
-        var sel = document.getElementById('luChildPick');
-        if (sel.value && sel.value !== LU_OTHER) return sel.value;
-        return (document.getElementById('luChild').value || '').trim();
+      function luChildTyped() {
+        var inp = document.getElementById('luChild');
+        if (luKidAdd(inp.value)) {
+          inp.value = '';
+          document.getElementById('luOtherRow').hidden = true;
+        }
       }
+
+      function luChildValue() { return lu.kids.join(', '); }
 
       function luOpen(prefill) {
         var dlg = document.getElementById('luDlg');
@@ -2961,10 +3029,13 @@
         document.getElementById('luUntilWrap').hidden = true;
         document.getElementById('luUntil').value = luIsoDate(luPlusDays(st, 7 * 12));
 
-        ['luSubject', 'luChildPick', 'luChild', 'luDate', 'luTime', 'luDur', 'luNote']
+        ['luSubject', 'luChildPick', 'luChild', 'luChildAdd', 'luDate', 'luTime', 'luDur', 'luNote']
           .forEach(function (id) {
           document.getElementById(id).disabled = !canEdit;
         });
+        /* Чужд час: имената се четат, но не се махат — хрупчетата остават
+           без кръстче. */
+        luKidsRender(!canEdit);
 
         /* Един час от поредица се поправя сам. Казва се, за да не се
            очаква, че промяната ще слезе по всички следващи. */
@@ -2973,8 +3044,9 @@
 
         dlg.showModal();
         if (!lu.editing) setTimeout(function () {
-          var inp = document.getElementById('luChild');
-          (inp.hidden ? document.getElementById('luChildPick') : inp).focus();
+          var row = document.getElementById('luOtherRow');
+          (row.hidden ? document.getElementById('luChildPick')
+                      : document.getElementById('luChild')).focus();
         }, 30);
       }
 
@@ -2989,6 +3061,9 @@
         var tp = document.getElementById('luTeacherPick');
         var teacher = (state.isAdmin && !tp.hidden && tp.value) ? tp.value : mineId;
         var subject = document.getElementById('luSubject').value;
+        /* Име, което е написано, но не е добавено с „Добави“: при
+           натискане на „Запиши“ то влиза само, вместо да се загуби. */
+        luChildTyped();
         var child = luChildValue();
         var date = document.getElementById('luDate').value;
         var time = document.getElementById('luTime').value;
@@ -2999,6 +3074,11 @@
 
         if (!subject) { luErr('Избери предмет.'); return; }
         if (!child) { luErr('Избери ученик от менюто или „друго име…“ и го напиши.'); return; }
+        if (child.length > LU_NAME_LIMIT) {
+          luErr('Имената са ' + child.length + ' знака, а в един час се побират ' +
+                LU_NAME_LIMIT + '. Махни някое дете или запиши два часа.');
+          return;
+        }
         if (!date || !time) { luErr('Избери дата и час.'); return; }
 
         var parts = date.split('-'), hm = time.split(':');
@@ -3052,9 +3132,14 @@
         } catch (err) {
           var m = String(err.message || err);
           /* 23P01 е изключващото ограничение: вече има час по това време */
+          /* 23514 върху child_name значи, че schema-v16.sql още не е
+             пуснат и базата държи старата граница от 80 знака. */
           luErr(/lessons_no_overlap|23P01|exclusion/i.test(m)
             ? 'По това време вече има записан час при този преподавател.'
-            : m);
+            : (/child_name/i.test(m)
+              ? 'Базата още не приема списък с имена (' + child.length + ' знака). ' +
+                'Пусни supabase/schema-v16.sql в Supabase и опитай пак.'
+              : m));
         } finally { btn.disabled = false; }
       }
 
@@ -3169,6 +3254,21 @@
         });
         var cp = document.getElementById('luChildPick');
         if (cp) cp.addEventListener('change', luChildSync);
+        var ca = document.getElementById('luChildAdd');
+        if (ca) ca.addEventListener('click', luChildTyped);
+        var ci = document.getElementById('luChild');
+        /* Enter в полето добавя името, а не записва часа: иначе едно
+           недовършено име щеше да затваря прозорчето. */
+        if (ci) ci.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); luChildTyped(); }
+        });
+        var kb = document.getElementById('luKids');
+        if (kb) kb.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-rmkid]');
+          if (!b) return;
+          lu.kids.splice(Number(b.getAttribute('data-rmkid')), 1);
+          luKidsRender();
+        });
       }
 
       function luSetup() {
