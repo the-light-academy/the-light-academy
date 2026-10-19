@@ -2112,6 +2112,40 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
+-- 7. клас, седмица 6 — ВТОРИ лист за същата седмица: умножение на
+-- МНОГОЧЛЕН с многочлен (първият е за едночлен с многочлен). Дванайсет
+-- задачи, по една точка всяка. Осем от отговорите се ПИШАТ: листът ги
+-- проверява като многочлен — чете израза и го пресмята в седем точки,
+-- затова „10 + 7x + x²“ и „x² + 7x + 10“ минават еднакво, а със скоби
+-- не се приема. Същата машинка е и в урока uroci/urok_7_w06.html.
+-- sort_order е същият като на първия лист за седмица 6.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('hw7-w06b',
+   'Домашно 6б — Умножение на многочлен с многочлен',
+   'homework',
+   'homework_7_w06b.html',
+   'Скоба по скоба, с лего плоча — отговорите се пишат, не се избират',
+   12,
+   false,
+   106,
+   6,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
 -- 7. клас, седмица 7 — умножение на многочлен с многочлен.
 -- Десет задачи, по една точка всяка.
 insert into public.assignments
