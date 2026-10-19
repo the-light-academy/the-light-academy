@@ -1317,6 +1317,40 @@ on conflict (slug) do update set
   -- published нарочно липсва тук: то се управлява от таблото.
 
 
+-- 6. клас, седмица 7 — ВТОРИ лист за същата седмица: събиране и
+-- изваждане на рационални числа, НИВО 2. Дроби с различни знаменатели,
+-- смесени числа, скоби и знаци, модул, неизвестно число и четири
+-- задачи върху нарисувана числова ос. Две с избор и десет писани, по
+-- една точка всяка.
+-- sort_order е същият като на първия лист за седмица 7: двата стоят в
+-- една седмица и се подреждат по име.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('hw6-w10b',
+   'Домашно 10б — Събиране и изваждане · ниво 2',
+   'homework',
+   'homework_6_w10b.html',
+   'По-трудното от темата, с четири задачи върху числовата ос',
+   12,
+   false,
+   395,
+   7,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
 -- 6. клас, седмица 8 — умножение на рационални числа и свойства на умножението.
 -- Три задачи с избор и седем писани, по една точка всяка.
 insert into public.assignments
