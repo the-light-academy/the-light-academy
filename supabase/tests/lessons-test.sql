@@ -98,18 +98,54 @@ select pg_temp.must_fail('без име на дете',
     select teach_id, subj_id, '   ', '2026-10-15 09:00+03', '2026-10-15 10:00+03', teach_id
       from t_who$$, '23514');
 
+-- ── 3б. Час с група деца (schema-v16.sql) ─────────────────────────────
+--  В child_name стоят имената едно след друго. Три имена са към 70
+--  знака — старата граница от 80 ги пускаше на косъм, а четири вече не.
+do $$
+declare w record; n int;
+begin
+  select * into w from t_who;
+  insert into public.lessons (teacher_id, subject_id, child_name, starts_at, ends_at, created_by)
+  values (w.teach_id, w.subj_id,
+          'Мария Иванова, Георги Тодоров, Елена Маринова, Иван Петров, Ана Стоянова',
+          '2026-10-16 17:00+03', '2026-10-16 18:00+03', w.teach_id);
+  select count(*) into n from public.lessons
+   where child_name like 'Мария Иванова, Георги%';
+  if n <> 1 then raise exception '   ✗ часът с петима не влезе'; end if;
+  raise notice '   ✓ час с пет имена влиза (% знака)',
+    length('Мария Иванова, Георги Тодоров, Елена Маринова, Иван Петров, Ана Стоянова');
+
+  insert into public.lessons (teacher_id, subject_id, child_name, starts_at, ends_at, created_by)
+  values (w.teach_id, w.subj_id, repeat('и', 200),
+          '2026-10-16 19:00+03', '2026-10-16 20:00+03', w.teach_id);
+  raise notice '   ✓ точно 200 знака минават';
+end $$;
+
+select pg_temp.must_fail('201 знака не минават',
+  $$insert into public.lessons (teacher_id, subject_id, child_name, starts_at, ends_at, created_by)
+    select teach_id, subj_id, repeat('и', 201),
+           '2026-10-17 09:00+03', '2026-10-17 10:00+03', teach_id
+      from t_who$$, '23514');
+
+-- Двата часа с група си отиват: следващият раздел брои редове и те не
+-- са част от сметката му.
+delete from public.lessons where starts_at::date = date '2026-10-16';
+
 -- ── 4. Кой какво вижда ────────────────────────────────────────────────
 do $$
 declare w record; n int;
 begin
   select * into w from t_who;
 
-  /* преподавателят: само своите */
+  /* Преподавателят вижда ВСИЧКИ часове, не само своите: от
+     schema-v13.sql календарът е общ за академията („lessons: read all“
+     за всеки преподавател). Писането си остава лично — това се проверява
+     в раздел 5. */
   perform set_config('tla.uid', w.teach_id::text, true);
   set local role authenticated;
   select count(*) into n from public.lessons;
-  if n <> 2 then raise exception '   ✗ преподавателят вижда % часа вместо 2', n; end if;
-  raise notice '   ✓ преподавателят вижда само своите два часа';
+  if n <> 3 then raise exception '   ✗ преподавателят вижда % часа вместо 3', n; end if;
+  raise notice '   ✓ преподавателят вижда целия календар';
   reset role;
 
   /* админът: всичко */
