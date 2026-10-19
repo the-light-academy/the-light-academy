@@ -197,8 +197,14 @@
         </label>
 
         <label class="tlu-f">
-          <span>Име на детето</span>
-          <input type="text" id="luChild" maxlength="80" required placeholder="напр. Мария" />
+          <span>Ученик</span>
+          <!-- Падащото меню е със собствените ученици на преподавателя.
+               „друго име…“ отваря полето за писане — за пробен час или за
+               дете, което още не е в платформата. В базата и в двата
+               случая отива име, затова старите часове се отварят както си
+               бяха. -->
+          <select id="luChildPick"></select>
+          <input type="text" id="luChild" maxlength="80" placeholder="напр. Мария" hidden />
         </label>
 
         <div class="tlu-f3">
@@ -2859,6 +2865,51 @@
         if (!list.length) sel.innerHTML = '<option value="">няма предмети</option>';
       }
 
+      /* ── кое дете е на часа ──────────────────────────────────────
+         В lessons стои ИМЕ, не id: часът се записва и за дете, което още
+         не е в платформата. Затова менюто подава име, а „друго име…“
+         отваря полето за писане. Списъкът е същият като в „Обратна
+         връзка“ — моите ученици, а за админа всички. */
+      var LU_OTHER = '__other__';
+
+      function luFillChildren(current) {
+        var sel = document.getElementById('luChildPick');
+        var inp = document.getElementById('luChild');
+        var kids = fbStudents().filter(function (p) {
+          return String(p.full_name || '').trim() && String(p.full_name).trim() !== LU_OTHER;
+        });
+        var cur = String(current || '').trim();
+        var known = kids.some(function (p) { return String(p.full_name).trim() === cur; });
+
+        sel.innerHTML =
+          '<option value="">— избери ученик —</option>' +
+          kids.map(function (p) {
+            var name = String(p.full_name).trim();
+            return '<option value="' + esc(name) + '"' + (name === cur ? ' selected' : '') + '>' +
+              esc(name) + ' · ' + esc(TLA.gradeLabel(gradeOf(p))) + '</option>';
+          }).join('') +
+          '<option value="' + LU_OTHER + '"' + ((cur && !known) || !kids.length ? ' selected' : '') +
+          '>друго име…</option>';
+
+        inp.value = (cur && !known) ? cur : '';
+        inp.hidden = !(sel.value === LU_OTHER);
+        /* Преподавател без зададени ученици вижда същото поле както преди:
+           менюто веднага стои на „друго име…“. */
+      }
+
+      function luChildSync() {
+        var sel = document.getElementById('luChildPick');
+        var inp = document.getElementById('luChild');
+        inp.hidden = (sel.value !== LU_OTHER);
+        if (!inp.hidden && !inp.disabled) inp.focus();
+      }
+
+      function luChildValue() {
+        var sel = document.getElementById('luChildPick');
+        if (sel.value && sel.value !== LU_OTHER) return sel.value;
+        return (document.getElementById('luChild').value || '').trim();
+      }
+
       function luOpen(prefill) {
         var dlg = document.getElementById('luDlg');
         var mineId = state.me ? state.me.id : '';
@@ -2900,7 +2951,7 @@
         var en = lu.editing ? new Date(lu.editing.ends_at) : null;
         document.getElementById('luSubject').value = lu.editing ? lu.editing.subject_id
           : (document.getElementById('luSubject').value || '');
-        document.getElementById('luChild').value = lu.editing ? lu.editing.child_name : '';
+        luFillChildren(lu.editing ? lu.editing.child_name : '');
         document.getElementById('luDate').value = luIsoDate(st);
         document.getElementById('luTime').value = luHhMm(st);
         document.getElementById('luDur').value = en ? String(Math.round((en - st) / 60000)) : '60';
@@ -2910,7 +2961,8 @@
         document.getElementById('luUntilWrap').hidden = true;
         document.getElementById('luUntil').value = luIsoDate(luPlusDays(st, 7 * 12));
 
-        ['luSubject', 'luChild', 'luDate', 'luTime', 'luDur', 'luNote'].forEach(function (id) {
+        ['luSubject', 'luChildPick', 'luChild', 'luDate', 'luTime', 'luDur', 'luNote']
+          .forEach(function (id) {
           document.getElementById(id).disabled = !canEdit;
         });
 
@@ -2920,7 +2972,10 @@
         hint.hidden = !(lu.editing && lu.editing.series_id);
 
         dlg.showModal();
-        if (!lu.editing) setTimeout(function () { document.getElementById('luChild').focus(); }, 30);
+        if (!lu.editing) setTimeout(function () {
+          var inp = document.getElementById('luChild');
+          (inp.hidden ? document.getElementById('luChildPick') : inp).focus();
+        }, 30);
       }
 
       function luErr(msg) {
@@ -2934,7 +2989,7 @@
         var tp = document.getElementById('luTeacherPick');
         var teacher = (state.isAdmin && !tp.hidden && tp.value) ? tp.value : mineId;
         var subject = document.getElementById('luSubject').value;
-        var child = (document.getElementById('luChild').value || '').trim();
+        var child = luChildValue();
         var date = document.getElementById('luDate').value;
         var time = document.getElementById('luTime').value;
         var dur = Number(document.getElementById('luDur').value || 60);
@@ -2943,7 +2998,7 @@
         var until = document.getElementById('luUntil').value;
 
         if (!subject) { luErr('Избери предмет.'); return; }
-        if (!child) { luErr('Напиши името на детето.'); return; }
+        if (!child) { luErr('Избери ученик от менюто или „друго име…“ и го напиши.'); return; }
         if (!date || !time) { luErr('Избери дата и час.'); return; }
 
         var parts = date.split('-'), hm = time.split(':');
@@ -3112,6 +3167,8 @@
           document.getElementById('luTeacherName').value = luName(this.value);
           luFillSubjects(this.value);
         });
+        var cp = document.getElementById('luChildPick');
+        if (cp) cp.addEventListener('change', luChildSync);
       }
 
       function luSetup() {
