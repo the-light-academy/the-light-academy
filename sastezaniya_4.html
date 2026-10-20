@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Календар на състезанията — 4. клас · The Light Academy</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Календарът на математическите състезания за 4. клас, учебна 2026/2027: кое кога е и кое тежи за приема." />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* =====================================================================
+   КАЛЕНДАР НА СЪСТЕЗАНИЯТА — 4. клас, състезателна математика
+   ---------------------------------------------------------------------
+   Датите НЕ са тук: те стоят в assets/sastezaniya.js, защото същият
+   списък се чете и от портала на ученика („Пробни изпити“), където се
+   показва само следващото състезание.
+
+   Страницата е за гледане, не за попълване: няма вход, няма записване,
+   нищо не се предава. Печата се на един лист — родителят я иска на
+   хладилника, не в приложение.
+   ===================================================================== */
+
+:root{
+  --ink:#16233F;
+  --ink-soft:#55658A;
+  --paper:#FFFDF7;
+  --paper-raised:#FFFFFF;
+  --line:#E7E0D0;
+  --accent:#F7AD19;
+  --accent-ink:#A1661B;
+  --accent-soft:#FFF4DC;
+  --key:#C0392B;   --key-soft:#FBE9E7;
+  --rec:#A1661B;   --rec-soft:#FFF1D6;
+  --extra:#55658A; --extra-soft:#EEF1F7;
+  --ok:#1F7A4C;    --ok-soft:#E4F2EA;
+}
+*{ box-sizing:border-box; }
+html{ background:var(--paper); }
+html,body{ margin:0; color:var(--ink); }
+body{ font-family:'Nunito',system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.55; }
+
+.bar{ position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:0.6rem;
+  padding:0.55rem clamp(0.8rem,3vw,1.4rem); background:rgba(255,253,247,0.92);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+.bar b{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.05rem; }
+.bar b em{ font-style:normal; color:var(--accent-ink); }
+.bar small{ color:var(--ink-soft); font-size:0.82rem; }
+.bar .sp{ flex:1 1 auto; }
+.bar a{ color:var(--accent-ink); font-weight:800; text-decoration:none; font-size:0.9rem; }
+
+.wrap{ max-width:900px; margin:0 auto; padding:1.2rem 1rem 4rem; }
+h1{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(26px,5vw,38px);
+  margin:0 0 0.3rem; line-height:1.15; }
+h1 em{ font-style:normal; color:var(--accent-ink); }
+h2{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.2rem; margin:2rem 0 0.7rem; }
+p{ margin:0 0 0.7rem; }
+.muted{ color:var(--ink-soft); }
+.small{ font-size:0.9rem; }
+
+.lead{ display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;
+  border-bottom:2px solid var(--line); padding-bottom:1rem; margin-bottom:1.2rem; }
+.lead .t{ flex:1 1 320px; min-width:0; }
+.next{ flex:0 0 auto; background:var(--accent-soft); border:1px solid #F3DCAE;
+  border-radius:16px; padding:0.7rem 0.9rem; min-width:220px; }
+.next b{ display:block; font-family:'Fredoka',sans-serif; font-size:1.05rem; }
+.next .when{ font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--accent-ink); }
+
+/* трите най-важни */
+.keys{ display:grid; gap:0.7rem; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); }
+.keycard{ border:1px solid var(--line); border-left:5px solid var(--key); border-radius:0 16px 16px 0;
+  background:var(--paper-raised); padding:0.8rem 0.9rem; }
+.keycard .d{ font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--key); font-size:1.05rem; }
+.keycard .n{ font-weight:800; margin:0.15rem 0 0.3rem; }
+
+/* календарът */
+.month{ margin-top:1.4rem; }
+.month h3{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.02rem;
+  margin:0 0 0.5rem; color:var(--accent-ink); text-transform:capitalize;
+  border-bottom:1px dashed var(--line); padding-bottom:0.3rem; }
+.ev{ display:grid; grid-template-columns:130px 1fr; gap:0.6rem; align-items:start;
+  padding:0.55rem 0.6rem; border-radius:12px; }
+.ev + .ev{ border-top:1px solid var(--line); }
+.ev.is-key{ background:var(--key-soft); }
+.ev.is-next{ outline:2px solid var(--accent); outline-offset:-2px; }
+.ev.is-past{ opacity:.45; }
+.ev .date{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.95rem; }
+.ev .date span{ display:block; font-family:'Nunito',sans-serif; font-weight:600;
+  font-size:0.78rem; color:var(--ink-soft); }
+.ev .nm{ font-weight:800; }
+.ev .wy{ font-size:0.88rem; color:var(--ink-soft); }
+.tag{ display:inline-block; font-size:0.7rem; font-weight:800; border-radius:999px;
+  padding:0.1rem 0.5rem; margin-left:0.4rem; vertical-align:1px; }
+.tag.key{ background:var(--key-soft); color:var(--key); }
+.tag.rec{ background:var(--rec-soft); color:var(--rec); }
+.tag.extra{ background:var(--extra-soft); color:var(--extra); }
+.tag.if{ background:var(--ok-soft); color:var(--ok); }
+
+.legend{ display:flex; gap:0.8rem; flex-wrap:wrap; font-size:0.85rem; color:var(--ink-soft);
+  margin:0.8rem 0 0; }
+.note{ background:var(--accent-soft); border:1px solid #F3DCAE; border-radius:14px;
+  padding:0.8rem 0.9rem; margin-top:1.6rem; font-size:0.92rem; }
+.page-legal{ text-align:center; color:var(--ink-soft); font-size:0.8rem; margin:2.2rem 0 1rem; }
+.btn{ font:inherit; font-weight:800; cursor:pointer; border:1px solid var(--line);
+  border-radius:999px; padding:0.4rem 0.9rem; background:var(--paper-raised); color:var(--ink); }
+
+@media print{
+  .bar, .btn{ display:none !important; }
+  .wrap{ max-width:none; padding:0; }
+  .ev.is-past{ opacity:1; }
+  .ev, .keycard, .note{ break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <b>Light<em>Space</em></b>
+  <small>Състезателна математика · 4. клас</small>
+  <span class="sp"></span>
+  <a href="portal.html">Към профила →</a>
+</header>
+
+<div class="wrap">
+  <div class="lead">
+    <div class="t">
+      <h1>Календар на <em>състезанията</em></h1>
+      <p class="muted">Математически състезания за четвъртокласници, учебна 2026/2027.
+        Кое кога е — и кое тежи за приема след 5. клас.</p>
+      <button type="button" class="btn" id="printBtn">Разпечатай</button>
+    </div>
+    <div class="next" id="next"></div>
+  </div>
+
+  <h2>Трите, които тежат най-много</h2>
+  <div class="keys" id="keys"></div>
+  <p class="small muted" id="keyNote"></p>
+
+  <h2>Целият календар</h2>
+  <div id="cal"></div>
+  <div class="legend" id="legend"></div>
+
+  <div class="note">
+    <b>Датите на външните организатори могат да се променят.</b> Препоръчваме да се
+    потвърждават близо до съответното събитие. Ако нещо се размести, пишете ни и
+    календарът се обновява и тук, и в профила на детето.
+  </div>
+
+  <p class="page-legal">© 2026 The Light Academy · the.light.academy56@gmail.com</p>
+</div>
+
+<script src="assets/sastezaniya.js?v=2026-10-20"></script>
+<script>
+(function(){
+  'use strict';
+  var S = TLA.Sastezaniya;
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ── следващото състезание ─────────────────────────────────────── */
+  var nx = S.next();
+  $('next').innerHTML = nx
+    ? '<small class="muted">Следващото състезание</small>'
+      + '<b>' + esc(nx.name) + '</b>'
+      + '<span class="when">' + esc(S.dateLabel(nx)) + ' ' + S.yearLabel(nx)
+      + ' · ' + esc(S.countdown(nx)) + '</span>'
+    : '<small class="muted">Следващото състезание</small><b>Годината приключи</b>'
+      + '<span class="when">новият календар излиза през септември</span>';
+
+  /* ── трите балообразуващи ──────────────────────────────────────── */
+  $('keys').innerHTML = S.keyOnes().map(function(c){
+    return '<div class="keycard">'
+      + '<p class="d">' + esc(S.dateLabel(c)) + ' ' + S.yearLabel(c) + '</p>'
+      + '<p class="n">' + esc(c.name) + '</p>'
+      + '<p class="small muted" style="margin:0">' + esc(c.why) + '</p></div>';
+  }).join('');
+  $('keyNote').textContent = 'Общинският кръг на олимпиадата (12 декември) не е балообразуващ сам по '
+    + 'себе си, но без него няма допускане до областния — затова стои сред важните.';
+
+  /* ── целият календар ───────────────────────────────────────────── */
+  $('cal').innerHTML = S.byMonth().map(function(m){
+    return '<section class="month"><h3>' + esc(m.title) + '</h3>'
+      + m.items.map(function(c){
+          var past = S.isPast(c), isNext = nx && c.id === nx.id;
+          var cls = 'ev' + (c.rank === 'key' ? ' is-key' : '') + (past ? ' is-past' : '')
+                  + (isNext ? ' is-next' : '');
+          return '<div class="' + cls + '">'
+            + '<div class="date">' + esc(S.dateLabel(c))
+              + '<span>' + (c.at ? esc(c.at) + ' ч. · ' : '') + esc(S.countdown(c)) + '</span></div>'
+            + '<div><p class="nm" style="margin:0">' + esc(c.name)
+              + '<span class="tag ' + S.ranks[c.rank].cls + '">' + esc(S.ranks[c.rank].word) + '</span></p>'
+            + '<p class="wy" style="margin:0">' + esc(c.why) + '</p></div></div>';
+        }).join('')
+      + '</section>';
+  }).join('');
+
+  $('legend').innerHTML = ['key','rec','extra','if'].map(function(k){
+    return '<span><span class="tag ' + S.ranks[k].cls + '">' + esc(S.ranks[k].word) + '</span> '
+      + esc({ key:'тежи за приема', rec:'за подготовка и тренировка',
+              extra:'по желание', 'if':'само при класиране' }[k]) + '</span>';
+  }).join('');
+
+  $('printBtn').addEventListener('click', function(){ window.print(); });
+})();
+</script>
+</body>
+</html>

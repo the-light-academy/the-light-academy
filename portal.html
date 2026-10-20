@@ -148,6 +148,9 @@
       </div>
 
       <div class="tlp__panel" role="tabpanel" id="panel-ex" aria-labelledby="tab-ex" tabindex="0" hidden>
+        <!-- Календарът на състезанията. Вижда се само от четвъртокласник:
+             за останалите класове тези дати не значат нищо. -->
+        <section class="tlp__szcal" id="szCal" hidden></section>
         <div id="exList"></div>
       </div>
 
@@ -284,6 +287,7 @@
   <script src="assets/race.js?v=2026-10-07"></script>
   <script src="assets/starcard.js?v=2026-10-13"></script>
   <script src="assets/tracks.js?v=2026-10-07"></script>
+  <script src="assets/sastezaniya.js?v=2026-10-20"></script>
   <script>
     /* The student's screen. Everything here is read-only: the numbers are
        derived in the browser from the two queries below, and nothing is
@@ -723,6 +727,37 @@
             return x.i - y.i;
           })
           .map(function (o) { return o.a; });
+      }
+
+      /* ── календарът на състезанията ────────────────────────────────
+         Показва се само на четвъртокласник и само следващото състезание:
+         целият календар е на собствена страница, която се и разпечатва.
+         Датите идват от assets/sastezaniya.js — същият списък, който чете
+         и тя. */
+      function renderSzCal() {
+        var box = $('szCal');
+        if (!box || !TLA.Sastezaniya) return;
+        var S = TLA.Sastezaniya;
+        if (myGrade !== S.grade) { box.hidden = true; return; }
+
+        var nx = S.next();
+        var keys = S.keyOnes().filter(function (c) { return !S.isPast(c); }).slice(0, 3);
+        box.innerHTML =
+          '<p class="tlp__szcal-h">Календар на състезанията</p>' +
+          (nx
+            ? '<p class="tlp__szcal-next"><b>' + esc(nx.name) + '</b>' +
+              '<span>' + esc(S.dateLabel(nx)) + ' ' + S.yearLabel(nx) + ' · ' +
+              esc(S.countdown(nx)) + '</span></p>'
+            : '<p class="tlp__szcal-next"><b>Годината приключи</b>' +
+              '<span>новият календар излиза през септември</span></p>') +
+          (keys.length
+            ? '<p class="tlp__szcal-k">Напред до края на годината: ' +
+              keys.map(function (c) {
+                return esc(c.name) + ' (' + esc(S.dateLabel(c)) + ')';
+              }).join(' · ') + '</p>'
+            : '') +
+          '<a class="tlp__szcal-a" href="' + S.page + '">Виж целия календар →</a>';
+        box.hidden = false;
       }
 
       function renderAssignments(published) {
@@ -1465,6 +1500,7 @@
         renderStats(gradable);
         renderStars(auth.session.user.id);
         renderAssignments(published);
+        renderSzCal();
         renderResults();
         renderFeedback();
 

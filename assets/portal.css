@@ -1961,6 +1961,19 @@ body.tlp-space { background: #05070F; }
 .tla-round__none { font-size: 0.78rem; color: var(--tlp-ink-soft); margin: 0.5rem 0 0; line-height: 1.5; }
 
 /* в профила на ученика */
+/* Календарът на състезанията в „Пробни изпити“ — само за 4. клас.
+   Стои най-отгоре в раздела, защото датата е първото, което детето
+   (и родителят) търси. */
+.tlp__szcal { background: var(--tlp-accent-wash); border: 1px solid rgba(245,166,35,0.35);
+  border-radius: 18px; padding: 0.9rem 1rem; margin-bottom: 1rem; }
+.tlp__szcal-h { margin: 0 0 0.35rem; font-weight: 800; color: var(--tlp-accent-deep); font-size: 0.95rem; }
+.tlp__szcal-next { margin: 0 0 0.35rem; display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; align-items: baseline; }
+.tlp__szcal-next b { font-size: 1.05rem; }
+.tlp__szcal-next span { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700;
+  color: var(--tlp-accent-deep); font-size: 0.92rem; }
+.tlp__szcal-k { margin: 0 0 0.5rem; font-size: 0.86rem; color: var(--mid); }
+.tlp__szcal-a { font-weight: 800; color: var(--tlp-accent-deep); text-decoration: none; font-size: 0.92rem; }
+.tlp__szcal-a:hover { text-decoration: underline; }
 .tlp__track { margin-bottom: 1rem; }
 .tlp__track-h { font-size: 1rem; font-weight: 800; color: var(--tlp-navy); margin: 0 0 0.2rem; }
 .tlp__track-n { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0 0 0.7rem; }
