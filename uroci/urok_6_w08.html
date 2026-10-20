@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Урок — Подводница „Знак“ · 6. клас</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Интерактивен урок за 6. клас: обобщение на седмици 4–8 — отрицателни числа, модул, сравняване, събиране, изваждане и умножение на рационални числа." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* =====================================================================
+   УРОК ЗА ДЪСКАТА — „Подводница „Знак““, 6. клас, седмица 8
+   ---------------------------------------------------------------------
+   Обобщение на седмици 4–8: отрицателни числа и числовата ос, модул и
+   сравняване, събиране, изваждане и умножение на рационални числа.
+   Деление НЯМА — то идва в седмица 9.
+
+   Както и другите уроци за дъската: НИКЪДЕ НЯМА ПОЛЕ ЗА ВЪВЕЖДАНЕ НА
+   ОТГОВОР. Задачата се чете на глас, класът отговаря, а бутонът
+   „Отговор“ показва верния отговор и едно изречение „защо“.
+
+   Картинката носи смисъла: дълбокомерът е числовата ос, изправена
+   вертикално. Нулата е морското равнище, минусът е надолу, а модулът
+   е дълбочината — колко далеч си от повърхността.
+
+   Отговорите са пресметнати числено, докато урокът се пишеше:
+   scratchpad/podvodnica.js смята всяка задача и всеки пример и ги
+   сверява с написаното тук.
+   ===================================================================== */
+
+:root{
+  --ink:#0E2030;
+  --ink-soft:#4C6A82;
+  --paper:#F7FCFF;
+  --paper-raised:#FFFFFF;
+  --line:#D9E6EF;
+  --deep:#0B3C5D;          /* дълбокото */
+  --deep-soft:#E0EDF5;
+  --teal:#128C8C;          /* водата */
+  --teal-soft:#DFF3F2;
+  --sand:#E9A33B;          /* дъното и светлините */
+  --sand-soft:#FFF3DF;
+  --sand-ink:#8A5505;
+  --coral:#E4572E;
+  --coral-soft:#FDE8E1;
+  --ok:#1F7A4C;  --ok-soft:#E4F2EA;
+  --bad:#C0392B; --bad-soft:#FBE9E7;
+}
+*{ box-sizing:border-box; }
+/* Фонът стои само на <html>: сложим ли го и на <body>, плътният цвят на
+   body покрива .sea (z-index:-1) и морето изчезва. */
+html{ background:var(--paper); }
+html,body{ margin:0; color:var(--ink); }
+body{ font-family:'Nunito',system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.55; }
+
+/* ── морето отзад ─────────────────────────────────────────────── */
+.sea{ position:fixed; inset:0; z-index:-1; overflow:hidden;
+  background:linear-gradient(180deg,#F7FCFF 0%, #EAF6FB 45%, #DCEEF6 100%); }
+.sea .ray{ position:absolute; top:-10%; width:70px; height:130%;
+  background:linear-gradient(180deg, rgba(233,163,59,.16), rgba(233,163,59,0));
+  transform:rotate(12deg); }
+.sea .bub{ position:absolute; border-radius:50%; border:1.5px solid rgba(18,140,140,.25); }
+.sea .floor{ position:absolute; left:0; right:0; bottom:0; height:120px; opacity:.5; }
+
+/* ── лентата горе ─────────────────────────────────────────────── */
+.bar{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.55rem clamp(0.8rem,3vw,1.4rem);
+  background:rgba(247,252,255,0.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.bar b{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.05rem; }
+.bar b em{ font-style:normal; color:var(--teal); }
+.bar small{ color:var(--ink-soft); font-size:0.82rem; }
+.bar .sp{ flex:1 1 auto; }
+.sub{ width:40px; height:26px; flex:none; }
+
+.wrap{ max-width:1000px; margin:0 auto; padding:1rem 1rem 4rem; }
+
+/* ── спирките ─────────────────────────────────────────────────── */
+.tabs{ display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab{
+  display:flex; align-items:center; gap:0.5rem; text-align:left;
+  padding:0.5rem 0.8rem; border:1.5px solid var(--line); border-radius:14px;
+  background:var(--paper-raised); cursor:pointer; font:inherit; min-height:52px;
+}
+.tab b{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.96rem; display:block; }
+.tab small{ display:block; color:var(--ink-soft); font-size:0.78rem; }
+.tab .dot{ width:26px; height:26px; flex:none; border-radius:50%;
+  display:grid; place-items:center; font-size:0.78rem; font-weight:800; color:#fff; }
+.tab:nth-child(1) .dot{ background:var(--teal); }
+.tab:nth-child(2) .dot{ background:var(--deep); }
+.tab:nth-child(3) .dot{ background:var(--coral); }
+.tab:nth-child(4) .dot{ background:var(--sand); color:var(--ink); }
+.tab:nth-child(5) .dot{ background:#6B4FA8; }
+.tab[aria-selected="true"]{ border-color:var(--teal); background:var(--teal-soft);
+  box-shadow:0 6px 18px rgba(18,140,140,0.14); }
+
+/* ── картите ──────────────────────────────────────────────────── */
+.card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:18px; padding:1rem 1.1rem; margin-bottom:1rem;
+  box-shadow:0 10px 26px rgba(11,60,93,0.06);
+}
+h1{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(26px,5vw,38px);
+  margin:0 0 0.3rem; line-height:1.1; }
+h1 em{ font-style:normal; color:var(--teal); }
+h2{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.2rem;
+  margin:1.2rem 0 0.5rem; display:flex; align-items:center; gap:0.5rem; }
+h2:first-child{ margin-top:0; }
+h3{ font-size:1rem; font-weight:800; margin:0 0 0.3rem; }
+p{ margin:0 0 0.7rem; }
+.muted{ color:var(--ink-soft); }
+.small{ font-size:0.9rem; }
+.mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
+
+.goal{ border-left:5px solid var(--teal); background:var(--teal-soft);
+  border-radius:0 14px 14px 0; padding:0.7rem 0.9rem; margin-bottom:1rem; }
+.hero{ display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.hero .t{ flex:1 1 280px; min-width:0; }
+.hero svg{ width:230px; height:auto; flex:none; }
+
+.btn{ font:inherit; font-weight:800; cursor:pointer; border:1px solid transparent;
+  border-radius:999px; padding:0.45rem 1rem; min-height:40px;
+  background:var(--sand); color:var(--ink); }
+.btn:hover{ transform:translateY(-1px); }
+.btn.ghost{ background:transparent; border-color:var(--line); }
+.btn.ghost:hover{ background:var(--sand-soft); }
+.btn[disabled]{ opacity:.45; cursor:not-allowed; transform:none; }
+.row{ display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+
+/* ── правилото ────────────────────────────────────────────────── */
+.rule{ background:var(--deep-soft); border:1px solid #C3DCEA; border-radius:14px;
+  padding:0.8rem 0.9rem; }
+.rule .mono{ font-size:1.05rem; font-weight:700; }
+.rule.warm{ background:var(--sand-soft); border-color:#F3DCAE; }
+.rule.coral{ background:var(--coral-soft); border-color:#F6D0C4; }
+
+/* ── дълбокомерът ─────────────────────────────────────────────── */
+.gauge{ display:block; width:100%; height:auto; margin:0 auto; }
+.gz-axis{ stroke:var(--deep); stroke-width:2.4; }
+.gz-tick{ stroke:var(--ink-soft); stroke-width:1.4; }
+.gz-zero{ stroke:var(--coral); stroke-width:2.6; }
+.gz-num{ font-family:'JetBrains Mono',monospace; font-size:12px; fill:var(--ink-soft); }
+.gz-lab{ font-family:'Nunito',sans-serif; font-weight:800; font-size:12px; fill:var(--teal); }
+.gz-water{ fill:#DFF1F8; }
+.gz-sub{ transition:transform .7s cubic-bezier(.4,1.3,.5,1); }
+.gz-trace{ stroke:var(--coral); stroke-width:2.5; stroke-dasharray:5 4; fill:none; }
+
+/* ── примерът стъпка по стъпка ────────────────────────────────── */
+.steps{ list-style:none; margin:0.6rem 0 0; padding:0; }
+.steps li{ display:flex; gap:0.6rem; align-items:flex-start; padding:0.4rem 0;
+  border-top:1px dashed var(--line); font-family:'JetBrains Mono',monospace; font-size:1rem; }
+.steps li:first-child{ border-top:0; }
+.steps li.hid{ display:none; }
+.steps .n{ width:24px; height:24px; flex:none; border-radius:7px; background:var(--sand);
+  display:grid; place-items:center; font-size:0.78rem; font-weight:700; font-family:'Nunito',sans-serif; }
+.steps li.fin{ font-weight:700; color:var(--ok); }
+.steps li.fin .n{ background:var(--ok); color:#fff; }
+
+/* ── задачите ─────────────────────────────────────────────────── */
+.tasks{ display:grid; gap:0.6rem; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); }
+.task{ border:1px solid var(--line); border-radius:14px; padding:0.7rem 0.8rem; background:var(--paper); }
+.task .top{ display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem; }
+.task .n{ font-size:0.78rem; font-weight:800; color:var(--ink-soft); letter-spacing:.04em; text-transform:uppercase; }
+.lvl{ font-size:0.7rem; font-weight:800; border-radius:999px; padding:0.1rem 0.5rem; }
+.lvl.l1{ background:var(--ok-soft); color:var(--ok); }
+.lvl.l2{ background:var(--sand-soft); color:var(--sand-ink); }
+.lvl.l3{ background:var(--bad-soft); color:var(--bad); }
+.lvl.l4{ background:#EDE6FB; color:#5B3FA8; }
+.task .q{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.06rem;
+  margin:0.2rem 0 0.5rem; white-space:pre-line; }
+.task .a{ background:var(--ok-soft); border-radius:10px; padding:0.5rem 0.7rem; margin-top:0.5rem; }
+.task .a .mono{ font-weight:700; }
+.task .a .why{ display:block; font-family:'Nunito',sans-serif; font-weight:600; font-size:0.88rem;
+  color:var(--ink-soft); margin-top:0.25rem; white-space:pre-line; }
+
+/* ── игрите ───────────────────────────────────────────────────── */
+.game{ border:1px solid var(--line); border-radius:16px; padding:0.9rem;
+  background:linear-gradient(#FFFFFF,#EAF6FB); }
+.fb{ font-weight:800; min-height:1.5rem; margin-top:0.5rem; }
+.fb.ok{ color:var(--ok); } .fb.bad{ color:var(--bad); }
+.score{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.3rem; }
+.qbig{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.3rem; margin:0.5rem 0; }
+.dive{ display:flex; gap:1rem; align-items:flex-start; flex-wrap:wrap; }
+.dive .side{ flex:1 1 240px; min-width:0; }
+/* Дълбокомерът е SVG без своя ширина — във флекс кутия без това правило
+   се свива до нула и играта остава без картинка. */
+.dive .gz{ flex:0 0 200px; max-width:200px; }
+
+/* две карти една до друга */
+.duo{ display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; }
+.pick{ border:2px solid var(--line); border-radius:16px; background:var(--paper-raised);
+  padding:0.9rem 0.6rem; font:inherit; cursor:pointer; text-align:center; }
+.pick .v{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.5rem; display:block; }
+.pick:hover{ border-color:var(--teal); background:var(--teal-soft); }
+.pick.is-ok{ border-color:var(--ok); background:var(--ok-soft); }
+.pick.is-no{ border-color:var(--bad); background:var(--bad-soft); }
+
+/* знаците */
+.signs{ display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center; margin:0.5rem 0; }
+.sign{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.3rem;
+  border:2px solid var(--line); background:var(--paper-raised); }
+.sign.neg{ border-color:var(--coral); color:var(--coral); background:var(--coral-soft); }
+
+/* люкът с шифъра */
+.lock{ display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin:0.6rem 0; }
+.dial{ text-align:center; }
+.dial .num{ width:54px; height:64px; border-radius:12px; border:2px solid var(--deep);
+  background:var(--deep); color:#EAF6FB; font-family:'JetBrains Mono',monospace;
+  font-weight:700; font-size:1.7rem; display:grid; place-items:center; }
+.dial button{ width:54px; min-height:30px; margin:0.2rem 0; padding:0; border:1px solid var(--line);
+  border-radius:8px; background:var(--paper-raised); font:inherit; font-weight:800; cursor:pointer; }
+.hintrow{ display:flex; gap:0.5rem; align-items:baseline; font-size:0.93rem; margin-bottom:0.25rem; }
+.hintrow b{ font-family:'JetBrains Mono',monospace; color:var(--teal); }
+
+/* ── бележките ────────────────────────────────────────────────── */
+.notes{ background:var(--sand-soft); border:1px solid #F3DCAE; border-radius:14px; padding:0.8rem 0.9rem; }
+.notes ul{ margin:0.3rem 0 0; padding-left:1.1rem; }
+.notes li{ margin-bottom:0.35rem; }
+.page-legal{ text-align:center; color:var(--ink-soft); font-size:0.8rem; margin:2rem 0 1rem; }
+</style>
+</head>
+<body>
+<div class="sea" aria-hidden="true" id="sea"></div>
+
+<header class="bar">
+  <svg class="sub" data-sub="1" aria-hidden="true"></svg>
+  <b>Подводница <em>„Знак“</em></b>
+  <small>6. клас · седмици 4–8</small>
+  <span class="sp"></span>
+  <small class="mono" id="barTab"></small>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="panels"></main>
+  <p class="page-legal">© 2026 The Light Academy</p>
+</div>
+
+<script>
+/* ===================================================================
+   Петте спирки на спускането
+   -------------------------------------------------------------------
+   `a` е отговорът, който се ПОКАЗВА с бутон, `why` е изречението под
+   него. Никъде няма поле за писане.
+   =================================================================== */
+var DIVES = [
+{
+  id:'dulbokomer',
+  dot:'1',
+  tab:{ b:'Дълбокомерът', s:'знак, противоположни, модул' },
+  goal:'Числовата ос, изправена вертикално. Целта е децата да четат знака като ПОСОКА, '
+      +'а модула — като разстояние до повърхността.',
+  hero:true,
+  rule:'<p>Нулата е морското равнище. <b>Минус</b> значи под водата, <b>плюс</b> — над нея.</p>'
+      +'<p class="mono">|−120| = 120 · противоположното на −120 е 120</p>'
+      +'<p class="small muted">Модулът е ДЪЛБОЧИНАТА: колко далеч си от повърхността. '
+      +'Затова никога не е отрицателен — разстояние с минус няма.</p>',
+  fig:'gauge',
+  examples:[
+    { expr:'Подводницата е на −85 м.', steps:['Знакът „−“ казва: под водата','Модулът |−85| = 85 — толкова метра дълбочина','Противоположното число е 85 — толкова метра НАД водата'],
+      answer:'дълбочина 85 м' },
+    { expr:'Кое е по-голямо: −300 или −30?', steps:['И двете са под водата','−300 е по-ДЪЛБОКО, значи по-малко','По оста по-големите числа са по-горе'],
+      answer:'−30 е по-голямо' },
+    { expr:'Подреди: −7; 0; −12; 3', steps:['Най-дълбокото е най-малко: −12','После −7, после 0','Най-отгоре е 3'],
+      answer:'−12 < −7 < 0 < 3' }
+  ],
+  tasks:[
+    { q:'Кое число е противоположно на −17?', a:'17', lvl:1, why:'Противоположните числа са на еднакво разстояние от нулата, но от двете ѝ страни.' },
+    { q:'|−45| = ?', a:'45', lvl:1, why:'Модулът е разстоянието до нулата — винаги положителен.' },
+    { q:'|28| − |−28| = ?', a:'0', lvl:2, why:'|28| = 28 и |−28| = 28, значи 28 − 28 = 0.' },
+    { q:'Подреди по големина:\n−7; 0; −12; 3', a:'−12 < −7 < 0 < 3', lvl:2, why:'По-дълбокото число е по-малко.' },
+    { q:'Кое е по-голямо:\n−2,5 или −2,05?', a:'−2,05', lvl:3, why:'2,05 е по-близо до нулата от 2,5, значи −2,05 е по-горе по оста.' },
+    { q:'Кое число е на 6 единици вляво от −2?', a:'−8', lvl:2, why:'Наляво значи надолу по дълбокомера: −2 − 6 = −8.' },
+    { q:'−|−9| = ?', a:'−9', lvl:3, why:'Първо модулът: |−9| = 9. Минусът отпред остава: −9.' },
+    { q:'В 6 ч. е −7 °C, а в 12 ч. е 5 °C.\nКоя температура е по-висока и с колко?', a:'5 °C, с 12 градуса', lvl:3,
+      why:'От −7 до 5 има 7 + 5 = 12 деления по оста.' },
+    { q:'Кои цели числа са между −4 и 2?', a:'−3, −2, −1, 0, 1', lvl:4,
+      why:'„Между“ не включва самите −4 и 2. Броят им е пет.' }
+  ],
+  game:'read',
+  notes:[
+    'Начертайте дълбокомера на дъската вертикално. За шестокласник „надолу = по-малко“ се вижда по-лесно, отколкото „наляво“.',
+    'Най-честата грешка е −300 > −30. Питайте „кое е по-дълбоко“ — отговорът идва сам.',
+    'Задача 9 е за броене, не за сметка. Нека някой ги изброи на глас.'
+  ]
+},
+{
+  id:'spuskane',
+  dot:'2',
+  tab:{ b:'Спускане и изкачване', s:'събиране' },
+  goal:'Събирането е движение по оста. Целта е децата да спрат да гадаят знака и да го четат '
+      +'от посоката.',
+  rule:'<p>Да прибавиш <b>отрицателно</b> число значи да се спуснеш. Да прибавиш <b>положително</b> — '
+      +'да се изкачиш.</p>'
+      +'<p class="mono">−30 + (−45) = −75 · −60 + 25 = −35</p>'
+      +'<p class="small muted">Еднакви знаци: събираш модулите и пазиш знака. Различни знаци: '
+      +'вадиш по-малкия модул от по-големия и вземаш знака на по-големия.</p>',
+  fig:'gauge',
+  examples:[
+    { expr:'−30 + (−45)', steps:['И двете крачки са надолу','30 + 45 = 75','Посоката е надолу'], answer:'−75' },
+    { expr:'−60 + 25', steps:['Спускане до −60, после изкачване с 25','60 − 25 = 35','По-силната посока е надолу'], answer:'−35' },
+    { expr:'18 + (−40)', steps:['От 18 се спускаме с 40','40 − 18 = 22','Минаваме нулата и оставаме отдолу'], answer:'−22' }
+  ],
+  tasks:[
+    { q:'−30 + (−45)', a:'−75', lvl:1, why:'Еднакви знаци: 30 + 45 = 75, знакът остава минус.' },
+    { q:'−60 + 25', a:'−35', lvl:1, why:'Различни знаци: 60 − 25 = 35, печели минусът.' },
+    { q:'18 + (−40)', a:'−22', lvl:1, why:'40 − 18 = 22, а по-голямото по модул е −40.' },
+    { q:'−1,5 + (−2,5)', a:'−4', lvl:2, why:'1,5 + 2,5 = 4, и двете са надолу.' },
+    { q:'−120 + 120', a:'0', lvl:1, why:'Противоположни числа — връщаме се на повърхността.' },
+    { q:'−3/4 + 1/2', a:'−1/4', lvl:3, why:'Общ знаменател 4: −3/4 + 2/4 = −1/4.' },
+    { q:'(−18) + 7 + (−9)', a:'−20', lvl:2, why:'−18 + 7 = −11, после −11 − 9 = −20.' },
+    { q:'Кое число трябва да се прибави към −23,\nза да се получи 0?', a:'23', lvl:2,
+      why:'Противоположното число връща на нулата.' },
+    { q:'Подводницата е на −140 м, спуска се с още 60 м,\nпосле се изкачва с 85 м. Къде е?', a:'−115', lvl:3,
+      why:'−140 − 60 = −200, после −200 + 85 = −115.' }
+  ],
+  game:'dive',
+  notes:[
+    'Карайте ги първо да кажат ПОСОКАТА (нагоре или надолу), чак после числото. Така знакът спира да е лотария.',
+    'Задача 6 е с дроби — ако групата още не е уверена, оставете я за по-бързите.',
+    'В играта „Потапяне“ нека класът извика отговора, преди да натиснете бутона.'
+  ]
+},
+{
+  id:'razlika',
+  dot:'3',
+  tab:{ b:'Разликата', s:'изваждане' },
+  goal:'Изваждането не е ново действие: то е събиране с противоположното. Целта е децата да го '
+      +'превръщат сами и да спрат да се страхуват от двойния минус.',
+  rule:'<p class="mono">a − b = a + (−b)</p>'
+      +'<p>Да извадиш <b>отрицателно</b> число значи да се изкачиш: <span class="mono">−20 − (−15) = −20 + 15 = −5</span>.</p>'
+      +'<p class="small muted">Разликата между две дълбочини е РАЗСТОЯНИЕ — то никога не е отрицателно.</p>',
+  fig:'gauge',
+  examples:[
+    { expr:'−20 − 15', steps:['Изваждането е спускане','20 + 15 = 35','Оставаме надолу'], answer:'−35' },
+    { expr:'−20 − (−15)', steps:['Изваждане на отрицателно = събиране','−20 + 15','20 − 15 = 5, посоката е надолу'], answer:'−5' },
+    { expr:'С колко е по-дълбоко −250 от −90?', steps:['Разликата е разстояние','−90 − (−250) = −90 + 250','250 − 90 = 160'], answer:'160 м' }
+  ],
+  tasks:[
+    { q:'−20 − 15', a:'−35', lvl:1, why:'Спускане след спускане: 20 + 15 = 35 надолу.' },
+    { q:'−20 − (−15)', a:'−5', lvl:1, why:'Двоен минус: −20 + 15 = −5.' },
+    { q:'12 − 30', a:'−18', lvl:1, why:'От 12 надолу с 30 — минаваме нулата.' },
+    { q:'0 − (−17)', a:'17', lvl:2, why:'0 + 17 = 17.' },
+    { q:'−8,5 − (−3,5)', a:'−5', lvl:2, why:'−8,5 + 3,5 = −5.' },
+    { q:'С колко метра е по-дълбоко −250 от −90?', a:'160', lvl:2,
+      why:'Разстоянието е −90 − (−250) = 160. Разстояние с минус няма.' },
+    { q:'−5 − (−8) + (−2)', a:'1', lvl:3, why:'−5 + 8 = 3, после 3 − 2 = 1.' },
+    { q:'Температурата пада от 4 °C до −9 °C.\nС колко градуса?', a:'13', lvl:3,
+      why:'4 − (−9) = 4 + 9 = 13 градуса.' },
+    { q:'Кое число минус (−6) дава −2?', a:'−8', lvl:4, why:'−8 + 6 = −2. Проверка: −8 − (−6) = −2.' }
+  ],
+  game:'deeper',
+  notes:[
+    'Правилото се казва веднъж и после се ползва: „минус пред минус става плюс“ — но го покажете на оста, не като заклинание.',
+    'Задача 6 и 8 са за разстояние. Питайте дали отговорът може да е отрицателен — и защо не.',
+    'Задача 9 е наопаки. Дайте я на този, който вече е готов.'
+  ]
+},
+{
+  id:'umnojenie',
+  dot:'4',
+  tab:{ b:'Повторното спускане', s:'умножение' },
+  goal:'Умножението е повторено спускане. Целта е знакът да се определя по БРОЯ на минусите, '
+      +'а не по усет.',
+  rule:'<p>Да се спуснеш 6 пъти по 25 м е <span class="mono">6 · (−25) = −150</span>.</p>'
+      +'<p class="mono">(−) · (+) = −   ·   (−) · (−) = +</p>'
+      +'<p class="small muted">При няколко множителя гледай БРОЯ на минусите: ЧЕТЕН брой дава плюс, '
+      +'НЕЧЕТЕН — минус.</p>',
+  fig:'signs',
+  examples:[
+    { expr:'(−6) · 7', steps:['Шест спускания по 7, или седем по 6','6 · 7 = 42','Един минус — нечетен брой'], answer:'−42' },
+    { expr:'(−8) · (−5)', steps:['8 · 5 = 40','Два минуса — четен брой','Значи плюс'], answer:'40' },
+    { expr:'(−2) · 3 · (−4)', steps:['2 · 3 · 4 = 24','Минусите са два — четен брой','Значи плюс'], answer:'24' }
+  ],
+  tasks:[
+    { q:'(−6) · 7', a:'−42', lvl:1, why:'Един минус — произведението е отрицателно.' },
+    { q:'(−8) · (−5)', a:'40', lvl:1, why:'Два минуса се унищожават.' },
+    { q:'0 · (−123)', a:'0', lvl:1, why:'Умножение с нула дава нула, независимо от знака.' },
+    { q:'(−1) · (−1) · (−1)', a:'−1', lvl:2, why:'Три минуса — нечетен брой.' },
+    { q:'(−2) · 3 · (−4)', a:'24', lvl:2, why:'2 · 3 · 4 = 24, а минусите са два.' },
+    { q:'(−0,5) · 8', a:'−4', lvl:2, why:'0,5 · 8 = 4, минусът остава.' },
+    { q:'(−2/3) · (−9)', a:'6', lvl:3, why:'2/3 от 9 е 6, а двата минуса дават плюс.' },
+    { q:'(−5) · (−2) · (−3)', a:'−30', lvl:3, why:'5 · 2 · 3 = 30, минусите са три — нечетен брой.' },
+    { q:'Подводницата се спуска с 25 м всяка минута,\nшест минути. Каква е промяната?', a:'−150', lvl:2,
+      why:'6 · (−25) = −150 м, тоест 150 м надолу.' },
+    { q:'Какъв е знакът на произведението\nна седем отрицателни числа?', a:'минус', lvl:4,
+      why:'Седем е нечетно число — остава един несдвоен минус.' }
+  ],
+  game:'sign',
+  notes:[
+    'Броенето на минусите е най-бързият начин и работи винаги. Покажете го с четири, после с пет множителя.',
+    'Нулата е капан: 0 · (−123) не е −0, а 0.',
+    'Задача 10 е разговор, не сметка — нека го обяснят със свои думи.'
+  ]
+},
+{
+  id:'finish',
+  dot:'5',
+  tab:{ b:'Изплуване', s:'всичко заедно + люкът' },
+  goal:'Четирите действия в един израз. Целта е редът на действията да се спазва и при '
+      +'отрицателни числа.',
+  rule:'<p>Първо <b>скоби</b>, после <b>умножение</b>, накрая <b>събиране и изваждане</b> — '
+      +'отляво надясно.</p>'
+      +'<p class="mono">−12 + (−3) · 4 = −12 + (−12) = −24</p>'
+      +'<p class="small muted">Знакът на умножението се решава ПРЕДИ събирането. Това е най-честата '
+      +'грешка в целия раздел.</p>',
+  fig:null,
+  examples:[
+    { expr:'−12 + (−3) · 4', steps:['Първо умножението: (−3) · 4 = −12','После събирането: −12 + (−12)'], answer:'−24' },
+    { expr:'(−3) · (7 − 10)', steps:['Първо скобата: 7 − 10 = −3','После (−3) · (−3)','Два минуса дават плюс'], answer:'9' },
+    { expr:'|−6| · (−2) + 10', steps:['Първо модулът: |−6| = 6','6 · (−2) = −12','−12 + 10'], answer:'−2' }
+  ],
+  tasks:[
+    { q:'−12 + (−3) · 4', a:'−24', lvl:2, why:'Първо умножението: (−3) · 4 = −12.' },
+    { q:'(−6) · (−2) − 15', a:'−3', lvl:2, why:'12 − 15 = −3.' },
+    { q:'−20 − (−4) · 5', a:'0', lvl:3, why:'(−4) · 5 = −20, значи −20 − (−20) = 0.' },
+    { q:'(−3) · (7 − 10)', a:'9', lvl:3, why:'Скобата дава −3, а (−3) · (−3) = 9.' },
+    { q:'|−6| · (−2) + 10', a:'−2', lvl:3, why:'6 · (−2) = −12, после −12 + 10 = −2.' },
+    { q:'(−1,2) · 5 + 6', a:'0', lvl:3, why:'−6 + 6 = 0.' },
+    { q:'−7 + 7 · (−1)', a:'−14', lvl:3, why:'7 · (−1) = −7, значи −7 + (−7) = −14.' },
+    { q:'(−2) · (−3) · (−1) + 10', a:'4', lvl:4, why:'Трите минуса дават −6, после −6 + 10 = 4.' }
+  ],
+  game:'hatch',
+  lock:[
+    { d:0, q:'Отговорът на задача 3 от тази спирка' },
+    { d:4, q:'Отговорът на задача 8 от тази спирка' },
+    { d:9, q:'Отговорът на задача 4 от тази спирка' },
+    { d:3, q:'Отговорът на задача 2 от тази спирка, без знака' }
+  ],
+  notes:[
+    'Тази спирка е проверката: ако нещо е останало неясно от седмици 4–8, тук излиза.',
+    'Карайте ги да подчертават първо умножението в израза — буквално, с молив.',
+    'Люкът се отваря с цифри от собствените им отговори. Ако не се отваря, върнете се на задачата, не на люка.'
+  ]
+}
+];
+
+/* Картите за дълбокомера — четене на знак и модул. */
+var READ = [
+  ['−85 м', 'под водата · дълбочина 85 м'],
+  ['+12 м', 'над водата · 12 м във въздуха'],
+  ['−7,5 м', 'под водата · дълбочина 7,5 м'],
+  ['0 м', 'точно на повърхността'],
+  ['−240 м', 'под водата · дълбочина 240 м'],
+  ['−1/2 м', 'под водата · половин метър']
+];
+
+/* Картите за потапянето: откъде, с колко, и къде се стига. */
+var DIVECARDS = [
+  { from:-40, add:-35, txt:'От −40 м се спускаме с още 35 м' },
+  { from:-90, add:60,  txt:'От −90 м се изкачваме с 60 м' },
+  { from:20,  add:-50, txt:'От +20 м (хеликоптерът) падаме с 50 м' },
+  { from:-120, add:120, txt:'От −120 м се изкачваме със 120 м' },
+  { from:-15, add:-45, txt:'От −15 м се спускаме с 45 м' },
+  { from:-75, add:25,  txt:'От −75 м се изкачваме с 25 м' }
+];
+
+/* „Кой е по-дълбоко“ — двойките с капана. */
+var DEEPER = [
+  [-300, -30], [-7, -70], [-45, -54], [-100, 100], [-2.5, -2.05], [-1000, -999]
+];
+
+/* Знакът на произведението — колко минуса има. */
+var SIGNS = [
+  ['(−3) · 5', 1], ['(−2) · (−7)', 2], ['(−1) · (−1) · (−1)', 3],
+  ['4 · (−2) · (−5)', 2], ['(−1) · (−2) · (−3) · (−4)', 4],
+  ['(−6) · 2 · (−1) · 3 · (−1)', 3]
+];
+</script>
+
+<script>
+/* ===================================================================
+   Рисунките, подредбата и игрите
+   =================================================================== */
+(function(){
+  'use strict';
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function el(tag, cls, html){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(html != null) n.innerHTML = html;
+    return n;
+  }
+  var LVL = { 1:'лесно', 2:'средно', 3:'трудно', 4:'за най-смелите' };
+  function num(v){ return String(v).replace('.', ',').replace(/^-/, '−'); }
+
+  /* ── подводницата ────────────────────────────────────────────── */
+  function subSvg(){
+    var s = '';
+    s += '<ellipse cx="34" cy="26" rx="28" ry="13" fill="#128C8C" stroke="#0B3C5D" stroke-width="2"/>';
+    s += '<path d="M62 26 l12 -8 v16 z" fill="#0B3C5D"/>';
+    s += '<rect x="26" y="8" width="16" height="9" rx="3" fill="#0B3C5D"/>';
+    s += '<rect x="32" y="2" width="3" height="7" fill="#0B3C5D"/>';
+    s += '<circle cx="24" cy="26" r="5" fill="#EAF6FB" stroke="#0B3C5D" stroke-width="1.6"/>';
+    s += '<circle cx="40" cy="26" r="4" fill="#EAF6FB" stroke="#0B3C5D" stroke-width="1.4"/>';
+    s += '<circle cx="52" cy="26" r="3" fill="#EAF6FB" stroke="#0B3C5D" stroke-width="1.2"/>';
+    return s;
+  }
+  (function fillSubs(){
+    var list = document.querySelectorAll('[data-sub]');
+    for(var i = 0; i < list.length; i++){
+      list[i].setAttribute('viewBox', '0 0 80 52');
+      list[i].innerHTML = subSvg();
+    }
+  })();
+
+  /* ── морето отзад: лъчи и мехурчета ──────────────────────────── */
+  (function sea(){
+    var box = document.getElementById('sea');
+    if(!box) return;
+    var i, r, b;
+    for(i = 0; i < 5; i++){
+      r = el('span', 'ray');
+      r.style.left = (6 + i * 21) + '%';
+      r.style.opacity = (0.5 + Math.random() * 0.5).toFixed(2);
+      box.appendChild(r);
+    }
+    for(i = 0; i < 18; i++){
+      b = el('span', 'bub');
+      var d = 6 + Math.round(Math.random() * 16);
+      b.style.width = d + 'px'; b.style.height = d + 'px';
+      b.style.left = (Math.random() * 97).toFixed(1) + '%';
+      b.style.top = (Math.random() * 92).toFixed(1) + '%';
+      box.appendChild(b);
+    }
+    var floor = '<svg class="floor" viewBox="0 0 1200 120" preserveAspectRatio="none">'
+      + '<path d="M0 120 V70 q60 -22 120 -6 t120 2 t120 -14 t120 10 t120 -4 t120 12 t120 -16 t120 6 t120 -8 V120 Z"'
+      + ' fill="#E9A33B" opacity=".55"/></svg>';
+    box.insertAdjacentHTML('beforeend', floor);
+  })();
+
+  /* ── дълбокомерът ────────────────────────────────────────────── */
+  var G = { top:40, bot:-260, X:118, Y0:30, H:360, W:250, HH:420 };
+  function gy(v){ return G.Y0 + (G.top - v) / (G.top - G.bot) * G.H; }
+  function gaugeSvg(start, id){
+    var s = '<svg class="gauge" id="' + (id || '') + '" viewBox="0 0 ' + G.W + ' ' + G.HH + '" '
+          + 'style="max-width:250px" role="img" aria-label="Дълбокомер: нулата е морското равнище, '
+          + 'под нея числата са отрицателни.">';
+    /* водата */
+    s += '<rect class="gz-water" x="0" y="' + gy(0) + '" width="' + G.W + '" height="'
+       + (G.HH - gy(0)) + '" rx="6"/>';
+    s += '<line class="gz-axis" x1="' + G.X + '" y1="' + G.Y0 + '" x2="' + G.X + '" y2="'
+       + (G.Y0 + G.H) + '"/>';
+    var v;
+    for(v = G.bot; v <= G.top; v += 20){
+      var big = (v % 40 === 0);
+      s += '<line class="gz-tick' + (v === 0 ? ' gz-zero' : '') + '" x1="' + (G.X - (big ? 9 : 5))
+         + '" y1="' + gy(v) + '" x2="' + (G.X + (big ? 9 : 5)) + '" y2="' + gy(v) + '"/>';
+      if(big){
+        s += '<text class="gz-num" x="' + (G.X - 14) + '" y="' + (gy(v) + 4)
+           + '" text-anchor="end">' + num(v) + '</text>';
+      }
+    }
+    s += '<text class="gz-lab" x="' + (G.X + 16) + '" y="' + (gy(0) - 8) + '">0 м · повърхността</text>';
+    s += '<text class="gz-lab" x="' + (G.X + 16) + '" y="' + (gy(G.bot) + 4) + '">дъното</text>';
+    /* подводницата */
+    s += '<g class="gz-sub" data-at="' + start + '" transform="translate(0,'
+       + (gy(start) - gy(0)).toFixed(1) + ')">'
+       + '<g transform="translate(' + (G.X + 8) + ',' + (gy(0) - 16) + ') scale(0.55)">'
+       + subSvg() + '</g></g>';
+    return s + '</svg>';
+  }
+  function moveSub(root, to){
+    var g = root.querySelector('.gz-sub');
+    if(!g) return;
+    g.setAttribute('transform', 'translate(0,' + (gy(to) - gy(0)).toFixed(1) + ')');
+    g.setAttribute('data-at', to);
+  }
+
+  /* ── знаците при умножение ───────────────────────────────────── */
+  function signsFig(){
+    var rows = [['+', '+', '+'], ['+', '−', '−'], ['−', '+', '−'], ['−', '−', '+']];
+    return '<div class="rule warm"><h3>Знакът на произведението</h3>'
+      + '<div class="signs">' + rows.map(function(r){
+          return '<span class="sign' + (r[2] === '−' ? ' neg' : '') + '">' + r[0] + '</span>'
+            + '<span class="sign" style="border:0;background:none">·</span>'
+            + '<span class="sign' + (r[1] === '−' ? ' neg' : '') + '">' + r[1] + '</span>'
+            + '<span class="sign" style="border:0;background:none">=</span>'
+            + '<span class="sign' + (r[2] === '−' ? ' neg' : '') + '">' + r[2] + '</span>'
+            + '<span style="flex-basis:100%"></span>';
+        }).join('') + '</div>'
+      + '<p class="small muted" style="margin:0">Два минуса се сдвояват и изчезват. Затова при '
+      + 'много множители гледаме само дали минусите са четен, или нечетен брой.</p></div>';
+  }
+
+  var FIGS = {
+    gauge: function(){ return gaugeSvg(-60); },
+    signs: signsFig
+  };
+
+  /* ── примерът стъпка по стъпка ────────────────────────────────── */
+  function exampleBlock(ex){
+    var box = el('div', 'rule warm');
+    box.appendChild(el('p', 'mono', esc(ex.expr) + (/[?.]$/.test(ex.expr) ? '' : ' = ?')));
+    var ol = el('ol', 'steps'), i;
+    for(i = 0; i < ex.steps.length; i++){
+      ol.appendChild(el('li', 'hid',
+        '<span class="n">' + (i + 1) + '</span><span>' + esc(ex.steps[i]) + '</span>'));
+    }
+    ol.appendChild(el('li', 'hid fin', '<span class="n">=</span><span>' + esc(ex.answer) + '</span>'));
+    box.appendChild(ol);
+
+    var row = el('div', 'row');
+    var bNext = el('button', 'btn ghost', 'Следваща стъпка');
+    var bAll = el('button', 'btn ghost', 'Покажи всичко');
+    var bOff = el('button', 'btn ghost', 'Отначало');
+    row.appendChild(bNext); row.appendChild(bAll); row.appendChild(bOff);
+    box.appendChild(row);
+
+    var items = ol.querySelectorAll('li');
+    function shown(){
+      var n = 0;
+      for(var i = 0; i < items.length; i++){ if(!items[i].classList.contains('hid')) n++; }
+      return n;
+    }
+    function sync(){ bNext.disabled = shown() >= items.length; }
+    bNext.addEventListener('click', function(){
+      var k = shown();
+      if(k < items.length) items[k].classList.remove('hid');
+      sync();
+    });
+    bAll.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.remove('hid');
+      sync();
+    });
+    bOff.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.add('hid');
+      sync();
+    });
+    sync();
+    return box;
+  }
+
+  /* ── задачите: отговорът се ПОКАЗВА, не се въвежда ────────────── */
+  function taskBlock(t, i){
+    var d = el('div', 'task');
+    d.appendChild(el('div', 'top', '<span class="n">Задача ' + (i + 1) + '</span>' +
+      '<span class="lvl l' + t.lvl + '">' + LVL[t.lvl] + '</span>'));
+    var q = el('div', 'q');
+    q.textContent = t.q;
+    d.appendChild(q);
+    var btn = el('button', 'btn ghost', 'Отговор');
+    var ans = el('div', 'a', '<span class="mono">' + esc(t.a) + '</span>' +
+      '<span class="why">' + esc(t.why) + '</span>');
+    ans.hidden = true;
+    btn.addEventListener('click', function(){
+      ans.hidden = !ans.hidden;
+      btn.textContent = ans.hidden ? 'Отговор' : 'Скрий';
+    });
+    d.appendChild(btn); d.appendChild(ans);
+    d.__show = function(on){ ans.hidden = !on; btn.textContent = on ? 'Скрий' : 'Отговор'; };
+    return d;
+  }
+
+  /* ── игра 1: какво показва дълбокомерът ──────────────────────── */
+  function readGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Какво показва дълбокомерът · цял клас</h3>'
+      + '<p class="small muted">Четете показанието на глас. Класът казва две неща: над или под '
+      + 'водата е подводницата и колко е дълбочината. Чак тогава натискате „Покажи“.</p>'
+      + '<p class="qbig" data-q></p>'
+      + '<div class="row"><button class="btn" data-show>Покажи</button>'
+      + '<button class="btn ghost" data-next>Следващо показание</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var qEl = g.querySelector('[data-q]'), fb = g.querySelector('[data-fb]');
+    var i = -1;
+    function next(){
+      i = (i + 1) % READ.length;
+      qEl.textContent = READ[i][0];
+      fb.className = 'fb'; fb.textContent = '';
+    }
+    g.querySelector('[data-show]').addEventListener('click', function(){
+      fb.className = 'fb ok';
+      fb.textContent = READ[i][1];
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра 2: потапяне по дълбокомера ─────────────────────────── */
+  function diveGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Потапяне · цял клас</h3>'
+      + '<p class="small muted">Класът казва на глас къде ще спре подводницата. Чак тогава '
+      + 'натискате „Потопи се“ — и тя тръгва.</p>'
+      + '<div class="dive"><div class="gz" data-gauge></div><div class="side">'
+      + '<p class="qbig" data-q></p>'
+      + '<p class="mono" data-expr></p>'
+      + '<div class="row"><button class="btn" data-go>Потопи се</button>'
+      + '<button class="btn ghost" data-next>Нова карта</button></div>'
+      + '<p class="fb" data-fb></p></div></div>';
+    var box = g.querySelector('[data-gauge]');
+    var qEl = g.querySelector('[data-q]'), expr = g.querySelector('[data-expr]');
+    var fb = g.querySelector('[data-fb]'), go = g.querySelector('[data-go]');
+    var i = -1, cur = null;
+
+    function next(){
+      i = (i + 1) % DIVECARDS.length;
+      cur = DIVECARDS[i];
+      box.innerHTML = gaugeSvg(cur.from);
+      qEl.textContent = cur.txt;
+      expr.textContent = '(' + num(cur.from) + ') ' + (cur.add > 0 ? '+ ' : '− ')
+        + Math.abs(cur.add) + ' = ?';
+      fb.className = 'fb'; fb.textContent = '';
+      go.disabled = false;
+    }
+    go.addEventListener('click', function(){
+      var to = cur.from + cur.add;
+      moveSub(box, to);
+      go.disabled = true;
+      fb.className = 'fb ok';
+      fb.textContent = '(' + num(cur.from) + ') ' + (cur.add > 0 ? '+ ' : '− ')
+        + Math.abs(cur.add) + ' = ' + num(to) + '  ·  подводницата спира на ' + num(to) + ' м';
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра 3: кой е по-дълбоко ────────────────────────────────── */
+  function deeperGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Кой е по-дълбоко? · цял клас</h3>'
+      + '<p class="small muted">Две показания. Кое от двете е по-ДЪЛБОКО — тоест кое число е '
+      + 'по-малко? Натискате това, което класът избере.</p>'
+      + '<div class="duo"><button type="button" class="pick" data-side="0"><span class="v"></span></button>'
+      + '<button type="button" class="pick" data-side="1"><span class="v"></span></button></div>'
+      + '<div class="row" style="margin-top:0.6rem"><button class="btn ghost" data-next>Следваща двойка</button>'
+      + '<span class="score" data-sc>0 / 0</span></div>'
+      + '<p class="fb" data-fb></p>';
+    var picks = g.querySelectorAll('.pick');
+    var fb = g.querySelector('[data-fb]'), sc = g.querySelector('[data-sc]');
+    var i = -1, done = 0, ok = 0, locked = false;
+
+    function next(){
+      i = (i + 1) % DEEPER.length;
+      picks[0].querySelector('.v').textContent = num(DEEPER[i][0]) + ' м';
+      picks[1].querySelector('.v').textContent = num(DEEPER[i][1]) + ' м';
+      picks[0].className = 'pick'; picks[1].className = 'pick';
+      fb.className = 'fb'; fb.textContent = '';
+      locked = false;
+    }
+    g.addEventListener('click', function(e){
+      var b = e.target.closest('[data-side]');
+      if(!b || locked) return;
+      locked = true; done++;
+      var k = Number(b.getAttribute('data-side'));
+      var a = DEEPER[i][0], c = DEEPER[i][1];
+      var deepIdx = (a < c) ? 0 : 1;
+      var right = (k === deepIdx);
+      if(right) ok++;
+      sc.textContent = ok + ' / ' + done;
+      picks[deepIdx].classList.add('is-ok');
+      if(!right) picks[k].classList.add('is-no');
+      fb.className = 'fb ' + (right ? 'ok' : 'bad');
+      fb.textContent = (right ? '✓ Точно така. ' : '✗ Не. ')
+        + num(Math.min(a, c)) + ' е по-дълбокото, защото е по-малкото число: '
+        + num(Math.min(a, c)) + ' < ' + num(Math.max(a, c)) + '.';
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра 4: какъв е знакът ──────────────────────────────────── */
+  function signGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Какъв е знакът? · цял клас</h3>'
+      + '<p class="small muted">Не смятайте произведението — пребройте минусите. Четен брой дава '
+      + 'плюс, нечетен — минус.</p>'
+      + '<p class="qbig" data-q></p>'
+      + '<div class="row"><button class="btn" data-v="+">Плюс</button>'
+      + '<button class="btn ghost" data-v="−">Минус</button>'
+      + '<button class="btn ghost" data-next>Следващ израз</button>'
+      + '<span class="score" data-sc>0 / 0</span></div>'
+      + '<p class="fb" data-fb></p>';
+    var qEl = g.querySelector('[data-q]'), fb = g.querySelector('[data-fb]');
+    var sc = g.querySelector('[data-sc]');
+    var i = -1, done = 0, ok = 0, locked = false;
+
+    function next(){
+      i = (i + 1) % SIGNS.length;
+      qEl.textContent = SIGNS[i][0];
+      fb.className = 'fb'; fb.textContent = '';
+      locked = false;
+    }
+    g.addEventListener('click', function(e){
+      var b = e.target.closest('[data-v]');
+      if(!b || locked) return;
+      locked = true; done++;
+      var minuses = SIGNS[i][1];
+      var want = (minuses % 2 === 0) ? '+' : '−';
+      var right = (b.getAttribute('data-v') === want);
+      if(right) ok++;
+      sc.textContent = ok + ' / ' + done;
+      fb.className = 'fb ' + (right ? 'ok' : 'bad');
+      fb.textContent = (right ? '✓ Вярно. ' : '✗ Не. ') + 'Минусите са ' + minuses + ' — '
+        + (minuses % 2 === 0 ? 'четен' : 'нечетен') + ' брой, значи знакът е '
+        + (want === '+' ? 'плюс' : 'минус') + '.';
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── финалът: люкът с шифъра ─────────────────────────────────── */
+  function hatchGame(spec){
+    var g = el('div', 'game');
+    var hints = '', dials = '', i;
+    for(i = 0; i < spec.length; i++){
+      hints += '<div class="hintrow"><b>' + (i + 1) + '.</b><span>' + esc(spec[i].q) + '</span></div>';
+    }
+    for(i = 0; i < spec.length; i++){
+      dials += '<div class="dial"><button data-up="' + i + '" aria-label="нагоре">▲</button>'
+             + '<div class="num" data-num="' + i + '">0</div>'
+             + '<button data-dn="' + i + '" aria-label="надолу">▼</button></div>';
+    }
+    g.innerHTML =
+      '<h3>Люкът на капитана · финал</h3>'
+      + '<p class="small muted">Шифърът излиза от вашите собствени отговори. Нищо не се пише — '
+      + 'само се върти.</p>'
+      + hints + '<div class="lock">' + dials + '</div>'
+      + '<div class="row" style="justify-content:center"><button class="btn" data-open>Отвори люка</button>'
+      + '<button class="btn ghost" data-reset>Нулирай</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var val = [0, 0, 0, 0], fb = g.querySelector('[data-fb]');
+    function show(k){ g.querySelector('[data-num="' + k + '"]').textContent = val[k]; }
+    g.addEventListener('click', function(e){
+      var up = e.target.closest('[data-up]'), dn = e.target.closest('[data-dn]'), k;
+      if(up){ k = +up.getAttribute('data-up'); val[k] = (val[k] + 1) % 10; show(k); }
+      if(dn){ k = +dn.getAttribute('data-dn'); val[k] = (val[k] + 9) % 10; show(k); }
+    });
+    g.querySelector('[data-open]').addEventListener('click', function(){
+      var bad = 0;
+      for(var i = 0; i < spec.length; i++){ if(val[i] !== spec[i].d) bad++; }
+      if(bad === 0){
+        fb.className = 'fb ok';
+        fb.textContent = '🔓 Люкът се отвори! Подводницата изплува — седмици 4–8 са зад гърба ви.';
+      } else {
+        fb.className = 'fb bad';
+        fb.textContent = bad === 1 ? 'Една цифра не пасва — проверете коя задача сте пропуснали.'
+          : bad + ' цифри още не пасват.';
+      }
+    });
+    g.querySelector('[data-reset]').addEventListener('click', function(){
+      for(var i = 0; i < 4; i++){ val[i] = 0; show(i); }
+      fb.className = 'fb'; fb.textContent = '';
+    });
+    return g;
+  }
+
+  var GAMES = { read:readGame, dive:diveGame, deeper:deeperGame, sign:signGame };
+
+  /* ── една спирка ──────────────────────────────────────────────── */
+  function buildPanel(st){
+    var p = el('section', null, '');
+    p.id = 'p-' + st.id;
+    p.setAttribute('role', 'tabpanel');
+
+    var head = el('div', 'card');
+    if(st.hero){
+      head.innerHTML = '<div class="hero"><svg data-sub="1" aria-hidden="true"></svg>'
+        + '<div class="t"><h1>Подводница <em>„Знак“</em></h1>'
+        + '<p class="muted">Пет спирки надолу и обратно нагоре: знак и модул, събиране, '
+        + 'изваждане, умножение — и всичко заедно. Това е целият материал от седмица 4 до '
+        + 'седмица 8.</p></div></div>';
+      var sv = head.querySelector('[data-sub]');
+      sv.setAttribute('viewBox', '0 0 80 52');
+      sv.innerHTML = subSvg();
+      sv.style.width = '220px';
+    } else {
+      head.innerHTML = '<h1>' + esc(st.tab.b) + ' <em>· ' + esc(st.tab.s) + '</em></h1>';
+    }
+    head.appendChild(el('div', 'goal', '<b>Целта на спирката:</b> ' + esc(st.goal)));
+    head.appendChild(el('div', 'rule' + (st.id === 'finish' ? ' coral' : ''), st.rule));
+
+    var fig = st.fig && FIGS[st.fig];
+    if(fig){
+      var box = el('div', null, fig());
+      if(st.fig === 'gauge'){
+        box.appendChild(el('p', 'small muted',
+          'Нулата е повърхността. Колкото по-надолу, толкова по-малко е числото — а модулът му '
+          + 'расте, защото дълбочината расте.'));
+      }
+      head.appendChild(box);
+    }
+    p.appendChild(head);
+
+    var ex = el('div', 'card'), k;
+    ex.appendChild(el('h2', null, '<span>🧭</span> На дъската, стъпка по стъпка'));
+    for(k = 0; k < st.examples.length; k++) ex.appendChild(exampleBlock(st.examples[k]));
+    p.appendChild(ex);
+
+    var tk = el('div', 'card');
+    tk.appendChild(el('h2', null, '<span>🫧</span> Задачи — от лесни към по-сложни'));
+    var bar = el('div', 'row');
+    var bAll = el('button', 'btn ghost', 'Покажи всички отговори');
+    var bNone = el('button', 'btn ghost', 'Скрий всички');
+    bar.appendChild(bAll); bar.appendChild(bNone);
+    tk.appendChild(bar);
+    var list = el('div', 'tasks'), cards = [];
+    for(k = 0; k < st.tasks.length; k++){
+      var c = taskBlock(st.tasks[k], k);
+      cards.push(c); list.appendChild(c);
+    }
+    tk.appendChild(list);
+    bAll.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(true); }); });
+    bNone.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(false); }); });
+    p.appendChild(tk);
+
+    var gm = el('div', 'card');
+    gm.appendChild(el('h2', null, '<span>🎮</span> Пауза за игра'));
+    if(GAMES[st.game]) gm.appendChild(GAMES[st.game]());
+    if(st.lock){
+      gm.appendChild(el('h2', null, '<span>🔐</span> Финалът'));
+      gm.appendChild(hatchGame(st.lock));
+    }
+    p.appendChild(gm);
+
+    var nt = el('div', 'card'), li = '';
+    for(k = 0; k < st.notes.length; k++) li += '<li>' + esc(st.notes[k]) + '</li>';
+    nt.appendChild(el('h2', null, '<span>📝</span> За учителя'));
+    nt.appendChild(el('div', 'notes', '<ul>' + li + '</ul>'));
+    p.appendChild(nt);
+    return p;
+  }
+
+  /* ── спирките ─────────────────────────────────────────────────── */
+  var tabs = document.getElementById('tabs');
+  var panels = document.getElementById('panels');
+  var barTab = document.getElementById('barTab');
+  var btns = [], secs = [];
+
+  DIVES.forEach(function(st, i){
+    var b = el('button', 'tab', '<span class="dot">' + esc(st.dot) + '</span><span><b>' +
+      esc(st.tab.b) + '</b><small>' + esc(st.tab.s) + '</small></span>');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-controls', 'p-' + st.id);
+    b.addEventListener('click', function(){ open(i, true); });
+    tabs.appendChild(b);
+    btns.push(b);
+
+    var s = buildPanel(st);
+    s.hidden = (i !== 0);
+    panels.appendChild(s);
+    secs.push(s);
+  });
+
+  function open(i, push){
+    for(var k = 0; k < btns.length; k++){
+      btns[k].setAttribute('aria-selected', k === i ? 'true' : 'false');
+      secs[k].hidden = (k !== i);
+    }
+    barTab.textContent = DIVES[i].tab.b;
+    if(push && history.replaceState) history.replaceState(null, '', '#' + DIVES[i].id);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  var want = (location.hash || '').replace('#', ''), start = 0;
+  for(var i = 0; i < DIVES.length; i++){ if(DIVES[i].id === want) start = i; }
+  open(start, false);
+})();
+</script>
+</body>
+</html>
