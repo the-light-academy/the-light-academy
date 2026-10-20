@@ -1971,9 +1971,29 @@ body.tlp-space { background: #05070F; }
 .tlp__szcal-next b { font-size: 1.05rem; }
 .tlp__szcal-next span { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700;
   color: var(--tlp-accent-deep); font-size: 0.92rem; }
-.tlp__szcal-k { margin: 0 0 0.5rem; font-size: 0.86rem; color: var(--mid); }
 .tlp__szcal-a { font-weight: 800; color: var(--tlp-accent-deep); text-decoration: none; font-size: 0.92rem; }
 .tlp__szcal-a:hover { text-decoration: underline; }
+
+/* Дъската със състезанията: всяко състезание е заглавие с дата, а
+   темите му стоят под него. Това е календарът, сложен вътре в раздела —
+   детето не отваря втора страница, за да види кога е състезанието. */
+.tlp__szboard { display: grid; gap: 0.8rem; margin-bottom: 1rem; }
+.tlp__sz { border: 1px solid var(--tlp-line); border-radius: 18px; background: #fff;
+  padding: 0.85rem 1rem; }
+.tlp__sz.has-tests { border-color: rgba(245,166,35,0.45); box-shadow: 0 8px 22px rgba(13,27,54,0.05); }
+.tlp__sz.is-past { opacity: 0.55; }
+.tlp__sz-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; }
+.tlp__sz-d { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700;
+  font-size: 0.86rem; color: var(--tlp-accent-deep); flex: 0 0 auto; }
+.tlp__sz-n { margin: 0; font-size: 1.02rem; font-weight: 800; color: var(--tlp-navy); flex: 1 1 auto; }
+.tlp__sz-w { font-size: 0.82rem; color: var(--mid); }
+.tlp__sz-r { font-size: 0.7rem; font-weight: 800; border-radius: 999px; padding: 0.1rem 0.5rem; }
+.tlp__sz-r--key { background: var(--tlp-bad-wash); color: var(--tlp-bad); }
+.tlp__sz-r--rec { background: var(--tlp-accent-wash); color: var(--tlp-accent-deep); }
+.tlp__sz-r--extra { background: rgba(13,27,54,0.06); color: var(--mid); }
+.tlp__sz-r--if { background: var(--tlp-good-wash); color: var(--tlp-good); }
+.tlp__sz-list { display: grid; gap: 0.6rem; margin-top: 0.7rem; }
+.tlp__sz-none { margin: 0.4rem 0 0; font-size: 0.86rem; color: var(--mid); }
 .tlp__track { margin-bottom: 1rem; }
 .tlp__track-h { font-size: 1rem; font-weight: 800; color: var(--tlp-navy); margin: 0 0 0.2rem; }
 .tlp__track-n { font-size: 0.86rem; color: var(--tlp-ink-soft); margin: 0 0 0.7rem; }
