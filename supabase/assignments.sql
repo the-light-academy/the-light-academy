@@ -4032,16 +4032,38 @@ on conflict (slug) do update set
 
 
 -- ---------------------------------------------------------------------
--- Подготовка за олимпиада, 4. клас — общински кръг.
--- Двата пробни теста са самостоятелни страници: отварят се, работят и
--- без интернет и се проверяват сами. Резултатът от тях НЕ влиза в
--- платформата — заданието беше файловете да са офлайн и без вход.
--- Тук стоят само за да се появят в раздела „Общински кръг“.
+-- Състезателна математика, 4. клас — пробните теми по състезания.
+-- Страниците са самостоятелни: отварят се, работят и без интернет и се
+-- проверяват сами. Отворени ОТ платформата и с влязъл профил, те вече
+-- записват резултата в профила на детето — затова тук има и max_points.
+-- Разделите идват от assets/tracks.js.
 -- ---------------------------------------------------------------------
 
 insert into public.assignments
   (slug, title, kind, url, max_points, published, sort_order, subject_id, grades, track, section)
 values
+  ('sal-2025-4',
+   'Пробен „Иван Салабашев“ — 2025',
+   'exam',
+   'probni_testove/probna_salabashev_2025_4klas.html',
+   60,
+   false,
+   4025,
+   (select id from public.subjects where slug = 'sastezatelna-matematika'),
+   '{4}',
+   'salabashev',
+   'minali'),
+  ('sal-2024-4',
+   'Пробен „Иван Салабашев“ — 2024',
+   'exam',
+   'probni_testove/probna_salabashev_2024_4klas.html',
+   60,
+   false,
+   4024,
+   (select id from public.subjects where slug = 'sastezatelna-matematika'),
+   '{4}',
+   'salabashev',
+   'minali'),
   ('probna-obshtinski-2018-4',
    'Пробен общински кръг — 2018',
    'exam',

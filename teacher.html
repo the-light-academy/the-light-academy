@@ -2327,6 +2327,9 @@
 
          Четат се от calAll, защото календарът чете оттам; а празните
          кръгове не се крият — те са мястото, което чака да се напълни. */
+      /* Предмети, чиято година се мери в състезания, не в седмици. */
+      var BY_TRACKS = ['sastezatelna-matematika'];
+
       function calTrackBoard(prog) {
         if (!window.TLA || !TLA.Tracks || !TLA.Tracks.all.length) return '';
         var mySubject = subjectSlugById(filters.calSubject);
@@ -2350,7 +2353,12 @@
           var mine = calAll.filter(function (a) {
             return a.subject_id === subj.id && assignmentIsForGrade(a, t.grade);
           });
-          var box = TLA.Tracks.group(mine, t.subject, t.grade).tracks[0];
+          /* Групирането връща ВСИЧКИ раздели на предмета; тук трябва точно
+             този. Докато разделът беше един, [0] вършеше работа — с
+             четиринайсет състезания би показвал все първото. */
+          var groups = TLA.Tracks.group(mine, t.subject, t.grade).tracks;
+          var box = groups.filter(function (g) { return g.track.id === t.id; })[0];
+          if (!box) return '';
           var total = box.sections.reduce(function (n, sg) { return n + sg.items.length; }, 0) +
                       box.loose.length;
 
@@ -2465,6 +2473,16 @@
            предмет. Полуизлъганият изглед е по-лош от честния празен. */
         var mySubject = subjectSlugById(filters.calSubject);
         if (filters.calSubject !== '' && mySubject !== prog.subject) {
+          /* Състезателната математика не върви по седмици, а от турнир към
+             турнир: разделите горе СА разпределението ѝ. Показваха се и
+             трийсет и четирите седмици на математиката, празни — това не
+             е календар на този предмет, а чужд календар без теми. */
+          if (BY_TRACKS.indexOf(mySubject) !== -1) {
+            return html + '<p class="tla-muted tlc__alien">' +
+              esc(subjectNameBySlug(mySubject) || 'Този предмет') +
+              ' не върви по седмици, а по състезания: разделите отгоре са разпределението ѝ. ' +
+              'Датите на състезанията са в календара на състезанията.</p>';
+          }
           return html + renderWeeksFlat(prog, bucket, now);
         }
 
