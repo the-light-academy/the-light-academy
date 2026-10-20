@@ -30,49 +30,68 @@
 
   var LIST = [
     { id:'hitar-petar',    name:'„Хитър Петър“',
-      from:'2026-10-10', rank:'extra', why:'Допълнителна тренировка.' },
+      from:'2026-10-10',
+      track:'hitar_petar', rank:'extra', why:'Допълнителна тренировка.' },
     { id:'mbg-esen',       name:'„Математика без граници“ — есенен кръг',
-      from:'2026-10-20', to:'2026-10-31', rank:'extra', why:'Допълнително.' },
+      from:'2026-10-20',
+      track:'bez_granici', section:'esen', to:'2026-10-31', rank:'extra', why:'Допълнително.' },
     { id:'chernorizec',    name:'„Черноризец Храбър“',
-      from:'2026-11-01', rank:'extra', why:'Допълнително.' },
+      from:'2026-11-01',
+      track:'chernorizec', rank:'extra', why:'Допълнително.' },
     { id:'sofijski-turnir',name:'Софийски математически турнир',
-      from:'2026-11-07', rank:'extra', why:'Допълнително.' },
+      from:'2026-11-07',
+      track:'sofijski', rank:'extra', why:'Допълнително.' },
     { id:'salabashev',     name:'„Иван Салабашев“',
-      from:'2026-12-05', rank:'rec', why:'Препоръчително за подготовка.',
+      from:'2026-12-05',
+      track:'salabashev', rank:'rec', why:'Препоръчително за подготовка.',
       practice:{ href:'probni_testove/index.html', label:'Пробни теми с таймер (2024 и 2025)' } },
     { id:'olimpiada-obsht',name:'Олимпиада по математика — общински кръг',
-      from:'2026-12-12', rank:'key', deadline:true,
+      from:'2026-12-12',
+      track:'olimpiada', section:'obshtinski', rank:'key', deadline:true,
       why:'Важно: без общинския кръг няма допускане до областния.',
       practice:{ href:'probni_testove/index.html', label:'Пробни теми с таймер (2018 и 2020)' } },
     { id:'koledno',        name:'Коледно математическо състезание',
-      from:'2026-12-12', rank:'extra', why:'Допълнително.' },
+      from:'2026-12-12',
+      track:'koledno', rank:'extra', why:'Допълнително.' },
     { id:'mbg-zima',       name:'„Математика без граници“ — зимен кръг',
-      from:'2027-01-15', to:'2027-01-25', rank:'extra', why:'Допълнително.' },
+      from:'2027-01-15',
+      track:'bez_granici', section:'zima', to:'2027-01-25', rank:'extra', why:'Допълнително.' },
     { id:'olimpiada-oblast',name:'Олимпиада по математика — областен кръг',
-      from:'2027-02-07', rank:'key', top:true,
+      from:'2027-02-07',
+      track:'olimpiada', section:'oblasten', rank:'key', top:true,
       why:'Балообразуващо — най-важното състезание в годината.',
       practice:{ href:'probni_testove/index.html',
                  label:'Пробните теми за общинския вършат работа и тук' } },
     { id:'zimno-sz',       name:'Зимно математическо състезание — Стара Загора',
-      from:'2027-02-27', rank:'extra', why:'Допълнително.' },
+      from:'2027-02-27',
+      track:'zimno', rank:'extra', why:'Допълнително.' },
     { id:'mbg-prolet',     name:'„Математика без граници“ — пролетен кръг',
-      from:'2027-03-01', to:'2027-03-10', rank:'extra', why:'Допълнително.' },
+      from:'2027-03-01',
+      track:'bez_granici', section:'prolet', to:'2027-03-10', rank:'extra', why:'Допълнително.' },
     { id:'kenguru',        name:'„Европейско кенгуру“',
-      from:'2027-03-18', at:'12:00', rank:'rec', why:'Препоръчително за тренировка.' },
+      from:'2027-03-18',
+      track:'kenguru', at:'12:00', rank:'rec', why:'Препоръчително за тренировка.' },
     { id:'proletno-4',     name:'Пролетно математическо състезание за IV клас',
-      from:'2027-03-27', rank:'key', top:true, why:'Балообразуващо — специално за четвъртокласници.' },
+      from:'2027-03-27',
+      track:'proletno', rank:'key', top:true, why:'Балообразуващо — специално за четвъртокласници.' },
     { id:'velikdensko',    name:'Великденско математическо състезание',
-      from:'2027-04-17', rank:'extra', why:'Допълнително; датата се потвърждава при организатора.' },
+      from:'2027-04-17',
+      track:'velikdensko', rank:'extra', why:'Допълнително; датата се потвърждава при организатора.' },
     { id:'mbg-polufinal',  name:'„Математика без граници“ — полуфинал',
-      from:'2027-04-24', to:'2027-04-25', rank:'extra', why:'Допълнително.' },
+      from:'2027-04-24',
+      track:'bez_granici', section:'polufinal', to:'2027-04-25', rank:'extra', why:'Допълнително.' },
     { id:'kiril-popov',    name:'„Академик Кирил Попов“',
-      from:'2027-05-01', rank:'extra', why:'Допълнително.' },
+      from:'2027-05-01',
+      track:'kiril_popov', rank:'extra', why:'Допълнително.' },
     { id:'matematika-za-vseki', name:'„Математика за всеки“',
-      from:'2027-05-15', rank:'key', top:true, why:'Балообразуващо — национално състезание за четвъртокласници.' },
+      from:'2027-05-15',
+      track:'za_vseki', rank:'key', top:true, why:'Балообразуващо — национално състезание за четвъртокласници.' },
     { id:'evrika',         name:'„Еврика“',
-      from:'2027-05-29', rank:'extra', why:'Допълнително.' },
+      from:'2027-05-29',
+      track:'evrika', rank:'extra', why:'Допълнително.' },
     { id:'mbg-final',      name:'„Математика без граници“ — финал',
-      from:'2027-07-02', to:'2027-07-05', rank:'if', why:'Само при класиране от предишните кръгове.' }
+      from:'2027-07-02',
+      track:'bez_granici', section:'final', to:'2027-07-05', rank:'if', why:'Само при класиране от предишните кръгове.' }
   ];
 
   var RANKS = {
@@ -124,6 +143,23 @@
   /* Трите балообразуващи. Общинският кръг също е „важно“, но не носи
      бал — той е вратата към областния, затова не стои сред картите, а в
      изречението под тях. */
+  /* Състезанието, под което се нарежда едно задание. Съвпадение по
+     раздел, а когато състезанието има и подраздел (кръговете на
+     олимпиадата, кръговете на „Без граници“) — и по него. */
+  function forAssignment(track, section){
+    var hit = null;
+    LIST.forEach(function (c){
+      if(!c.track || c.track !== track) return;
+      if(c.section && c.section !== section) return;
+      if(!hit || (c.section && !hit.section)) hit = c;
+    });
+    return hit;
+  }
+  /* Всички състезания по дата — това е редът, в който се четат. */
+  function ordered(){
+    return LIST.slice().sort(function (a, b){ return parse(a.from) - parse(b.from); });
+  }
+
   /* Състезанията, за които вече има с какво да се упражнява. */
   function withPractice(){
     return LIST.filter(function (c){ return !!c.practice; });
@@ -163,6 +199,7 @@
     months: MONTHS,
     parse: parse, dateLabel: dateLabel, yearLabel: yearLabel,
     isPast: isPast, daysTo: daysTo, next: next, keyOnes: keyOnes,
-    byMonth: byMonth, countdown: countdown, withPractice: withPractice
+    byMonth: byMonth, countdown: countdown, withPractice: withPractice,
+    forAssignment: forAssignment, ordered: ordered
   };
 })(window);

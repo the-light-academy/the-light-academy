@@ -729,35 +729,69 @@
           .map(function (o) { return o.a; });
       }
 
-      /* ── календарът на състезанията ────────────────────────────────
-         Показва се само на четвъртокласник и само следващото състезание:
-         целият календар е на собствена страница, която се и разпечатва.
-         Датите идват от assets/sastezaniya.js — същият списък, който чете
-         и тя. */
+      /* ── състезанията в „Пробни изпити“ ────────────────────────────
+         Календарът и пробните теми са едно и също място: всяко
+         състезание е заглавие с дата, а под него стоят темите по
+         години. Така детето не отваря втора страница, за да види кога е
+         състезанието, за което се готви.
+
+         Вижда се само от четвъртокласник — за другите класове тези дати
+         не значат нищо, а разделите им се подреждат по стария начин. */
+      function szIsOn() {
+        return !!(TLA.Sastezaniya && myGrade === TLA.Sastezaniya.grade);
+      }
+
       function renderSzCal() {
         var box = $('szCal');
-        if (!box || !TLA.Sastezaniya) return;
+        if (!box || !szIsOn()) { if (box) box.hidden = true; return; }
         var S = TLA.Sastezaniya;
-        if (myGrade !== S.grade) { box.hidden = true; return; }
-
         var nx = S.next();
-        var keys = S.keyOnes().filter(function (c) { return !S.isPast(c); }).slice(0, 3);
         box.innerHTML =
-          '<p class="tlp__szcal-h">Календар на състезанията</p>' +
           (nx
-            ? '<p class="tlp__szcal-next"><b>' + esc(nx.name) + '</b>' +
+            ? '<p class="tlp__szcal-next"><b>Следващото състезание: ' + esc(nx.name) + '</b>' +
               '<span>' + esc(S.dateLabel(nx)) + ' ' + S.yearLabel(nx) + ' · ' +
               esc(S.countdown(nx)) + '</span></p>'
             : '<p class="tlp__szcal-next"><b>Годината приключи</b>' +
               '<span>новият календар излиза през септември</span></p>') +
-          (keys.length
-            ? '<p class="tlp__szcal-k">Напред до края на годината: ' +
-              keys.map(function (c) {
-                return esc(c.name) + ' (' + esc(S.dateLabel(c)) + ')';
-              }).join(' · ') + '</p>'
-            : '') +
-          '<a class="tlp__szcal-a" href="' + S.page + '">Виж целия календар →</a>';
+          '<a class="tlp__szcal-a" href="' + S.page + '">Календарът на един лист (за печат) →</a>';
         box.hidden = false;
+      }
+
+      /* Състезанията по дата, всяко с темите си отдолу. Връща и кои
+         задания са показани тук, за да не излязат втори път по-долу. */
+      function szBoard(exams) {
+        var S = TLA.Sastezaniya;
+        var used = {};
+        var byComp = {};
+        exams.forEach(function (a) {
+          if (!a.track) return;
+          var c = S.forAssignment(a.track, a.section);
+          if (!c) return;
+          (byComp[c.id] || (byComp[c.id] = [])).push(a);
+          used[a.id] = true;
+        });
+
+        var rows = S.ordered().map(function (c) {
+          var mine = (byComp[c.id] || []).slice().sort(function (x, y) {
+            return (y.sort_order || 0) - (x.sort_order || 0);   /* най-новата година отгоре */
+          });
+          var past = S.isPast(c);
+          var rank = S.ranks[c.rank];
+          return '<article class="tlp__sz' + (past ? ' is-past' : '') +
+              (mine.length ? ' has-tests' : '') + '">' +
+            '<div class="tlp__sz-h">' +
+              '<span class="tlp__sz-d">' + esc(S.dateLabel(c)) + ' ' + S.yearLabel(c) + '</span>' +
+              '<h3 class="tlp__sz-n">' + esc(c.name) + '</h3>' +
+              '<span class="tlp__sz-w">' + esc(S.countdown(c)) + '</span>' +
+              '<span class="tlp__sz-r tlp__sz-r--' + esc(rank.cls) + '">' + esc(rank.word) + '</span>' +
+            '</div>' +
+            (mine.length
+              ? '<div class="tlp__sz-list">' + mine.map(assignmentCard).join('') + '</div>'
+              : '<p class="tlp__sz-none">Още няма пробна тема за това състезание.</p>') +
+          '</article>';
+        }).join('');
+
+        return { html: '<div class="tlp__szboard">' + rows + '</div>', used: used };
       }
 
       function renderAssignments(published) {
@@ -784,7 +818,17 @@
            нещо: за ученика празен кръг е обещание, което никой не му е
            давал. Таблото на преподавателя показва и празните — там те са
            мястото, което чака да се напълни. */
-        var grouped = TLA.Tracks ? TLA.Tracks.groupPresent(ex) : { tracks: [], rest: ex };
+        /* Четвърти клас, състезателна математика: състезанията са
+           заглавията, а темите стоят под своето състезание, с датата му.
+           Всичко останало (ако има) се подрежда по стария начин отдолу. */
+        var szHtml = '', left = ex;
+        if (szIsOn()) {
+          var board = szBoard(ex);
+          szHtml = board.html;
+          left = ex.filter(function (a) { return !board.used[a.id]; });
+        }
+
+        var grouped = TLA.Tracks ? TLA.Tracks.groupPresent(left) : { tracks: [], rest: left };
         var exHtml = grouped.tracks.map(function (g) {
           return '<section class="tlp__track">' +
             '<h3 class="tlp__track-h">' + esc(g.track.title) + '</h3>' +
@@ -800,10 +844,14 @@
           '</section>';
         }).join('') + grouped.rest.map(assignmentCard).join('');
 
-        $('exList').innerHTML = ex.length
-          ? exHtml +
-            '<p class="tlp__note">Всеки пробен изпит се отваря в собствена страница със свой ' +
-            'таймер, точно както на истинското НВО. Резултатът се връща тук.</p>'
+        var note = szIsOn()
+          ? 'Всяка тема се отваря в собствена страница със свой таймер — като на истинското ' +
+            'състезание. Резултатът се връща тук.'
+          : 'Всеки пробен изпит се отваря в собствена страница със свой таймер, точно както на ' +
+            'истинското НВО. Резултатът се връща тук.';
+
+        $('exList').innerHTML = (ex.length || szHtml)
+          ? szHtml + exHtml + '<p class="tlp__note">' + note + '</p>'
           : empty('⏱️', 'Още няма пробни изпити',
               'Когато преподавателят публикува изпит, той се появява тук с бутон за стартиране.');
       }
