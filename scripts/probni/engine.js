@@ -152,6 +152,20 @@
   /* ── събиране на отговорите от екрана ─────────────────────────────*/
   function inputId(pk, k, i) { return 'in-' + pk + '-' + k + (i == null ? '' : '-' + i); }
 
+  /* Буквите на избираемите отговори — както ги пише самото състезание. */
+  var LETTERS = ['А', 'Б', 'В', 'Г', 'Д'];
+
+  /* Колко точки носи целият тест. Беше написано 21 на две места, защото
+     и двете теми бяха по 21 — Салабашев е 60 и числото трябва да идва от
+     самата тема. */
+  function maxPoints() {
+    var sum = 0;
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) { sum += pt.points || 0; });
+    });
+    return Math.round(sum * 2) / 2;
+  }
+
   /* На екрана стои само отворената задача — полетата на другите две ги
      няма в DOM-а. Затова се чете САМО онова, което наистина е на екрана:
      иначе смяната на раздел би изтрила вече попълнените отговори. */
@@ -159,6 +173,7 @@
     TEST.problems.forEach(function (pr) {
       pr.parts.forEach(function (pt) {
         pt.inputs.forEach(function (inp) {
+          if (inp.kind === 'choice') { return; }   /* пази се при щракване */
           if (inp.kind === 'money') {
             var lv = $(inputId(pt.key, inp.key, 'lv')), st = $(inputId(pt.key, inp.key, 'st'));
             if (!lv && !st) return;
@@ -201,7 +216,7 @@
     if (v == null) return false;
     if (inp.kind === 'money') return String(v[0] || '').trim() !== '' || String(v[1] || '').trim() !== '';
     if (inp.kind === 'digits') return v.every(function (x) { return String(x).trim() !== ''; });
-    return String(v).trim() !== '';
+    return String(v).trim() !== '';   /* важи и за choice: буквата е низ */
   }
 
   /* ── оценяване ────────────────────────────────────────────────────
@@ -221,6 +236,11 @@
     if (inp.kind === 'digits') {
       var want = dec(inp.enc).split(',');
       return v.length === want.length && want.every(function (w, i) { return sameNum(v[i], w); });
+    }
+    /* Избираемият отговор е БУКВА, не число: sameNum би върнал false за
+       всичко, защото „Б“ не се чете като число. */
+    if (inp.kind === 'choice') {
+      return String(v).trim().toUpperCase() === String(dec(inp.enc)).trim().toUpperCase();
     }
     return sameNum(v, dec(inp.enc));
   }
@@ -248,17 +268,25 @@
 
   /* ── екран: начало ────────────────────────────────────────────────*/
   function screenStart(resume) {
+    /* Времето на истинското състезание се изписва от самата тема:
+       олимпиадата е 4 часа, Салабашев — 120 минути, а следващата тема
+       може да е друга. Беше заковано „4 часа“ и лъжеше. */
+    var om = TEST.officialMinutes, oh = Math.floor(om / 60), orest = om % 60;
+    var realStr = oh
+      ? (oh + ' ' + (oh === 1 ? 'час' : 'часа') + (orest ? ' и ' + orest + ' мин.' : ''))
+      : (om + ' минути');
     var modes = [
-      { id: 'real', t: 'Като на олимпиадата', s: '4 часа, без пауза — точно както е на истинската.', m: TEST.officialMinutes },
+      { id: 'real', t: 'Като на състезанието',
+        s: realStr + ', без пауза — точно както е на истинското.', m: om },
       { id: 'train', t: 'Тренировка', s: '60 минути, с бутон „Пауза“.', m: 60 },
       { id: 'mine', t: 'Мое време', s: 'Избираш сам между 10 и 240 минути.', m: 60 }
     ];
     var app = $('app');
     app.innerHTML = '<div class="wrap"><div class="card hero">' +
-      '<span class="hero__badge">Общински кръг · IV клас</span>' +
+      '<span class="hero__badge">' + esc(TEST.badge || 'Общински кръг · IV клас') + '</span>' +
       '<h1>' + esc(TEST.title) + '</h1>' +
-      '<p class="hero__sub">По темата от ' + esc(TEST.originalDate) +
-        ' · три задачи по 7 точки, общо 21.</p>' +
+      '<p class="hero__sub">По темата от ' + esc(TEST.originalDate) + ' · ' +
+        esc(TEST.shape || 'три задачи по 7 точки, общо 21.') + '</p>' +
       (resume ? '<div class="rules" style="background:var(--good-w)"><b>Има започнат тест.</b> ' +
         'Можеш да продължиш оттам, където си спрял.' +
         '<div style="margin-top:.7rem;display:flex;gap:10px;flex-wrap:wrap">' +
@@ -276,15 +304,19 @@
         '<label for="mins">Колко минути</label>' +
         '<input id="mins" type="number" min="10" max="240" value="' + (S.minutes || 60) + '" /></div>' +
       '<div class="rules"><b>Как се работи</b><ul>' +
-        '<li>Три задачи по 7 точки — общо 21.</li>' +
-        '<li>В полетата пиши само крайния отговор, с цифри.</li>' +
-        '<li>Има и полета „междинен резултат“ — те не са задължителни, но носят точки, ако крайният отговор е сбъркан.</li>' +
-        '<li>Ползвай хартия за чернова. Има и място за бележки под всяка задача.</li>' +
-        '<li>Проверка има чак след предаване.</li>' +
+        (TEST.rules || [
+          'Три задачи по 7 точки — общо 21.',
+          'В полетата пиши само крайния отговор, с цифри.',
+          'Има и полета „междинен резултат“ — те не са задължителни, но носят точки, ако крайният отговор е сбъркан.',
+          'Ползвай хартия за чернова. Има и място за бележки под всяка задача.',
+          'Проверка има чак след предаване.'
+        ]).map(function (r) { return '<li>' + r + '</li>'; }).join('') +
       '</ul></div>' +
       '<p style="margin-top:18px"><button class="btn" id="go">Започни</button></p>' +
-      '<p class="muted" style="margin-top:.6rem">Прагът за областен кръг е ' +
-        TEST.passThreshold + ' точки' + (TEST.thresholdNote ? ' (' + esc(TEST.thresholdNote) + ')' : '') + '.</p>' +
+      '<p class="muted" style="margin-top:.6rem">' +
+        esc(TEST.thresholdLabel || 'Прагът за областен кръг е') + ' ' +
+        TEST.passThreshold + ' точки' +
+        (TEST.thresholdNote ? ' (' + esc(TEST.thresholdNote) + ')' : '') + '.</p>' +
       '</div></div>';
 
     app.addEventListener('change', onStartChange);
@@ -374,6 +406,19 @@
   }
 
   function inputHtml(pt, inp) {
+    if (inp.kind === 'choice') {
+      var picked = String(S.answers[inp.key] || '');
+      return '<div class="ans__box ans--choice">' +
+        '<span class="ans__lab">' + esc(inp.label || 'Отговор') + '</span>' +
+        '<span class="choices">' + inp.options.map(function (o, i) {
+          var L = LETTERS[i];
+          return '<button type="button" class="choice' + (picked === L ? ' is-on' : '') +
+            '" data-pick="' + esc(inp.key) + '" data-letter="' + esc(L) + '"' +
+            (S.submitted ? ' disabled' : '') + '>' +
+            '<span class="choice__l">' + esc(L) + ')</span>' +
+            '<span class="choice__t">' + o + '</span></button>';
+        }).join('') + '</span></div>';
+    }
     if (inp.kind === 'money') {
       return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
         '<span class="ans__lab">' + esc(inp.label) + '</span>' +
@@ -436,13 +481,23 @@
     if (S.submitted) lockFields();
   }
   function lockFields() {
-    Array.prototype.forEach.call(document.querySelectorAll('#probBox input, #probBox textarea'),
+    Array.prototype.forEach.call(
+      document.querySelectorAll('#probBox input, #probBox textarea, #probBox .choice'),
       function (e) { e.disabled = true; });
     var b = $('probBox'); if (b) b.classList.add('locked');
   }
 
   function onTestInput() { readInputs(); save(); paintTabs(); }
   function onTestClick(e) {
+    var pick = e.target.closest('[data-pick]');
+    if (pick && !S.submitted) {
+      S.answers[pick.dataset.pick] = pick.dataset.letter;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('[data-pick="' + pick.dataset.pick + '"]'),
+        function (b) { b.classList.toggle('is-on', b === pick); });
+      save(); paintTabs();
+      return;
+    }
     var t = e.target.closest('[data-tab]');
     if (t) { readInputs(); S.tab = Number(t.dataset.tab); paintTabs(); paintProblem(); return; }
     if (e.target.closest('#pause')) {
@@ -470,15 +525,64 @@
     save();
     if (auto) toast('Времето изтече! Тестът е предаден.', 6000);
     screenResults();
+    sendToPlatform();
+  }
+
+  /* ── резултатът отива и в профила на ученика ──────────────────────
+     Само когато листът е отворен ОТ платформата и детето е влязло.
+     Свален файл на нечий компютър няма TLA и просто пропуска това —
+     тестът работи и без интернет, както преди. */
+  function platformNote(txt, ok) {
+    var el = $('saveNote');
+    if (!el) return;
+    el.textContent = txt;
+    el.className = 'muted' + (ok ? ' is-saved' : '');
+    el.hidden = false;
+  }
+  function recordsFor(r) {
+    return r.rows.map(function (row) {
+      var finals = row.part.inputs.filter(function (i) { return i.final; });
+      return {
+        id: String(row.pr) + row.label.replace(')', ''),
+        kind: 'free',
+        points: row.points,
+        earned: row.got,
+        correct: row.got === row.points,
+        prompt: String(row.part.textHtml || '').replace(/<[^>]+>/g, '').slice(0, 400),
+        studentAnswer: finals.map(function (i) { return showAnswer(i, S.answers[i.key]); })
+          .filter(function (x) { return x !== ''; }).join(' · ') || '(без отговор)',
+        referenceAnswer: finals.map(showCorrect).join(' · '),
+        explanation: 'Задача ' + row.pr + ' ' + row.label
+      };
+    });
+  }
+  function sendToPlatform() {
+    if (!TEST.slug) return;
+    if (typeof TLA === 'undefined' || !TLA.isConfigured || !TLA.isConfigured()) return;
+    platformNote('Записва се в профила…', false);
+    TLA.getSession().then(function (session) {
+      if (!session) {
+        platformNote('Резултатът не е записан: не си влязъл в профила.', false);
+        return;
+      }
+      return TLA.saveAttempt(TEST.slug, {
+        autoScore: S.result.total, autoMax: maxPoints(), manualMax: null,
+        records: recordsFor(S.result), part2: null
+      }).then(function () {
+        platformNote('✓ Резултатът е записан в профила ти.', true);
+      });
+    }).catch(function (err) {
+      platformNote('Резултатът не беше записан: ' + (err && err.message ? err.message : err), false);
+    });
   }
 
   function screenResults() {
     S.screen = 'result';
-    var r = S.result, max = 21;
+    var r = S.result, max = maxPoints();
     var passed = r.total >= TEST.passThreshold;
     var msg = passed
       ? (r.total === max ? 'Всичко вярно. Това е пълен резултат.'
-                         : 'Над прага — с този резултат се продължава към областния кръг.')
+                         : (TEST.passMsg || 'Над прага. Добър резултат.'))
       : (r.total >= TEST.passThreshold - 4
           ? 'Малко остава до прага. Виж решенията — обикновено е един пропуснат детайл.'
           : 'Още има какво да се навакса. Решенията отдолу вървят стъпка по стъпка.');
@@ -488,6 +592,7 @@
         '<h1>Резултат</h1>' +
         '<p class="muted">' + esc(TEST.title) + (S.name ? ' · ' + esc(S.name) : '') +
           ' · използвано време ' + fmt(S.usedMs) + ' от ' + S.minutes + ' мин.</p>' +
+        '<p class="muted" id="saveNote" hidden></p>' +
         '<div class="score" style="margin-top:14px">' +
           '<div class="score__ring"><svg viewBox="0 0 120 120" aria-hidden="true">' +
             '<circle class="score__bg" cx="60" cy="60" r="52"></circle>' +
@@ -537,7 +642,8 @@
           '<td>' + esc(mine) + '</td><td>' + esc(right) + '</td>' +
           '<td class="mark">' + mark + ' ' + pts(row.got) + ' / ' + pts(row.points) + '</td></tr>';
       }).join('') +
-      '<tr><td colspan="3"><b>Общо</b></td><td class="mark"><b>' + pts(r.total) + ' / 21</b></td></tr>' +
+      '<tr><td colspan="3"><b>Общо</b></td><td class="mark"><b>' + pts(r.total) +
+        ' / ' + pts(maxPoints()) + '</b></td></tr>' +
       '</tbody></table>';
   }
   function showAnswer(inp, v) {
@@ -550,6 +656,7 @@
       if (!v.some(function (x) { return String(x).trim() !== ''; })) return '';
       return inp.boxes.map(function (b, i) { return b + (v[i] || '—'); }).join(' ');
     }
+    if (inp.kind === 'choice') return String(v).trim() === '' ? '' : String(v) + ')';
     return String(v).trim() === '' ? '' : (String(v) + (inp.unit ? ' ' + inp.unit : ''));
   }
   function showCorrect(inp) {
@@ -561,6 +668,7 @@
     if (inp.kind === 'digits') {
       return inp.boxes.map(function (b, i) { return b + d.split(',')[i]; }).join(' ');
     }
+    if (inp.kind === 'choice') return d + ')';
     return d + (inp.unit ? ' ' + inp.unit : '');
   }
 

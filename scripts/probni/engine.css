@@ -185,3 +185,19 @@ button{font:inherit}
   .card{box-shadow:none;border:1px solid #bbb;break-inside:avoid}
   .sol{break-inside:avoid}
 }
+
+/* ── избираем отговор (А, Б, В, Г) ───────────────────────────────── */
+.ans--choice{flex:1 1 100%;flex-direction:column;align-items:stretch}
+/* Задача без подточки („а)“, „б)“) няма какво да сложи в етикета —
+   празното квадратче пред условието изглеждаше като грешка. */
+.part__l:empty{display:none}
+.choices{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:6px}
+.choice{display:flex;align-items:center;gap:.5rem;text-align:left;
+  padding:.55rem .7rem;border:2px solid var(--line);border-radius:14px;
+  background:#fff;cursor:pointer;font:inherit;min-height:48px}
+.choice:hover{border-color:var(--sun);background:var(--sun-w)}
+.choice.is-on{border-color:var(--sun);background:var(--sun-w);box-shadow:0 6px 16px rgba(247,173,25,.25)}
+.choice:disabled{opacity:.75;cursor:default;box-shadow:none}
+.choice__l{flex:0 0 auto;font-weight:800;color:var(--sun-d)}
+.choice__t{flex:1 1 auto;min-width:0}
+#saveNote.is-saved{color:var(--good);font-weight:700}
