@@ -100,6 +100,13 @@ p{ margin:0 0 0.7rem; }
 .tag.extra{ background:var(--extra-soft); color:var(--extra); }
 .tag.if{ background:var(--ok-soft); color:var(--ok); }
 
+.ev .go{ display:inline-block; margin-top:0.25rem; font-size:0.85rem; font-weight:800;
+  color:var(--accent-ink); text-decoration:none; border-bottom:2px solid var(--accent); }
+.ev .go:hover{ background:var(--accent-soft); }
+.prep{ border:1px solid var(--line); border-radius:16px; background:var(--paper-raised);
+  padding:0.9rem 1rem; margin-top:1rem; }
+.prep h3{ margin:0 0 0.3rem; font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.05rem; }
+.prep a{ color:var(--accent-ink); font-weight:800; }
 .legend{ display:flex; gap:0.8rem; flex-wrap:wrap; font-size:0.85rem; color:var(--ink-soft);
   margin:0.8rem 0 0; }
 .note{ background:var(--accent-soft); border:1px solid #F3DCAE; border-radius:14px;
@@ -143,6 +150,9 @@ p{ margin:0 0 0.7rem; }
   <h2>Целият календар</h2>
   <div id="cal"></div>
   <div class="legend" id="legend"></div>
+
+  <h2>С какво се упражняваме</h2>
+  <div class="prep" id="prep"></div>
 
   <div class="note">
     <b>Датите на външните организатори могат да се променят.</b> Препоръчваме да се
@@ -195,7 +205,12 @@ p{ margin:0 0 0.7rem; }
               + '<span>' + (c.at ? esc(c.at) + ' ч. · ' : '') + esc(S.countdown(c)) + '</span></div>'
             + '<div><p class="nm" style="margin:0">' + esc(c.name)
               + '<span class="tag ' + S.ranks[c.rank].cls + '">' + esc(S.ranks[c.rank].word) + '</span></p>'
-            + '<p class="wy" style="margin:0">' + esc(c.why) + '</p></div></div>';
+            + '<p class="wy" style="margin:0">' + esc(c.why) + '</p>'
+            + (c.practice && !past
+                ? '<a class="go" href="' + esc(c.practice.href) + '">Упражнявай се → '
+                  + esc(c.practice.label) + '</a>'
+                : '')
+            + '</div></div>';
         }).join('')
       + '</section>';
   }).join('');
@@ -205,6 +220,21 @@ p{ margin:0 0 0.7rem; }
       + esc({ key:'тежи за приема', rec:'за подготовка и тренировка',
               extra:'по желание', 'if':'само при класиране' }[k]) + '</span>';
   }).join('');
+
+  /* ── с какво се упражняваме ────────────────────────────────────── */
+  var prep = S.withPractice();
+  $('prep').innerHTML =
+    '<h3>Пробни теми с таймер</h3>'
+    + '<p class="small">Истински теми от минали години, разписани като интерактивен тест: '
+    + 'избира се време (като на олимпиадата — 4 часа, тренировка — 60 минути, или свое), '
+    + 'пише се само крайният отговор, а след предаване излизат решенията стъпка по стъпка. '
+    + 'Работят и без интернет.</p>'
+    + '<p class="small" style="margin-bottom:0">Готови за: '
+    + prep.map(function(c){ return esc(c.name); }).join(' · ')
+    + ' — <a href="probni_testove/index.html">отвори пробните теми →</a></p>'
+    + '<p class="small muted" style="margin:0.5rem 0 0">За останалите състезания темите се '
+    + 'добавят една по една. Ако имате вариант от минала година, пратете го на академията '
+    + 'и той се превръща в такъв тест.</p>';
 
   $('printBtn').addEventListener('click', function(){ window.print(); });
 })();

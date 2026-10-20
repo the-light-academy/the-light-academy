@@ -41,13 +41,17 @@
       from:'2026-12-05', rank:'rec', why:'Препоръчително за подготовка.' },
     { id:'olimpiada-obsht',name:'Олимпиада по математика — общински кръг',
       from:'2026-12-12', rank:'key', deadline:true,
-      why:'Важно: без общинския кръг няма допускане до областния.' },
+      why:'Важно: без общинския кръг няма допускане до областния.',
+      practice:{ href:'probni_testove/index.html', label:'Пробни теми с таймер (2018 и 2020)' } },
     { id:'koledno',        name:'Коледно математическо състезание',
       from:'2026-12-12', rank:'extra', why:'Допълнително.' },
     { id:'mbg-zima',       name:'„Математика без граници“ — зимен кръг',
       from:'2027-01-15', to:'2027-01-25', rank:'extra', why:'Допълнително.' },
     { id:'olimpiada-oblast',name:'Олимпиада по математика — областен кръг',
-      from:'2027-02-07', rank:'key', top:true, why:'Балообразуващо — най-важното състезание в годината.' },
+      from:'2027-02-07', rank:'key', top:true,
+      why:'Балообразуващо — най-важното състезание в годината.',
+      practice:{ href:'probni_testove/index.html',
+                 label:'Пробните теми за общинския вършат работа и тук' } },
     { id:'zimno-sz',       name:'Зимно математическо състезание — Стара Загора',
       from:'2027-02-27', rank:'extra', why:'Допълнително.' },
     { id:'mbg-prolet',     name:'„Математика без граници“ — пролетен кръг',
@@ -119,6 +123,10 @@
   /* Трите балообразуващи. Общинският кръг също е „важно“, но не носи
      бал — той е вратата към областния, затова не стои сред картите, а в
      изречението под тях. */
+  /* Състезанията, за които вече има с какво да се упражнява. */
+  function withPractice(){
+    return LIST.filter(function (c){ return !!c.practice; });
+  }
   function keyOnes(){
     return LIST.filter(function (c){ return c.top === true; });
   }
@@ -154,6 +162,6 @@
     months: MONTHS,
     parse: parse, dateLabel: dateLabel, yearLabel: yearLabel,
     isPast: isPast, daysTo: daysTo, next: next, keyOnes: keyOnes,
-    byMonth: byMonth, countdown: countdown
+    byMonth: byMonth, countdown: countdown, withPractice: withPractice
   };
 })(window);
