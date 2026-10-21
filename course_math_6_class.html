@@ -4,15 +4,15 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Математика 6 клас – Ранна подготовка за НВО в Лозенец | The Light Academy</title>
-  <meta name="description" content="Курс по математика за 6. клас с ранна подготовка за НВО, в кв. Лозенец, София. Изграждане на логическо мислене и увереност преди 7. клас." />
+  <title>Математика 6 клас – ранна подготовка за НВО с интерактивни уроци | The Light Academy</title>
+  <meta name="description" content="Курс по математика за 6. клас с ранна подготовка за НВО, в кв. Лозенец, София: интерактивни уроци, дигитална платформа и малки групи до 6 деца. Истинско разбиране, не зубрене." />
   <link rel="canonical" href="https://the-light-academy.github.io/the-light-academy/course_math_6_class.html" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="The Light Academy" />
-  <meta property="og:title" content="Математика 6 клас – Ранна подготовка за НВО в Лозенец | The Light Academy" />
-  <meta property="og:description" content="Курс по математика за 6. клас с ранна подготовка за НВО, в кв. Лозенец, София. Изграждане на логическо мислене и увереност преди 7. клас." />
+  <meta property="og:title" content="Математика 6 клас – ранна подготовка за НВО с интерактивни уроци | The Light Academy" />
+  <meta property="og:description" content="Курс по математика за 6. клас с ранна подготовка за НВО, в кв. Лозенец, София: интерактивни уроци, дигитална платформа и малки групи до 6 деца. Истинско разбиране, не зубрене." />
   <meta property="og:url" content="https://the-light-academy.github.io/the-light-academy/course_math_6_class.html" />
-  <meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/theLightAcademyLogo.png" />
+  <meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/img/kurs-matematika-6-klas.webp" />
   <meta property="og:locale" content="bg_BG" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="favicon.ico" sizes="any" />
@@ -25,6 +25,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&family=Bad+Script&family=Pacifico&display=swap" rel="stylesheet" />
   <style>
     :root {
+      /* Цветовете на курса: тъмносиньо + жълто (както на плаката). */
+      --navy: #102a5e; --navy-2: #1b3f84; --navy-ink: #0a1c42;
+      --yellow: #ffc72c; --yellow-2: #ffb300; --yellow-soft: #ffe9a8; --yellow-dark: #8a5a00;
+      --bg: #f7f9fd; --paper: #f2f6fc; --ink: #101f3d; --slate: #55658a;
+      --line-cool: rgba(16, 42, 94, 0.11);
+      /* Старите топли цветове остават — навигацията, footer-ът и
+         бисквитките са общи за целия сайт и не ги пипаме. */
       --sun: #f5a623; --sun-light: #fff3d6; --sun-dark: #b9701a;
       --orange: #e8580a; --orange-light: #fff0e8;
       --cream: #fffaf3; --dark: #2d1f0e; --mid: #785d43; --brown: #6f4323;
@@ -32,7 +39,7 @@
       --shadow: 0 18px 42px rgba(61, 39, 18, 0.12);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.7; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; }
     a { text-decoration: none; }
 
     /* ── TOP BAR / NAV (matches site) ── */
@@ -76,113 +83,192 @@
     .dropdown-direct-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--dark); font-size: 14.5px; transition: background 0.15s ease, color 0.15s ease; }
     .dropdown-direct-link:hover { background: var(--sun-light); color: var(--sun-dark); }
 
-    .course-page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    /* ──────────────────────────────────────────────────────────────
+       Страницата на курса е в двата цвята на плаката: тъмносиньо и
+       жълто. Тъмносиньото носи тежестта (шапка, цена, акценти),
+       жълтото е за всичко, което трябва да светне — цената, бутоните,
+       подчертаните думи. Оранжевото остава само в навигацията, за да
+       е еднаква с останалите страници.
+       ────────────────────────────────────────────────────────────── */
+    .course-page { max-width: 1120px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
 
-    /* ── HERO ── */
-    .course-hero { background: linear-gradient(135deg, #e8942a 0%, #f8bd3a 35%, #b35b1b 100%); border-radius: 28px; padding: 3rem 2rem; box-shadow: var(--shadow); position: relative; overflow: hidden; }
-    .course-hero::before, .course-hero::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,0.12); }
-    .course-hero::before { width: 260px; height: 260px; top: -80px; right: -30px; }
-    .course-hero::after { width: 200px; height: 200px; bottom: -100px; left: -40px; }
-    .eyebrow { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2); color: #fff9ef; padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-    .course-hero h1 { position: relative; z-index: 1; font-family: 'Bad Script', cursive; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.2; color: var(--dark); margin-top: 1rem; margin-bottom: 0.75rem; }
-    .course-hero p { position: relative; z-index: 1; font-size: 1.05rem; color: rgba(45,31,14,0.8); max-width: 700px; }
+    /* ── ШАПКА ── */
+    .course-hero { position: relative; overflow: hidden; border-radius: 30px; padding: 3rem 2.2rem; color: var(--white);
+      background: radial-gradient(125% 125% at 82% 8%, #1d4489 0%, #112d63 46%, #0a1c42 100%);
+      box-shadow: 0 26px 60px rgba(10, 24, 56, 0.28); }
+    .course-hero::before, .course-hero::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+    .course-hero::before { width: 320px; height: 320px; top: -120px; right: -70px; background: radial-gradient(circle, rgba(255,199,44,0.38), rgba(255,199,44,0) 70%); }
+    .course-hero::after { width: 260px; height: 260px; bottom: -130px; left: -70px; background: radial-gradient(circle, rgba(255,199,44,0.20), rgba(255,199,44,0) 70%); }
+
+    .eyebrow { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,199,44,0.14); border: 1px solid rgba(255,199,44,0.42); color: var(--yellow-soft); padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .course-hero h1 { position: relative; z-index: 1; font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.6vw, 2.9rem); line-height: 1.22; color: var(--white); margin: 1.1rem 0 0.9rem; }
+    /* Подчертаването е фон върху самата дума — не слой със z-index:-1,
+       който би се скрил зад градиента на шапката. */
+    .course-hero h1 em { font-family: 'Bad Script', cursive; font-style: normal; color: var(--yellow); padding: 0 4px; background: linear-gradient(transparent 68%, rgba(255,199,44,0.22) 68%, rgba(255,199,44,0.22) 94%, transparent 94%); }
+    .hero-lead { position: relative; z-index: 1; font-size: 1.06rem; color: rgba(255,255,255,0.84); max-width: 620px; }
+
+    .hero-cta { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.5rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem; padding: 13px 24px; border-radius: 999px; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
+    .btn--sun { background: linear-gradient(180deg, var(--yellow) 0%, var(--yellow-2) 100%); color: var(--navy-ink); box-shadow: 0 12px 26px rgba(255,183,0,0.32); }
+    .btn--sun:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(255,183,0,0.4); }
+    .btn--ghost { background: rgba(255,255,255,0.08); color: var(--white); border: 1px solid rgba(255,255,255,0.32); }
+    .btn--ghost:hover { background: rgba(255,255,255,0.16); transform: translateY(-2px); }
+
+    .hero-chips { position: relative; z-index: 1; list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+    .hero-chips li { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); color: rgba(255,255,255,0.92); font-size: 0.84rem; font-weight: 700; padding: 7px 14px; border-radius: 999px; }
+    .hero-chips li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--yellow); flex: 0 0 7px; }
+
+    /* Шапката е на две колони: отляво текстът, отдясно плакатът на курса.
+       На тесен екран плакатът слиза под текста — заглавието се чете
+       първо, а картинката го повтаря. */
+    .hero-wrap { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 2rem; align-items: center; }
+    .hero-art { margin: 0; position: relative; }
+    .hero-art::before { content: ""; position: absolute; inset: 14px -14px -14px 14px; border-radius: 24px; background: var(--yellow); opacity: 0.85; transform: rotate(3deg); }
+    .hero-art img { position: relative; display: block; width: 100%; height: auto; border-radius: 22px; border: 6px solid rgba(255,255,255,0.94); box-shadow: 0 20px 44px rgba(8, 20, 48, 0.42); transform: rotate(-2deg); transition: transform 0.35s ease; }
+    .hero-art img:hover { transform: rotate(0deg) scale(1.02); }
 
     .hero-numbers { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-    .hero-numbers span { position: absolute; font-family: 'Playfair Display', serif; font-weight: 700; color: rgba(255,255,255,0.22); animation: floatNum linear infinite; }
+    .hero-numbers span { position: absolute; font-family: 'Playfair Display', serif; font-weight: 700; color: rgba(255,199,44,0.26); animation: floatNum linear infinite; }
     @keyframes floatNum { 0% { transform: translateY(110%) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-140%) rotate(20deg); opacity: 0; } }
 
-    .course-content { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+    .course-content { display: grid; grid-template-columns: 290px 1fr; gap: 1.5rem; margin-top: 1.5rem; align-items: start; }
 
-    .price-box { background: #f8f0e7; border: 1px solid rgba(111, 67, 35, 0.14); border-radius: 20px; padding: 1.5rem 1.25rem; box-shadow: 0 12px 28px rgba(40, 30, 20, 0.06); position: sticky; top: 90px; height: fit-content; }
-    .price-label { display: block; font-size: 0.82rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.9rem; }
+    /* ── ЦЕНА ── */
+    .price-box { position: sticky; top: 90px; height: fit-content; overflow: hidden; border-radius: 24px; padding: 1.6rem 1.4rem;
+      background: linear-gradient(170deg, #142f68 0%, #0b1d44 100%); color: var(--white);
+      box-shadow: 0 18px 40px rgba(10, 24, 56, 0.22); }
+    .price-box::before { content: ""; position: absolute; width: 180px; height: 180px; top: -90px; right: -60px; border-radius: 50%; background: radial-gradient(circle, rgba(255,199,44,0.28), rgba(255,199,44,0) 70%); }
+    .price-label { position: relative; display: block; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--yellow-soft); margin-bottom: 0.5rem; }
+    .price-value-wrap { position: relative; }
+    .price-value { display: flex; align-items: baseline; gap: 7px; font-family: 'Playfair Display', serif; font-size: clamp(2.1rem, 3vw, 2.7rem); line-height: 1.15; color: var(--yellow); }
+    .price-value small { font-family: 'Nunito', sans-serif; font-size: 0.92rem; font-weight: 700; color: rgba(255,255,255,0.72); }
+    .price-note { display: block; margin-top: 0.45rem; font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.78); }
+    .price-list { list-style: none; margin: 1.1rem 0 0; display: grid; gap: 0.55rem; }
+    .price-list li { position: relative; display: flex; gap: 9px; font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); line-height: 1.45; }
+    .price-list li::before { content: "✓"; flex: 0 0 18px; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; background: var(--yellow); color: var(--navy-ink); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .price-hint { display: block; margin-top: 0.65rem; text-align: center; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.68); }
 
-    .price-switch { display: flex; background: var(--sun-light); border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 1.1rem; }
-    .price-switch button { flex: 1; border: none; background: transparent; padding: 8px 6px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 12.5px; color: var(--mid); border-radius: 999px; cursor: pointer; transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
-    .price-switch button.active { background: var(--white); color: var(--sun-dark); box-shadow: 0 6px 14px rgba(185,112,26,0.18); }
+    /* ── ОСНОВНА КОЛОНА ── */
+    .course-info { background: var(--white); border: 1px solid var(--line-cool); border-radius: 26px; padding: 2rem 1.9rem; box-shadow: 0 14px 34px rgba(16, 36, 84, 0.07); }
+    .course-info h2 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: clamp(1.6rem, 2.6vw, 2.05rem); line-height: 1.25; margin-bottom: 0.7rem; }
+    .course-info > p { color: var(--slate); font-size: 1rem; margin-bottom: 1.6rem; }
+    .block-h { scroll-margin-top: 84px; display: flex; align-items: baseline; gap: 10px; margin: 2.1rem 0 1rem; }
+    .block-h h3 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: 1.25rem; }
+    .block-h span { flex: 1; height: 1px; background: var(--line-cool); }
+    .block-sub { color: var(--slate); font-size: 0.95rem; margin: -0.5rem 0 1rem; }
 
-    .price-value-wrap { position: relative; height: 3.1rem; overflow: hidden; }
-    .price-value { position: absolute; inset: 0; display: flex; align-items: baseline; gap: 6px; font-family: 'Playfair Display', serif; font-variant-numeric: tabular-nums; font-size: clamp(1.9rem, 3vw, 2.5rem); line-height: 1.2; color: var(--brown); transition: transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.35s ease; }
-    .price-value small { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--mid); }
-    .price-value.slide-out-up { transform: translateY(-100%); opacity: 0; }
-    .price-value.slide-in-up { transform: translateY(0); opacity: 1; }
-    .price-value.slide-out-down { transform: translateY(100%); opacity: 0; }
+    /* три стъпки: интерес → урок → разбиране */
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; }
+    .step { position: relative; background: var(--paper); border: 1px solid var(--line-cool); border-radius: 18px; padding: 1.15rem 1rem 1rem; }
+    .step b { display: block; color: var(--navy); font-size: 1rem; margin: 0.55rem 0 0.3rem; }
+    .step span { display: block; color: var(--slate); font-size: 0.9rem; line-height: 1.55; }
+    .step i { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 10px; background: var(--yellow); color: var(--navy-ink); font-family: 'Playfair Display', serif; font-style: normal; font-weight: 700; font-size: 0.95rem; }
 
-    .price-note { display: block; margin-top: 0.6rem; font-size: 0.87rem; font-weight: 700; color: var(--mid); }
-    .price-onetime { display: inline-block; margin-top: 0.9rem; font-size: 0.78rem; font-weight: 800; color: var(--sun-dark); background: var(--sun-light); padding: 6px 12px; border-radius: 999px; }
+    /* теми, в които обличаме урока */
+    .themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+    .theme { display: flex; gap: 0.9rem; background: var(--white); border: 1px solid var(--line-cool); border-left: 4px solid var(--yellow); border-radius: 16px; padding: 1rem 1.1rem; transition: transform 0.22s ease, box-shadow 0.22s ease; }
+    .theme:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(16, 36, 84, 0.1); }
+    .theme .em { font-size: 1.5rem; line-height: 1.2; }
+    .theme b { display: block; color: var(--navy); font-size: 0.99rem; }
+    .theme small { display: block; color: var(--yellow-dark); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; }
+    .theme span { color: var(--slate); font-size: 0.9rem; line-height: 1.55; }
+    .theme--wide { grid-column: 1 / -1; border-left-color: var(--navy); background: var(--paper); }
 
-    .course-info { background: var(--white); border: 1px solid var(--line); border-radius: 24px; padding: 1.8rem; box-shadow: 0 10px 24px rgba(30, 18, 12, 0.04); }
-    .course-info h2 { font-family: 'Playfair Display', serif; color: var(--sun-dark); font-size: clamp(1.7rem, 3vw, 2.2rem); margin-bottom: 0.8rem; }
-    .course-info h3 { font-family: 'Playfair Display', serif; color: var(--sun-dark); font-size: 1.2rem; margin-top: 1.9rem; margin-bottom: 0.7rem; }
-    .course-info > p { color: var(--mid); font-size: 1rem; margin-bottom: 0.3rem; }
+    /* как минава един час */
+    .timeline-bar { display: flex; width: 100%; height: 50px; border-radius: 14px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line-cool); }
+    .seg { display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem; transform: scaleX(0); transform-origin: left; animation: growSeg 0.9s cubic-bezier(.22,1,.36,1) forwards; }
+    .seg-a { background: linear-gradient(135deg, #1b3f84, #102a5e); color: var(--white); flex: 45; animation-delay: 0.05s; }
+    .seg-b { background: repeating-linear-gradient(45deg, #e6ebf5, #e6ebf5 6px, #f2f5fb 6px, #f2f5fb 12px); color: var(--slate); flex: 15; animation-delay: 0.55s; }
+    .seg-c { background: linear-gradient(135deg, var(--yellow), var(--yellow-2)); color: var(--navy-ink); flex: 45; animation-delay: 0.85s; }
+    @keyframes growSeg { to { transform: scaleX(1); } }
+    .timeline-legend { display: flex; gap: 1.3rem; margin-top: 0.8rem; flex-wrap: wrap; font-size: 0.88rem; color: var(--slate); }
+    .timeline-legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: 0 0 10px; }
+    .dot-a { background: var(--navy); }
+    .dot-b { background: #d7dfee; }
+    .dot-c { background: var(--yellow); }
 
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    /* какво учим */
+    .topics { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
+    .topics li { background: var(--paper); border: 1px solid var(--line-cool); color: var(--navy); font-size: 0.88rem; font-weight: 700; padding: 8px 14px; border-radius: 999px; }
+    .topics li::before { content: "·"; color: var(--yellow-dark); font-weight: 900; margin-right: 6px; }
 
-    /* ── AT A GLANCE ── */
-    .glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.7rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-    .glance-item { display: flex; align-items: center; gap: 12px; padding: 1.15rem 1.1rem; border-left: 1px solid var(--line); opacity: 0; transform: translateY(10px); animation: fadeUp 0.5s ease forwards; }
-    .glance-item:first-child { border-left: none; padding-left: 0.1rem; }
-    .glance-item:nth-child(1) { animation-delay: 0.05s; }
-    .glance-item:nth-child(2) { animation-delay: 0.15s; }
-    .glance-item:nth-child(3) { animation-delay: 0.25s; }
-    .glance-icon { flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--sun-light), var(--orange-light)); color: var(--orange); transition: transform 0.25s ease; }
-    .glance-item:hover .glance-icon { transform: scale(1.08) rotate(-4deg); }
-    .glance-icon svg { width: 20px; height: 20px; }
-    .glance-text strong { display: block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); margin-bottom: 3px; }
-    .glance-text span { display: block; font-family: 'Playfair Display', serif; color: var(--brown); font-size: 1.03rem; line-height: 1.3; }
+    /* групи */
+    .group-tabs { display: flex; gap: 0.6rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+    .group-tab { flex: 1; min-width: 160px; text-align: left; background: var(--paper); border: 1.5px solid var(--line-cool); border-radius: 16px; padding: 0.9rem 1rem; cursor: pointer; font-family: 'Nunito', sans-serif; transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease; }
+    .group-tab:hover { transform: translateY(-2px); }
+    .group-tab strong { display: block; color: var(--navy); font-size: 0.98rem; margin-bottom: 2px; }
+    .group-tab span { color: var(--slate); font-size: 0.87rem; }
+    .group-tab.active { background: var(--white); border-color: var(--yellow-2); box-shadow: 0 10px 22px rgba(255,183,0,0.22); }
+    .group-tab.active strong { color: var(--yellow-dark); }
 
-    /* ── PAYMENT TIMELINE ── */
-    .pay-timeline { list-style: none; margin-top: 0.9rem; }
-    .pay-step { position: relative; display: flex; align-items: flex-start; gap: 14px; padding: 0.85rem 0; opacity: 0; transform: translateY(10px); animation: fadeUp 0.5s ease forwards; }
-    .pay-step:nth-child(1) { animation-delay: 0.05s; }
-    .pay-step:nth-child(2) { animation-delay: 0.15s; }
-    .pay-step:nth-child(3) { animation-delay: 0.25s; }
-    .pay-step:not(:last-child)::before { content: ""; position: absolute; left: 15px; top: 42px; bottom: -4px; width: 2px; background: var(--line); }
-    .pay-marker { position: relative; z-index: 1; flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.85rem; background: var(--orange-light); color: var(--orange); transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; }
-    .pay-step.is-next .pay-marker { background: var(--orange); color: var(--white); box-shadow: 0 0 0 5px rgba(232,88,10,0.15); }
-    .pay-step.is-done .pay-marker { background: var(--sun-light); color: var(--sun-dark); }
-    .pay-body { flex: 1; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding-top: 3px; }
-    .pay-body strong { font-family: 'Playfair Display', serif; color: var(--brown); font-size: 1rem; font-weight: 700; }
-    .pay-body span { display: block; color: var(--mid); font-size: 0.88rem; margin-top: 2px; }
-    .pay-due { background: var(--orange); color: var(--white); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+    .group-detail { position: relative; background: var(--navy); border-radius: 18px; padding: 1.25rem 1.35rem; min-height: 92px; }
+    .group-detail-row { display: none; align-items: center; gap: 0.7rem; flex-wrap: wrap; animation: fadeUp 0.4s ease; }
+    .group-detail-row.active { display: flex; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .detail-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 999px; font-size: 0.87rem; font-weight: 700; color: var(--white); }
+    .detail-pill .ic { font-size: 1rem; }
 
-    .btn-enroll { display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: var(--white); font-weight: 800; font-size: 0.95rem; padding: 12px 22px; border-radius: 999px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 10px 22px rgba(232,88,10,0.28); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .btn-enroll:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(232,88,10,0.34); }
+    /* какво получава детето */
+    .info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .info-card { background: var(--paper); border: 1px solid var(--line-cool); border-radius: 18px; padding: 1.1rem; opacity: 0; transform: translateY(10px); animation: fadeUp 0.5s ease forwards; }
+    .info-card:nth-child(1) { animation-delay: 0.05s; }
+    .info-card:nth-child(2) { animation-delay: 0.15s; }
+    .info-card:nth-child(3) { animation-delay: 0.25s; }
+    .info-card strong { display: block; color: var(--navy); margin-bottom: 0.25rem; }
+    .info-card span { color: var(--slate); font-size: 0.95rem; }
 
-    /* ── ENROLL FORM (inline, always open at the bottom of the page) ── */
-    .enroll-form-section { margin-top: 1.9rem; border-top: 1px solid var(--line); padding-top: 1.7rem; scroll-margin-top: 90px; }
+    /* цитат накрая */
+    .quote { margin-top: 2rem; background: linear-gradient(170deg, #142f68 0%, #0b1d44 100%); border-radius: 22px; padding: 1.6rem 1.7rem; color: var(--white); position: relative; overflow: hidden; }
+    .quote::before { content: "„"; position: absolute; top: -34px; right: 14px; font-family: 'Playfair Display', serif; font-size: 11rem; line-height: 1; color: rgba(255,199,44,0.16); }
+    .quote p { position: relative; font-family: 'Bad Script', cursive; font-size: clamp(1.25rem, 2.4vw, 1.6rem); line-height: 1.45; color: var(--yellow-soft); }
+    .quote span { position: relative; display: block; margin-top: 0.5rem; font-size: 0.86rem; font-weight: 700; color: rgba(255,255,255,0.66); }
+
+    .btn-enroll { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(180deg, var(--yellow) 0%, var(--yellow-2) 100%); color: var(--navy-ink); font-weight: 800; font-size: 0.95rem; padding: 13px 24px; border-radius: 999px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 12px 26px rgba(255,183,0,0.32); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-enroll:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(255,183,0,0.4); }
+
+    /* ── ФОРМА ЗА ЗАПИСВАНЕ (винаги отворена, най-долу) ── */
+    .enroll-form-section { margin-top: 2.2rem; border-top: 1px solid var(--line-cool); padding-top: 1.8rem; scroll-margin-top: 90px; }
     .enroll-form-section.enroll-highlight { animation: enrollPulse 1.6s ease; }
     @keyframes enrollPulse {
       0%, 100% { box-shadow: none; }
-      30% { box-shadow: 0 0 0 5px rgba(232,88,10,0.24); }
+      30% { box-shadow: 0 0 0 5px rgba(255,199,44,0.4); }
     }
-    .enroll-form-section h3 { font-family: 'Playfair Display', serif; color: var(--sun-dark); font-size: 1.3rem; margin-bottom: 0.4rem; }
-    .enroll-form-section > p { color: var(--mid); font-size: 0.92rem; margin-bottom: 1.4rem; }
+    .enroll-form-section h3 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: 1.35rem; margin-bottom: 0.4rem; }
+    .enroll-form-section > p { color: var(--slate); font-size: 0.94rem; margin-bottom: 1.4rem; }
     .enroll-field { margin-bottom: 1.1rem; }
-    .enroll-field label { display: block; font-size: 13px; font-weight: 700; color: var(--mid); margin-bottom: 6px; }
+    .enroll-field label { display: block; font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
     .enroll-field input, .enroll-field textarea {
-      width: 100%; padding: 12px 16px; border: 2px solid var(--sun-light); border-radius: 8px;
-      font-family: 'Nunito', sans-serif; font-size: 16px; color: var(--dark); background: var(--cream);
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%; padding: 12px 16px; border: 2px solid var(--line-cool); border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 16px; color: var(--ink); background: var(--paper);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
     .enroll-field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
-    .enroll-field input:focus, .enroll-field textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,88,10,0.12); }
+    .enroll-field input:focus, .enroll-field textarea:focus { border-color: var(--yellow-2); background: var(--white); box-shadow: 0 0 0 4px rgba(255,199,44,0.2); }
     .enroll-submit {
-      width: 100%; padding: 14px; background: var(--orange); color: var(--white); border: none; border-radius: 999px;
+      width: 100%; padding: 15px; background: linear-gradient(180deg, var(--yellow) 0%, var(--yellow-2) 100%); color: var(--navy-ink); border: none; border-radius: 999px;
       font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 0.4rem;
-      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 12px 26px rgba(255,183,0,0.3);
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-    .enroll-submit:hover { transform: translateY(-2px); }
+    .enroll-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(255,183,0,0.4); }
     .enroll-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .enroll-success { text-align: center; padding: 1rem 0 0.5rem; }
     .enroll-success .success-icon {
       width: 52px; height: 52px; background: #e5f5ec; color: #1c7a4a; border-radius: 50%;
       font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.8rem;
     }
-    .enroll-success h4 { font-size: 1.15rem; color: var(--dark); margin-bottom: 0.35rem; }
-    .enroll-success p { color: var(--mid); font-size: 0.92rem; }
-    .enroll-error { background: var(--orange-light); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--orange); text-align: center; margin-top: 1rem; }
-    .enroll-error a { color: var(--orange); font-weight: 700; }
+    .enroll-success h4 { font-size: 1.15rem; color: var(--navy); margin-bottom: 0.35rem; }
+    .enroll-success p { color: var(--slate); font-size: 0.92rem; }
+    .enroll-error { background: #fff4e0; border: 1px solid rgba(255,183,0,0.4); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--yellow-dark); text-align: center; margin-top: 1rem; }
+    .enroll-error a { color: var(--navy); font-weight: 800; }
+
+    @media (max-width: 900px) {
+      .hero-wrap { grid-template-columns: minmax(0, 1fr) 230px; gap: 1.4rem; }
+      .themes { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+    }
 
     @media (max-width: 768px) {
       .top-bar { display: none; }
@@ -190,18 +276,41 @@
       .nav-links { display: none; }
       .hamburger { display: flex; }
       .course-content { grid-template-columns: 1fr; }
-      .price-box { position: static; }
-      .glance { grid-template-columns: 1fr; }
-      .glance-item { border-left: none; border-top: 1px solid var(--line); padding-left: 0.1rem; }
-      .glance-item:first-child { border-top: none; }
-      .course-hero { padding: 2.3rem 1.2rem; }
+      /* не static: ::before-ът на кутията е абсолютен и без позициониран
+         родител би излязъл 60px извън екрана */
+      .price-box { position: relative; top: auto; }
+      .info-grid { grid-template-columns: 1fr; }
+      .course-hero { padding: 2.3rem 1.2rem; border-radius: 24px; }
+      .hero-wrap { grid-template-columns: 1fr; gap: 1.6rem; }
+      .hero-art { max-width: 320px; margin: 0 auto; }
+      .hero-art img { transform: none; }
+      .hero-art::before { inset: 12px -10px -12px 10px; }
+      .course-info { padding: 1.4rem 1.1rem; border-radius: 22px; }
       .course-page { padding: 1rem 1rem 3rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+      .group-tabs { flex-direction: column; }
+      .hero-cta .btn { flex: 1; }
     }
   
+
+    /* фактите за курса — графикът, продължителността, периодът */
+    .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.9rem; }
+    .fact { background: var(--paper); border: 1px solid var(--line-cool); border-radius: 18px; padding: 1.05rem 1rem; }
+    .fact .fact-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 11px; background: var(--navy); color: var(--yellow); margin-bottom: 0.55rem; }
+    .fact .fact-icon svg { width: 19px; height: 19px; }
+    .fact strong { display: block; color: var(--navy); font-size: 0.95rem; }
+    /* само стойността под заглавието — не и кутийката с иконата */
+    .fact strong + span { display: block; color: var(--slate); font-size: 0.9rem; }
+    /* Плакатът на 6. клас е широк, не квадратен — колоната му е по-голяма. */
+    .hero-wrap { grid-template-columns: minmax(0, 1fr) 350px; }
+    @media (max-width: 900px) {
+      .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-wrap { grid-template-columns: minmax(0, 1fr) 260px; }
+      /* Между 768 и 900px менюто с бутона „НВО 7 клас“ беше с 18px
+         по-широко от екрана и страницата тръгваше настрани. */
+      nav { padding: 0 1rem; }
+      .nav-links a { padding: 8px 10px; font-size: 14px; }
+    }
+    @media (max-width: 768px) { .facts { grid-template-columns: 1fr; } .hero-wrap { grid-template-columns: 1fr; } .hero-art { max-width: 420px; } }
     /* ── COOKIE CONSENT (shared across the site; one choice applies everywhere via localStorage) ── */
     .cookie-banner {
       position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2000;
@@ -254,7 +363,7 @@
     "@context": "https://schema.org",
     "@type": "Course",
     "name": "Математика 6 клас – ранна подготовка за НВО",
-    "description": "Курс по математика за 6. клас с ранна подготовка за НВО, в кв. Лозенец, София.",
+    "description": "Курс по математика за 6. клас с ранна подготовка за НВО, в кв. Лозенец, София — интерактивни уроци, дигитална платформа и малки групи до 6 деца.",
     "provider": { "@id": "https://the-light-academy.github.io/the-light-academy/#organization" },
     "offers": [
       {
@@ -378,58 +487,168 @@
   <main class="course-page">
     <section class="course-hero">
       <div class="hero-numbers" id="heroNumbers"></div>
-      <span class="eyebrow">Математика • 6 клас</span>
-      <h1>Математика 6 клас</h1>
-      <p>Ранна подготовка за по-сложни теми, развиване на логика и уверено учене през следващите класове.</p>
+      <div class="hero-wrap">
+        <div class="hero-text">
+          <span class="eyebrow">Математика • 6 клас • ранна подготовка за НВО</span>
+          <h1>Интерактивно преподаване, истинско разбиране — <em>не зубрене</em></h1>
+          <p class="hero-lead">Рационални числа, уравнения, пропорции, вероятности. Шести клас е годината, в която математиката спира да прощава наизустеното — затова всяка седмица темата идва като мисия: Гран при по числовата ос, подводница, която слиза в отрицателното, отбор, който се подрежда по координатите. Решава се с химикал и с лаптоп, а разбирането остава.</p>
+          <div class="hero-cta">
+            <button type="button" class="btn btn--sun" onclick="scrollToEnrollForm()">Резервирайте място</button>
+            <a class="btn btn--ghost" href="#kakvo-uchim">Какво учим в 6. клас</a>
+          </div>
+          <ul class="hero-chips">
+            <li>До 6 деца в групата</li>
+            <li>Четвъртък · 18:00–19:00</li>
+            <li>Интерактивни уроци и дигитална платформа</li>
+          </ul>
+        </div>
+        <!-- Плакатът на курса. Размерите стоят в атрибутите, за да не
+             подскача страницата, докато картинката се зарежда. На екрана
+             на лаптопа е нашият урок „Рационално Гран при“. -->
+        <figure class="hero-art">
+          <img src="img/kurs-matematika-6-klas.webp" width="1374" height="1145"
+               alt="Курс по математика за 6. клас — ученици пред лаптоп с интерактивния урок „Рационално Гран при“" />
+        </figure>
+      </div>
     </section>
 
     <section class="course-content">
       <aside class="price-box">
         <span class="price-label">Такса за курса</span>
-        <span class="price-note" style="display:block; margin-bottom:0.4rem;">До 6 деца в групата</span>
-
         <div class="price-value-wrap">
           <span class="price-value" id="priceValue">80 <small>€ / месец</small></span>
         </div>
+        <span class="price-note">До 6 деца в групата</span>
 
-        <button type="button" class="btn-enroll" style="margin-top:1.1rem; width:100%; justify-content:center;" onclick="scrollToEnrollForm()">Резервирайте място</button>
-        <span style="display:block; margin-top:0.65rem; text-align:center; font-size:0.82rem; font-weight:700; color:var(--mid);">и ние ще се свържем с Вас</span>
+        <ul class="price-list">
+          <li>Веднъж седмично по 60 минути</li>
+          <li>Интерактивен урок на дъската всяка седмица</li>
+          <li>Домашни в платформата с моментална проверка</li>
+          <li>Диагностика и ранна подготовка за НВО</li>
+        </ul>
+
+        <button type="button" class="btn-enroll" style="margin-top:1.2rem; width:100%; justify-content:center;" onclick="scrollToEnrollForm()">Резервирайте място</button>
+        <span class="price-hint">и ние ще се свържем с Вас</span>
       </aside>
 
       <div class="course-info">
-        <h2>При нас</h2>
-        <p>шестокласниците наистина разбират математиката, защото говорим на техния език и превръщаме сложните теореми в логични и близки до тях казуси. Образованието има нов подход – поколенията Z и Alpha учат чрез интерактивност, визуализации и бърза обратна връзка. Ние знаем точно как да задържим вниманието им, да развием логическото им мислене и да ги подготвим за отлични резултати без излишен стрес.</p>
+        <h2>При нас шестокласниците наистина разбират математиката</h2>
+        <p>Говорим на техния език и превръщаме сложните правила в логични, близки до тях казуси. Поколенията Z и Alpha учат чрез интерактивност, визуализации и бърза обратна връзка — и ние знаем как да задържим вниманието им. Затова питаме всяко дете какво обича и обличаме урока точно в това: лего, кучета, писти, игри, разходка до Париж или Барселона. С помощта на изкуствен интелект всяка тема може да стане математика за един следобед. Всичко е възможно, ако проявим малко креативност.</p>
 
-        <div class="glance">
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </span>
-            <div class="glance-text"><strong>Групи</strong><span>1 група</span></div>
+        <div class="block-h"><h3>Как се получава</h3><span></span></div>
+        <div class="steps">
+          <div class="step">
+            <i>1</i>
+            <b>Питаме детето</b>
+            <span>Какво харесва — писти, игри, кучета, космос? Отговорът не остава само разговор: става декор на следващия урок.</span>
           </div>
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-            </span>
-            <div class="glance-text"><strong>График</strong><span>четвъртък 18:00–19:00</span></div>
+          <div class="step">
+            <i>2</i>
+            <b>Обличаме урока</b>
+            <span>С помощта на AI темата се превръща в интерактивен урок за дъската — мисия, игра, задачи с нарастваща трудност и проверка на всяка стъпка.</span>
           </div>
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 1.5"/></svg>
-            </span>
-            <div class="glance-text"><strong>Продължителност</strong><span>60 минути</span></div>
-          </div>
-          <div class="glance-item">
-            <span class="glance-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/></svg>
-            </span>
-            <div class="glance-text"><strong>Период</strong><span>8 окт 2026 – 13 май 2027</span></div>
+          <div class="step">
+            <i>3</i>
+            <b>Остава разбирането</b>
+            <span>Детето решава, защото му е интересно. А ние виждаме точно кое е разбрало и кое — още не, задача по задача.</span>
           </div>
         </div>
 
+        <div class="block-h"><h3>Истински уроци от нашите класни стаи</h3><span></span></div>
+        <p class="block-sub">Урокът на екрана в снимката горе е наш — „Рационално Гран при“. Ето и останалите от тази година.</p>
+        <div class="themes">
+          <div class="theme">
+            <span class="em">🏁</span>
+            <div>
+              <small>6. клас · седмица 6</small>
+              <b>Рационално Гран при</b>
+              <span>Болид обикаля пистата само ако действията с рационални числа са верни. Една грешка в знака — и колата спира в чакъла.</span>
+            </div>
+          </div>
+          <div class="theme">
+            <span class="em">🚤</span>
+            <div>
+              <small>6. клас · седмица 8</small>
+              <b>Подводница „Знак“</b>
+              <span>Слизане под нулата по числовата ос: събиране, изваждане и умножение на рационални числа, с дълбокомер, който не прощава.</span>
+            </div>
+          </div>
+          <div class="theme">
+            <span class="em">🧭</span>
+            <div>
+              <small>6. клас · седмица 5</small>
+              <b>Отборът по оста</b>
+              <span>Координатна система, в която всеки играч има място — и всяко място има две числа.</span>
+            </div>
+          </div>
+          <div class="theme">
+            <span class="em">🎲</span>
+            <div>
+              <small>6. клас · седмица 23</small>
+              <b>Вероятности и уравнения</b>
+              <span>Колко е вероятно да познаеш? Оказва се, че и това се смята — и че уравнението дава отговора.</span>
+            </div>
+          </div>
+          <div class="theme theme--wide">
+            <span class="em">🗼</span>
+            <div>
+              <small>А следващата тема</small>
+              <b>Където поиска детето</b>
+              <span>В другите класове Айфеловата кула обяснява формулите за съкратено умножение, лего сейф пази рационалните числа, а пудели скачат по дробите. Барселона чака своя ред — кажете ни какво обича детето ви и ще измислим урока.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="block-h"><h3>Курсът накратко</h3><span></span></div>
+        <div class="facts">
+          <div class="fact">
+            <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            <strong>Групи</strong><span>1 група, до 6 деца</span>
+          </div>
+          <div class="fact">
+            <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+            <strong>График</strong><span>четвъртък 18:00–19:00</span>
+          </div>
+          <div class="fact">
+            <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 1.5"/></svg></span>
+            <strong>Продължителност</strong><span>60 минути</span>
+          </div>
+          <div class="fact">
+            <span class="fact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/></svg></span>
+            <strong>Период</strong><span>8 окт 2026 – 13 май 2027</span>
+          </div>
+        </div>
+
+        <div class="block-h" id="kakvo-uchim"><h3>Какво учим в 6. клас</h3><span></span></div>
+        <ul class="topics">
+          <li>Рационални числа и действия с тях</li>
+          <li>Степен с естествен показател</li>
+          <li>Отношения и пропорции</li>
+          <li>Проценти и лихва</li>
+          <li>Уравнения</li>
+          <li>Текстови задачи с уравнение</li>
+          <li>Координатна система</li>
+          <li>Ъгли и триъгълници</li>
+          <li>Призма и пирамида</li>
+          <li>Вероятност и статистика</li>
+          <li>Логически задачи</li>
+        </ul>
+
+        <div class="block-h"><h3>Защо „ранна подготовка за НВО“</h3><span></span></div>
+        <div class="info-grid">
+          <div class="info-card"><strong>Материалът е същият</strong><span>Голяма част от задачите на НВО в 7. клас стъпват върху рационалните числа, пропорциите и уравненията от 6. клас.</span></div>
+          <div class="info-card"><strong>Без стрес</strong><span>Година по-рано има време да се разбере, вместо да се наваксва. В 7. клас остава да се надгражда.</span></div>
+          <div class="info-card"><strong>С ясна картина</strong><span>Диагностика в началото и проследяване после — казваме навреме кои теми са стабилни и кои искат още.</span></div>
+        </div>
+
+        <figure class="quote">
+          <p>Истинско разбиране — не зубрене.</p>
+          <span>— нашият подход, в едно изречение</span>
+        </figure>
+
         <div class="enroll-form-section" id="enrollFormSection">
-          <h3>Запиши се за курса</h3>
-          <p>Попълнете данните по-долу — предварително сме попълнили курса вместо вас, но можете да ги промените.</p>
+          <h3>Запазете място в групата</h3>
+          <p>Оставете телефон и ще се обадим — за да чуем какво обича детето ви и да Ви кажем какво още има свободно.</p>
 
           <form id="enrollForm" onsubmit="submitEnrollForm(event)">
             <div class="enroll-field">
