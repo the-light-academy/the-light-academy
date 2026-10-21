@@ -1,0 +1,1338 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Пробен общински кръг 2023 — математика, 4. клас</title>
+<meta name="description" content="Интерактивна пробна тема за общинския кръг на олимпиадата по математика, 4. клас — темата от 09.12.2023 г. с таймер, проверка на отговорите и анимирани решения." />
+<!-- =====================================================================
+     Пробен общински кръг 2023 — математика, 4. клас
+     ---------------------------------------------------------------------
+     Един файл, който работи сам: без интернет, без външни ресурси, с
+     двоен клик. Всичко — стил, двигател, условия и анимации — е вътре.
+
+     Файлът е СГЛОБЕН от scripts/build_probni.py. Не го редактирай тук:
+     следващото сглобяване ще изтрие промяната. Частите са в
+     scripts/probni/ — engine.css, engine.js и по един файл с условията
+     за всяка година.
+
+     Отговорите са кодирани (base64), за да не се четат с поглед в кода.
+     Това не е ключалка — дете с конзола ще ги намери. Това е да не
+     лъснат случайно, докато листът е отворен пред класа.
+     ===================================================================== -->
+<style>
+/* ── основи ───────────────────────────────────────────────────────── */
+:root{
+  --bg:#F6F3FF; --card:#fff; --ink:#1F2340; --soft:#5A6183;
+  --line:rgba(31,35,64,.12);
+  --sun:#F7AD19; --sun-d:#8A5505; --sun-w:#FFF3DC;
+  --navy:#0D1B36; --good:#15643C; --good-w:#E6F6EE;
+  --bad:#9B2226; --bad-w:#FCEBEA; --mid:#8A5505;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.65;
+  font-size:18px;
+  background-image:
+    radial-gradient(closest-side at 12% 8%, rgba(247,173,25,.16), transparent 70%),
+    radial-gradient(closest-side at 88% 20%, rgba(90,97,131,.12), transparent 70%);
+  background-attachment:fixed;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 60px}
+h1,h2,h3{line-height:1.25}
+h1{font-size:clamp(1.4rem,3.4vw,2rem);font-weight:800}
+h2{font-size:1.2rem;font-weight:800}
+button{font:inherit}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px 20px;box-shadow:0 10px 30px rgba(31,35,64,.07)}
+.card+.card{margin-top:14px}
+.muted{color:var(--soft);font-size:.95rem}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  min-height:48px;padding:.5rem 1.2rem;border-radius:999px;border:2px solid transparent;
+  background:var(--sun);color:#3A2A05;font-weight:800;cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(247,173,25,.35)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn--ghost{background:transparent;border-color:rgba(31,35,64,.2);color:var(--ink)}
+.btn--ghost:hover{background:#F1EEFF;box-shadow:none}
+.btn--navy{background:var(--navy);color:#fff}
+.btn--sm{min-height:38px;padding:.3rem .9rem;font-size:.9rem}
+.btn:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--sun-d);outline-offset:2px}
+
+/* ── начален екран ────────────────────────────────────────────────── */
+.hero{text-align:center;padding:26px 20px}
+.hero__badge{display:inline-block;background:var(--sun-w);color:var(--sun-d);
+  font-weight:800;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.3rem .9rem;border-radius:999px;margin-bottom:.8rem}
+.hero__sub{color:var(--soft);margin-top:.5rem}
+.field{margin:16px auto;max-width:420px;text-align:left}
+.field label{display:block;font-weight:800;font-size:.85rem;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--soft);margin-bottom:.35rem}
+.field input,.field select{width:100%;font:inherit;padding:.65rem .85rem;
+  border:1.5px solid rgba(31,35,64,.18);border-radius:12px;background:#fff}
+.modes{display:grid;gap:10px;max-width:520px;margin:0 auto;text-align:left}
+.mode{display:flex;gap:.7rem;align-items:flex-start;border:2px solid var(--line);
+  border-radius:14px;padding:.7rem .9rem;cursor:pointer;background:#fff}
+.mode:hover{border-color:rgba(13,27,54,.3)}
+.mode.is-on{border-color:var(--navy);background:#F7F8FF}
+.mode input{margin-top:.35rem}
+.mode b{display:block}
+.mode span{font-size:.9rem;color:var(--soft)}
+.rules{text-align:left;max-width:560px;margin:18px auto 0;background:var(--sun-w);
+  border-radius:14px;padding:.9rem 1.1rem}
+.rules li{margin-left:1.1rem}
+
+/* ── лента с таймера ──────────────────────────────────────────────── */
+.bar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  padding:8px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar__who{font-weight:800}
+.bar__prog{font-size:.88rem;color:var(--soft)}
+.bar__sp{margin-left:auto}
+.clock{display:flex;align-items:center;gap:.6rem}
+.clock__ring{width:54px;height:54px;flex:none}
+.clock__ring circle{fill:none;stroke-width:6}
+.clock__bg{stroke:rgba(31,35,64,.1)}
+.clock__fg{stroke:var(--good);stroke-linecap:round;
+  transition:stroke-dashoffset .9s linear,stroke .4s ease}
+.clock__t{font-variant-numeric:tabular-nums;font-weight:800;font-size:1.3rem}
+.clock.is-warn .clock__fg{stroke:var(--sun)} .clock.is-warn .clock__t{color:var(--sun-d)}
+.clock.is-hot .clock__fg{stroke:var(--bad)} .clock.is-hot .clock__t{color:var(--bad)}
+.clock.is-hot{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+
+/* ── навигация по задачи ──────────────────────────────────────────── */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.tab{background:#fff;border:2px solid var(--line);border-radius:16px;padding:.8rem .6rem;
+  cursor:pointer;text-align:center;font-weight:800;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.tab:hover{border-color:rgba(13,27,54,.3)}
+.tab.is-on{border-color:var(--navy);background:#F7F8FF}
+.tab__pts{font-size:.78rem;font-weight:700;color:var(--soft)}
+.tab__ok{font-size:.9rem;color:var(--good)}
+
+/* ── задача ───────────────────────────────────────────────────────── */
+.prob__h{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+.prob__n{font-size:1.25rem;font-weight:800}
+.prob__p{font-size:.8rem;font-weight:800;color:var(--sun-d);background:var(--sun-w);
+  border-radius:999px;padding:.15rem .6rem}
+.prob__text{font-size:1.05rem;margin:.4rem 0 .2rem}
+.fig{margin:14px 0;text-align:center}
+.fig svg{max-width:100%;height:auto}
+.part{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.part__l{display:inline-block;font-weight:800;background:#EEF0FF;border-radius:8px;
+  padding:.05rem .45rem;margin-right:.35rem}
+.ans{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:10px}
+.ans__box{display:flex;flex-direction:column;gap:.2rem}
+.ans__lab{font-size:.82rem;font-weight:700;color:var(--soft)}
+.ans__row{display:flex;align-items:center;gap:.35rem}
+.ans input{font:inherit;font-size:1.05rem;width:7.5rem;padding:.45rem .6rem;
+  border:1.5px solid rgba(31,35,64,.2);border-radius:10px;text-align:center;background:#fff}
+.ans input.sm{width:3.2rem}
+.ans__u{font-weight:700;color:var(--soft)}
+.ans--hint{background:#FBFAFF;border:1px dashed var(--line);border-radius:12px;padding:.6rem .7rem}
+.ans--hint .ans__lab::after{content:" · незадължително";font-weight:400;opacity:.8}
+.draft{margin-top:12px}
+.draft textarea{width:100%;min-height:72px;font:inherit;font-size:.95rem;padding:.6rem .7rem;
+  border:1.5px dashed var(--line);border-radius:12px;background:#FCFCFF;resize:vertical}
+
+/* ── резултати ────────────────────────────────────────────────────── */
+.score{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.score__ring{width:132px;height:132px;position:relative;flex:none}
+.score__ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score__ring circle{fill:none;stroke-width:11}
+.score__bg{stroke:rgba(31,35,64,.1)}
+.score__fg{stroke:var(--sun);stroke-linecap:round;
+  transition:stroke-dashoffset 1.2s cubic-bezier(.22,.61,.36,1)}
+.score__num{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-weight:800;line-height:1.1}
+.score__num b{font-size:2rem}
+.score__num span{font-size:.8rem;color:var(--soft)}
+.score__msg{flex:1 1 16rem;min-width:0}
+/* без това [hidden] не работи върху бутоните: .btn има display:inline-flex */
+[hidden]{display:none !important}
+.tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:.95rem}
+.tbl th,.tbl td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);
+  vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--soft)}
+.tbl td.mark{white-space:nowrap;font-weight:800}
+.tbl tr.is-ok{background:var(--good-w)}
+.tbl tr.is-part{background:var(--sun-w)}
+.tbl tr.is-bad{background:var(--bad-w)}
+.mark{font-weight:800}
+
+/* ── решения ──────────────────────────────────────────────────────── */
+.sol{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-top:12px;background:#fff}
+.sol__h{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.steps{margin-top:12px;display:grid;gap:8px}
+.step{background:#F8F7FF;border-radius:12px;padding:.6rem .8rem;
+  animation:stepIn .32s cubic-bezier(.22,.61,.36,1) both}
+.step b{color:var(--sun-d)}
+.step__p{float:right;font-size:.78rem;font-weight:800;color:var(--sun-d);
+  background:var(--sun-w);border-radius:999px;padding:.05rem .5rem}
+@keyframes stepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stage{margin-top:12px;min-height:40px}
+
+/* ── дребни ───────────────────────────────────────────────────────── */
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:60;
+  display:grid;gap:8px;width:min(92vw,420px)}
+.toast{background:var(--navy);color:#fff;border-radius:14px;padding:.7rem 1rem;
+  box-shadow:0 14px 34px rgba(13,27,54,.3);animation:tIn .3s ease both;font-size:.95rem}
+@keyframes tIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;
+  background:rgba(13,27,54,.45);padding:18px}
+.modal__box{background:#fff;border-radius:var(--r);padding:20px;max-width:440px;width:100%;
+  box-shadow:0 24px 60px rgba(13,27,54,.3)}
+.modal__btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+#conf{position:fixed;inset:0;pointer-events:none;z-index:50}
+.locked{opacity:.65}
+
+@media (max-width:760px){
+  body{font-size:17px}
+  .tabs{grid-template-columns:1fr}
+  .bar{gap:10px}
+  .score__ring{width:108px;height:108px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+@media print{
+  .bar,.tabs,.btn,.draft,.toast-wrap,#conf{display:none !important}
+  body{background:#fff;font-size:12pt}
+  .card{box-shadow:none;border:1px solid #bbb;break-inside:avoid}
+  .sol{break-inside:avoid}
+}
+
+/* ── избираем отговор (А, Б, В, Г) ───────────────────────────────── */
+.ans--choice{flex:1 1 100%;flex-direction:column;align-items:stretch}
+/* Задача без подточки („а)“, „б)“) няма какво да сложи в етикета —
+   празното квадратче пред условието изглеждаше като грешка. */
+.part__l:empty{display:none}
+.choices{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:6px}
+.choice{display:flex;align-items:center;gap:.5rem;text-align:left;
+  padding:.55rem .7rem;border:2px solid var(--line);border-radius:14px;
+  background:#fff;cursor:pointer;font:inherit;min-height:48px}
+.choice:hover{border-color:var(--sun);background:var(--sun-w)}
+.choice.is-on{border-color:var(--sun);background:var(--sun-w);box-shadow:0 6px 16px rgba(247,173,25,.25)}
+.choice:disabled{opacity:.75;cursor:default;box-shadow:none}
+.choice__l{flex:0 0 auto;font-weight:800;color:var(--sun-d)}
+.choice__t{flex:1 1 auto;min-width:0}
+#saveNote.is-saved{color:var(--good);font-weight:700}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- Платформата — по желание. Когато листът е отворен от сайта и детето е
+     влязло, резултатът се записва в профила му. Свален файл на нечий
+     компютър просто не намира тези три скрипта и тестът работи както
+     преди: без интернет, без запис. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/supabase-config.js"></script>
+<script src="../assets/auth.js"></script>
+
+<script>
+/* Темата от 09.12.2023 г. (учебна 2023/2024) — общински кръг на
+   националната олимпиада по математика, IV клас.
+
+   Отговорите и точките са сверени с официалния лист „Решения на
+   задачите и критерии за оценяване“ на РУО София-град:
+     зад. 1 — A = 8, B = 935, C = 997 998, израз = 998 097
+              (2,5 + 2 + 1 + 1,5 = 7 т.)
+     зад. 2 — 32 м и 96 м · квадрат 128 м · мрежа 317 м
+              (3 + 1 + 3 = 7 т.)
+     зад. 3 — 137 четвъртокласници (7 × 1 т.)
+
+   Прагът е официален: в самата тема пише, че за областен кръг се
+   класират учениците с не по-малко от 16 точки.
+
+   Отговорите тук се пишат четимо, в полето ans; build_probni.py ги
+   кодира, преди да влязат в готовия файл. */
+var TEST = {
+  id: 'obshtinski-2023-4',
+  /* Редът в таблица assignments: по него резултатът влиза в профила
+     на ученика, когато листът е отворен от платформата. */
+  slug: 'probna-obshtinski-2023-4',
+  title: 'Пробен общински кръг — 2023',
+  originalDate: '09.12.2023 г.',
+  officialMinutes: 240,
+  passThreshold: 16,
+  thresholdNote: '',
+  problems: [
+    {
+      n: 1, points: 7,
+      introHtml: 'Да се пресметне стойността на израза <b>(B : 5 − A · 11) + C</b>, ако:' +
+        '<div class="muted" style="margin-top:.5rem;line-height:1.9">' +
+        '<b>A</b> = (3125 : 5 − 2125 : 5 + 120 : 2 + 1080 : 2) : 100<br>' +
+        '<b>B</b> е неизвестното число в равенството 1445 − <span class="qbox">?</span> = ' +
+        '(2023 · 12 · 0 + 255 : 3) · 6<br>' +
+        '<b>C</b> е най-голямото четно шестцифрено число с цифра на хилядите 7.</div>',
+      figure: null,
+      parts: [
+        { key: 'p1', label: '', points: 7,
+          textHtml: 'Намери трите числа и пресметни израза.',
+          inputs: [
+            { key: '1A', label: 'A =', unit: '', points: 2.5, final: false, enc: 'OA==' },
+            { key: '1B', label: 'B =', unit: '', points: 2, final: false, enc: 'OTM1' },
+            { key: '1C', label: 'C =', unit: '', points: 1, final: false, enc: 'OTk3OTk4' },
+            { key: '1R', label: '(B : 5 − A · 11) + C =', unit: '', points: 1.5, final: true, enc: 'OTk4MDk3' }
+          ],
+          solutionSteps: [
+            { label: 'A', points: 1, anim: 'abc', k: 0,
+              html: 'В скобите двете деления на 5 се групират, двете на 2 — също: ' +
+                    '(3125 − 2125) : 5 + (120 + 1080) : 2.' },
+            { label: 'A', points: 0.5, anim: 'abc', k: 1,
+              html: '1000 : 5 = <b>200</b>, 1200 : 2 = <b>600</b>.' },
+            { label: 'A', points: 1, anim: 'abc', k: 2,
+              html: '(200 + 600) : 100 = 800 : 100 = <b>A = 8</b>.' },
+            { label: 'B', points: 1, anim: 'abc', k: 3,
+              html: 'Отдясно: 2023 · 12 · <b>0 = 0</b>, а 255 : 3 = 85. Значи (0 + 85) · 6 = <b>510</b>.' },
+            { label: 'B', points: 1, anim: 'abc', k: 4,
+              html: '1445 − B = 510, тоест B = 1445 − 510 = <b>935</b>.' },
+            { label: 'C', points: 1, anim: 'abc', k: 5,
+              html: 'Шестцифрено, с цифра на хилядите 7: _ _ 7 _ _ _. Най-голямо значи ' +
+                    'останалите цифри са възможно най-големи, а четно значи последната е четна: ' +
+                    '<b>C = 997 998</b>.' },
+            { label: '', points: 1.5, anim: 'abc', k: 6,
+              html: '(935 : 5 − 8 · 11) + 997 998 = (187 − 88) + 997 998 = 99 + 997 998 = <b>998 097</b>.' }
+          ] }
+      ]
+    },
+    {
+      n: 2, points: 7,
+      introHtml: 'Правоъгълно дворно място е разделено на две градини — с форма на ' +
+        '<b>квадрат</b> и на <b>правоъгълник</b> с обща страна, както е показано на чертежа. ' +
+        'Обиколката на правоъгълната градина е <b>256 метра</b>.',
+      figure: "<svg viewBox=\"0 0 360 170\" width=\"100%\" style=\"max-width:360px\" role=\"img\" aria-label=\"Правоъгълно дворно място, разделено с отсечка на две градини: квадратна отляво и правоъгълна отдясно, с обща страна.\"><rect x=\"20\" y=\"20\" width=\"110\" height=\"110\" fill=\"#FFF9EC\" stroke=\"#1F2340\" stroke-width=\"3\"/><rect x=\"130\" y=\"20\" width=\"200\" height=\"110\" fill=\"#FFF9EC\" stroke=\"#1F2340\" stroke-width=\"3\"/><text x=\"75\" y=\"152\" text-anchor=\"middle\" font-size=\"14\" fill=\"#5A6183\">квадрат</text><text x=\"230\" y=\"152\" text-anchor=\"middle\" font-size=\"14\" fill=\"#5A6183\">правоъгълник</text></svg>",
+      parts: [
+        { key: 'p2a', label: 'а)', points: 3,
+          textHtml: 'Намерете дължините на страните на <b>правоъгълната</b> градина, ' +
+            'ако се знае, че ширината е три пъти по-малка от дължината.',
+          inputs: [
+            { key: '2a_w', label: 'Ширина', unit: 'м', points: 2, final: true, enc: 'MzI=' },
+            { key: '2a_l', label: 'Дължина', unit: 'м', points: 1, final: true, enc: 'OTY=' }
+          ],
+          solutionSteps: [
+            { label: 'а)', points: 1, anim: 'dvor', k: 0,
+              html: 'Ширината е една част, дължината — три такива. Обиколката е ' +
+                    'ширина + дължина + ширина + дължина, тоест <b>8 части</b>: 8 · x = 256.' },
+            { label: 'а)', points: 1, anim: 'dvor', k: 1,
+              html: 'x = 256 : 8 = <b>32 м</b> — това е ширината (по-късата страна).' },
+            { label: 'а)', points: 1, anim: 'dvor', k: 2,
+              html: '32 · 3 = <b>96 м</b> е дължината (по-дългата страна).' }
+          ] },
+        { key: 'p2b', label: 'б)', points: 1,
+          textHtml: 'Намерете обиколката на градината с форма на <b>квадрат</b>.',
+          inputs: [
+            { key: '2b', label: 'Обиколка на квадрата', unit: 'м', points: 1, final: true, enc: 'MTI4' }
+          ],
+          solutionSteps: [
+            { label: 'б)', points: 0.5, anim: 'dvor', k: 3,
+              html: 'Общата страна е тъкмо ширината на правоъгълната градина, значи ' +
+                    'страната на квадрата е <b>32 м</b>.' },
+            { label: 'б)', points: 0.5, anim: 'dvor', k: 4,
+              html: '4 · 32 = <b>128 м</b> е обиколката на квадратната градина.' }
+          ] },
+        { key: 'p2v', label: 'в)', points: 3,
+          textHtml: 'Колко метра мрежа е необходима, за да се огради <b>дворното място</b>, ' +
+            'ако на една от страните е монтирана дворна врата с дължина <b>3 метра</b>?',
+          inputs: [
+            { key: '2v_p', label: 'Обиколка на дворното място', unit: 'м', points: 2, final: false, enc: 'MzIw' },
+            { key: '2v', label: 'Мрежа', unit: 'м', points: 1, final: true, enc: 'MzE3' }
+          ],
+          solutionSteps: [
+            { label: 'в)', points: 1, anim: 'dvor', k: 5,
+              html: 'Дворното място е квадратът и правоъгълникът един до друг: ' +
+                    'страните му са 96 + 32 = <b>128 м</b> и <b>32 м</b>.' },
+            { label: 'в)', points: 1, anim: 'dvor', k: 6,
+              html: 'Обиколката му е 2 · (128 + 32) = <b>320 м</b>.' },
+            { label: 'в)', points: 1, anim: 'dvor', k: 7,
+              html: 'Вратата е 3 метра и на нейно място мрежа не трябва: ' +
+                    '320 − 3 = <b>317 метра мрежа</b>.' }
+          ] }
+      ]
+    },
+    {
+      n: 3, points: 7,
+      introHtml: 'Четвъртокласниците от едно училище се записали за участие в ' +
+        '<b>Софийски математически турнир</b>, <b>Олимпиада по математика</b> и ' +
+        '<b>Коледно математическо състезание</b>.' +
+        '<div class="muted" style="margin-top:.5rem;line-height:1.8">' +
+        '· 29 ученици не участват в математически състезания и олимпиада;<br>' +
+        '· в Софийския математически турнир участвали 37 деца, а два пъти повече от тях — ' +
+        'в Олимпиадата по математика;<br>' +
+        '· записаните за Коледното състезание са с 38 по-малко от тези в Олимпиадата;<br>' +
+        '· 15 ученици се записали за турнира <i>и</i> Олимпиадата, а с 9 ученици повече — ' +
+        'за Олимпиадата <i>и</i> Коледното състезание;<br>' +
+        '· няма ученици, които участват и в трите състезания.</div>',
+      figure: null,
+      parts: [
+        { key: 'p3', label: '', points: 7,
+          textHtml: 'Колко са всички четвъртокласници в това училище?',
+          inputs: [
+            { key: '3o', label: 'В Олимпиадата', unit: 'деца', points: 1, final: false, enc: 'NzQ=' },
+            { key: '3k', label: 'В Коледното състезание', unit: 'деца', points: 1, final: false, enc: 'MzY=' },
+            { key: '3ok', label: 'В Олимпиадата и Коледното', unit: 'деца', points: 1, final: false, enc: 'MjQ=' },
+            { key: '3t1', label: 'Само в турнира', unit: 'деца', points: 1, final: false, enc: 'MjI=' },
+            { key: '3o1', label: 'Само в Олимпиадата', unit: 'деца', points: 1, final: false, enc: 'MzU=' },
+            { key: '3k1', label: 'Само в Коледното', unit: 'деца', points: 1, final: false, enc: 'MTI=' },
+            { key: '3R', label: 'Всички четвъртокласници', unit: 'деца', points: 1, final: true, enc: 'MTM3' }
+          ],
+          solutionSteps: [
+            { label: '', points: 1, anim: 'venn', k: 0,
+              html: 'В Олимпиадата са два пъти повече от турнира: 37 · 2 = <b>74</b> ученици.' },
+            { label: '', points: 1, anim: 'venn', k: 1,
+              html: 'В Коледното състезание са с 38 по-малко от Олимпиадата: 74 − 38 = <b>36</b> ученици.' },
+            { label: '', points: 1, anim: 'venn', k: 2,
+              html: 'В Олимпиадата <i>и</i> Коледното са с 9 повече от 15: 15 + 9 = <b>24</b> ученици.' },
+            { label: '', points: 1, anim: 'venn', k: 3,
+              html: 'Само в турнира: 37 − 15 = <b>22</b> ученици. За деца, които са и в турнира, ' +
+                    'и в Коледното, в условието не се казва нищо — приемаме, че няма такива.' },
+            { label: '', points: 1, anim: 'venn', k: 4,
+              html: 'Само в Олимпиадата: 74 − 15 − 24 = <b>35</b> ученици.' },
+            { label: '', points: 1, anim: 'venn', k: 5,
+              html: 'Само в Коледното: 36 − 24 = <b>12</b> ученици.' },
+            { label: '', points: 1, anim: 'venn', k: 6,
+              html: 'Събираме всички части, без да броим никого два пъти, и добавяме 29-те, ' +
+                    'които не участват никъде: 22 + 15 + 35 + 24 + 12 + 29 = <b>137 четвъртокласници</b>. ' +
+                    'Това е <b>най-големият възможен</b> брой: ако някои деца са и в турнира, и в ' +
+                    'Коледното, те щяха да се броят веднъж вместо два пъти и класовете щяха да са по-малки.' }
+          ] }
+      ]
+    }
+  ]
+};
+
+/* Анимираните решения за темата от 09.12.2023 г. Както при 2018 и 2020:
+   всяка функция рисува СЪСТОЯНИЕТО на стъпка k, а не разликата — така
+   връщането назад е безплатно. */
+var ANIM = (function () {
+  function chip(t, bg, fg) {
+    return '<span style="display:inline-block;background:' + (bg || '#EEF0FF') + ';color:' + (fg || '#1F2340') +
+      ';border-radius:12px;padding:.35rem .7rem;font-weight:800;font-size:1.05rem">' + t + '</span>';
+  }
+  function row(h) {
+    return '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center">' + h + '</div>';
+  }
+  var GOLD = '#FFF3DC', GOLDF = '#8A5505', GREEN = '#E6F6EE', GREENF = '#15643C',
+      BLUE = '#E7EDFA', BLUEF = '#26406F', GREY = '#F1F2F7', GREYF = '#5A6183';
+
+  return {
+    /* Задача 1 — трите числа едно по едно, после изразът.
+       k: 0–2 за A, 3–4 за B, 5 за C, 6 за крайния израз. */
+    abc: function (host, k) {
+      var lines = [];
+      if (k === 0) {
+        lines.push(row(chip('3125 : 5 − 2125 : 5', GREY, GREYF) + chip('→') +
+                       chip('(3125 − 2125) : 5', GOLD, GOLDF)));
+        lines.push(row(chip('120 : 2 + 1080 : 2', GREY, GREYF) + chip('→') +
+                       chip('(120 + 1080) : 2', GOLD, GOLDF)));
+      } else if (k === 1) {
+        lines.push(row(chip('1000 : 5 = 200', GOLD, GOLDF) + chip('1200 : 2 = 600', GOLD, GOLDF)));
+      } else if (k === 2) {
+        lines.push(row(chip('(200 + 600) : 100', GOLD, GOLDF) + chip('=') +
+                       chip('800 : 100', GOLD, GOLDF) + chip('=') + chip('A = 8', GREEN, GREENF)));
+      } else if (k === 3) {
+        lines.push(row(chip('2023 · 12 · 0', GREY, GREYF) + chip('=') + chip('0', GOLD, GOLDF) +
+                       chip('255 : 3 = 85', GOLD, GOLDF)));
+        lines.push(row(chip('(0 + 85) · 6', GOLD, GOLDF) + chip('=') + chip('510', GOLD, GOLDF)));
+      } else if (k === 4) {
+        lines.push(row(chip('1445 − B = 510', GOLD, GOLDF) + chip('→') +
+                       chip('B = 1445 − 510 = 935', GREEN, GREENF)));
+      } else if (k === 5) {
+        var digits = ['9', '9', '7', '9', '9', '8'];
+        var names = ['стотици<br>хиляди', 'десетки<br>хиляди', 'хиляди', 'стотици', 'десетици', 'единици'];
+        var boxes = digits.map(function (d, i) {
+          var hot = (i === 2), even = (i === 5);
+          return '<div style="flex:0 0 76px;text-align:center">' +
+            '<div style="border:2px solid ' + (hot ? GOLDF : (even ? GREENF : 'rgba(31,35,64,.18)')) +
+              ';background:' + (hot ? GOLD : (even ? GREEN : '#fff')) +
+              ';border-radius:12px;padding:.45rem 0;font-size:1.5rem;font-weight:800">' + d + '</div>' +
+            '<div style="font-size:.72rem;color:#5A6183;margin-top:.2rem">' + names[i] + '</div></div>';
+        }).join('');
+        lines.push('<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">' + boxes + '</div>');
+        lines.push('<p class="muted" style="text-align:center;margin-top:.5rem">' +
+          'Хилядите са заковани на 7. Останалите цифри са възможно най-големите, а последната ' +
+          'трябва да е четна — най-голямата четна цифра е 8.</p>');
+        lines.push(row(chip('C = 997 998', GREEN, GREENF)));
+      } else {
+        lines.push(row(chip('935 : 5 = 187', BLUE, BLUEF) + chip('8 · 11 = 88', BLUE, BLUEF)));
+        lines.push(row(chip('187 − 88 = 99', GOLD, GOLDF)));
+        lines.push(row(chip('99 + 997 998', GOLD, GOLDF) + chip('=') + chip('998 097', GREEN, GREENF)));
+      }
+      host.innerHTML = lines.join('<div style="height:8px"></div>');
+    },
+
+    /* Задача 2 — дворът: квадратът отляво, правоъгълникът отдясно.
+       Чертежът НЕ е по мащаб (както и в оригинала), затова размерите
+       се изписват с надписи, а не с дължини. */
+    dvor: function (host, k) {
+      var X = 30, Y = 26, S = 110, L = 220, H = 110;   /* квадрат S×H, правоъгълник L×H */
+      var know = k >= 1;                                /* знаем ли вече 32 */
+      var knowL = k >= 2;                               /* знаем ли вече 96 */
+      var sq = k >= 3;                                  /* квадратът е в играта */
+      var whole = k >= 5;                               /* целият двор */
+      var svg =
+        '<svg viewBox="0 0 ' + (X * 2 + S + L) + ' 200" width="100%" ' +
+          'style="max-width:420px;display:block;margin:0 auto">' +
+          '<rect x="' + X + '" y="' + Y + '" width="' + S + '" height="' + H + '" ' +
+            'fill="' + (sq ? GREEN : '#FFF9EC') + '" stroke="' + (sq ? GREENF : '#8A5505') + '" stroke-width="3"/>' +
+          '<rect x="' + (X + S) + '" y="' + Y + '" width="' + L + '" height="' + H + '" ' +
+            'fill="' + (k <= 2 ? GOLD : '#FFF9EC') + '" stroke="#8A5505" stroke-width="3"/>' +
+          '<text x="' + (X + S / 2) + '" y="' + (Y + H / 2 + 5) + '" text-anchor="middle" ' +
+            'font-size="14" font-weight="700" fill="#1F2340">квадрат</text>' +
+          '<text x="' + (X + S + L / 2) + '" y="' + (Y + H / 2 + 5) + '" text-anchor="middle" ' +
+            'font-size="14" font-weight="700" fill="#1F2340">правоъгълник</text>' +
+          /* общата страна */
+          '<line x1="' + (X + S) + '" y1="' + Y + '" x2="' + (X + S) + '" y2="' + (Y + H) + '" ' +
+            'stroke="' + (sq ? GREENF : '#1F2340') + '" stroke-width="' + (sq ? 5 : 3) + '"/>' +
+          /* надписите по страните */
+          (know ? '<text x="' + (X - 8) + '" y="' + (Y + H / 2 + 5) + '" text-anchor="end" ' +
+            'font-size="14" font-weight="800" fill="' + GOLDF + '">32 м</text>' : '') +
+          (knowL ? '<text x="' + (X + S + L / 2) + '" y="' + (Y + H + 22) + '" text-anchor="middle" ' +
+            'font-size="14" font-weight="800" fill="' + GOLDF + '">96 м</text>' : '') +
+          (sq ? '<text x="' + (X + S / 2) + '" y="' + (Y + H + 22) + '" text-anchor="middle" ' +
+            'font-size="14" font-weight="800" fill="' + GREENF + '">32 м</text>' : '') +
+          (whole ? '<text x="' + (X + (S + L) / 2) + '" y="' + (Y - 8) + '" text-anchor="middle" ' +
+            'font-size="14" font-weight="800" fill="' + BLUEF + '">128 м = 96 + 32</text>' : '') +
+          (k >= 7 ? '<rect x="' + (X + S + L - 56) + '" y="' + (Y + H - 5) + '" width="46" height="10" ' +
+            'rx="4" fill="#9B2226"/><text x="' + (X + S + L - 33) + '" y="' + (Y + H + 30) + '" ' +
+            'text-anchor="middle" font-size="13" font-weight="800" fill="#9B2226">врата 3 м</text>' : '') +
+        '</svg>';
+      var note =
+        (k === 0 ? row(chip('8 части = 256 м', GOLD, GOLDF)) :
+         k === 1 ? row(chip('256 : 8 = 32 м — ширината', GREEN, GREENF)) :
+         k === 2 ? row(chip('32 · 3 = 96 м — дължината', GREEN, GREENF)) :
+         k === 3 ? row(chip('страната на квадрата е общата страна: 32 м', GOLD, GOLDF)) :
+         k === 4 ? row(chip('4 · 32 = 128 м — обиколка на квадрата', GREEN, GREENF)) :
+         k === 5 ? row(chip('дворът е 128 м на 32 м', BLUE, BLUEF)) :
+         k === 6 ? row(chip('2 · (128 + 32) = 320 м', GOLD, GOLDF)) :
+                   row(chip('320 − 3 = 317 м мрежа', GREEN, GREENF)));
+      host.innerHTML = svg + '<div style="height:8px"></div>' + note;
+    },
+
+    /* Задача 3 — трите състезания като кръгове, които се застъпват.
+       Числата влизат едно по едно, точно по реда на решението. */
+    venn: function (host, k) {
+      function circ(cx, cy, r, fill) {
+        return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + fill +
+          '" fill-opacity=".45" stroke="#1F2340" stroke-width="2"/>';
+      }
+      function txt(x, y, t, big, color) {
+        return '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-size="' + (big ? 20 : 12) +
+          '" font-weight="' + (big ? 800 : 700) + '" fill="' + (color || '#1F2340') + '">' + t + '</text>';
+      }
+      var only1 = k >= 3 ? '22' : '?';
+      var onlyO = k >= 4 ? '35' : '?';
+      var onlyK = k >= 5 ? '12' : '?';
+      var ok = k >= 2 ? '24' : '?';
+      var svg =
+        '<svg viewBox="0 0 440 250" width="100%" style="max-width:440px;display:block;margin:0 auto">' +
+          circ(140, 100, 72, '#FFD9A8') + circ(240, 100, 72, '#A8C6FF') + circ(190, 175, 72, '#B8ECCB') +
+          txt(96, 102, only1, true) +
+          txt(285, 102, onlyO, true) +
+          txt(190, 215, onlyK, true) +
+          txt(190, 95, '15', true, '#8A5505') +
+          txt(228, 156, ok, true, '#15643C') +
+          (k >= 3 ? txt(152, 156, '0', true, '#9B2226') : '') +
+          txt(140, 40, 'турнир', false) +
+          txt(252, 40, 'олимпиада', false) +
+          txt(190, 240, 'коледно', false) +
+          txt(392, 40, '29 извън', false, '#5A6183') +
+          (k >= 3 ? txt(152, 176, 'няма данни', false, '#9B2226') : '') +
+        '</svg>';
+      var note =
+        (k === 0 ? row(chip('37 · 2 = 74 в олимпиадата', GOLD, GOLDF)) :
+         k === 1 ? row(chip('74 − 38 = 36 в коледното', GOLD, GOLDF)) :
+         k === 2 ? row(chip('15 + 9 = 24 в олимпиадата и коледното', GOLD, GOLDF)) :
+         k === 3 ? row(chip('37 − 15 = 22 само в турнира', BLUE, BLUEF)) :
+         k === 4 ? row(chip('74 − 15 − 24 = 35 само в олимпиадата', BLUE, BLUEF)) :
+         k === 5 ? row(chip('36 − 24 = 12 само в коледното', BLUE, BLUEF)) :
+                   row(chip('22 + 15 + 35 + 24 + 12 + 29 = 137', GREEN, GREENF)));
+      host.innerHTML = svg + note;
+    }
+  };
+})();
+
+</script>
+<script>
+/* =====================================================================
+   Двигателят на пробния тест
+   ---------------------------------------------------------------------
+   Един и същ за всички години. Темата (условия, отговори, критерии,
+   анимации) идва отвън, в обекта TEST, и двигателят не знае нищо за
+   съдържанието ѝ. Нова година значи нов файл с данни и нищо друго.
+
+   Три неща, които се правят нарочно така:
+
+   · Времето се мери с Date.now(), а не с броене на тиктакания. Таб,
+     който е бил на заден план, не „дължи“ секунди — браузърът спира
+     таймерите му, а часовникът на олимпиадата не спира.
+   · Отговорите са кодирани. Не е ключалка, а предпазване от случайно
+     лъсване, докато листът е отворен пред класа.
+   · Проверка има САМО след предаване. По време на теста няма зелено и
+     червено — иначе детето решава по сигналите, а не по задачата.
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  /* ── дребни помощници ─────────────────────────────────────────────*/
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function dec(s) {
+    try { return decodeURIComponent(escape(atob(s))); } catch (e) { return ''; }
+  }
+  /* 5,5 → „5,5“; 5 → „5“. Точките са половинки, затова не се закръглят. */
+  function pts(n) {
+    var r = Math.round(n * 2) / 2;
+    return (r === Math.floor(r)) ? String(r) : String(r).replace('.', ',');
+  }
+  function plural(n, a, b, c) { return n === 1 ? a : (n < 5 ? b : c); }
+
+  /* ── нормализиране на въведеното ──────────────────────────────────
+     Детето пише „42 м“, „42м“, „ 42 “ или „42,0“ — всичко това е 42.
+     Мерните единици се махат, защото са изписани до полето; запетаята
+     и точката са едно и също; интервалите вътре в числото също падат,
+     за да мине „1 045“. */
+  function normalizeInput(raw) {
+    var t = String(raw == null ? '' : raw).trim().toLowerCase();
+    if (!t) return '';
+    t = t.replace(/[а-я.]*$/u, function (m) {
+      /* маха само мерна единица накрая, не цифри */
+      return /^[а-я.\s]*$/u.test(m) ? '' : m;
+    });
+    t = t.replace(/\s+/g, '').replace(/,/g, '.');
+    if (!/^-?\d+(\.\d+)?$/.test(t)) return t;        /* не е число — връща се както е */
+    var n = parseFloat(t);
+    if (isNaN(n)) return t;
+    /* 42.0 и 42 са едно и също */
+    return String(Math.round(n * 1000) / 1000);
+  }
+  function sameNum(a, b) { return a !== '' && normalizeInput(a) === normalizeInput(b); }
+
+  /* ── състояние ────────────────────────────────────────────────────*/
+  var KEY = 'tla-probna-' + TEST.id;
+  var S = {
+    name: '', mode: 'train', minutes: 60,
+    startedAt: 0, endsAt: 0, paused: false, pausedAt: 0,
+    answers: {}, drafts: {}, submitted: false, usedMs: 0, result: null,
+    screen: 'start', tab: 0, shown: {}
+  };
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        name: S.name, mode: S.mode, minutes: S.minutes, startedAt: S.startedAt,
+        endsAt: S.endsAt, paused: S.paused, pausedAt: S.pausedAt,
+        answers: S.answers, drafts: S.drafts, submitted: S.submitted, usedMs: S.usedMs
+      }));
+    } catch (e) { /* без localStorage тестът пак работи, просто не оцелява презареждане */ }
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function wipe() { try { localStorage.removeItem(KEY); } catch (e) {} }
+
+  /* ── известия и модални прозорци ──────────────────────────────────*/
+  var toastWrap;
+  function toast(msg, ms) {
+    if (!toastWrap) { toastWrap = el('div', 'toast-wrap'); document.body.appendChild(toastWrap); }
+    var t = el('div', 'toast', esc(msg));
+    toastWrap.appendChild(t);
+    setTimeout(function () { t.remove(); }, ms || 4200);
+  }
+  function ask(title, text, okLabel, onOk) {
+    var m = el('div', 'modal');
+    m.innerHTML = '<div class="modal__box" role="dialog" aria-modal="true">' +
+      '<h2>' + esc(title) + '</h2><p class="muted" style="margin-top:.4rem">' + esc(text) + '</p>' +
+      '<div class="modal__btns">' +
+        '<button type="button" class="btn btn--ghost" data-no>Не, връщам се</button>' +
+        '<button type="button" class="btn" data-yes>' + esc(okLabel) + '</button>' +
+      '</div></div>';
+    document.body.appendChild(m);
+    m.querySelector('[data-yes]').focus();
+    m.addEventListener('click', function (e) {
+      if (e.target.closest('[data-yes]')) { m.remove(); onOk(); }
+      else if (e.target.closest('[data-no]') || e.target === m) m.remove();
+    });
+  }
+
+  /* ── таймерът ─────────────────────────────────────────────────────*/
+  var tick = null, flags = {};
+  function msLeft() {
+    if (S.paused) return Math.max(0, S.endsAt - S.pausedAt);
+    return Math.max(0, S.endsAt - Date.now());
+  }
+  function fmt(ms) {
+    var s = Math.floor(ms / 1000), h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60), q = s % 60;
+    return h + ':' + ('0' + m).slice(-2) + ':' + ('0' + q).slice(-2);
+  }
+  function startClock() {
+    stopClock();
+    tick = setInterval(paintClock, 250);
+    paintClock();
+  }
+  function stopClock() { if (tick) { clearInterval(tick); tick = null; } }
+
+  function paintClock() {
+    var box = $('clock');
+    if (!box) return;
+    var left = msLeft(), total = S.minutes * 60000;
+    var frac = total ? left / total : 0;
+    $('clockT').textContent = fmt(left);
+    var ring = $('clockFg');
+    var C = 2 * Math.PI * 24;
+    ring.setAttribute('stroke-dasharray', C);
+    ring.setAttribute('stroke-dashoffset', String(C * (1 - frac)));
+    box.className = 'clock' + (left <= 300000 ? ' is-hot' : (frac <= 0.25 ? ' is-warn' : ''));
+
+    if (!flags.half && left <= total / 2 && left > total / 2 - 2000) {
+      flags.half = true; toast('Половината време мина.');
+    }
+    if (!flags.ten && left <= 600000) { flags.ten = true; toast('Остават 10 минути.'); }
+    if (!flags.one && left <= 60000) { flags.one = true; toast('Остава 1 минута!'); }
+    if (left <= 0) { stopClock(); submit(true); }
+  }
+
+  /* ── събиране на отговорите от екрана ─────────────────────────────*/
+  function inputId(pk, k, i) { return 'in-' + pk + '-' + k + (i == null ? '' : '-' + i); }
+
+  /* Буквите на избираемите отговори — както ги пише самото състезание. */
+  var LETTERS = ['А', 'Б', 'В', 'Г', 'Д'];
+
+  /* Колко точки носи целият тест. Беше написано 21 на две места, защото
+     и двете теми бяха по 21 — Салабашев е 60 и числото трябва да идва от
+     самата тема. */
+  function maxPoints() {
+    var sum = 0;
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) { sum += pt.points || 0; });
+    });
+    return Math.round(sum * 2) / 2;
+  }
+
+  /* На екрана стои само отворената задача — полетата на другите две ги
+     няма в DOM-а. Затова се чете САМО онова, което наистина е на екрана:
+     иначе смяната на раздел би изтрила вече попълнените отговори. */
+  function readInputs() {
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) {
+        pt.inputs.forEach(function (inp) {
+          if (inp.kind === 'choice') { return; }   /* пази се при щракване */
+          if (inp.kind === 'money') {
+            var lv = $(inputId(pt.key, inp.key, 'lv')), st = $(inputId(pt.key, inp.key, 'st'));
+            if (!lv && !st) return;
+            S.answers[inp.key] = [lv ? lv.value : '', st ? st.value : ''];
+          } else if (inp.kind === 'digits') {
+            if (!$(inputId(pt.key, inp.key, 0))) return;
+            S.answers[inp.key] = inp.boxes.map(function (b, i) {
+              var e = $(inputId(pt.key, inp.key, i));
+              return e ? e.value : '';
+            });
+          } else {
+            var e2 = $(inputId(pt.key, inp.key));
+            if (!e2) return;
+            S.answers[inp.key] = e2.value;
+          }
+        });
+      });
+      var d = $('draft-' + pr.n);
+      if (d) S.drafts['p' + pr.n] = d.value;
+    });
+  }
+
+  /* Колко полета са попълнени — само крайните броят за прогреса, защото
+     междинните са по желание. */
+  function progress() {
+    var done = 0, all = 0;
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) {
+        pt.inputs.forEach(function (inp) {
+          if (!inp.final) return;
+          all++;
+          if (filled(inp)) done++;
+        });
+      });
+    });
+    return { done: done, all: all };
+  }
+  function filled(inp) {
+    var v = S.answers[inp.key];
+    if (v == null) return false;
+    if (inp.kind === 'money') return String(v[0] || '').trim() !== '' || String(v[1] || '').trim() !== '';
+    if (inp.kind === 'digits') return v.every(function (x) { return String(x).trim() !== ''; });
+    return String(v).trim() !== '';   /* важи и за choice: буквата е низ */
+  }
+
+  /* ── оценяване ────────────────────────────────────────────────────
+     Правилото е едно: верни ВСИЧКИ крайни полета → пълните точки за
+     подточката. Инак — сборът от точките на верните полета (и крайни,
+     и междинни), без да надхвърля пълните. */
+  function inputCorrect(inp) {
+    var v = S.answers[inp.key];
+    if (v == null) return false;
+    if (inp.kind === 'money') {
+      var lv = normalizeInput(v[0]) === '' ? 0 : parseFloat(normalizeInput(v[0]));
+      var st = normalizeInput(v[1]) === '' ? 0 : parseFloat(normalizeInput(v[1]));
+      if (isNaN(lv) || isNaN(st)) return false;
+      if (String(v[0]).trim() === '' && String(v[1]).trim() === '') return false;
+      return (lv * 100 + st) === parseFloat(dec(inp.enc));
+    }
+    if (inp.kind === 'digits') {
+      var want = dec(inp.enc).split(',');
+      return v.length === want.length && want.every(function (w, i) { return sameNum(v[i], w); });
+    }
+    /* Избираемият отговор е БУКВА, не число: sameNum би върнал false за
+       всичко, защото „Б“ не се чете като число. */
+    if (inp.kind === 'choice') {
+      return String(v).trim().toUpperCase() === String(dec(inp.enc)).trim().toUpperCase();
+    }
+    return sameNum(v, dec(inp.enc));
+  }
+
+  function scorePart(pt) {
+    var finals = pt.inputs.filter(function (i) { return i.final; });
+    var allFinal = finals.length > 0 && finals.every(inputCorrect);
+    if (allFinal) return { got: pt.points, full: true };
+    var sum = 0;
+    pt.inputs.forEach(function (i) { if (inputCorrect(i)) sum += i.points || 0; });
+    return { got: Math.min(sum, pt.points), full: false };
+  }
+
+  function scoreTest() {
+    var rows = [], total = 0;
+    TEST.problems.forEach(function (pr) {
+      pr.parts.forEach(function (pt) {
+        var r = scorePart(pt);
+        total += r.got;
+        rows.push({ pr: pr.n, label: pt.label, points: pt.points, got: r.got, part: pt });
+      });
+    });
+    return { rows: rows, total: Math.round(total * 2) / 2 };
+  }
+
+  /* ── екран: начало ────────────────────────────────────────────────*/
+  function screenStart(resume) {
+    /* Времето на истинското състезание се изписва от самата тема:
+       олимпиадата е 4 часа, Салабашев — 120 минути, а следващата тема
+       може да е друга. Беше заковано „4 часа“ и лъжеше. */
+    var om = TEST.officialMinutes, oh = Math.floor(om / 60), orest = om % 60;
+    var realStr = oh
+      ? (oh + ' ' + (oh === 1 ? 'час' : 'часа') + (orest ? ' и ' + orest + ' мин.' : ''))
+      : (om + ' минути');
+    var modes = [
+      { id: 'real', t: 'Като на състезанието',
+        s: realStr + ', без пауза — точно както е на истинското.', m: om },
+      { id: 'train', t: 'Тренировка', s: '60 минути, с бутон „Пауза“.', m: 60 },
+      { id: 'mine', t: 'Мое време', s: 'Избираш сам между 10 и 240 минути.', m: 60 }
+    ];
+    var app = $('app');
+    app.innerHTML = '<div class="wrap"><div class="card hero">' +
+      '<span class="hero__badge">' + esc(TEST.badge || 'Общински кръг · IV клас') + '</span>' +
+      '<h1>' + esc(TEST.title) + '</h1>' +
+      '<p class="hero__sub">По темата от ' + esc(TEST.originalDate) + ' · ' +
+        esc(TEST.shape || 'три задачи по 7 точки, общо 21.') + '</p>' +
+      (resume ? '<div class="rules" style="background:var(--good-w)"><b>Има започнат тест.</b> ' +
+        'Можеш да продължиш оттам, където си спрял.' +
+        '<div style="margin-top:.7rem;display:flex;gap:10px;flex-wrap:wrap">' +
+        '<button class="btn" id="goOn">Продължи започнатия тест</button>' +
+        '<button class="btn btn--ghost" id="goNew">Започни отначало</button></div></div>' : '') +
+      '<div class="field"><label for="nm">Име</label>' +
+        '<input id="nm" type="text" placeholder="напиши името си" value="' + esc(S.name) + '" /></div>' +
+      '<div class="modes">' + modes.map(function (m) {
+        return '<label class="mode' + (S.mode === m.id ? ' is-on' : '') + '" data-mode="' + m.id + '">' +
+          '<input type="radio" name="mode" value="' + m.id + '"' +
+            (S.mode === m.id ? ' checked' : '') + ' />' +
+          '<span><b>' + esc(m.t) + '</b><span>' + esc(m.s) + '</span></span></label>';
+      }).join('') + '</div>' +
+      '<div class="field" id="mineWrap" ' + (S.mode === 'mine' ? '' : 'hidden') + '>' +
+        '<label for="mins">Колко минути</label>' +
+        '<input id="mins" type="number" min="10" max="240" value="' + (S.minutes || 60) + '" /></div>' +
+      '<div class="rules"><b>Как се работи</b><ul>' +
+        (TEST.rules || [
+          'Три задачи по 7 точки — общо 21.',
+          'В полетата пиши само крайния отговор, с цифри.',
+          'Има и полета „междинен резултат“ — те не са задължителни, но носят точки, ако крайният отговор е сбъркан.',
+          'Ползвай хартия за чернова. Има и място за бележки под всяка задача.',
+          'Проверка има чак след предаване.'
+        ]).map(function (r) { return '<li>' + r + '</li>'; }).join('') +
+      '</ul></div>' +
+      '<p style="margin-top:18px"><button class="btn" id="go">Започни</button></p>' +
+      '<p class="muted" style="margin-top:.6rem">' +
+        esc(TEST.thresholdLabel || 'Прагът за областен кръг е') + ' ' +
+        TEST.passThreshold + ' точки' +
+        (TEST.thresholdNote ? ' (' + esc(TEST.thresholdNote) + ')' : '') + '.</p>' +
+      '</div></div>';
+
+    app.addEventListener('change', onStartChange);
+    app.addEventListener('click', onStartClick);
+  }
+  function onStartChange(e) {
+    var m = e.target.closest('[name="mode"]');
+    if (m) {
+      S.mode = m.value;
+      Array.prototype.forEach.call(document.querySelectorAll('.mode'), function (l) {
+        l.classList.toggle('is-on', l.dataset.mode === S.mode);
+      });
+      $('mineWrap').hidden = (S.mode !== 'mine');
+    }
+  }
+  function onStartClick(e) {
+    if (e.target.closest('#goOn')) { resumeRun(); return; }
+    if (e.target.closest('#goNew')) { wipe(); S.submitted = false; S.answers = {}; screenStart(false); return; }
+    if (!e.target.closest('#go')) return;
+    S.name = ($('nm').value || '').trim();
+    var mins = S.mode === 'real' ? TEST.officialMinutes : (S.mode === 'train' ? 60 : Number($('mins').value || 60));
+    if (S.mode === 'mine') mins = Math.max(10, Math.min(240, mins || 60));
+    S.minutes = mins;
+    S.startedAt = Date.now();
+    S.endsAt = S.startedAt + mins * 60000;
+    S.paused = false; S.submitted = false; S.answers = {}; S.drafts = {}; flags = {};
+    save();
+    screenTest();
+  }
+  function resumeRun() {
+    var d = load();
+    if (!d) { screenStart(false); return; }
+    S.name = d.name; S.mode = d.mode; S.minutes = d.minutes;
+    S.startedAt = d.startedAt; S.endsAt = d.endsAt;
+    S.paused = !!d.paused; S.pausedAt = d.pausedAt || 0;
+    S.answers = d.answers || {}; S.drafts = d.drafts || {};
+    if (msLeft() <= 0) { S.submitted = true; screenTest(); submit(true); return; }
+    screenTest();
+  }
+
+  /* ── екран: тестът ────────────────────────────────────────────────*/
+  function screenTest() {
+    S.screen = 'test';
+    var app = $('app');
+    app.innerHTML =
+      '<div class="bar">' +
+        '<span class="bar__who">' + (S.name ? esc(S.name) : 'Пробен тест') + '</span>' +
+        '<span class="bar__prog" id="prog"></span>' +
+        '<span class="bar__sp"></span>' +
+        '<span class="clock" id="clock">' +
+          '<svg class="clock__ring" viewBox="0 0 54 54" aria-hidden="true">' +
+            '<circle class="clock__bg" cx="27" cy="27" r="24"></circle>' +
+            '<circle class="clock__fg" id="clockFg" cx="27" cy="27" r="24" ' +
+              'transform="rotate(-90 27 27)"></circle></svg>' +
+          '<span class="clock__t" id="clockT">0:00:00</span>' +
+        '</span>' +
+        (S.mode === 'train' ? '<button class="btn btn--ghost btn--sm" id="pause">Пауза</button>' : '') +
+        '<button class="btn btn--sm" id="send">Предай теста</button>' +
+      '</div>' +
+      '<div class="wrap">' +
+        '<div class="tabs" id="tabs"></div>' +
+        '<div id="probBox"></div>' +
+      '</div>';
+    paintTabs();
+    paintProblem();
+    startClock();
+    app.addEventListener('input', onTestInput);
+    app.addEventListener('click', onTestClick);
+    window.addEventListener('beforeunload', guard);
+  }
+  function guard(e) {
+    if (S.screen === 'test' && !S.submitted) { e.preventDefault(); e.returnValue = ''; }
+  }
+  function paintTabs() {
+    $('tabs').innerHTML = TEST.problems.map(function (pr, i) {
+      var done = pr.parts.every(function (pt) {
+        return pt.inputs.filter(function (x) { return x.final; }).every(filled);
+      });
+      return '<button class="tab' + (i === S.tab ? ' is-on' : '') + '" data-tab="' + i + '">' +
+        '<span>Задача ' + pr.n + '</span>' +
+        '<span class="tab__pts">' + pr.points + ' точки</span>' +
+        '<span class="tab__ok">' + (done ? '✓ попълнена' : '&nbsp;') + '</span></button>';
+    }).join('');
+    var p = progress();
+    $('prog').textContent = 'Попълнени ' + p.done + ' от ' + p.all + ' ' +
+      plural(p.all, 'поле', 'полета', 'полета');
+  }
+
+  function inputHtml(pt, inp) {
+    if (inp.kind === 'choice') {
+      var picked = String(S.answers[inp.key] || '');
+      return '<div class="ans__box ans--choice">' +
+        '<span class="ans__lab">' + esc(inp.label || 'Отговор') + '</span>' +
+        '<span class="choices">' + inp.options.map(function (o, i) {
+          var L = LETTERS[i];
+          return '<button type="button" class="choice' + (picked === L ? ' is-on' : '') +
+            '" data-pick="' + esc(inp.key) + '" data-letter="' + esc(L) + '"' +
+            (S.submitted ? ' disabled' : '') + '>' +
+            '<span class="choice__l">' + esc(L) + ')</span>' +
+            '<span class="choice__t">' + o + '</span></button>';
+        }).join('') + '</span></div>';
+    }
+    if (inp.kind === 'money') {
+      return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
+        '<span class="ans__lab">' + esc(inp.label) + '</span>' +
+        '<span class="ans__row">' +
+          '<input class="sm" id="' + inputId(pt.key, inp.key, 'lv') + '" inputmode="numeric" />' +
+          '<span class="ans__u">лв.</span>' +
+          '<input class="sm" id="' + inputId(pt.key, inp.key, 'st') + '" inputmode="numeric" />' +
+          '<span class="ans__u">ст.</span>' +
+        '</span></div>';
+    }
+    if (inp.kind === 'digits') {
+      return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
+        '<span class="ans__lab">' + esc(inp.label) + '</span>' +
+        '<span class="ans__row">' + inp.boxes.map(function (b, i) {
+          return '<span class="ans__u">' + esc(b) + '</span>' +
+            '<input class="sm" id="' + inputId(pt.key, inp.key, i) + '" inputmode="numeric" maxlength="1" />';
+        }).join('') + '</span></div>';
+    }
+    return '<div class="ans__box' + (inp.final ? '' : ' ans--hint') + '">' +
+      '<span class="ans__lab">' + esc(inp.label) + '</span>' +
+      '<span class="ans__row">' +
+        '<input id="' + inputId(pt.key, inp.key) + '" inputmode="numeric" />' +
+        (inp.unit ? '<span class="ans__u">' + esc(inp.unit) + '</span>' : '') +
+      '</span></div>';
+  }
+
+  function paintProblem() {
+    var pr = TEST.problems[S.tab];
+    $('probBox').innerHTML = '<div class="card">' +
+      '<div class="prob__h"><span class="prob__n">Задача ' + pr.n + '</span>' +
+        '<span class="prob__p">' + pr.points + ' точки</span></div>' +
+      (pr.introHtml ? '<p class="prob__text">' + pr.introHtml + '</p>' : '') +
+      (pr.figure ? '<div class="fig">' + pr.figure + '</div>' : '') +
+      pr.parts.map(function (pt) {
+        return '<div class="part">' +
+          '<p class="prob__text"><span class="part__l">' + esc(pt.label) + '</span>' + pt.textHtml + '</p>' +
+          '<div class="ans">' + pt.inputs.map(function (inp) { return inputHtml(pt, inp); }).join('') + '</div>' +
+        '</div>';
+      }).join('') +
+      '<div class="draft"><label class="ans__lab" for="draft-' + pr.n + '">Чернова (не се оценява)</label>' +
+        '<textarea id="draft-' + pr.n + '"></textarea></div>' +
+    '</div>';
+    /* стойностите се връщат през .value, а не в html-а */
+    TEST.problems[S.tab].parts.forEach(function (pt) {
+      pt.inputs.forEach(function (inp) {
+        var v = S.answers[inp.key];
+        if (v == null) return;
+        if (inp.kind === 'money') {
+          var a = $(inputId(pt.key, inp.key, 'lv')), b = $(inputId(pt.key, inp.key, 'st'));
+          if (a) a.value = v[0] || ''; if (b) b.value = v[1] || '';
+        } else if (inp.kind === 'digits') {
+          v.forEach(function (x, i) { var e = $(inputId(pt.key, inp.key, i)); if (e) e.value = x || ''; });
+        } else {
+          var e3 = $(inputId(pt.key, inp.key)); if (e3) e3.value = v;
+        }
+      });
+    });
+    var d = $('draft-' + pr.n);
+    if (d) d.value = S.drafts['p' + pr.n] || '';
+    if (S.submitted) lockFields();
+  }
+  function lockFields() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll('#probBox input, #probBox textarea, #probBox .choice'),
+      function (e) { e.disabled = true; });
+    var b = $('probBox'); if (b) b.classList.add('locked');
+  }
+
+  function onTestInput() { readInputs(); save(); paintTabs(); }
+  function onTestClick(e) {
+    var pick = e.target.closest('[data-pick]');
+    if (pick && !S.submitted) {
+      S.answers[pick.dataset.pick] = pick.dataset.letter;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('[data-pick="' + pick.dataset.pick + '"]'),
+        function (b) { b.classList.toggle('is-on', b === pick); });
+      save(); paintTabs();
+      return;
+    }
+    var t = e.target.closest('[data-tab]');
+    if (t) { readInputs(); S.tab = Number(t.dataset.tab); paintTabs(); paintProblem(); return; }
+    if (e.target.closest('#pause')) {
+      if (S.paused) { S.endsAt += Date.now() - S.pausedAt; S.paused = false; $('pause').textContent = 'Пауза'; }
+      else { S.paused = true; S.pausedAt = Date.now(); $('pause').textContent = 'Продължи'; }
+      save(); paintClock(); return;
+    }
+    if (e.target.closest('#send')) {
+      readInputs();
+      var p = progress();
+      ask('Да предам ли теста?',
+          'Попълнени са ' + p.done + ' от ' + p.all + '. След предаване полетата се заключват и излиза резултатът.',
+          'Да, предавам', function () { submit(false); });
+    }
+  }
+
+  /* ── предаване и резултат ─────────────────────────────────────────*/
+  function submit(auto) {
+    if (S.submitted) return;
+    readInputs();
+    S.submitted = true;
+    S.usedMs = Math.max(0, Math.min(S.minutes * 60000, (S.paused ? S.pausedAt : Date.now()) - S.startedAt));
+    stopClock();
+    S.result = scoreTest();
+    save();
+    if (auto) toast('Времето изтече! Тестът е предаден.', 6000);
+    screenResults();
+    sendToPlatform();
+  }
+
+  /* ── резултатът отива и в профила на ученика ──────────────────────
+     Само когато листът е отворен ОТ платформата и детето е влязло.
+     Свален файл на нечий компютър няма TLA и просто пропуска това —
+     тестът работи и без интернет, както преди. */
+  function platformNote(txt, ok) {
+    var el = $('saveNote');
+    if (!el) return;
+    el.textContent = txt;
+    el.className = 'muted' + (ok ? ' is-saved' : '');
+    el.hidden = false;
+  }
+  function recordsFor(r) {
+    return r.rows.map(function (row) {
+      var finals = row.part.inputs.filter(function (i) { return i.final; });
+      return {
+        id: String(row.pr) + row.label.replace(')', ''),
+        kind: 'free',
+        points: row.points,
+        earned: row.got,
+        correct: row.got === row.points,
+        prompt: String(row.part.textHtml || '').replace(/<[^>]+>/g, '').slice(0, 400),
+        studentAnswer: finals.map(function (i) { return showAnswer(i, S.answers[i.key]); })
+          .filter(function (x) { return x !== ''; }).join(' · ') || '(без отговор)',
+        referenceAnswer: finals.map(showCorrect).join(' · '),
+        explanation: 'Задача ' + row.pr + ' ' + row.label
+      };
+    });
+  }
+  function sendToPlatform() {
+    if (!TEST.slug) return;
+    if (typeof TLA === 'undefined' || !TLA.isConfigured || !TLA.isConfigured()) return;
+    platformNote('Записва се в профила…', false);
+    TLA.getSession().then(function (session) {
+      if (!session) {
+        platformNote('Резултатът не е записан: не си влязъл в профила.', false);
+        return;
+      }
+      return TLA.saveAttempt(TEST.slug, {
+        autoScore: S.result.total, autoMax: maxPoints(), manualMax: null,
+        records: recordsFor(S.result), part2: null
+      }).then(function () {
+        platformNote('✓ Резултатът е записан в профила ти.', true);
+      });
+    }).catch(function (err) {
+      platformNote('Резултатът не беше записан: ' + (err && err.message ? err.message : err), false);
+    });
+  }
+
+  function screenResults() {
+    S.screen = 'result';
+    var r = S.result, max = maxPoints();
+    var passed = r.total >= TEST.passThreshold;
+    var msg = passed
+      ? (r.total === max ? 'Всичко вярно. Това е пълен резултат.'
+                         : (TEST.passMsg || 'Над прага. Добър резултат.'))
+      : (r.total >= TEST.passThreshold - 4
+          ? 'Малко остава до прага. Виж решенията — обикновено е един пропуснат детайл.'
+          : 'Още има какво да се навакса. Решенията отдолу вървят стъпка по стъпка.');
+
+    $('app').innerHTML = '<div class="wrap">' +
+      '<div class="card">' +
+        '<h1>Резултат</h1>' +
+        '<p class="muted">' + esc(TEST.title) + (S.name ? ' · ' + esc(S.name) : '') +
+          ' · използвано време ' + fmt(S.usedMs) + ' от ' + S.minutes + ' мин.</p>' +
+        '<p class="muted" id="saveNote" hidden></p>' +
+        '<div class="score" style="margin-top:14px">' +
+          '<div class="score__ring"><svg viewBox="0 0 120 120" aria-hidden="true">' +
+            '<circle class="score__bg" cx="60" cy="60" r="52"></circle>' +
+            '<circle class="score__fg" id="scoreFg" cx="60" cy="60" r="52"></circle></svg>' +
+            '<span class="score__num"><b id="scoreN">0</b><span>от ' + max + ' точки</span></span></div>' +
+          '<div class="score__msg"><h2>' + esc(msg) + '</h2>' +
+            '<p class="muted" style="margin-top:.4rem">Прагът е ' + TEST.passThreshold + ' точки' +
+            (TEST.thresholdNote ? ' (' + esc(TEST.thresholdNote) + ')' : '') + '. ' +
+            'Ти имаш ' + pts(r.total) + '.</p>' +
+          '</div>' +
+        '</div>' +
+        resultTable(r) +
+        '<p style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' +
+          '<button class="btn btn--ghost" id="again">Опитай отново</button>' +
+          '<button class="btn btn--ghost" id="print">Принтирай резултата</button>' +
+        '</p>' +
+      '</div>' +
+      '<h2 style="margin:22px 0 8px">Решения</h2>' +
+      TEST.problems.map(solBlock).join('') +
+    '</div><canvas id="conf"></canvas>';
+
+    var C = 2 * Math.PI * 52, fg = $('scoreFg');
+    fg.setAttribute('stroke-dasharray', C);
+    fg.setAttribute('stroke-dashoffset', String(C));
+    setTimeout(function () {
+      fg.setAttribute('stroke-dashoffset', String(C * (1 - r.total / max)));
+      fg.setAttribute('stroke', passed ? 'var(--good)' : 'var(--sun)');
+    }, 60);
+    countTo($('scoreN'), r.total, 1100);
+    if (passed) confetti();
+
+    $('app').addEventListener('click', onResultClick);
+  }
+
+  function resultTable(r) {
+    return '<table class="tbl"><thead><tr><th>Задача</th><th>Твоят отговор</th>' +
+      '<th>Верен отговор</th><th>Точки</th></tr></thead><tbody>' +
+      r.rows.map(function (row) {
+        var cls = row.got === row.points ? 'is-ok' : (row.got > 0 ? 'is-part' : 'is-bad');
+        var mark = row.got === row.points ? '✓' : (row.got > 0 ? '◐' : '✕');
+        var mine = row.part.inputs.filter(function (i) { return i.final; })
+          .map(function (i) { return showAnswer(i, S.answers[i.key]); })
+          .filter(function (x) { return x !== ''; }).join(' · ') || '—';
+        var right = row.part.inputs.filter(function (i) { return i.final; })
+          .map(function (i) { return showCorrect(i); }).join(' · ');
+        return '<tr class="' + cls + '"><td><b>' + row.pr + row.label.replace(')', '') + '</b></td>' +
+          '<td>' + esc(mine) + '</td><td>' + esc(right) + '</td>' +
+          '<td class="mark">' + mark + ' ' + pts(row.got) + ' / ' + pts(row.points) + '</td></tr>';
+      }).join('') +
+      '<tr><td colspan="3"><b>Общо</b></td><td class="mark"><b>' + pts(r.total) +
+        ' / ' + pts(maxPoints()) + '</b></td></tr>' +
+      '</tbody></table>';
+  }
+  function showAnswer(inp, v) {
+    if (v == null) return '';
+    if (inp.kind === 'money') {
+      if (String(v[0]).trim() === '' && String(v[1]).trim() === '') return '';
+      return inp.label + ': ' + (v[0] || '0') + ' лв. ' + (v[1] || '0') + ' ст.';
+    }
+    if (inp.kind === 'digits') {
+      if (!v.some(function (x) { return String(x).trim() !== ''; })) return '';
+      return inp.boxes.map(function (b, i) { return b + (v[i] || '—'); }).join(' ');
+    }
+    if (inp.kind === 'choice') return String(v).trim() === '' ? '' : String(v) + ')';
+    return String(v).trim() === '' ? '' : (String(v) + (inp.unit ? ' ' + inp.unit : ''));
+  }
+  function showCorrect(inp) {
+    var d = dec(inp.enc);
+    if (inp.kind === 'money') {
+      var n = parseFloat(d);
+      return inp.label + ': ' + Math.floor(n / 100) + ' лв. ' + (n % 100) + ' ст.';
+    }
+    if (inp.kind === 'digits') {
+      return inp.boxes.map(function (b, i) { return b + d.split(',')[i]; }).join(' ');
+    }
+    if (inp.kind === 'choice') return d + ')';
+    return d + (inp.unit ? ' ' + inp.unit : '');
+  }
+
+  function countTo(node, to, ms) {
+    var from = 0, t0 = performance.now();
+    (function step(t) {
+      var k = Math.min(1, (t - t0) / ms);
+      node.textContent = pts(Math.round((from + (to - from) * k) * 2) / 2);
+      if (k < 1) requestAnimationFrame(step); else node.textContent = pts(to);
+    })(t0);
+  }
+
+  /* ── решенията ────────────────────────────────────────────────────*/
+  function solBlock(pr) {
+    return '<div class="sol" id="sol-' + pr.n + '">' +
+      '<div class="sol__h"><h2>Задача ' + pr.n + '</h2>' +
+        '<button class="btn btn--sm btn--ghost" data-sol="' + pr.n + '">Покажи решението</button>' +
+        '<button class="btn btn--sm" data-next="' + pr.n + '" hidden>Следваща стъпка</button>' +
+        '<span class="muted" data-cnt="' + pr.n + '"></span></div>' +
+      '<div class="stage" id="stage-' + pr.n + '"></div>' +
+      '<div class="steps" id="steps-' + pr.n + '"></div></div>';
+  }
+  function allSteps(pr) {
+    var out = [];
+    pr.parts.forEach(function (pt) {
+      (pt.solutionSteps || []).forEach(function (s) {
+        out.push({ label: pt.label, html: s.html, points: s.points, anim: s.anim, k: s.k });
+      });
+    });
+    return out;
+  }
+  function onResultClick(e) {
+    var s = e.target.closest('[data-sol]');
+    if (s) { S.shown[s.dataset.sol] = 0; stepOn(Number(s.dataset.sol)); s.hidden = true; return; }
+    var n = e.target.closest('[data-next]');
+    if (n) { stepOn(Number(n.dataset.next)); return; }
+    if (e.target.closest('#again')) {
+      ask('Отначало?', 'Отговорите и времето се изтриват и тестът започва наново.', 'Да, отначало',
+        function () { wipe(); location.reload(); });
+      return;
+    }
+    if (e.target.closest('#print')) window.print();
+  }
+  function stepOn(n) {
+    var pr = TEST.problems.filter(function (p) { return p.n === n; })[0];
+    var steps = allSteps(pr);
+    var i = S.shown[n] || 0;
+    if (i >= steps.length) return;
+    var st = steps[i];
+    var box = $('steps-' + n);
+    box.appendChild(el('div', 'step',
+      (st.points ? '<span class="step__p">' + pts(st.points) + ' т.</span>' : '') +
+      '<b>' + esc(st.label) + '</b> ' + st.html));
+    if (st.anim && typeof ANIM[st.anim] === 'function') {
+      try { ANIM[st.anim]($('stage-' + n), st.k == null ? 0 : st.k); }
+      catch (err) { if (window.console) console.error('анимация ' + st.anim + ':', err); }
+    }
+    S.shown[n] = i + 1;
+    var next = document.querySelector('[data-next="' + n + '"]');
+    var cnt = document.querySelector('[data-cnt="' + n + '"]');
+    next.hidden = (S.shown[n] >= steps.length);
+    cnt.textContent = 'стъпка ' + S.shown[n] + ' от ' + steps.length;
+  }
+
+  /* ── конфети ──────────────────────────────────────────────────────*/
+  function confetti() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var c = $('conf'); if (!c) return;
+    var x = c.getContext('2d');
+    c.width = innerWidth; c.height = innerHeight;
+    var cols = ['#F7AD19', '#15643C', '#0D1B36', '#E86A6A', '#7C5CD6'];
+    var ps = [];
+    for (var i = 0; i < 110; i++) {
+      ps.push({ x: Math.random() * c.width, y: -20 - Math.random() * c.height / 2,
+        r: 4 + Math.random() * 5, s: 1.6 + Math.random() * 2.4,
+        a: Math.random() * Math.PI, c: cols[i % cols.length] });
+    }
+    var t0 = performance.now();
+    (function draw(t) {
+      x.clearRect(0, 0, c.width, c.height);
+      ps.forEach(function (p) {
+        p.y += p.s; p.a += 0.05; p.x += Math.sin(p.a) * 0.9;
+        x.fillStyle = p.c;
+        x.fillRect(p.x, p.y, p.r, p.r * 1.7);
+      });
+      if (t - t0 < 4200) requestAnimationFrame(draw); else x.clearRect(0, 0, c.width, c.height);
+    })(t0);
+  }
+
+  /* ── тръгване ─────────────────────────────────────────────────────*/
+  var old = load();
+  if (old && old.startedAt && !old.submitted) {
+    S.name = old.name || ''; S.mode = old.mode || 'train'; S.minutes = old.minutes || 60;
+    screenStart(true);
+  } else {
+    screenStart(false);
+  }
+})();
+
+</script>
+</body>
+</html>

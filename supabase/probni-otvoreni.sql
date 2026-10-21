@@ -31,8 +31,8 @@
 -- 1. В библиотеката -----------------------------------------------------
 update public.assignments
    set published = true
- where slug in ('sal-2025-4', 'sal-2024-4',
-                'probna-obshtinski-2018-4', 'probna-obshtinski-2020-4')
+ where slug in ('sal-2025-4', 'sal-2024-4', 'probna-obshtinski-2018-4',
+                'probna-obshtinski-2020-4', 'probna-obshtinski-2023-4')
    and published is distinct from true;
 
 
@@ -45,8 +45,8 @@ select a.id, t.teacher_id
   join public.teaching t
     on t.subject_id = a.subject_id
    and t.active
- where a.slug in ('sal-2025-4', 'sal-2024-4',
-                  'probna-obshtinski-2018-4', 'probna-obshtinski-2020-4')
+ where a.slug in ('sal-2025-4', 'sal-2024-4', 'probna-obshtinski-2018-4',
+                  'probna-obshtinski-2020-4', 'probna-obshtinski-2023-4')
  group by a.id, t.teacher_id
     on conflict (assignment_id, teacher_id)
     do update set hidden = false;
@@ -70,8 +70,8 @@ select p.full_name                                   as uchenik,
                             and t.active) then 'да' else 'не' end as ima_prepodavatel
   from public.profiles p
   cross join public.assignments a
- where a.slug in ('sal-2025-4', 'sal-2024-4',
-                  'probna-obshtinski-2018-4', 'probna-obshtinski-2020-4')
+ where a.slug in ('sal-2025-4', 'sal-2024-4', 'probna-obshtinski-2018-4',
+                  'probna-obshtinski-2020-4', 'probna-obshtinski-2023-4')
    and p.role = 'student'
    and p.active
    and public.current_grade(p.id) = 4
