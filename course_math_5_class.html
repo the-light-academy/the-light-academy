@@ -12,7 +12,7 @@
   <meta property="og:title" content="Математика 5 клас в Лозенец, София – Курс | The Light Academy" />
   <meta property="og:description" content="Курс по математика за 5. клас в кв. Лозенец, София. Затвърдяване и надграждане на материала в малки групи, два дни седмично на избор." />
   <meta property="og:url" content="https://the-light-academy.github.io/the-light-academy/course_math_5_class.html" />
-  <meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/theLightAcademyLogo.png" />
+  <meta property="og:image" content="https://the-light-academy.github.io/the-light-academy/img/kurs-matematika-5-klas.webp" />
   <meta property="og:locale" content="bg_BG" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="favicon.ico" sizes="any" />
@@ -86,6 +86,14 @@
     .eyebrow { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2); color: #fff9ef; padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
     .course-hero h1 { position: relative; z-index: 1; font-family: 'Bad Script', cursive; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.2; color: var(--dark); margin-top: 1rem; margin-bottom: 0.75rem; }
     .course-hero p { position: relative; z-index: 1; font-size: 1.05rem; color: rgba(45,31,14,0.8); max-width: 700px; }
+
+    /* Шапката е на две колони: отляво текстът, отдясно плакатът на курса.
+       На тесен екран плакатът слиза под текста — заглавието се чете
+       първо, а картинката го повтаря. */
+    .hero-wrap { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 1.8rem; align-items: center; }
+    .hero-art { margin: 0; }
+    .hero-art img { display: block; width: 100%; height: auto; border-radius: 22px; border: 6px solid rgba(255,255,255,0.92); box-shadow: 0 20px 44px rgba(40, 30, 20, 0.28); transform: rotate(-2deg); transition: transform 0.35s ease; }
+    .hero-art img:hover { transform: rotate(0deg) scale(1.02); }
 
     .hero-numbers { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
     .hero-numbers span { position: absolute; font-family: 'Playfair Display', serif; font-weight: 700; color: rgba(255,255,255,0.22); animation: floatNum linear infinite; }
@@ -201,6 +209,9 @@
       .price-box { position: static; }
       .info-grid { grid-template-columns: 1fr; }
       .course-hero { padding: 2.3rem 1.2rem; }
+      .hero-wrap { grid-template-columns: 1fr; gap: 1.4rem; }
+      .hero-art { max-width: 340px; margin: 0 auto; }
+      .hero-art img { transform: none; }
       .course-page { padding: 1rem 1rem 3rem; }
       .group-tabs { flex-direction: column; }
     }
@@ -377,9 +388,19 @@
   <main class="course-page">
     <section class="course-hero">
       <div class="hero-numbers" id="heroNumbers"></div>
-      <span class="eyebrow">Математика • 5 клас</span>
-      <h1>Математика 5 клас</h1>
-      <p>Две малки групи, ясен седмичен ритъм и практика с разбиране — за увереност с числата и логиката на 5. клас.</p>
+      <div class="hero-wrap">
+        <div class="hero-text">
+          <span class="eyebrow">Математика • 5 клас</span>
+          <h1>Математика 5 клас</h1>
+          <p>Две малки групи, ясен седмичен ритъм и практика с разбиране — за увереност с числата и логиката на 5. клас.</p>
+        </div>
+        <!-- Плакатът на курса. Размерите стоят в атрибутите, за да не
+             подскача страницата, докато картинката се зарежда. -->
+        <figure class="hero-art">
+          <img src="img/kurs-matematika-5-klas.webp" width="1254" height="1254"
+               alt="Курс по математика за 5. клас — двама ученици с таблет пред интерактивна дъска" />
+        </figure>
+      </div>
     </section>
 
     <section class="course-content">
