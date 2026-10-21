@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Фабриката за числа · делимост, НОД и НОК · 5. клас</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Интерактивен час за 5. клас: признаци за делимост на 2, 3, 5, 9 и 10, прости и съставни числа, разлагане на прости множители, НОД и НОК — с игри и задачи от лесни към трудни." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* =====================================================================
+   ЧАС ЗА ДЪСКАТА — „Фабриката за числа“, 5. клас
+   ---------------------------------------------------------------------
+   Един час (60 минути) за подготовка преди класното: признаци за
+   делимост на 2, 5 и 10; на 3 и 9; прости и съставни числа и разлагане
+   на прости множители; НОД; НОК. Обикновени дроби НЯМА никъде — това е
+   нарочно, часът е само за делимостта.
+
+   Както и другите уроци за дъската: НИКЪДЕ НЯМА ПОЛЕ ЗА ВЪВЕЖДАНЕ НА
+   ОТГОВОР. Задачата се чете на глас, детето отговаря, а бутонът
+   „Отговор“ показва верния отговор и едно изречение „защо“.
+
+   Картинката носи смисъла: фабрика, през която минават числа. На входа
+   стои контрола, която пуска само числата с даден признак; в цеха
+   числата се разглобяват на прости множители; НОД е най-голямата кутия,
+   която пасва и на двете количества; НОК е първата минута, в която
+   двата конвейера тракат заедно.
+
+   Отговорите са пресметнати числено, докато часът се пишеше:
+   scratchpad/fabrika.js чете данните от този файл, смята всяка задача
+   наново и ги сверява.
+   ===================================================================== */
+
+:root{
+  --ink:#1A1A2E;
+  --ink-soft:#5A6183;
+  --paper:#FBF9F4;
+  --paper-raised:#FFFFFF;
+  --line:#E3DED2;
+  --steel:#2F5D8C;          /* машините */
+  --steel-soft:#E4EDF6;
+  --amber:#E9A33B;          /* лампите */
+  --amber-soft:#FFF3DF;
+  --amber-ink:#8A5505;
+  --green:#1F7A4C;          /* минава контролата */
+  --green-soft:#E4F2EA;
+  --red:#C0392B;            /* не минава */
+  --red-soft:#FBE9E7;
+  --violet:#5B3FA8;
+  --violet-soft:#EDE6FB;
+  --ok:#1F7A4C;  --ok-soft:#E4F2EA;
+  --bad:#C0392B; --bad-soft:#FBE9E7;
+}
+*{ box-sizing:border-box; }
+/* Фонът стои само на <html>: сложим ли го и на <body>, плътният цвят на
+   body покрива .hall (z-index:-1) и цехът изчезва. */
+html{ background:var(--paper); }
+html,body{ margin:0; color:var(--ink); }
+body{ font-family:'Nunito',system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.55; }
+
+/* ── цехът отзад ──────────────────────────────────────────────── */
+.hall{ position:fixed; inset:0; z-index:-1; overflow:hidden;
+  background:linear-gradient(180deg,#FBF9F4 0%, #F5F1E7 55%, #EDE7DA 100%); }
+.hall .gear{ position:absolute; border-radius:50%; border:10px solid rgba(47,93,140,.07); }
+.hall .belt{ position:absolute; left:0; right:0; height:14px; background:rgba(47,93,140,.05); }
+
+/* ── лентата горе ─────────────────────────────────────────────── */
+.bar{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.55rem clamp(0.8rem,3vw,1.4rem);
+  background:rgba(251,249,244,0.93); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); flex-wrap:wrap;
+}
+.bar b{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.05rem; }
+.bar b em{ font-style:normal; color:var(--steel); }
+.bar small{ color:var(--ink-soft); font-size:0.82rem; }
+.bar .sp{ flex:1 1 auto; }
+.logo{ width:40px; height:30px; flex:none; }
+
+/* часовникът за часа */
+.clock{ display:flex; align-items:center; gap:0.4rem; }
+.clock .t{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.05rem;
+  background:var(--steel); color:#fff; border-radius:10px; padding:0.15rem 0.55rem; min-width:76px;
+  text-align:center; }
+.clock .t.low{ background:var(--red); }
+.clock button{ font:inherit; font-weight:800; font-size:0.8rem; cursor:pointer;
+  border:1px solid var(--line); background:var(--paper-raised); border-radius:999px;
+  padding:0.2rem 0.6rem; min-height:30px; }
+
+.wrap{ max-width:1000px; margin:0 auto; padding:1rem 1rem 4rem; }
+
+/* ── спирките ─────────────────────────────────────────────────── */
+.tabs{ display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab{
+  display:flex; align-items:center; gap:0.5rem; text-align:left;
+  padding:0.5rem 0.8rem; border:1.5px solid var(--line); border-radius:14px;
+  background:var(--paper-raised); cursor:pointer; font:inherit; min-height:52px;
+}
+.tab b{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.96rem; display:block; }
+.tab small{ display:block; color:var(--ink-soft); font-size:0.78rem; }
+.tab .dot{ width:26px; height:26px; flex:none; border-radius:50%;
+  display:grid; place-items:center; font-size:0.78rem; font-weight:800; color:#fff; }
+.tab:nth-child(1) .dot{ background:var(--green); }
+.tab:nth-child(2) .dot{ background:var(--amber); color:var(--ink); }
+.tab:nth-child(3) .dot{ background:var(--steel); }
+.tab:nth-child(4) .dot{ background:var(--red); }
+.tab:nth-child(5) .dot{ background:var(--violet); }
+.tab[aria-selected="true"]{ border-color:var(--steel); background:var(--steel-soft);
+  box-shadow:0 6px 18px rgba(47,93,140,0.14); }
+
+/* ── картите ──────────────────────────────────────────────────── */
+.card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:18px; padding:1rem 1.1rem; margin-bottom:1rem;
+  box-shadow:0 10px 26px rgba(47,93,140,0.06);
+}
+h1{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(26px,5vw,38px);
+  margin:0 0 0.3rem; line-height:1.1; }
+h1 em{ font-style:normal; color:var(--steel); }
+h2{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.2rem;
+  margin:1.2rem 0 0.5rem; display:flex; align-items:center; gap:0.5rem; }
+h2:first-child{ margin-top:0; }
+h3{ font-size:1rem; font-weight:800; margin:0 0 0.3rem; }
+p{ margin:0 0 0.7rem; }
+.muted{ color:var(--ink-soft); }
+.small{ font-size:0.9rem; }
+.mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
+
+.goal{ border-left:5px solid var(--steel); background:var(--steel-soft);
+  border-radius:0 14px 14px 0; padding:0.7rem 0.9rem; margin-bottom:1rem; }
+.goal .mins{ display:inline-block; background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:999px; padding:0.05rem 0.55rem; font-weight:800; font-size:0.82rem; margin-left:0.3rem; }
+.hero{ display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.hero .t{ flex:1 1 280px; min-width:0; }
+.hero svg{ width:230px; height:auto; flex:none; }
+
+.btn{ font:inherit; font-weight:800; cursor:pointer; border:1px solid transparent;
+  border-radius:999px; padding:0.45rem 1rem; min-height:40px;
+  background:var(--amber); color:var(--ink); }
+.btn:hover{ transform:translateY(-1px); }
+.btn.ghost{ background:transparent; border-color:var(--line); }
+.btn.ghost:hover{ background:var(--amber-soft); }
+.btn[disabled]{ opacity:.45; cursor:not-allowed; transform:none; }
+.row{ display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+
+/* ── правилото ────────────────────────────────────────────────── */
+.rule{ background:var(--steel-soft); border:1px solid #CBDCEC; border-radius:14px;
+  padding:0.8rem 0.9rem; }
+.rule .mono{ font-size:1.05rem; font-weight:700; }
+.rule.warm{ background:var(--amber-soft); border-color:#F3DCAE; }
+.rule.violet{ background:var(--violet-soft); border-color:#DCD0F3; }
+
+/* ── примерът стъпка по стъпка ────────────────────────────────── */
+.steps{ list-style:none; margin:0.6rem 0 0; padding:0; }
+.steps li{ display:flex; gap:0.6rem; align-items:flex-start; padding:0.4rem 0;
+  border-top:1px dashed var(--line); font-family:'JetBrains Mono',monospace; font-size:1rem; }
+.steps li:first-child{ border-top:0; }
+.steps li.hid{ display:none; }
+.steps .n{ width:24px; height:24px; flex:none; border-radius:7px; background:var(--amber);
+  display:grid; place-items:center; font-size:0.78rem; font-weight:700; font-family:'Nunito',sans-serif; }
+.steps li.fin{ font-weight:700; color:var(--ok); }
+.steps li.fin .n{ background:var(--ok); color:#fff; }
+
+/* ── задачите ─────────────────────────────────────────────────── */
+.tasks{ display:grid; gap:0.6rem; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); }
+.task{ border:1px solid var(--line); border-radius:14px; padding:0.7rem 0.8rem; background:var(--paper); }
+.task .top{ display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem; }
+.task .n{ font-size:0.78rem; font-weight:800; color:var(--ink-soft); letter-spacing:.04em; text-transform:uppercase; }
+.lvl{ font-size:0.7rem; font-weight:800; border-radius:999px; padding:0.1rem 0.5rem; }
+.lvl.l1{ background:var(--ok-soft); color:var(--ok); }
+.lvl.l2{ background:var(--amber-soft); color:var(--amber-ink); }
+.lvl.l3{ background:var(--bad-soft); color:var(--bad); }
+.lvl.l4{ background:var(--violet-soft); color:var(--violet); }
+.task .q{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.06rem;
+  margin:0.2rem 0 0.5rem; white-space:pre-line; }
+.task .a{ background:var(--ok-soft); border-radius:10px; padding:0.5rem 0.7rem; margin-top:0.5rem; }
+.task .a .mono{ font-weight:700; }
+.task .a .why{ display:block; font-family:'Nunito',sans-serif; font-weight:600; font-size:0.88rem;
+  color:var(--ink-soft); margin-top:0.25rem; white-space:pre-line; }
+
+/* ── игрите ───────────────────────────────────────────────────── */
+.game{ border:1px solid var(--line); border-radius:16px; padding:0.9rem;
+  background:linear-gradient(#FFFFFF,#F6F1E6); }
+.fb{ font-weight:800; min-height:1.5rem; margin-top:0.5rem; }
+.fb.ok{ color:var(--ok); } .fb.bad{ color:var(--bad); }
+.score{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.3rem; }
+.qbig{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.6rem; margin:0.5rem 0; }
+
+/* машината с лампите */
+.lamps{ display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.6rem 0; }
+.lamp{ flex:1 1 86px; min-width:86px; border:2px solid var(--line); border-radius:14px;
+  background:var(--paper-raised); padding:0.5rem 0.4rem; text-align:center; }
+.lamp .bulb{ width:26px; height:26px; border-radius:50%; margin:0 auto 0.25rem;
+  background:#E8E4DA; border:2px solid #D3CCBE; transition:background .25s, box-shadow .25s; }
+.lamp b{ font-family:'JetBrains Mono',monospace; font-size:1.05rem; }
+.lamp small{ display:block; color:var(--ink-soft); font-size:0.74rem; }
+.lamp.on{ border-color:var(--green); background:var(--green-soft); }
+.lamp.on .bulb{ background:var(--green); box-shadow:0 0 0 5px rgba(31,122,76,.18); }
+.lamp.off{ border-color:#E0DAD0; }
+.lamp.off .bulb{ background:#E8E4DA; }
+
+/* разглобяването */
+.tree{ display:flex; flex-direction:column; align-items:center; gap:0.35rem; margin:0.6rem 0; }
+.tnode{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.05rem;
+  border:2px solid var(--line); border-radius:12px; padding:0.25rem 0.6rem;
+  background:var(--paper-raised); cursor:pointer; }
+.tnode.prime{ border-color:var(--green); background:var(--green-soft); color:var(--green); cursor:default; }
+.trow{ display:flex; gap:0.45rem; flex-wrap:wrap; justify-content:center; }
+
+/* кутиите за НОД */
+.grid{ display:grid; gap:3px; justify-content:center; margin:0.4rem 0; }
+.grid span{ width:14px; height:14px; border-radius:4px; background:var(--steel-soft);
+  border:1px solid #C3D6E8; }
+.grid span.b0{ background:var(--amber-soft); border-color:#EFD9AE; }
+.grid span.b1{ background:var(--green-soft); border-color:#BFE0CE; }
+.lbl{ font-size:0.82rem; font-weight:800; color:var(--ink-soft); margin-top:0.4rem; }
+input[type=range]{ width:100%; max-width:320px; }
+
+/* конвейерите за НОК */
+.belt2{ overflow-x:auto; padding-bottom:0.3rem; }
+.belt2 svg{ display:block; min-width:560px; width:100%; height:auto; }
+
+/* ключалката */
+.lock{ display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin:0.6rem 0; }
+.dial{ text-align:center; }
+.dial .num{ width:54px; height:64px; border-radius:12px; border:2px solid var(--steel);
+  background:var(--steel); color:#EAF2FA; font-family:'JetBrains Mono',monospace;
+  font-weight:700; font-size:1.7rem; display:grid; place-items:center; }
+.dial button{ width:54px; min-height:30px; margin:0.2rem 0; padding:0; border:1px solid var(--line);
+  border-radius:8px; background:var(--paper-raised); font:inherit; font-weight:800; cursor:pointer; }
+.hintrow{ display:flex; gap:0.5rem; align-items:baseline; font-size:0.93rem; margin-bottom:0.25rem; }
+.hintrow b{ font-family:'JetBrains Mono',monospace; color:var(--steel); }
+
+/* ── бележките ────────────────────────────────────────────────── */
+.notes{ background:var(--amber-soft); border:1px solid #F3DCAE; border-radius:14px; padding:0.8rem 0.9rem; }
+.notes ul{ margin:0.3rem 0 0; padding-left:1.1rem; }
+.notes li{ margin-bottom:0.35rem; }
+.page-legal{ text-align:center; color:var(--ink-soft); font-size:0.8rem; margin:2rem 0 1rem; }
+</style>
+</head>
+<body>
+<div class="hall" aria-hidden="true" id="hall"></div>
+
+<header class="bar">
+  <svg class="logo" data-logo aria-hidden="true"></svg>
+  <b>Фабриката <em>за числа</em></b>
+  <small>5. клас · делимост, НОД и НОК</small>
+  <span class="sp"></span>
+  <span class="clock">
+    <span class="t" id="clk">60:00</span>
+    <button type="button" id="clkGo">Старт</button>
+    <button type="button" id="clkReset">Нулирай</button>
+  </span>
+  <small class="mono" id="barTab"></small>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="panels"></main>
+  <p class="page-legal">© 2026 The Light Academy</p>
+</div>
+
+<script>
+/* ===================================================================
+   Петте цеха на фабриката
+   -------------------------------------------------------------------
+   `a` е отговорът, който се ПОКАЗВА с бутон, `why` е изречението под
+   него. Никъде няма поле за писане. `mins` е препоръчаното време —
+   петте цеха правят 60 минути.
+   =================================================================== */
+var HALLS = [
+{
+  id:'portal',
+  dot:'1',
+  mins:10,
+  tab:{ b:'Портал „2, 5, 10“', s:'последната цифра решава' },
+  goal:'Числото минава през портала само ако последната му цифра позволява. Целта е детето '
+      +'да спре да дели наум и да гледа само последната цифра.',
+  hero:true,
+  rule:'<p><b>На 2</b> се делят числата, които завършват на 0, 2, 4, 6, 8 — четните.</p>'
+      +'<p><b>На 5</b> — тези, които завършват на 0 или 5. <b>На 10</b> — само тези на 0.</p>'
+      +'<p class="mono">248 → 8 · дели се на 2 &nbsp;|&nbsp; 205 → 5 · дели се на 5 &nbsp;|&nbsp; 370 → 0 · дели се и на 2, и на 5, и на 10</p>'
+      +'<p class="small muted">Всяко число, което се дели на 10, се дели и на 2, и на 5. Обратното не важи: 35 се дели на 5, но не на 10.</p>',
+  fig:'machine',
+  examples:[
+    { expr:'Дели ли се 3 574 на 2?', steps:['Гледаме само последната цифра: 4','4 е четна','Значи цялото число е четно'], answer:'да' },
+    { expr:'Дели ли се 1 205 на 10?', steps:['Последната цифра е 5','На 10 се делят само числата, които завършват на 0','5 не е 0'], answer:'не (но се дели на 5)' },
+    { expr:'Кое е най-голямото трицифрено число, което се дели на 5?', steps:['Трицифрените свършват при 999','999 не завършва на 0 или 5','Слизаме надолу: 998, 997, 996, 995'], answer:'995' }
+  ],
+  tasks:[
+    { q:'Кои се делят на 2:\n37, 54, 90, 123, 248', a:'54, 90, 248', lvl:1, why:'Последните им цифри са 4, 0 и 8 — четни.' },
+    { q:'Кои се делят на 5:\n45, 52, 100, 205, 314', a:'45, 100, 205', lvl:1, why:'Завършват на 5 или на 0.' },
+    { q:'Кои се делят на 10:\n40, 105, 300, 1 001', a:'40, 300', lvl:1, why:'Само числата, които завършват на 0.' },
+    { q:'Кое е най-малкото четно трицифрено число?', a:'100', lvl:2, why:'Трицифрените започват от 100, а то вече е четно.' },
+    { q:'Кое е най-голямото трицифрено число,\nкоето се дели на 5?', a:'995', lvl:2, why:'След 995 идва 1000 — то вече е четирицифрено.' },
+    { q:'Числото 7 _ 4 (вместо _ има цифра).\nДели ли се винаги на 2?', a:'да', lvl:2, why:'Последната цифра е 4 и не зависи от средната — числото е четно при всяка цифра.' },
+    { q:'Кое число между 61 и 79\nсе дели и на 2, и на 5?', a:'70', lvl:2, why:'Трябва да завършва на 0 — единственото такова между 61 и 79 е 70.' },
+    { q:'Колко са двуцифрените числа,\nкоито се делят на 10?', a:'9', lvl:3, why:'Това са 10, 20, 30, 40, 50, 60, 70, 80, 90.' },
+    { q:'Вместо _ сложи цифра така, че 3_\nда се дели на 5. Кои са възможностите?', a:'30 и 35', lvl:3, why:'На 5 се делят само числата, които завършват на 0 или 5.' },
+    { q:'Кое е най-голямото четирицифрено число,\nкоето се дели на 10 и има цифра на стотиците 7?', a:'9 790', lvl:4, why:'Завършва на 0, стотиците са заковани на 7, а останалите цифри взимаме най-големи: 9 _ 7 _ → 9 790.' }
+  ],
+  game:'machine',
+  notes:[
+    'Започни с въпроса „на какво гледаме?“ — ако детето почне да дели наум, спри го: признакът е точно за да не се дели.',
+    'Най-честата грешка: „дели се на 5, значи и на 10“. Контрапримерът 35 решава спора за секунда.',
+    'Ако остава време, пускайте машината с числа, които децата сами измислят.'
+  ]
+},
+{
+  id:'kontrola',
+  dot:'2',
+  mins:12,
+  tab:{ b:'Контрола „3 и 9“', s:'сборът на цифрите' },
+  goal:'Тук последната цифра не помага. Целта е детето да свикне да събира цифрите и чак след '
+      +'това да гледа дали сборът се дели на 3 или на 9.',
+  rule:'<p><b>На 3</b> се дели число, чийто <b>сбор от цифрите</b> се дели на 3.</p>'
+      +'<p><b>На 9</b> — число, чийто сбор от цифрите се дели на 9.</p>'
+      +'<p class="mono">471 → 4+7+1 = 12 · дели се на 3, но не на 9</p>'
+      +'<p class="small muted">Всяко число, което се дели на 9, се дели и на 3 — защото всеки сбор, делящ се на 9, се дели и на 3. Обратното не важи.</p>'
+      +'<p class="small muted"><b>Съчетаните признаци:</b> на 6 се делят числата, които се делят едновременно на 2 и на 3; на 15 — тези на 3 и на 5; на 45 — тези на 9 и на 5.</p>',
+  examples:[
+    { expr:'Дели ли се 2 025 на 9?', steps:['Събираме цифрите: 2 + 0 + 2 + 5','Сборът е 9','9 се дели на 9'], answer:'да (и на 3 също)' },
+    { expr:'Дели ли се 3 333 на 9?', steps:['3 + 3 + 3 + 3 = 12','12 се дели на 3, но не на 9'], answer:'на 3 — да, на 9 — не' },
+    { expr:'Коя цифра да сложим вместо * в 4*2, за да се дели на 9?', steps:['Сборът е 4 + * + 2 = 6 + *','Търсим сбор, който се дели на 9','6 + * = 9, значи * = 3'], answer:'3 (числото е 432)' }
+  ],
+  tasks:[
+    { q:'Дели ли се 123 на 3?', a:'да', lvl:1, why:'1 + 2 + 3 = 6, а 6 се дели на 3.' },
+    { q:'Дели ли се 471 на 9?', a:'не', lvl:1, why:'4 + 7 + 1 = 12 — дели се на 3, но не на 9.' },
+    { q:'Кои се делят на 9:\n108, 234, 999, 512', a:'108, 234, 999', lvl:1, why:'Сборовете им са 9, 9 и 27. При 512 сборът е 8.' },
+    { q:'Кои се делят на 3, но НЕ на 9:\n24, 36, 51, 81', a:'24 и 51', lvl:2, why:'Сборовете са 6 и 6 — делят се на 3, но не на 9. При 36 и 81 сборът е 9.' },
+    { q:'Дели ли се 2 025 на 9?', a:'да', lvl:2, why:'2 + 0 + 2 + 5 = 9.' },
+    { q:'Кое от числата се дели на 6:\n114, 122, 135', a:'114', lvl:2, why:'Трябва едновременно четно и сбор, делящ се на 3: 114 е четно и 1+1+4 = 6. 122 е четно, но сборът 5 не става; 135 не е четно.' },
+    { q:'Коя цифра вместо *\nправи 4*2 да се дели на 9?', a:'3', lvl:3, why:'4 + * + 2 = 6 + *; за да е 9, * = 3. Числото е 432.' },
+    { q:'За кои цифри a числото 1a5\nсе дели на 3?', a:'0, 3, 6 и 9', lvl:3, why:'1 + a + 5 = 6 + a. Сборът се дели на 3, когато a е 0, 3, 6 или 9 → 105, 135, 165, 195.' },
+    { q:'Дели ли се 3 333 на 3?\nА на 9?', a:'на 3 — да; на 9 — не', lvl:3, why:'Сборът е 12: дели се на 3, но не на 9.' },
+    { q:'Кое е най-малкото трицифрено число,\nкоето се дели едновременно на 2, 3 и 5?', a:'120', lvl:4, why:'Трябва да се дели на 30. Трицифрените кратни на 30 започват от 120, защото 90 е двуцифрено.' },
+    { q:'Вместо * сложи цифра така,\nче 45* да се дели на 15.', a:'само 0 (числото е 450)', lvl:4, why:'На 15 значи и на 5, и на 3. На 5 → * е 0 или 5. Сборът 4+5+* = 9+* се дели на 3 само при * = 0, 3, 6, 9. Общото е 0.' }
+  ],
+  game:'machine2',
+  notes:[
+    'Правилото се помни по-лесно като въпрос: „Колко е сборът на цифрите?“ Нека детето го казва на глас при всяко число.',
+    'Задачата с * е най-ценната — тя се среща на всяко класно. Покажи, че се решава с едно уравнение наум.',
+    'Съчетаните признаци (6, 15, 45) идват от двата по-прости. Не ги учете наизуст — питай „кои две условия заедно?“.'
+  ]
+},
+{
+  id:'razglobiavane',
+  dot:'3',
+  mins:12,
+  tab:{ b:'Цех „Разглобяване“', s:'делители, прости, множители' },
+  goal:'Числото се разглобява на части, които вече не се делят. Целта е детето да намира '
+      +'делителите подредено и да разлага на прости множители без да се лута.',
+  rule:'<p><b>Делител</b> на числото е всяко число, на което то се дели без остатък.</p>'
+      +'<p><b>Просто</b> е числото с точно два делителя — 1 и самото то. <b>Съставно</b> — с повече.</p>'
+      +'<p class="mono">простите до 20: 2, 3, 5, 7, 11, 13, 17, 19</p>'
+      +'<p class="small muted">1 не е нито просто, нито съставно — има само един делител. 2 е единственото четно просто число.</p>'
+      +'<p class="mono">60 = 2 · 2 · 3 · 5</p>',
+  fig:'tree',
+  examples:[
+    { expr:'Намери всички делители на 12.', steps:['Тръгваме по двойки от 1: 1 · 12','2 · 6','3 · 4','Следва 4 · 3 — вече ги имаме, значи спираме'], answer:'1, 2, 3, 4, 6, 12' },
+    { expr:'Разложи 84 на прости множители.', steps:['84 е четно: 84 = 2 · 42','42 е четно: 42 = 2 · 21','21 = 3 · 7, а 3 и 7 са прости'], answer:'84 = 2 · 2 · 3 · 7' },
+    { expr:'Просто или съставно е 51?', steps:['Не е четно, не завършва на 0 или 5','Сборът на цифрите е 6 — дели се на 3','51 = 3 · 17'], answer:'съставно' }
+  ],
+  tasks:[
+    { q:'Кои са делителите на 12?', a:'1, 2, 3, 4, 6, 12', lvl:1, why:'По двойки: 1·12, 2·6, 3·4.' },
+    { q:'Кои са простите числа до 20?', a:'2, 3, 5, 7, 11, 13, 17, 19', lvl:1, why:'Всяко от тях има точно два делителя — 1 и себе си.' },
+    { q:'Просто или съставно е 51?', a:'съставно', lvl:1, why:'51 = 3 · 17, значи има повече от два делителя.' },
+    { q:'Разложи 60 на прости множители.', a:'60 = 2 · 2 · 3 · 5', lvl:2, why:'60 = 2 · 30 = 2 · 2 · 15 = 2 · 2 · 3 · 5.' },
+    { q:'Разложи 84 на прости множители.', a:'84 = 2 · 2 · 3 · 7', lvl:2, why:'84 = 2 · 42 = 2 · 2 · 21 = 2 · 2 · 3 · 7.' },
+    { q:'Колко делителя има 16?', a:'5', lvl:2, why:'1, 2, 4, 8, 16 — пет на брой.' },
+    { q:'Кое е най-малкото число\nс точно три делителя?', a:'4', lvl:3, why:'Делителите му са 1, 2 и 4. При 2 и 3 делителите са по два, а при 6 вече са четири.' },
+    { q:'Разложи 180 на прости множители.', a:'180 = 2 · 2 · 3 · 3 · 5', lvl:3, why:'180 = 2 · 90 = 2 · 2 · 45 = 2 · 2 · 3 · 15 = 2 · 2 · 3 · 3 · 5.' },
+    { q:'Кое е най-голямото просто число,\nпо-малко от 50?', a:'47', lvl:3, why:'48 и 46 са четни, 49 = 7 · 7, а 47 не се дели на 2, 3, 5 и 7.' },
+    { q:'Едно число е разложено така:\n2 · 2 · 3 · 7.\nКое е то и колко делителя има?', a:'84; има 12 делителя', lvl:4, why:'2 · 2 · 3 · 7 = 84. Делителите са 1, 2, 3, 4, 6, 7, 12, 14, 21, 28, 42, 84.' }
+  ],
+  game:'split',
+  notes:[
+    'Делителите се търсят ПО ДВОЙКИ и отдолу нагоре — така нищо не се изпуска и се вижда кога да се спре.',
+    'При разлагането винаги започвай с най-малкото просто число, което става. Така записът излиза подреден.',
+    'Ако детето каже, че 1 е просто число — върни го към определението: простото има ТОЧНО два делителя.'
+  ]
+},
+{
+  id:'nod',
+  dot:'4',
+  mins:13,
+  tab:{ b:'Цех „НОД“', s:'най-голям общ делител' },
+  goal:'НОД е най-голямата еднаква кутия, която пасва и на двете количества без остатък. '
+      +'Целта е детето да го намира и чрез делители, и чрез разлагане.',
+  rule:'<p><b>НОД</b> на две числа е най-голямото число, на което се делят и двете.</p>'
+      +'<p class="mono">делители на 24: 1, 2, 3, 4, 6, 8, 12, 24<br>делители на 36: 1, 2, 3, 4, 6, 9, 12, 18, 36<br>общи: 1, 2, 3, 4, 6, <b>12</b> → НОД(24, 36) = 12</p>'
+      +'<p class="small muted">Чрез разлагане: взимаме общите прости множители. 24 = 2·2·2·3, 36 = 2·2·3·3 → общо 2·2·3 = 12.</p>'
+      +'<p class="small muted">Ако НОД е 1, числата се наричат <b>взаимно прости</b>. Ако едното се дели на другото, НОД е по-малкото.</p>',
+  examples:[
+    { expr:'НОД(8, 12)', steps:['Делители на 8: 1, 2, 4, 8','Делители на 12: 1, 2, 3, 4, 6, 12','Общи: 1, 2, 4','Най-голям общ: 4'], answer:'4' },
+    { expr:'НОД(60, 84) чрез разлагане', steps:['60 = 2 · 2 · 3 · 5','84 = 2 · 2 · 3 · 7','Общите множители са 2 · 2 · 3'], answer:'12' },
+    { expr:'24 ябълки и 36 круши — най-много еднакви пакета?', steps:['Във всеки пакет поравно ябълки и поравно круши','Значи броят пакети дели и 24, и 36','Най-големият такъв брой е НОД(24, 36) = 12','Във всеки пакет: 2 ябълки и 3 круши'], answer:'12 пакета' }
+  ],
+  tasks:[
+    { q:'Кои са общите делители на 8 и 12?', a:'1, 2 и 4', lvl:1, why:'Делителите на 8 са 1, 2, 4, 8, а на 12 — 1, 2, 3, 4, 6, 12.' },
+    { q:'НОД(8, 12) = ?', a:'4', lvl:1, why:'Най-големият от общите делители 1, 2, 4.' },
+    { q:'НОД(15, 25) = ?', a:'5', lvl:1, why:'Общите делители са 1 и 5.' },
+    { q:'НОД(7, 13) = ?', a:'1', lvl:2, why:'7 и 13 са прости — нямат друг общ делител. Такива числа се наричат взаимно прости.' },
+    { q:'НОД(24, 36) = ?', a:'12', lvl:2, why:'24 = 2·2·2·3 и 36 = 2·2·3·3 → общо 2·2·3 = 12.' },
+    { q:'НОД(18, 54) = ?', a:'18', lvl:2, why:'54 се дели на 18, затова НОД е по-малкото число.' },
+    { q:'НОД(60, 84) = ?', a:'12', lvl:3, why:'60 = 2·2·3·5 и 84 = 2·2·3·7 → общо 2·2·3 = 12.' },
+    { q:'24 ябълки и 36 круши трябва да се разделят\nна еднакви пакета, без да остава плод.\nКой е най-големият брой пакета?', a:'12 пакета (по 2 ябълки и 3 круши)', lvl:3, why:'Броят пакети трябва да дели и 24, и 36 — най-големият такъв е НОД(24, 36) = 12.' },
+    { q:'НОД(45, 75) = ?', a:'15', lvl:3, why:'45 = 3·3·5 и 75 = 3·5·5 → общо 3·5 = 15.' },
+    { q:'Две ленти — 120 см и 90 см — се режат\nна еднакви парчета без остатък.\nКолко дълго е най-дългото парче?', a:'30 см (4 и 3 парчета, общо 7)', lvl:4, why:'Дължината дели и 120, и 90 → НОД(120, 90) = 30.' },
+    { q:'НОД на 2 · 2 · 3 · 5 и 2 · 3 · 3 · 7 = ?', a:'6', lvl:4, why:'Общите прости множители са едно 2 и едно 3 → 2 · 3 = 6.' }
+  ],
+  game:'boxes',
+  notes:[
+    'Първо с делители, после със същата задача чрез разлагане — детето вижда, че отговорът е един и същ.',
+    'Ключовият въпрос при текстовите задачи е „кое число дели и двете?“. Ако отговорът е „дели“ — задачата е за НОД.',
+    'Плъзгачът в играта показва най-бързо защо 5 не става за 24 и 36, а 12 става.'
+  ]
+},
+{
+  id:'nok',
+  dot:'5',
+  mins:13,
+  tab:{ b:'Цех „НОК“', s:'най-малко общо кратно' },
+  goal:'НОК е първата минута, в която двата конвейера тракат заедно. Целта е детето да различава '
+      +'кога задачата е за НОД и кога за НОК.',
+  rule:'<p><b>НОК</b> на две числа е най-малкото число, което се дели и на двете.</p>'
+      +'<p class="mono">кратни на 4: 4, 8, <b>12</b>, 16, 20…<br>кратни на 6: 6, <b>12</b>, 18, 24…<br>НОК(4, 6) = 12</p>'
+      +'<p class="small muted">Чрез разлагане: взимаме всички множители, като общите броим веднъж. 4 = 2·2, 6 = 2·3 → НОК = 2·2·3 = 12.</p>'
+      +'<p class="small muted"><b>Как да познаем:</b> ако нещо се РАЗДЕЛЯ на части — задачата е за НОД. Ако нещо се ПОВТАРЯ и чакаме да съвпадне — за НОК.</p>',
+  examples:[
+    { expr:'НОК(8, 12)', steps:['Кратни на 8: 8, 16, 24, 32…','Кратни на 12: 12, 24, 36…','Първото общо е 24'], answer:'24' },
+    { expr:'Автобус А тръгва на всеки 12 мин, автобус Б — на всеки 18 мин. В 8:00 тръгват заедно. Кога пак?', steps:['Търсим първото общо кратно на 12 и 18','12 = 2·2·3, 18 = 2·3·3','НОК = 2·2·3·3 = 36 минути'], answer:'в 8:36' },
+    { expr:'НОК(10, 12, 15)', steps:['10 = 2·5, 12 = 2·2·3, 15 = 3·5','Взимаме всеки множител с най-големия му брой: 2·2·3·5','Проверка: 60 се дели на 10, 12 и 15'], answer:'60' }
+  ],
+  tasks:[
+    { q:'Кои са първите пет кратни на 6?', a:'6, 12, 18, 24, 30', lvl:1, why:'Умножаваме 6 по 1, 2, 3, 4, 5.' },
+    { q:'НОК(4, 6) = ?', a:'12', lvl:1, why:'Първото число, което се дели и на 4, и на 6.' },
+    { q:'НОК(3, 5) = ?', a:'15', lvl:1, why:'3 и 5 нямат общ множител, затова НОК е произведението им.' },
+    { q:'НОК(8, 12) = ?', a:'24', lvl:2, why:'Кратните на 8 са 8, 16, 24…, а на 12 — 12, 24… Първото общо е 24.' },
+    { q:'НОК(9, 6) = ?', a:'18', lvl:2, why:'9 = 3·3 и 6 = 2·3 → НОК = 2·3·3 = 18.' },
+    { q:'НОК(5, 20) = ?', a:'20', lvl:2, why:'20 вече се дели на 5 — тогава НОК е по-голямото число.' },
+    { q:'Автобус А тръгва на всеки 12 минути,\nБ — на всеки 18. В 8:00 тръгват заедно.\nКога ще тръгнат заедно отново?', a:'в 8:36', lvl:3, why:'НОК(12, 18) = 36 минути.' },
+    { q:'НОК(10, 12, 15) = ?', a:'60', lvl:3, why:'10 = 2·5, 12 = 2·2·3, 15 = 3·5 → НОК = 2·2·3·5 = 60.' },
+    { q:'Две зъбни колела имат 14 и 21 зъба.\nСлед колко зъба пак ще се срещнат\nсъщите два зъба?', a:'след 42 зъба', lvl:3, why:'НОК(14, 21) = 42, защото 14 = 2·7 и 21 = 3·7.' },
+    { q:'За числата 12 и 18 пресметни\nНОД · НОК и 12 · 18.', a:'6 · 36 = 216 и 12 · 18 = 216 — равни са', lvl:4, why:'За всеки две числа НОД · НОК = произведението им. Удобно е за проверка.' },
+    { q:'Кое е най-малкото число, което се дели\nедновременно на 4, на 6 и на 15?', a:'60', lvl:4, why:'4 = 2·2, 6 = 2·3, 15 = 3·5 → НОК = 2·2·3·5 = 60.' },
+    { q:'Шоколадите идват по 12 в кашон,\nа бонбоните — по 18. Колко е най-малкият\nброй, който може да се получи и от двете?', a:'36', lvl:4, why:'Търсим първото общо кратно: НОК(12, 18) = 36 — три кашона шоколади и два кашона бонбони.' }
+  ],
+  game:'belts',
+  lock:{
+    code:[5, 6, 2, 3],
+    hints:['НОД(15, 25)', 'НОК(2, 3)', 'най-малкото просто число', 'колко делителя има 9']
+  },
+  notes:[
+    'Разделянето на части → НОД. Повтарянето и съвпадането → НОК. Това изречение решава половината текстови задачи.',
+    'Проверката НОД · НОК = произведението е най-бързият начин детето само да се хване за грешка.',
+    'Финалната ключалка събира по едно нещо от всеки цех — подходяща е за последните 5 минути.'
+  ]
+}
+];
+
+(function(){
+  'use strict';
+
+  var LVL = { 1:'лесно', 2:'средно', 3:'трудно', 4:'за смелите' };
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function el(tag, cls, html){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(html != null) n.innerHTML = html;
+    return n;
+  }
+  function group(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  /* ── смятането, от което живеят игрите ───────────────────────── */
+  function divisors(n){
+    var out = [], i;
+    for(i = 1; i * i <= n; i++){
+      if(n % i === 0){ out.push(i); if(i !== n / i) out.push(n / i); }
+    }
+    return out.sort(function(a, b){ return a - b; });
+  }
+  function isPrime(n){
+    if(n < 2) return false;
+    for(var i = 2; i * i <= n; i++){ if(n % i === 0) return false; }
+    return true;
+  }
+  function smallestFactor(n){
+    for(var i = 2; i * i <= n; i++){ if(n % i === 0) return i; }
+    return n;
+  }
+  function primes(n){
+    var out = [], m = n, p;
+    while(m > 1){ p = smallestFactor(m); out.push(p); m = m / p; }
+    return out;
+  }
+  function gcd(a, b){ while(b){ var t = a % b; a = b; b = t; } return a; }
+  function lcm(a, b){ return a / gcd(a, b) * b; }
+  function digitSum(n){
+    var s = 0, m = Math.abs(n);
+    while(m > 0){ s += m % 10; m = Math.floor(m / 10); }
+    return s;
+  }
+
+  /* ── фонът: зъбни колела и лента ─────────────────────────────── */
+  (function hall(){
+    var h = document.getElementById('hall'), i, g;
+    var pos = [[6, 12, 180], [78, 30, 240], [22, 68, 150], [86, 80, 200]];
+    for(i = 0; i < pos.length; i++){
+      g = el('div', 'gear');
+      g.style.left = pos[i][0] + '%';
+      g.style.top = pos[i][1] + '%';
+      g.style.width = pos[i][2] + 'px';
+      g.style.height = pos[i][2] + 'px';
+      h.appendChild(g);
+    }
+    for(i = 0; i < 3; i++){
+      g = el('div', 'belt');
+      g.style.top = (26 + i * 26) + '%';
+      h.appendChild(g);
+    }
+  })();
+
+  /* ── логото: малка фабрика ───────────────────────────────────── */
+  function logoSvg(){
+    return '<g fill="none" stroke="#2F5D8C" stroke-width="3" stroke-linejoin="round">'
+      + '<path d="M4 38 V20 l10 7 V20 l10 7 V20 l10 7 V14 h10 v24 Z" fill="#E4EDF6"/>'
+      + '</g>'
+      + '<g fill="#E9A33B"><circle cx="12" cy="33" r="2.4"/><circle cx="22" cy="33" r="2.4"/>'
+      + '<circle cx="32" cy="33" r="2.4"/></g>';
+  }
+  (function fillLogos(){
+    var list = document.querySelectorAll('[data-logo]'), i, s;
+    for(i = 0; i < list.length; i++){
+      s = list[i];
+      s.setAttribute('viewBox', '0 0 52 44');
+      s.innerHTML = logoSvg();
+    }
+  })();
+
+  /* ── часовникът за часа ──────────────────────────────────────── */
+  (function clock(){
+    var out = document.getElementById('clk');
+    var go = document.getElementById('clkGo');
+    var rs = document.getElementById('clkReset');
+    var left = 60 * 60, timer = null;
+    function show(){
+      var m = Math.floor(left / 60), s = left % 60;
+      out.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+      out.classList.toggle('low', left <= 5 * 60);
+    }
+    function stop(){ clearInterval(timer); timer = null; go.textContent = 'Старт'; }
+    go.addEventListener('click', function(){
+      if(timer){ stop(); return; }
+      go.textContent = 'Пауза';
+      timer = setInterval(function(){
+        left--;
+        if(left <= 0){ left = 0; show(); stop(); return; }
+        show();
+      }, 1000);
+    });
+    rs.addEventListener('click', function(){ stop(); left = 60 * 60; show(); });
+    show();
+  })();
+
+  /* ── чертежи ─────────────────────────────────────────────────── */
+  function machineFig(){
+    return '<svg viewBox="0 0 560 190" width="100%" style="max-width:560px;display:block;margin:0 auto" '
+      + 'role="img" aria-label="Машина, през която минава число: отляво влиза, отгоре светват лампи, '
+      + 'отдясно излиза, ако се дели.">'
+      + '<rect x="150" y="40" width="260" height="110" rx="18" fill="#E4EDF6" stroke="#2F5D8C" stroke-width="3"/>'
+      + '<rect x="20" y="86" width="130" height="18" rx="9" fill="#EDE7DA"/>'
+      + '<rect x="410" y="86" width="130" height="18" rx="9" fill="#EDE7DA"/>'
+      + '<g font-family="JetBrains Mono, monospace" font-weight="700" font-size="22" fill="#1A1A2E">'
+      + '<text x="60" y="80">248</text><text x="455" y="80">да</text></g>'
+      + '<g fill="#1F7A4C"><circle cx="210" cy="70" r="11"/><circle cx="280" cy="70" r="11"/></g>'
+      + '<circle cx="350" cy="70" r="11" fill="#E8E4DA" stroke="#D3CCBE" stroke-width="2"/>'
+      + '<g font-family="JetBrains Mono, monospace" font-size="14" fill="#5A6183" text-anchor="middle">'
+      + '<text x="210" y="100">2</text><text x="280" y="100">5</text><text x="350" y="100">10</text></g>'
+      + '<text x="280" y="135" text-anchor="middle" font-family="Nunito, sans-serif" font-size="13" '
+      + 'font-weight="700" fill="#5A6183">гледа само последната цифра</text>'
+      + '</svg>';
+  }
+  function treeFig(){
+    return '<svg viewBox="0 0 420 180" width="100%" style="max-width:420px;display:block;margin:0 auto" '
+      + 'role="img" aria-label="Разлагане на 60 на прости множители: 60 се разпада на 2 и 30, 30 на 2 и 15, '
+      + '15 на 3 и 5.">'
+      + '<g font-family="JetBrains Mono, monospace" font-weight="700" font-size="17" text-anchor="middle">'
+      + '<g stroke="#C9CCD8" stroke-width="2">'
+      + '<line x1="200" y1="32" x2="140" y2="62"/><line x1="200" y1="32" x2="262" y2="62"/>'
+      + '<line x1="262" y1="78" x2="206" y2="108"/><line x1="262" y1="78" x2="322" y2="108"/>'
+      + '<line x1="322" y1="124" x2="268" y2="152"/><line x1="322" y1="124" x2="376" y2="152"/></g>'
+      + '<circle cx="200" cy="24" r="19" fill="#FFF" stroke="#E3DED2" stroke-width="2"/><text x="200" y="30">60</text>'
+      + '<circle cx="132" cy="70" r="17" fill="#E4F2EA" stroke="#1F7A4C" stroke-width="2"/><text x="132" y="76" fill="#1F7A4C">2</text>'
+      + '<circle cx="268" cy="70" r="19" fill="#FFF" stroke="#E3DED2" stroke-width="2"/><text x="268" y="76">30</text>'
+      + '<circle cx="200" cy="116" r="17" fill="#E4F2EA" stroke="#1F7A4C" stroke-width="2"/><text x="200" y="122" fill="#1F7A4C">2</text>'
+      + '<circle cx="328" cy="116" r="19" fill="#FFF" stroke="#E3DED2" stroke-width="2"/><text x="328" y="122">15</text>'
+      + '<circle cx="262" cy="160" r="17" fill="#E4F2EA" stroke="#1F7A4C" stroke-width="2"/><text x="262" y="166" fill="#1F7A4C">3</text>'
+      + '<circle cx="382" cy="160" r="17" fill="#E4F2EA" stroke="#1F7A4C" stroke-width="2"/><text x="382" y="166" fill="#1F7A4C">5</text>'
+      + '</g></svg>';
+  }
+  var FIGS = { machine: machineFig, tree: treeFig };
+
+  /* ── примерът стъпка по стъпка ───────────────────────────────── */
+  function exampleBlock(ex){
+    var box = el('div', 'rule warm');
+    box.appendChild(el('p', 'mono', esc(ex.expr) + (/[?.]$/.test(ex.expr) ? '' : ' = ?')));
+    var ol = el('ol', 'steps'), i;
+    for(i = 0; i < ex.steps.length; i++){
+      ol.appendChild(el('li', 'hid',
+        '<span class="n">' + (i + 1) + '</span><span>' + esc(ex.steps[i]) + '</span>'));
+    }
+    ol.appendChild(el('li', 'hid fin', '<span class="n">=</span><span>' + esc(ex.answer) + '</span>'));
+    box.appendChild(ol);
+
+    var row = el('div', 'row');
+    var bNext = el('button', 'btn ghost', 'Следваща стъпка');
+    var bAll = el('button', 'btn ghost', 'Покажи всичко');
+    var bOff = el('button', 'btn ghost', 'Отначало');
+    row.appendChild(bNext); row.appendChild(bAll); row.appendChild(bOff);
+    box.appendChild(row);
+
+    var items = ol.querySelectorAll('li');
+    function shown(){
+      var n = 0, i;
+      for(i = 0; i < items.length; i++){ if(!items[i].classList.contains('hid')) n++; }
+      return n;
+    }
+    function sync(){ bNext.disabled = shown() >= items.length; }
+    bNext.addEventListener('click', function(){
+      var k = shown();
+      if(k < items.length) items[k].classList.remove('hid');
+      sync();
+    });
+    bAll.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.remove('hid');
+      sync();
+    });
+    bOff.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.add('hid');
+      sync();
+    });
+    sync();
+    return box;
+  }
+
+  /* ── задачите: отговорът се ПОКАЗВА, не се въвежда ───────────── */
+  function taskBlock(t, i){
+    var d = el('div', 'task');
+    d.appendChild(el('div', 'top', '<span class="n">Задача ' + (i + 1) + '</span>' +
+      '<span class="lvl l' + t.lvl + '">' + LVL[t.lvl] + '</span>'));
+    var q = el('div', 'q');
+    q.textContent = t.q;
+    d.appendChild(q);
+    var btn = el('button', 'btn ghost', 'Отговор');
+    var ans = el('div', 'a', '<span class="mono">' + esc(t.a) + '</span>' +
+      '<span class="why">' + esc(t.why) + '</span>');
+    ans.hidden = true;
+    btn.addEventListener('click', function(){
+      ans.hidden = !ans.hidden;
+      btn.textContent = ans.hidden ? 'Отговор' : 'Скрий';
+    });
+    d.appendChild(btn); d.appendChild(ans);
+    d.__show = function(on){ ans.hidden = !on; btn.textContent = on ? 'Скрий' : 'Отговор'; };
+    return d;
+  }
+
+  /* ── игра: машината с лампите ────────────────────────────────── */
+  /* Лампите не са записани никъде — машината ги пресмята на място,
+     затова не може да се разминат с числото. */
+  function machineGame(divs, nums, title, hint){
+    var g = el('div', 'game');
+    var lampHtml = divs.map(function(d){
+      return '<div class="lamp" data-d="' + d + '"><span class="bulb"></span>'
+        + '<b>на ' + d + '</b><small></small></div>';
+    }).join('');
+    g.innerHTML =
+      '<h3>' + esc(title) + '</h3>'
+      + '<p class="small muted">' + esc(hint) + '</p>'
+      + '<p class="qbig" data-q></p>'
+      + '<div class="lamps">' + lampHtml + '</div>'
+      + '<div class="row"><button class="btn" data-go>Пусни машината</button>'
+      + '<button class="btn ghost" data-next>Друго число</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var qEl = g.querySelector('[data-q]'), fb = g.querySelector('[data-fb]');
+    var lamps = g.querySelectorAll('.lamp');
+    var i = -1, n = 0;
+    function clear(){
+      for(var k = 0; k < lamps.length; k++){
+        lamps[k].className = 'lamp';
+        lamps[k].querySelector('small').textContent = '';
+      }
+      fb.className = 'fb'; fb.textContent = '';
+    }
+    function next(){
+      i = (i + 1) % nums.length;
+      n = nums[i];
+      qEl.textContent = group(n);
+      clear();
+    }
+    g.querySelector('[data-go]').addEventListener('click', function(){
+      var k, d, ok, pass = [];
+      for(k = 0; k < lamps.length; k++){
+        d = Number(lamps[k].dataset.d);
+        ok = (n % d === 0);
+        lamps[k].className = 'lamp ' + (ok ? 'on' : 'off');
+        lamps[k].querySelector('small').textContent = ok ? 'минава' : 'не минава';
+        if(ok) pass.push(d);
+      }
+      fb.className = 'fb ok';
+      fb.textContent = pass.length
+        ? group(n) + ' се дели на ' + pass.join(', ') + '. Сборът на цифрите е ' + digitSum(n) + '.'
+        : group(n) + ' не минава през нито една контрола. Сборът на цифрите е ' + digitSum(n) + '.';
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра: разглобяване на прости множители ──────────────────── */
+  function splitGame(){
+    var NUMS = [60, 84, 90, 72, 126, 180, 96, 150];
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Разглоби числото · заедно</h3>'
+      + '<p class="small muted">Детето казва на кое просто число се дели, после щраква върху '
+      + 'правоъгълника. Зелените вече са прости и не се разглобяват.</p>'
+      + '<p class="qbig" data-head></p>'
+      + '<div class="tree"><div class="trow" data-row></div></div>'
+      + '<div class="row"><button class="btn ghost" data-all>Разглоби докрай</button>'
+      + '<button class="btn ghost" data-next>Друго число</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var head = g.querySelector('[data-head]'), row = g.querySelector('[data-row]');
+    var fb = g.querySelector('[data-fb]');
+    var i = -1, start = 0, leaves = [];
+    function draw(){
+      row.innerHTML = '';
+      leaves.forEach(function(v, k){
+        var b = el('button', 'tnode' + (isPrime(v) ? ' prime' : ''), String(v));
+        b.type = 'button';
+        b.dataset.k = k;
+        row.appendChild(b);
+        if(k < leaves.length - 1) row.appendChild(el('span', 'mono', '·'));
+      });
+      var done = leaves.every(isPrime);
+      fb.className = 'fb' + (done ? ' ok' : '');
+      fb.textContent = done
+        ? start + ' = ' + leaves.join(' · ')
+        : 'Щракни върху число, което още може да се раздели.';
+    }
+    function next(){
+      i = (i + 1) % NUMS.length;
+      start = NUMS[i];
+      leaves = [start];
+      head.textContent = group(start);
+      draw();
+    }
+    row.addEventListener('click', function(e){
+      var b = e.target.closest('.tnode');
+      if(!b) return;
+      var k = Number(b.dataset.k), v = leaves[k];
+      if(isPrime(v)) return;
+      var p = smallestFactor(v);
+      leaves.splice(k, 1, p, v / p);
+      draw();
+    });
+    g.querySelector('[data-all]').addEventListener('click', function(){
+      leaves = primes(start);
+      draw();
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра: кутиите (НОД) ─────────────────────────────────────── */
+  function boxesGame(){
+    var PAIRS = [[24, 36], [18, 30], [40, 60], [45, 75], [120, 90]];
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Най-голямата еднаква кутия · заедно</h3>'
+      + '<p class="small muted">Плъзгачът е големината на кутията. Кутията става само ако и двете '
+      + 'количества се разделят точно. Детето търси най-голямата, която става — това е НОД.</p>'
+      + '<p class="qbig" data-head></p>'
+      + '<label class="lbl">Кутия от <b data-size>1</b></label>'
+      + '<input type="range" min="1" max="20" value="1" data-range />'
+      + '<div data-g0></div><div class="lbl" data-l0></div>'
+      + '<div data-g1></div><div class="lbl" data-l1></div>'
+      + '<div class="row"><button class="btn ghost" data-best>Покажи най-голямата</button>'
+      + '<button class="btn ghost" data-next>Друга двойка</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var head = g.querySelector('[data-head]'), rng = g.querySelector('[data-range]');
+    var sizeEl = g.querySelector('[data-size]'), fb = g.querySelector('[data-fb]');
+    var gs = [g.querySelector('[data-g0]'), g.querySelector('[data-g1]')];
+    var ls = [g.querySelector('[data-l0]'), g.querySelector('[data-l1]')];
+    var i = -1, a = 0, b = 0;
+    function drawRow(host, lab, total, size, which){
+      var box = el('div', 'grid');
+      box.style.gridTemplateColumns = 'repeat(' + Math.min(total, 20) + ', 14px)';
+      var full = Math.floor(total / size), rest = total % size, k;
+      for(k = 0; k < total; k++){
+        var inFull = k < full * size;
+        box.appendChild(el('span', inFull ? ('b' + which) : ''));
+      }
+      host.innerHTML = '';
+      host.appendChild(box);
+      lab.textContent = total + ' : ' + size + ' = ' + full + (rest ? ' и остават ' + rest : ' точно');
+      return rest === 0;
+    }
+    function draw(){
+      var size = Number(rng.value);
+      sizeEl.textContent = size;
+      var ok0 = drawRow(gs[0], ls[0], a, size, 0);
+      var ok1 = drawRow(gs[1], ls[1], b, size, 1);
+      var best = gcd(a, b);
+      if(ok0 && ok1){
+        fb.className = 'fb ok';
+        fb.textContent = size === best
+          ? 'Кутия от ' + size + ' става и за двете — и по-голяма няма. НОД(' + a + ', ' + b + ') = ' + best + '.'
+          : 'Кутия от ' + size + ' става и за двете, но има и по-голяма.';
+      } else {
+        fb.className = 'fb bad';
+        fb.textContent = 'Кутия от ' + size + ' не става: остава нещо.';
+      }
+    }
+    function next(){
+      i = (i + 1) % PAIRS.length;
+      a = PAIRS[i][0]; b = PAIRS[i][1];
+      head.textContent = a + ' и ' + b;
+      rng.max = String(Math.min(a, b));
+      rng.value = '1';
+      draw();
+    }
+    rng.addEventListener('input', draw);
+    g.querySelector('[data-best]').addEventListener('click', function(){
+      rng.value = String(gcd(a, b));
+      draw();
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра: двата конвейера (НОК) ─────────────────────────────── */
+  function beltsGame(){
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Кога тракат заедно · заедно</h3>'
+      + '<p class="small muted">Първата машина удря на всеки a-ти детайл, втората — на всеки b-ти. '
+      + 'Детето казва кой е първият детайл, който получава и двата удара. Това е НОК.</p>'
+      + '<div class="row"><label class="lbl">a = <b data-av>4</b></label>'
+      + '<input type="range" min="2" max="12" value="4" data-a />'
+      + '<label class="lbl">b = <b data-bv>6</b></label>'
+      + '<input type="range" min="2" max="12" value="6" data-b /></div>'
+      + '<div class="belt2" data-svg></div>'
+      + '<p class="fb" data-fb></p>';
+    var ra = g.querySelector('[data-a]'), rb = g.querySelector('[data-b]');
+    var av = g.querySelector('[data-av]'), bv = g.querySelector('[data-bv]');
+    var box = g.querySelector('[data-svg]'), fb = g.querySelector('[data-fb]');
+    function draw(){
+      var a = Number(ra.value), b = Number(rb.value), N = 48, k;
+      av.textContent = a; bv.textContent = b;
+      var W = 40 + N * 11, s = '';
+      s += '<svg viewBox="0 0 ' + W + ' 120">';
+      s += '<line x1="20" y1="36" x2="' + (W - 10) + '" y2="36" stroke="#C9CCD8" stroke-width="2"/>';
+      s += '<line x1="20" y1="80" x2="' + (W - 10) + '" y2="80" stroke="#C9CCD8" stroke-width="2"/>';
+      var L = lcm(a, b);
+      for(k = 1; k <= N; k++){
+        var x = 20 + k * 11;
+        if(k % a === 0){
+          s += '<circle cx="' + x + '" cy="36" r="4.5" fill="' + (k === L ? '#E9A33B' : '#2F5D8C') + '"/>';
+        }
+        if(k % b === 0){
+          s += '<circle cx="' + x + '" cy="80" r="4.5" fill="' + (k === L ? '#E9A33B' : '#1F7A4C') + '"/>';
+        }
+        if(k === L){
+          s += '<line x1="' + x + '" y1="26" x2="' + x + '" y2="92" stroke="#E9A33B" stroke-width="2.5"/>';
+          s += '<text x="' + x + '" y="112" text-anchor="middle" font-family="JetBrains Mono, monospace" '
+            + 'font-size="13" font-weight="700" fill="#8A5505">' + L + '</text>';
+        }
+        if(k % 10 === 0){
+          s += '<text x="' + x + '" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" '
+            + 'font-size="11" fill="#5A6183">' + k + '</text>';
+        }
+      }
+      s += '<text x="4" y="40" font-family="JetBrains Mono, monospace" font-size="12" fill="#2F5D8C">a</text>';
+      s += '<text x="4" y="84" font-family="JetBrains Mono, monospace" font-size="12" fill="#1F7A4C">b</text>';
+      s += '</svg>';
+      box.innerHTML = s;
+      fb.className = 'fb ok';
+      fb.textContent = L <= N
+        ? 'Първият общ удар е на детайл ' + L + '. НОД(' + a + ', ' + b + ') = ' + gcd(a, b)
+          + ', а НОК(' + a + ', ' + b + ') = ' + L + '.'
+        : 'Първият общ удар е чак на детайл ' + L + ' — извън лентата. НОК(' + a + ', ' + b + ') = ' + L + '.';
+    }
+    ra.addEventListener('input', draw);
+    rb.addEventListener('input', draw);
+    draw();
+    return g;
+  }
+
+  /* ── финалната ключалка ──────────────────────────────────────── */
+  function lockGame(spec){
+    var g = el('div', 'game');
+    var hints = spec.hints.map(function(h, i){
+      return '<div class="hintrow"><b>' + (i + 1) + '.</b><span>' + esc(h) + '</span></div>';
+    }).join('');
+    var dials = spec.code.map(function(_, i){
+      return '<div class="dial"><button type="button" data-up="' + i + '">▲</button>'
+        + '<div class="num" data-num="' + i + '">0</div>'
+        + '<button type="button" data-down="' + i + '">▼</button></div>';
+    }).join('');
+    g.innerHTML =
+      '<p class="small muted">Четири отговора — по един от всеки цех. Нагласете ги и вратата на '
+      + 'склада се отваря.</p>'
+      + hints
+      + '<div class="lock">' + dials + '</div>'
+      + '<div class="row"><button class="btn" data-open>Отвори склада</button>'
+      + '<button class="btn ghost" data-reset>Нулирай</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var val = [0, 0, 0, 0], fb = g.querySelector('[data-fb]');
+    function show(k){ g.querySelector('[data-num="' + k + '"]').textContent = val[k]; }
+    g.addEventListener('click', function(e){
+      var up = e.target.closest('[data-up]'), dn = e.target.closest('[data-down]'), k;
+      if(up){ k = Number(up.dataset.up); val[k] = (val[k] + 1) % 10; show(k); }
+      if(dn){ k = Number(dn.dataset.down); val[k] = (val[k] + 9) % 10; show(k); }
+    });
+    g.querySelector('[data-open]').addEventListener('click', function(){
+      var ok = val.every(function(v, i){ return v === spec.code[i]; });
+      fb.className = 'fb ' + (ok ? 'ok' : 'bad');
+      fb.textContent = ok
+        ? 'Складът е отворен. Числата минаха през всички контроли.'
+        : 'Още не. Проверете кой от четирите отговора не пасва.';
+    });
+    g.querySelector('[data-reset]').addEventListener('click', function(){
+      val = [0, 0, 0, 0];
+      for(var k = 0; k < 4; k++) show(k);
+      fb.className = 'fb'; fb.textContent = '';
+    });
+    return g;
+  }
+
+  var GAMES = {
+    machine: function(){
+      return machineGame([2, 5, 10], [248, 370, 1205, 94, 555, 1000, 73, 486],
+        'Контролата на входа · цял клас',
+        'Детето казва кои лампи ще светнат, преди да пуснете машината. Гледа се САМО последната цифра.');
+    },
+    machine2: function(){
+      return machineGame([3, 9, 6], [123, 471, 2025, 3333, 108, 114, 522, 847],
+        'Контролата „3 и 9“ · цял клас',
+        'Първо на глас: колко е сборът на цифрите? Чак тогава пускате машината.');
+    },
+    split: splitGame,
+    boxes: boxesGame,
+    belts: beltsGame
+  };
+
+  /* ── един цех ────────────────────────────────────────────────── */
+  function buildPanel(st){
+    var p = el('section', null, '');
+    p.id = 'p-' + st.id;
+    p.setAttribute('role', 'tabpanel');
+
+    var head = el('div', 'card'), k;
+    if(st.hero){
+      head.innerHTML = '<div class="hero"><svg data-logo aria-hidden="true"></svg>'
+        + '<div class="t"><h1>Фабриката <em>за числа</em></h1>'
+        + '<p class="muted">Един час през пет цеха: кои числа минават контролата, как се разглобява '
+        + 'число на прости множители и кога търсим НОД и кога — НОК. Дроби няма никъде.</p></div></div>';
+      var sv = head.querySelector('[data-logo]');
+      sv.setAttribute('viewBox', '0 0 52 44');
+      sv.innerHTML = logoSvg();
+      sv.style.width = '180px';
+    } else {
+      head.innerHTML = '<h1>' + esc(st.tab.b) + ' <em>· ' + esc(st.tab.s) + '</em></h1>';
+    }
+    head.appendChild(el('div', 'goal', '<b>Целта на цеха:</b> ' + esc(st.goal)
+      + '<span class="mins">≈ ' + st.mins + ' мин</span>'));
+    head.appendChild(el('div', 'rule' + (st.id === 'nok' ? ' violet' : ''), st.rule));
+
+    var fig = st.fig && FIGS[st.fig];
+    if(fig) head.appendChild(el('div', null, fig()));
+    p.appendChild(head);
+
+    var ex = el('div', 'card');
+    ex.appendChild(el('h2', null, '<span>🧭</span> На дъската, стъпка по стъпка'));
+    for(k = 0; k < st.examples.length; k++) ex.appendChild(exampleBlock(st.examples[k]));
+    p.appendChild(ex);
+
+    var tk = el('div', 'card');
+    tk.appendChild(el('h2', null, '<span>🔩</span> Задачи — от лесни към по-сложни'));
+    var bar = el('div', 'row');
+    var bAll = el('button', 'btn ghost', 'Покажи всички отговори');
+    var bNone = el('button', 'btn ghost', 'Скрий всички');
+    bar.appendChild(bAll); bar.appendChild(bNone);
+    tk.appendChild(bar);
+    var list = el('div', 'tasks'), cards = [];
+    for(k = 0; k < st.tasks.length; k++){
+      var c = taskBlock(st.tasks[k], k);
+      cards.push(c); list.appendChild(c);
+    }
+    tk.appendChild(list);
+    bAll.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(true); }); });
+    bNone.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(false); }); });
+    p.appendChild(tk);
+
+    var gm = el('div', 'card');
+    gm.appendChild(el('h2', null, '<span>🎮</span> Пауза за игра'));
+    if(GAMES[st.game]) gm.appendChild(GAMES[st.game]());
+    if(st.lock){
+      gm.appendChild(el('h2', null, '<span>🔐</span> Финалът: вратата на склада'));
+      gm.appendChild(lockGame(st.lock));
+    }
+    p.appendChild(gm);
+
+    var nt = el('div', 'card'), li = '';
+    for(k = 0; k < st.notes.length; k++) li += '<li>' + esc(st.notes[k]) + '</li>';
+    nt.appendChild(el('h2', null, '<span>📝</span> За учителя'));
+    nt.appendChild(el('div', 'notes', '<ul>' + li + '</ul>'));
+    p.appendChild(nt);
+    return p;
+  }
+
+  /* ── цеховете ────────────────────────────────────────────────── */
+  var tabs = document.getElementById('tabs');
+  var panels = document.getElementById('panels');
+  var barTab = document.getElementById('barTab');
+  var btns = [], secs = [];
+
+  HALLS.forEach(function(st, i){
+    var b = el('button', 'tab', '<span class="dot">' + esc(st.dot) + '</span><span><b>' +
+      esc(st.tab.b) + '</b><small>' + esc(st.tab.s) + '</small></span>');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-controls', 'p-' + st.id);
+    b.addEventListener('click', function(){ open(i, true); });
+    tabs.appendChild(b);
+    btns.push(b);
+
+    var s = buildPanel(st);
+    s.hidden = (i !== 0);
+    panels.appendChild(s);
+    secs.push(s);
+  });
+
+  function open(i, push){
+    for(var k = 0; k < btns.length; k++){
+      btns[k].setAttribute('aria-selected', k === i ? 'true' : 'false');
+      secs[k].hidden = (k !== i);
+    }
+    barTab.textContent = HALLS[i].tab.b;
+    if(push && history.replaceState) history.replaceState(null, '', '#' + HALLS[i].id);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  var want = (location.hash || '').replace('#', ''), start = 0;
+  for(var i = 0; i < HALLS.length; i++){ if(HALLS[i].id === want) start = i; }
+  open(start, false);
+})();
+</script>
+</body>
+</html>
