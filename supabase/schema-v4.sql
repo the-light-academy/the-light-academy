@@ -395,10 +395,22 @@ alter table public.teacher_availability enable row level security;
 alter table public.availability_blocks  enable row level security;
 alter table public.lessons              enable row level security;
 
+-- ---------------------------------------------------------------------
+--  ПРАВА ВЪРХУ ТАБЛИЦИТЕ
+--  От 30 октомври 2026 г. Supabase спира да дава автоматично права на
+--  Data API върху НОВИ таблици в public, затова всяка таблица си носи
+--  правата в същия файл, който я създава. authenticated работи през
+--  политиките, service_role е за Edge функциите, anon нарочно няма нищо
+--  (часовете се заявяват от влязъл потребител).
+-- ---------------------------------------------------------------------
 grant select, insert, update, delete on public.teacher_availability to authenticated;
 grant select, insert, update, delete on public.availability_blocks  to authenticated;
 grant select, insert, update, delete on public.lessons              to authenticated;
 grant select on public.booking_settings to authenticated;
+grant select, insert, update, delete on public.teacher_availability to service_role;
+grant select, insert, update, delete on public.availability_blocks  to service_role;
+grant select, insert, update, delete on public.lessons              to service_role;
+grant select, insert, update, delete on public.booking_settings     to service_role;
 
 -- Непознатият посетител НЕ получава достъп до нито една от таблиците —
 -- само до двете функции, които отдават точно толкова, колкото трябва.

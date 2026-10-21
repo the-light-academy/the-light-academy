@@ -280,8 +280,23 @@ create trigger on_auth_user_created
 alter table public.subjects    enable row level security;
 alter table public.enrollments enable row level security;
 
+-- ---------------------------------------------------------------------
+--  ПРАВА ВЪРХУ ТАБЛИЦИТЕ
+--  От 30 октомври 2026 г. Supabase спира да дава автоматично права на
+--  Data API върху НОВИ таблици в public. Затова всяка таблица си носи
+--  правата в същия файл, който я създава — инак при нов проект, при
+--  клон за преглед или при „supabase db reset“ страницата получава
+--  „permission denied“.
+--
+--  authenticated — работи през политиките (RLS решава кой какво вижда).
+--  service_role  — за Edge функцията admin-users: ключът ѝ заобикаля
+--                  RLS, но БЕЗ право върху таблицата пак не минава.
+--  anon          — нарочно нищо: в тази платформа всичко е зад вход.
+-- ---------------------------------------------------------------------
 grant select, insert, update, delete on public.subjects    to authenticated;
 grant select, insert, update, delete on public.enrollments to authenticated;
+grant select, insert, update, delete on public.subjects    to service_role;
+grant select, insert, update, delete on public.enrollments to service_role;
 
 drop policy if exists "subjects: read active"  on public.subjects;
 drop policy if exists "subjects: teacher all"  on public.subjects;
