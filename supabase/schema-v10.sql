@@ -100,8 +100,22 @@ create policy "lessons: admin all" on public.lessons
   with check (public.is_admin());
 
 -- anon няма работа тук: часовете се виждат само след вход.
+-- ---------------------------------------------------------------------
+--  ПРАВА ВЪРХУ ТАБЛИЦИТЕ
+--  От 30 октомври 2026 г. Supabase спира да дава автоматично права на
+--  Data API върху НОВИ таблици в public. Затова всяка таблица си носи
+--  правата в същия файл, който я създава — инак при нов проект, при
+--  клон за преглед или при „supabase db reset“ страницата получава
+--  „permission denied“.
+--
+--  authenticated — работи през политиките (RLS решава кой какво вижда).
+--  service_role  — за Edge функцията admin-users: ключът ѝ заобикаля
+--                  RLS, но БЕЗ право върху таблицата пак не минава.
+--  anon          — нарочно нищо: в тази платформа всичко е зад вход.
+-- ---------------------------------------------------------------------
 revoke all on table public.lessons from anon;
 grant select, insert, update, delete on table public.lessons to authenticated;
+grant select, insert, update, delete on table public.lessons to service_role;
 
 
 -- =====================================================================

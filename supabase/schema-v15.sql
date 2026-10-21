@@ -141,7 +141,22 @@ create policy "feedback: delete own" on public.feedback_reports
 -- grant ролята няма достъп изобщо — и всичко отгоре пада с „permission
 -- denied“, преди политиката да е казала дума. anon нарочно липсва:
 -- невлязъл човек няма работа с обратната връзка за дете.
+-- ---------------------------------------------------------------------
+--  ПРАВА ВЪРХУ ТАБЛИЦИТЕ
+--  От 30 октомври 2026 г. Supabase спира да дава автоматично права на
+--  Data API върху НОВИ таблици в public. Затова всяка таблица си носи
+--  правата в същия файл, който я създава — инак при нов проект, при
+--  клон за преглед или при „supabase db reset“ страницата получава
+--  „permission denied“.
+--
+--  authenticated — работи през политиките (RLS решава кой какво вижда).
+--  service_role  — за Edge функцията admin-users: ключът ѝ заобикаля
+--                  RLS, но БЕЗ право върху таблицата пак не минава.
+--  anon          — нарочно нищо: в тази платформа всичко е зад вход.
+-- ---------------------------------------------------------------------
+revoke all on table public.feedback_reports from anon;
 grant select, insert, update, delete on table public.feedback_reports to authenticated;
+grant select, insert, update, delete on table public.feedback_reports to service_role;
 
 -- ---------------------------------------------------------------------
 --  3. Проверка — какво се получи

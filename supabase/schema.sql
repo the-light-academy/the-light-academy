@@ -145,8 +145,22 @@ alter table public.attempts    enable row level security;
 -- Supabase normally grants these by default; stated explicitly so the
 -- schema is self-contained and the policies below are the only thing
 -- deciding access.
-grant usage on schema public to anon, authenticated;
+-- ---------------------------------------------------------------------
+--  ПРАВА ВЪРХУ ТАБЛИЦИТЕ
+--  От 30 октомври 2026 г. Supabase спира да дава автоматично права на
+--  Data API върху НОВИ таблици в public. Затова всяка таблица си носи
+--  правата в същия файл, който я създава — инак при нов проект, при
+--  клон за преглед или при „supabase db reset“ страницата получава
+--  „permission denied“.
+--
+--  authenticated — работи през политиките (RLS решава кой какво вижда).
+--  service_role  — за Edge функцията admin-users: ключът ѝ заобикаля
+--                  RLS, но БЕЗ право върху таблицата пак не минава.
+--  anon          — нарочно нищо: в тази платформа всичко е зад вход.
+-- ---------------------------------------------------------------------
+grant usage on schema public to anon, authenticated, service_role;
 grant select, insert, update, delete on public.profiles, public.assignments, public.attempts to authenticated;
+grant select, insert, update, delete on public.profiles, public.assignments, public.attempts to service_role;
 grant select on public.assignments to anon;
 
 -- profiles ------------------------------------------------------------

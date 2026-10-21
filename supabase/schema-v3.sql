@@ -349,8 +349,23 @@ end $$;
 alter table public.teaching            enable row level security;
 alter table public.assignment_releases enable row level security;
 
+-- ---------------------------------------------------------------------
+--  ПРАВА ВЪРХУ ТАБЛИЦИТЕ
+--  От 30 октомври 2026 г. Supabase спира да дава автоматично права на
+--  Data API върху НОВИ таблици в public. Затова всяка таблица си носи
+--  правата в същия файл, който я създава — инак при нов проект, при
+--  клон за преглед или при „supabase db reset“ страницата получава
+--  „permission denied“.
+--
+--  authenticated — работи през политиките (RLS решава кой какво вижда).
+--  service_role  — за Edge функцията admin-users: ключът ѝ заобикаля
+--                  RLS, но БЕЗ право върху таблицата пак не минава.
+--  anon          — нарочно нищо: в тази платформа всичко е зад вход.
+-- ---------------------------------------------------------------------
 grant select, insert, update, delete on public.teaching            to authenticated;
 grant select, insert, update, delete on public.assignment_releases to authenticated;
+grant select, insert, update, delete on public.teaching            to service_role;
+grant select, insert, update, delete on public.assignment_releases to service_role;
 
 -- profiles ------------------------------------------------------------
 -- Досега „profiles: teacher writes“ беше for all с using(is_teacher()).
