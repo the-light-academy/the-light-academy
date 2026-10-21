@@ -53,6 +53,12 @@
       year: 2024, minutes: 120, maxPoints: 60,
       rounds: [{ track: 'salabashev', section: 'minali' }] },
 
+    { slug: 'probna-obshtinski-2023-4',
+      title: 'Пробен общински кръг — 2023',
+      href: 'probni_testove/probna_obshtinski_2023_4klas.html',
+      year: 2023, minutes: 240, maxPoints: 21,
+      rounds: [{ track: 'olimpiada', section: 'obshtinski' }] },
+
     { slug: 'probna-obshtinski-2020-4',
       title: 'Пробен общински кръг — 2020',
       href: 'probni_testove/probna_obshtinski_2020_4klas.html',
