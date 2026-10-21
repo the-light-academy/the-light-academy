@@ -288,6 +288,7 @@
   <script src="assets/starcard.js?v=2026-10-13"></script>
   <script src="assets/tracks.js?v=2026-10-07"></script>
   <script src="assets/sastezaniya.js?v=2026-10-20"></script>
+  <script src="assets/probni.js?v=2026-10-21"></script>
   <script>
     /* The student's screen. Everything here is read-only: the numbers are
        derived in the browser from the two queries below, and nothing is
@@ -680,6 +681,29 @@
           '<p class="tlp__card-m">' + esc(meta) + '</p>' + bar + foot + '</div>';
       }
 
+      /* Готова пробна тема, която стои като страница в сайта. Няма ред
+         в базата зад себе си — затова няма процент и „Направи отново“:
+         те щяха да са обещание, което никой не може да изпълни. Отваря
+         се в нов раздел, защото е работа с таймер: порталът трябва да
+         остане зад нея. */
+      function probniCard(t) {
+        var bits = [];
+        if (t.minutes) bits.push('Таймер ' + t.minutes + ' мин');
+        if (t.maxPoints) bits.push(t.maxPoints + ' т.');
+        if (t.note) bits.push(t.note);
+        return '<div class="tlp__card tlp__card--probna">' +
+          '<div class="tlp__card-row">' +
+            '<p class="tlp__card-t">' + esc(t.title) + '</p>' +
+            '<span class="tlp__chip tlp__chip--open">Отворена тема</span>' +
+          '</div>' +
+          '<p class="tlp__card-m">' + esc(bits.join(' · ')) + '</p>' +
+          '<div class="tlp__card-foot">' +
+            '<a class="tla-btn tla-btn--sm" href="' + esc(t.href) + '" ' +
+            'target="_blank" rel="noopener">Започни</a>' +
+          '</div>' +
+        '</div>';
+      }
+
       /* Урокът не се предава и не се оценява: няма процент, няма лента,
          няма „Направи отново“. Само се отваря. */
       function lessonCard(a) {
@@ -761,8 +785,12 @@
          задания са показани тук, за да не излязат втори път по-долу. */
       function szBoard(exams) {
         var S = TLA.Sastezaniya;
-        var used = {};
+        var used = {};      /* задания от базата, показани тук */
+        var shown = {};     /* готови теми от сайта — една тема се брои веднъж,
+                               дори да стои под два кръга */
         var byComp = {};
+        var dbSlugs = {};   /* всичко, което вече идва от базата */
+        exams.forEach(function (a) { if (a.slug) dbSlugs[a.slug] = true; });
         exams.forEach(function (a) {
           if (!a.track) return;
           var c = S.forAssignment(a.track, a.section);
@@ -775,24 +803,45 @@
           var mine = (byComp[c.id] || []).slice().sort(function (x, y) {
             return (y.sort_order || 0) - (x.sort_order || 0);   /* най-новата година отгоре */
           });
+          /* Готовите теми от сайта. Показват се само онези, които не са
+             дошли от базата — иначе една и съща тема би излязла два пъти.
+             Така разделът не стои празен, докато темата чака да бъде
+             пусната и дадена от таблото. */
+          var seen = {};
+          mine.forEach(function (a) { if (a.slug) seen[a.slug] = true; });
+          var open = (TLA.Probni ? TLA.Probni.forCompetition(c) : [])
+            .filter(function (t) { return !seen[t.slug]; });
+          /* Една и съща тема стои под общинския и под областния кръг —
+             в числото до раздела се брои веднъж, и то само ако не идва
+             от базата. */
+          open.forEach(function (t) { if (!dbSlugs[t.slug]) shown[t.slug] = true; });
+
           var past = S.isPast(c);
           var rank = S.ranks[c.rank];
           return '<article class="tlp__sz' + (past ? ' is-past' : '') +
-              (mine.length ? ' has-tests' : '') + '">' +
+              (mine.length || open.length ? ' has-tests' : '') + '">' +
             '<div class="tlp__sz-h">' +
               '<span class="tlp__sz-d">' + esc(S.dateLabel(c)) + ' ' + S.yearLabel(c) + '</span>' +
               '<h3 class="tlp__sz-n">' + esc(c.name) + '</h3>' +
               '<span class="tlp__sz-w">' + esc(S.countdown(c)) + '</span>' +
               '<span class="tlp__sz-r tlp__sz-r--' + esc(rank.cls) + '">' + esc(rank.word) + '</span>' +
             '</div>' +
-            (mine.length
-              ? '<div class="tlp__sz-list">' + mine.map(assignmentCard).join('') + '</div>'
+            (mine.length || open.length
+              ? '<div class="tlp__sz-list">' +
+                  mine.map(assignmentCard).join('') + open.map(probniCard).join('') +
+                '</div>'
               : '<p class="tlp__sz-none">Още няма пробна тема за това състезание.</p>') +
           '</article>';
         }).join('');
 
-        return { html: '<div class="tlp__szboard">' + rows + '</div>', used: used };
+        return { html: '<div class="tlp__szboard">' + rows + '</div>',
+                 used: used, open: Object.keys(shown).length };
       }
+
+      /* Колко готови теми от сайта е показала дъската — влиза в числото
+         до името на раздела, иначе „Пробни изпити“ стои без число, а
+         вътре има какво да се прави. */
+      var szOpenCount = 0;
 
       function renderAssignments(published) {
         var hw = published.filter(function (a) { return a.kind === 'homework'; });
@@ -822,9 +871,11 @@
            заглавията, а темите стоят под своето състезание, с датата му.
            Всичко останало (ако има) се подрежда по стария начин отдолу. */
         var szHtml = '', left = ex;
+        szOpenCount = 0;
         if (szIsOn()) {
           var board = szBoard(ex);
           szHtml = board.html;
+          szOpenCount = board.open;
           left = ex.filter(function (a) { return !board.used[a.id]; });
         }
 
@@ -846,7 +897,8 @@
 
         var note = szIsOn()
           ? 'Всяка тема се отваря в собствена страница със свой таймер — като на истинското ' +
-            'състезание. Резултатът се връща тук.'
+            'състезание. Темите с „Отворена тема“ са свободни за упражнение по всяко време; ' +
+            'резултатът влиза в профила ти, щом преподавателят отвори темата за теб.'
           : 'Всеки пробен изпит се отваря в собствена страница със свой таймер, точно както на ' +
             'истинското НВО. Резултатът се връща тук.';
 
@@ -1555,7 +1607,7 @@
         /* tab labels carry the count, so the student can see where the
            work is without opening each one */
         var hwCount = published.filter(function (a) { return a.kind === 'homework'; }).length;
-        var exCount = published.filter(function (a) { return a.kind === 'exam'; }).length;
+        var exCount = published.filter(function (a) { return a.kind === 'exam'; }).length + szOpenCount;
         if (hwCount) $('tab-hw').innerHTML = 'Домашни <span class="tlp__tab-n">' + hwCount + '</span>';
         if (exCount) $('tab-ex').innerHTML = 'Пробни изпити <span class="tlp__tab-n">' + exCount + '</span>';
         if (attempts.length) $('tab-res').innerHTML = 'Резултати <span class="tlp__tab-n">' + attempts.length + '</span>';
