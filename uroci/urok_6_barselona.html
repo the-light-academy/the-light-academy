@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Барселона: двубой с рационални числа · 6. клас</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Интерактивен урок за 6. клас: умножение и деление на рационални числа в три етапа — състезание един срещу един, работа в екип и творческа мисия из Барселона." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* =====================================================================
+   УРОК ЗА ДЪСКАТА — „Барселона: двубой с рационални числа“, 6. клас
+   ---------------------------------------------------------------------
+   Умножение и деление на рационални числа за двама ученици на по-високо
+   ниво. Три етапа:
+     1. КВАЛИФИКАЦИЯ — един срещу един, с хронометър и табло.
+     2. ЕКИП — двата ключа: веригите им се събират в един код.
+     3. БАРСЕЛОНА — творческа мисия с бюджет, маршрут и мозайка.
+
+   Както и другите уроци за дъската: НИКЪДЕ НЯМА ПОЛЕ ЗА ВЪВЕЖДАНЕ НА
+   ОТГОВОР. Задачата се чете, момчетата смятат на лист, а бутонът
+   „Отговор“ показва верния отговор и изречението „защо“. Единствените
+   полета са табло за точки и плъзгачи в игрите.
+
+   Отговорите са пресметнати НАНОВО с точна дробна аритметика, докато
+   урокът се пишеше: scratchpad/barselona.js чете данните оттук, смята
+   всеки израз сам и сверява.
+   ===================================================================== */
+
+:root{
+  --ink:#1B2A41;
+  --ink-soft:#5A6E88;
+  --paper:#FFFBF4;
+  --paper-raised:#FFFFFF;
+  --line:#E7DFD2;
+  --sea:#0E6BA8;          /* морето и плочките */
+  --sea-soft:#E1EEF7;
+  --sun:#F2A541;          /* слънцето */
+  --sun-soft:#FFF2DC;
+  --sun-ink:#8A5505;
+  --terra:#D1495B;        /* Гауди */
+  --terra-soft:#FBE4E7;
+  --mint:#06A77D;
+  --mint-soft:#E0F4EE;
+  --violet:#6B4FA8;
+  --violet-soft:#EDE6FB;
+  --ok:#1F7A4C;  --ok-soft:#E4F2EA;
+  --bad:#C0392B; --bad-soft:#FBE9E7;
+}
+*{ box-sizing:border-box; }
+/* Фонът стои само на <html>: сложим ли го и на <body>, плътният цвят на
+   body покрива .city (z-index:-1) и градът изчезва. */
+html{ background:var(--paper); }
+html,body{ margin:0; color:var(--ink); }
+body{ font-family:'Nunito',system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.55; }
+
+/* ── градът отзад ─────────────────────────────────────────────── */
+.city{ position:fixed; inset:0; z-index:-1; overflow:hidden;
+  background:linear-gradient(180deg,#FFFBF4 0%, #FDF3E4 50%, #F6E9D6 100%); }
+.city .tower{ position:absolute; bottom:0; background:rgba(14,107,168,.05);
+  border-radius:50% 50% 6px 6px / 28% 28% 6px 6px; }
+.city .sun{ position:absolute; border-radius:50%; background:rgba(242,165,65,.10); }
+
+/* ── лентата горе ─────────────────────────────────────────────── */
+.bar{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.55rem clamp(0.8rem,3vw,1.4rem);
+  background:rgba(255,251,244,0.93); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); flex-wrap:wrap;
+}
+.bar b{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.05rem; }
+.bar b em{ font-style:normal; color:var(--terra); }
+.bar small{ color:var(--ink-soft); font-size:0.82rem; }
+.bar .sp{ flex:1 1 auto; }
+.logo{ width:40px; height:34px; flex:none; }
+
+/* таблото в лентата */
+.mini{ display:flex; align-items:center; gap:0.35rem; font-family:'JetBrains Mono',monospace;
+  font-weight:700; font-size:0.95rem; }
+.mini i{ font-style:normal; border-radius:9px; padding:0.1rem 0.5rem; }
+.mini .p1{ background:var(--sea); color:#fff; }
+.mini .p2{ background:var(--terra); color:#fff; }
+
+.wrap{ max-width:1000px; margin:0 auto; padding:1rem 1rem 4rem; }
+
+/* ── етапите ──────────────────────────────────────────────────── */
+.tabs{ display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.tab{
+  display:flex; align-items:center; gap:0.5rem; text-align:left;
+  padding:0.5rem 0.8rem; border:1.5px solid var(--line); border-radius:14px;
+  background:var(--paper-raised); cursor:pointer; font:inherit; min-height:52px;
+}
+.tab b{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.96rem; display:block; }
+.tab small{ display:block; color:var(--ink-soft); font-size:0.78rem; }
+.tab .dot{ width:26px; height:26px; flex:none; border-radius:50%;
+  display:grid; place-items:center; font-size:0.78rem; font-weight:800; color:#fff; }
+.tab:nth-child(1) .dot{ background:var(--sun); color:var(--ink); }
+.tab:nth-child(2) .dot{ background:var(--sea); }
+.tab:nth-child(3) .dot{ background:var(--mint); }
+.tab:nth-child(4) .dot{ background:var(--terra); }
+.tab[aria-selected="true"]{ border-color:var(--terra); background:var(--terra-soft);
+  box-shadow:0 6px 18px rgba(209,73,91,0.14); }
+
+/* ── картите ──────────────────────────────────────────────────── */
+.card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:18px; padding:1rem 1.1rem; margin-bottom:1rem;
+  box-shadow:0 10px 26px rgba(27,42,65,0.06);
+}
+h1{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:clamp(26px,5vw,38px);
+  margin:0 0 0.3rem; line-height:1.1; }
+h1 em{ font-style:normal; color:var(--terra); }
+h2{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.2rem;
+  margin:1.2rem 0 0.5rem; display:flex; align-items:center; gap:0.5rem; }
+h2:first-child{ margin-top:0; }
+h3{ font-size:1rem; font-weight:800; margin:0 0 0.3rem; }
+p{ margin:0 0 0.7rem; }
+.muted{ color:var(--ink-soft); }
+.small{ font-size:0.9rem; }
+.mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
+
+.goal{ border-left:5px solid var(--terra); background:var(--terra-soft);
+  border-radius:0 14px 14px 0; padding:0.7rem 0.9rem; margin-bottom:1rem; }
+.goal .mins{ display:inline-block; background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:999px; padding:0.05rem 0.55rem; font-weight:800; font-size:0.82rem; margin-left:0.3rem; }
+.hero{ display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.hero .t{ flex:1 1 280px; min-width:0; }
+.hero svg{ width:240px; height:auto; flex:none; }
+
+.btn{ font:inherit; font-weight:800; cursor:pointer; border:1px solid transparent;
+  border-radius:999px; padding:0.45rem 1rem; min-height:40px;
+  background:var(--sun); color:var(--ink); }
+.btn:hover{ transform:translateY(-1px); }
+.btn.ghost{ background:transparent; border-color:var(--line); }
+.btn.ghost:hover{ background:var(--sun-soft); }
+.btn.sea{ background:var(--sea); color:#fff; }
+.btn.terra{ background:var(--terra); color:#fff; }
+.btn[disabled]{ opacity:.45; cursor:not-allowed; transform:none; }
+.row{ display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+
+/* ── правилото ────────────────────────────────────────────────── */
+.rule{ background:var(--sea-soft); border:1px solid #C8E0F0; border-radius:14px;
+  padding:0.8rem 0.9rem; }
+.rule .mono{ font-size:1.05rem; font-weight:700; }
+.rule.warm{ background:var(--sun-soft); border-color:#F3DCAE; }
+.rule.mint{ background:var(--mint-soft); border-color:#BFE8DB; }
+.rule.violet{ background:var(--violet-soft); border-color:#DCD0F3; }
+
+/* ── примерът стъпка по стъпка ────────────────────────────────── */
+.steps{ list-style:none; margin:0.6rem 0 0; padding:0; }
+.steps li{ display:flex; gap:0.6rem; align-items:flex-start; padding:0.4rem 0;
+  border-top:1px dashed var(--line); font-family:'JetBrains Mono',monospace; font-size:1rem; }
+.steps li:first-child{ border-top:0; }
+.steps li.hid{ display:none; }
+.steps .n{ width:24px; height:24px; flex:none; border-radius:7px; background:var(--sun);
+  display:grid; place-items:center; font-size:0.78rem; font-weight:700; font-family:'Nunito',sans-serif; }
+.steps li.fin{ font-weight:700; color:var(--ok); }
+.steps li.fin .n{ background:var(--ok); color:#fff; }
+
+/* ── задачите ─────────────────────────────────────────────────── */
+.tasks{ display:grid; gap:0.6rem; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); }
+.task{ border:1px solid var(--line); border-radius:14px; padding:0.7rem 0.8rem; background:var(--paper); }
+.task .top{ display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem; }
+.task .n{ font-size:0.78rem; font-weight:800; color:var(--ink-soft); letter-spacing:.04em; text-transform:uppercase; }
+.lvl{ font-size:0.7rem; font-weight:800; border-radius:999px; padding:0.1rem 0.5rem; }
+.lvl.l2{ background:var(--sun-soft); color:var(--sun-ink); }
+.lvl.l3{ background:var(--bad-soft); color:var(--bad); }
+.lvl.l4{ background:var(--violet-soft); color:var(--violet); }
+.lvl.l5{ background:#1B2A41; color:#FFD9A0; }
+.task .q{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.06rem;
+  margin:0.2rem 0 0.5rem; white-space:pre-line; }
+.task .a{ background:var(--ok-soft); border-radius:10px; padding:0.5rem 0.7rem; margin-top:0.5rem; }
+.task .a .mono{ font-weight:700; }
+.task .a .why{ display:block; font-family:'Nunito',sans-serif; font-weight:600; font-size:0.88rem;
+  color:var(--ink-soft); margin-top:0.25rem; white-space:pre-line; }
+
+/* ── игрите ───────────────────────────────────────────────────── */
+.game{ border:1px solid var(--line); border-radius:16px; padding:0.9rem;
+  background:linear-gradient(#FFFFFF,#FDF4E6); }
+.fb{ font-weight:800; min-height:1.5rem; margin-top:0.5rem; }
+.fb.ok{ color:var(--ok); } .fb.bad{ color:var(--bad); }
+.qbig{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.7rem; margin:0.5rem 0; }
+
+/* таблото на двубоя */
+.duel{ display:grid; grid-template-columns:1fr auto 1fr; gap:0.6rem; align-items:end; margin:0.6rem 0; }
+.side{ text-align:center; }
+.side .nm{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.05rem; }
+.side .sc{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:2.2rem; line-height:1.1;
+  transition:transform .25s; }
+.side.bump .sc{ transform:scale(1.35); }
+.side.p1 .sc{ color:var(--sea); } .side.p2 .sc{ color:var(--terra); }
+.vs{ font-family:'Fredoka',sans-serif; font-weight:700; color:var(--ink-soft); padding-bottom:0.6rem; }
+/* кулите на Саграда Фамилия растат с точките */
+.towers{ display:flex; gap:4px; justify-content:center; align-items:flex-end; height:92px; }
+.towers i{ display:block; width:13px; background:linear-gradient(180deg,#F6C177,#D1495B);
+  border-radius:50% 50% 3px 3px / 22% 22% 3px 3px; transition:height .45s cubic-bezier(.3,1.4,.5,1); }
+.towers.sea i{ background:linear-gradient(180deg,#7EC8F0,#0E6BA8); }
+
+/* хронометърът */
+.ring{ display:block; margin:0 auto; }
+.ring .bgc{ fill:none; stroke:rgba(27,42,65,.10); stroke-width:9; }
+.ring .fgc{ fill:none; stroke:var(--mint); stroke-width:9; stroke-linecap:round;
+  transition:stroke-dashoffset .95s linear, stroke .3s; }
+.ring .fgc.warn{ stroke:var(--terra); }
+.ring text{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; fill:var(--ink); }
+
+/* знаковата машина */
+.signs{ display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center; margin:0.6rem 0; }
+.sgn{ width:48px; height:48px; border-radius:14px; display:grid; place-items:center;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.4rem;
+  border:2px solid var(--line); background:var(--paper-raised); transition:transform .3s, opacity .3s; }
+.sgn.neg{ border-color:var(--terra); color:var(--terra); background:var(--terra-soft); }
+.sgn.gone{ transform:scale(.25) rotate(25deg); opacity:0; }
+
+/* веригите на екипа */
+.chain{ display:flex; gap:0.4rem; flex-wrap:wrap; align-items:center; margin:0.4rem 0; }
+.lnk{ font-family:'JetBrains Mono',monospace; font-weight:700; border:2px solid var(--line);
+  border-radius:12px; padding:0.3rem 0.6rem; background:var(--paper-raised); opacity:.35;
+  transition:opacity .3s, border-color .3s, transform .3s; }
+.lnk.on{ opacity:1; border-color:var(--sea); transform:translateY(-2px); }
+.lnk.fin{ border-color:var(--mint); background:var(--mint-soft); color:var(--ok); }
+.gate{ border:2px dashed var(--line); border-radius:16px; padding:0.8rem; text-align:center;
+  font-family:'Fredoka',sans-serif; font-weight:700; transition:background .4s, border-color .4s; }
+.gate.open{ border-style:solid; border-color:var(--mint); background:var(--mint-soft); color:var(--ok); }
+
+/* мозайката на Гауди */
+.mos{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; max-width:420px; margin:0.6rem auto; }
+.tile{ aspect-ratio:1/1; border-radius:12px; border:2px solid var(--line); background:var(--paper-raised);
+  font:inherit; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.9rem; cursor:pointer;
+  display:grid; place-items:center; padding:2px; text-align:center; transition:transform .25s, background .35s, color .35s, border-color .35s; }
+.tile:hover{ transform:translateY(-2px); }
+.tile.neg{ background:var(--sea); border-color:#0A5684; color:#fff; }
+.tile.pos{ background:var(--sun); border-color:#D08A1E; color:var(--ink); }
+.tile.zero{ background:var(--ink); border-color:#000; color:#FFD9A0; }
+
+/* творческите карти */
+.makes{ display:grid; gap:0.6rem; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
+.make{ border:1px dashed var(--terra); border-radius:14px; padding:0.7rem 0.8rem; background:var(--terra-soft); }
+.make b{ display:block; margin-bottom:0.2rem; }
+
+/* ── бележките ────────────────────────────────────────────────── */
+.notes{ background:var(--sun-soft); border:1px solid #F3DCAE; border-radius:14px; padding:0.8rem 0.9rem; }
+.notes ul{ margin:0.3rem 0 0; padding-left:1.1rem; }
+.notes li{ margin-bottom:0.35rem; }
+.page-legal{ text-align:center; color:var(--ink-soft); font-size:0.8rem; margin:2rem 0 1rem; }
+</style>
+</head>
+<body>
+<div class="city" aria-hidden="true" id="city"></div>
+
+<header class="bar">
+  <svg class="logo" data-logo aria-hidden="true"></svg>
+  <b>Барселона <em>· двубой</em></b>
+  <small>6. клас · умножение и деление на рационални числа</small>
+  <span class="sp"></span>
+  <span class="mini"><i class="p1" id="mini1">0</i><span>:</span><i class="p2" id="mini2">0</i></span>
+  <small class="mono" id="barTab"></small>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="panels"></main>
+  <p class="page-legal">© 2026 The Light Academy</p>
+</div>
+
+<script>
+/* ===================================================================
+   Четирите етапа
+   -------------------------------------------------------------------
+   `a` е отговорът, който се ПОКАЗВА с бутон, `why` е изречението под
+   него. Никъде няма поле за писане. `wp:true` значи текстова задача —
+   проверката ѝ в scratchpad/barselona.js е написана отделно.
+   =================================================================== */
+var STAGES = [
+{
+  id:'zagriavka',
+  dot:'0',
+  mins:8,
+  tab:{ b:'Загрявка', s:'знаците и обратното число' },
+  goal:'Три правила, с които се решава всичко останало: знакът при умножение и деление, '
+      +'обратното число и какво прави нулата. Бързо, на дъската, без писане.',
+  hero:true,
+  rule:'<p><b>Знакът:</b> два еднакви знака дават <b>плюс</b>, два различни — <b>минус</b>. '
+      +'При повече множители гледаме БРОЯ на минусите: четен брой → плюс, нечетен → минус.</p>'
+      +'<p><b>Делението</b> е умножение по обратното число: <span class="mono">a : (p/q) = a · (q/p)</span></p>'
+      +'<p class="mono">(−3/4) : (−9/8) = (−3/4) · (−8/9) = 2/3</p>'
+      +'<p class="small muted"><b>Нулата:</b> 0 : (−5) = 0, но (−5) : 0 НЯМА смисъл. '
+      +'И внимавай: (−2)⁴ = 16, а −2⁴ = −16 — скобите решават всичко.</p>',
+  examples:[
+    { expr:'(−1) · (−2) · (−3) · (−4)', steps:['Броим минусите: четири','Четен брой → резултатът е положителен','1 · 2 · 3 · 4 = 24'], answer:'24' },
+    { expr:'(−3/5) : (6/25)', steps:['Делението става умножение по обратното: (−3/5) · (25/6)','Съкращаваме: 25 : 5 = 5 и 6 : 3 = 2','(−1 · 5) / 2 = −5/2'], answer:'−5/2 (= −2,5)' },
+    { expr:'(−0,2) · (−0,5) · (−4)', steps:['Три минуса → нечетен брой → минус','0,2 · 0,5 = 0,1','0,1 · 4 = 0,4'], answer:'−0,4' }
+  ],
+  tasks:[
+    { q:'(−7) · 8', a:'−56', lvl:2, why:'Различни знаци → минус. 7 · 8 = 56.' },
+    { q:'(−3/4) · (−8/9)', a:'2/3', lvl:2, why:'Два минуса → плюс. Съкращаваме: 3 и 9 → 1 и 3; 8 и 4 → 2 и 1. Остава 2/3.' },
+    { q:'−2,5 · 4', a:'−10', lvl:2, why:'2,5 · 4 = 10, знакът е минус.' },
+    { q:'(−6) : (−0,5)', a:'12', lvl:2, why:'Деленето на 0,5 е умножение по 2: 6 · 2 = 12, а два минуса дават плюс.' },
+    { q:'(−3/5) : (6/25)', a:'−5/2', lvl:3, why:'(−3/5) · (25/6) = −5/2 = −2,5.' },
+    { q:'(−1) · (−2) · (−3) · (−4)', a:'24', lvl:3, why:'Четири минуса — четен брой, значи плюс.' },
+    { q:'Кое е по-голямо:\n(−2)⁴ или −2⁴?', a:'(−2)⁴ = 16', lvl:3, why:'(−2)⁴ = 16, защото минусът е вътре в скобата и се умножава четири пъти. При −2⁴ степенуваме само 2 и остава −16.', wp:true },
+    { q:'(−0,2) · (−0,5) · (−4)', a:'−0,4', lvl:3, why:'Три минуса → минус. 0,2 · 0,5 · 4 = 0,4.' }
+  ],
+  game:'signs',
+  notes:[
+    'Загрявката е за темпо: питай и двамата едновременно, който вдигне ръка пръв — отговаря.',
+    'Машината със знаците се пуска поне два пъти с нечетен брой минуси — точно там се греши.',
+    'Ако някой каже, че (−2)⁴ и −2⁴ са едно и също, спри и го разиграй на дъската. Това е капанът на целия урок.'
+  ]
+},
+{
+  id:'kvalifikacia',
+  dot:'1',
+  mins:20,
+  tab:{ b:'Етап 1 · Квалификация', s:'един срещу един, с хронометър' },
+  goal:'Двубой. Четеш задачата, пускаш хронометъра, и двамата смятат на лист. Който пръв даде '
+      +'верен отговор, взима точка; ако сгреши — точката отива у другия.',
+  rule:'<p><b>Правилата:</b> 1 точка за верен отговор. Верен отговор след изтекло време — половин '
+      +'точка. Грешка, казана на глас — точката е за другия.</p>'
+      +'<p class="small muted">Задачите долу вървят от трудна към по-трудна. Таблото и хронометърът '
+      +'са в играта под тях.</p>',
+  examples:[
+    { expr:'(−2,4) : 0,8 · (−3)', steps:['Делението и умножението са наравно — отляво надясно','(−2,4) : 0,8 = −3','(−3) · (−3) = 9'], answer:'9' },
+    { expr:'(−3/5) · (10/9) : (−2/3)', steps:['(−3/5) · (10/9) = −30/45 = −2/3','После : (−2/3) значи · (−3/2)','(−2/3) · (−3/2) = 1'], answer:'1' },
+    { expr:'((−2)³ · (−3)²) : (−6)', steps:['(−2)³ = −8, (−3)² = 9','(−8) · 9 = −72','(−72) : (−6) = 12'], answer:'12' }
+  ],
+  tasks:[
+    { q:'(−1,2) · (−0,5)', a:'0,6', lvl:3, why:'Два минуса → плюс. 1,2 · 0,5 = 0,6.' },
+    { q:'(−4/9) · (3/8)', a:'−1/6', lvl:3, why:'Съкращаваме 3 и 9, после 4 и 8: (−1/3) · (1/2) = −1/6.' },
+    { q:'(−18) : (2/3)', a:'−27', lvl:3, why:'(−18) · (3/2) = −27.' },
+    { q:'(−0,75) · (−8)', a:'6', lvl:3, why:'0,75 = 3/4; (3/4) · 8 = 6, а знакът е плюс.' },
+    { q:'(−2/3)²', a:'4/9', lvl:3, why:'Квадратът на отрицателно число е положителен: (−2/3) · (−2/3) = 4/9.' },
+    { q:'(3/4) : (−9/16)', a:'−4/3', lvl:4, why:'(3/4) · (−16/9) = −48/36 = −4/3.' },
+    { q:'(−1/2)³ · (−16)', a:'2', lvl:4, why:'(−1/2)³ = −1/8; (−1/8) · (−16) = 2.' },
+    { q:'(−5) · (−4) : (−10)', a:'−2', lvl:4, why:'(−5) · (−4) = 20; 20 : (−10) = −2.' },
+    { q:'(−2,4) : 0,8 · (−3)', a:'9', lvl:4, why:'Отляво надясно: (−2,4) : 0,8 = −3; (−3) · (−3) = 9.' },
+    { q:'(−0,2)² · (−100)', a:'−4', lvl:4, why:'(−0,2)² = 0,04; 0,04 · (−100) = −4.' },
+    { q:'(−3/5) · (10/9) : (−2/3)', a:'1', lvl:4, why:'(−3/5) · (10/9) = −2/3; (−2/3) : (−2/3) = 1.' },
+    { q:'(−1/2 + 1/3) · (−6)', a:'1', lvl:4, why:'В скобата: −3/6 + 2/6 = −1/6; (−1/6) · (−6) = 1.' },
+    { q:'((−2)³ · (−3)²) : (−6)', a:'12', lvl:5, why:'(−8) · 9 = −72; (−72) : (−6) = 12.' },
+    { q:'(−1/3)² : (−1/3)³', a:'−3', lvl:5, why:'(1/9) : (−1/27) = (1/9) · (−27) = −3.' }
+  ],
+  game:'duel',
+  notes:[
+    'Хронометърът е по избор 30, 45 или 60 секунди. За първите пет задачи дай 45, после слез на 30.',
+    'Не чети отговора веднага — първо питай ДРУГИЯ дали е съгласен. Така и двамата смятат до края.',
+    'При равенство пускай задача 13 или 14 като тайбрек — те са най-тежките.'
+  ]
+},
+{
+  id:'ekip',
+  dot:'2',
+  mins:17,
+  tab:{ b:'Етап 2 · Екип', s:'двата ключа и кодът' },
+  goal:'Сега не един срещу друг, а двамата срещу задачата. Всеки решава своята верига, накрая '
+      +'двете числа се умножават и дават кода на метрото.',
+  rule:'<p><b>Мисията:</b> всеки има своя верига от три действия. Резултатът на последното действие '
+      +'е неговият ключ.</p>'
+      +'<p class="mono">код = |ключ&nbsp;1 · ключ&nbsp;2|</p>'
+      +'<p class="small muted">Единият не може да довърши без другия — кодът иска и двата ключа. '
+      +'Задачите отдолу се решават заедно, на глас, с разделени роли: единият смята, другият проверява '
+      +'знака и съкращаването.</p>',
+  examples:[
+    { expr:'Намери x: (−2/3) · x = 8/9', steps:['Търсим множител — значи делим','x = (8/9) : (−2/3)','x = (8/9) · (−3/2) = −24/18'], answer:'x = −4/3' },
+    { expr:'(−1/2) · (−2/3) · (−3/4) · (−4/5)', steps:['Четири минуса → плюс','Съкращаваме по диагонал: 2 с 2, 3 с 3, 4 с 4','Остава 1/5'], answer:'1/5' },
+    { expr:'Кое е по-голямо: (−2/3)³ или (−2/3)²?', steps:['(−2/3)³ = −8/27 — нечетна степен, значи отрицателно','(−2/3)² = 4/9 — четна степен, значи положително','Положителното винаги е по-голямо'], answer:'(−2/3)² = 4/9' }
+  ],
+  tasks:[
+    { q:'Намери x:\n(−2/3) · x = 8/9', a:'x = −4/3', lvl:4, why:'x = (8/9) : (−2/3) = (8/9) · (−3/2) = −4/3.', wp:true },
+    { q:'Намери x:\nx : (−0,4) = 2,5', a:'x = −1', lvl:4, why:'x = 2,5 · (−0,4) = −1.', wp:true },
+    { q:'(−1/2) · (−2/3) · (−3/4) · (−4/5)', a:'1/5', lvl:4, why:'Четири минуса → плюс, а дробите се съкращават верижно и остава 1/5.' },
+    { q:'(−1/2 − 1/3) : (5/6)', a:'−1', lvl:4, why:'В скобата: −5/6. После (−5/6) · (6/5) = −1.' },
+    { q:'Кое е по-голямо:\n(−2/3)³ или (−2/3)²?', a:'(−2/3)² = 4/9', lvl:4, why:'Нечетната степен пази минуса: (−2/3)³ = −8/27. Четната го маха: 4/9.', wp:true },
+    { q:'Има ли смисъл (−5) : 0?\nА 0 : (−5)?', a:'(−5) : 0 — няма; 0 : (−5) = 0', lvl:4, why:'Деление на нула не се дефинира: няма число, което, умножено по 0, да дава −5. Обратно — нула, разделена на каквото и да е различно от нула, е нула.', wp:true },
+    { q:'Произведението на пет числа е\nотрицателно. Най-малко колко\nот тях са отрицателни?', a:'1', lvl:5, why:'Минусът остава само при нечетен брой отрицателни множители — най-малкият нечетен брой е 1.', wp:true },
+    { q:'(−0,125) · (−8) · (−1/2)', a:'−0,5', lvl:5, why:'0,125 · 8 = 1; остава 1 · (−1/2) = −0,5, защото минусите са три.' },
+    { q:'За кое x е вярно:\nx · (−3/4) = x ?', a:'x = 0', lvl:5, why:'Ако x не е нула, можем да съкратим с него и остава −3/4 = 1 — невъзможно. Значи x = 0.', wp:true }
+  ],
+  game:'keys',
+  notes:[
+    'Разменете ролите по средата: който е смятал, започва да проверява. Проверката е работа, не наказание.',
+    'Кодът не се казва — заслужава се. Ако единият сгреши брънка, кодът не се отваря и двамата търсят къде.',
+    'Задачата с нулата е теоретична, но влиза на контролни. Оставете я да я обяснят с думи.'
+  ]
+},
+{
+  id:'barselona',
+  dot:'3',
+  mins:15,
+  tab:{ b:'Етап 3 · Барселона', s:'мисия, мозайка, творчество' },
+  goal:'Един ден в Барселона, платен с рационални числа: температури нагоре по Монсерат, билети, '
+      +'отстъпки и бюджет. Накрая — мозайката на Гауди и две задачи, които те сами измислят.',
+  rule:'<p><b>Правилото на деня:</b> всяко „на всеки“, „пада с“, „отстъпка“ и „поравно“ е умножение '
+      +'или деление с рационални числа.</p>'
+      +'<p class="mono">−0,6 °C на всеки 100 м · 9 стотици метра = −5,4 °C</p>'
+      +'<p class="small muted">Отстъпка −25% значи · (−0,25) към цената, тоест нова цена = 48 · 0,75.</p>',
+  examples:[
+    { expr:'Температурата пада с 0,6 °C на всеки 100 м. От 300 м до 1 200 м — с колко се променя?', steps:['Изкачваме 1 200 − 300 = 900 м','900 : 100 = 9 пъти по 100 метра','9 · (−0,6) = −5,4'], answer:'с −5,4 °C' },
+    { expr:'Бюджет 60 €. Харчат 3/5 за билети, остатъкът се дели поравно между двама. По колко?', steps:['Остава 1 − 3/5 = 2/5 от бюджета','60 · (2/5) = 24 €','24 : 2 = 12 €'], answer:'по 12 €' },
+    { expr:'Сувенир 18 €, а за втория има отстъпка 1/3. Колко за два?', steps:['Вторият струва 18 · (1 − 1/3) = 18 · (2/3)','18 · (2/3) = 12','18 + 12 = 30'], answer:'30 €' }
+  ],
+  tasks:[
+    { q:'На Монсерат температурата пада с 0,6 °C\nна всеки 100 м. Качваме се от 300 м\nдо 1 200 м. С колко се променя?', a:'с −5,4 °C', lvl:3, why:'900 : 100 = 9 пъти по (−0,6) = −5,4 °C.', wp:true },
+    { q:'Карта за 12 пътувания с метро струва 12,60 €.\nКолко е едно пътуване?', a:'1,05 €', lvl:3, why:'12,60 : 12 = 1,05 €.', wp:true },
+    { q:'Яке за 48 € с отстъпка 25%.\nС колко се променя цената и каква става?', a:'с −12 €; става 36 €', lvl:3, why:'48 · (−0,25) = −12; 48 − 12 = 36 €.', wp:true },
+    { q:'Сметката в кафенето е 37,50 €\nи се дели поравно на трима.', a:'12,50 € на човек', lvl:3, why:'37,50 : 3 = 12,50 €.', wp:true },
+    { q:'Телеферика слиза с 4,5 м в секунда.\nКаква е промяната на височината\nза 12 секунди?', a:'−54 м', lvl:4, why:'12 · (−4,5) = −54 м — минусът показва, че слиза.', wp:true },
+    { q:'Батерията пада с 2,5% на всеки 10 минути\nснимане. Колко остава след 1 ч и 20 мин\nот пълна батерия?', a:'80% (пада с −20%)', lvl:4, why:'80 минути : 10 = 8 пъти по (−2,5%) = −20%; 100 − 20 = 80%.', wp:true },
+    { q:'Бюджет 60 €. Харчат 3/5 за билети,\nостатъкът се дели поравно между двама.', a:'по 12 €', lvl:4, why:'Остава 2/5 от 60 = 24 €; 24 : 2 = 12 €.', wp:true },
+    { q:'Мозайка от 4 реда по 4 плочки.\n3/8 от плочките са сини.\nКолко са сините?', a:'6', lvl:4, why:'16 · (3/8) = 6 плочки.', wp:true },
+    { q:'Сувенир струва 18 €, а за втория\nима отстъпка 1/3. Колко плащат за два?', a:'30 €', lvl:5, why:'Вторият е 18 · (2/3) = 12 €; общо 18 + 12 = 30 €.', wp:true }
+  ],
+  game:'mosaic',
+  make:[
+    { b:'Задача по поръчка', t:'Измислете задача за Барселона, чийто отговор е −4,5. Задължително с деление на рационални числа.' },
+    { b:'Маршрут с бюджет', t:'Направете маршрут от 4 спирки. На всяка спирка бюджетът се умножава или дели по число. Тръгвате с 80 € и трябва да свършите точно с 15 €.' },
+    { b:'Правилото на Гауди', t:'Напишете с едно изречение кога плочката е синя и кога оранжева — така, че да важи за всяка плочка на мозайката.' },
+    { b:'Израз с капан', t:'Измислете израз с четири множителя, който дава точно −1. Поне два от множителите да са дроби.' }
+  ],
+  notes:[
+    'Творческите карти са за последните минути — дай им лист и ги остави сами. После всеки защитава своята задача пред другия.',
+    'Маршрутът с бюджета има много решения. Едно от тях: 80 · (3/4) = 60, 60 : 2 = 30, 30 · 1,5 = 45, 45 : 3 = 15.',
+    'Мозайката се разкрива бавно — първо познават знака на глас, чак после щракат плочката. Накрая оранжевите плочки чертаят ромб.'
+  ]
+}
+];
+
+(function(){
+  'use strict';
+
+  var LVL = { 2:'загрявка', 3:'средно', 4:'трудно', 5:'за смелите' };
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function el(tag, cls, html){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(html != null) n.innerHTML = html;
+    return n;
+  }
+  /* Числата се пишат по български: десетична запетая и дълго тире за минус. */
+  function num(v){
+    var r = Math.round(v * 1000) / 1000;
+    return String(r).replace('.', ',').replace(/^-/, '−');
+  }
+
+  /* ── градът отзад: кулите на Саграда Фамилия ─────────────────── */
+  (function city(){
+    var c = document.getElementById('city'), i, t;
+    var hs = [120, 190, 260, 210, 150, 240, 180];
+    for(i = 0; i < hs.length; i++){
+      t = el('div', 'tower');
+      t.style.left = (6 + i * 13) + '%';
+      t.style.width = (26 + (i % 3) * 8) + 'px';
+      t.style.height = hs[i] + 'px';
+      c.appendChild(t);
+    }
+    var s = el('div', 'sun');
+    s.style.right = '8%'; s.style.top = '6%';
+    s.style.width = '220px'; s.style.height = '220px';
+    c.appendChild(s);
+  })();
+
+  function logoSvg(){
+    return '<g fill="none" stroke="#D1495B" stroke-width="2.6" stroke-linejoin="round">'
+      + '<path d="M6 40 V22 l5-10 5 10 V40" fill="#FBE4E7"/>'
+      + '<path d="M20 40 V14 l6-12 6 12 V40" fill="#FFF2DC"/>'
+      + '<path d="M36 40 V22 l5-10 5 10 V40" fill="#FBE4E7"/></g>'
+      + '<rect x="2" y="39" width="48" height="3" rx="1.5" fill="#0E6BA8"/>';
+  }
+  (function fillLogos(){
+    var list = document.querySelectorAll('[data-logo]'), i, s;
+    for(i = 0; i < list.length; i++){
+      s = list[i];
+      s.setAttribute('viewBox', '0 0 52 44');
+      s.innerHTML = logoSvg();
+    }
+  })();
+
+  /* ── таблото живее на едно място ─────────────────────────────── */
+  var SCORE = [0, 0], scoreViews = [];
+  function paintScore(bump){
+    document.getElementById('mini1').textContent = SCORE[0];
+    document.getElementById('mini2').textContent = SCORE[1];
+    scoreViews.forEach(function(v){ v(bump); });
+  }
+
+  /* ── примерът стъпка по стъпка ───────────────────────────────── */
+  function exampleBlock(ex){
+    var box = el('div', 'rule warm');
+    box.appendChild(el('p', 'mono', esc(ex.expr) + (/[?.:]$/.test(ex.expr) ? '' : ' = ?')));
+    var ol = el('ol', 'steps'), i;
+    for(i = 0; i < ex.steps.length; i++){
+      ol.appendChild(el('li', 'hid',
+        '<span class="n">' + (i + 1) + '</span><span>' + esc(ex.steps[i]) + '</span>'));
+    }
+    ol.appendChild(el('li', 'hid fin', '<span class="n">=</span><span>' + esc(ex.answer) + '</span>'));
+    box.appendChild(ol);
+
+    var row = el('div', 'row');
+    var bNext = el('button', 'btn ghost', 'Следваща стъпка');
+    var bAll = el('button', 'btn ghost', 'Покажи всичко');
+    var bOff = el('button', 'btn ghost', 'Отначало');
+    row.appendChild(bNext); row.appendChild(bAll); row.appendChild(bOff);
+    box.appendChild(row);
+
+    var items = ol.querySelectorAll('li');
+    function shown(){
+      var n = 0, i;
+      for(i = 0; i < items.length; i++){ if(!items[i].classList.contains('hid')) n++; }
+      return n;
+    }
+    function sync(){ bNext.disabled = shown() >= items.length; }
+    bNext.addEventListener('click', function(){
+      var k = shown();
+      if(k < items.length) items[k].classList.remove('hid');
+      sync();
+    });
+    bAll.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.remove('hid');
+      sync();
+    });
+    bOff.addEventListener('click', function(){
+      for(var i = 0; i < items.length; i++) items[i].classList.add('hid');
+      sync();
+    });
+    sync();
+    return box;
+  }
+
+  /* ── задачите: отговорът се ПОКАЗВА, не се въвежда ───────────── */
+  function taskBlock(t, i){
+    var d = el('div', 'task');
+    d.appendChild(el('div', 'top', '<span class="n">Задача ' + (i + 1) + '</span>' +
+      '<span class="lvl l' + t.lvl + '">' + LVL[t.lvl] + '</span>'));
+    var q = el('div', 'q');
+    q.textContent = t.q;
+    d.appendChild(q);
+    var btn = el('button', 'btn ghost', 'Отговор');
+    var ans = el('div', 'a', '<span class="mono">' + esc(t.a) + '</span>' +
+      '<span class="why">' + esc(t.why) + '</span>');
+    ans.hidden = true;
+    btn.addEventListener('click', function(){
+      ans.hidden = !ans.hidden;
+      btn.textContent = ans.hidden ? 'Отговор' : 'Скрий';
+    });
+    d.appendChild(btn); d.appendChild(ans);
+    d.__show = function(on){ ans.hidden = !on; btn.textContent = on ? 'Скрий' : 'Отговор'; };
+    return d;
+  }
+
+  /* ── игра: знаковата машина ──────────────────────────────────── */
+  /* Множителите са числа, а не текст — знакът и стойността се смятат
+     тук, затова не могат да се разминат с показаното. */
+  function signsGame(){
+    var SETS = [
+      [-2, -5, 3, -1],
+      [-0.5, -4, -2, 3],
+      [-1, -1, -1, -1, -1],
+      [2, -3, -0.5, -4],
+      [-1.5, -2, -2, -1]
+    ];
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Машината за знаци · на глас</h3>'
+      + '<p class="small muted">И двамата казват знака ПРЕДИ да натиснете. Машината събира минусите '
+      + 'по двойки — всяка двойка изчезва, защото дава плюс.</p>'
+      + '<div class="signs" data-row></div>'
+      + '<div class="row"><button class="btn terra" data-go>Съкрати минусите</button>'
+      + '<button class="btn ghost" data-next>Друг израз</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var row = g.querySelector('[data-row]'), fb = g.querySelector('[data-fb]');
+    var i = -1, cur = [];
+    function draw(){
+      row.innerHTML = '';
+      cur.forEach(function(v, k){
+        var c = el('div', 'sgn' + (v < 0 ? ' neg' : ''), num(v));
+        c.dataset.k = k;
+        row.appendChild(c);
+        if(k < cur.length - 1) row.appendChild(el('div', 'mono', '·'));
+      });
+      fb.className = 'fb'; fb.textContent = '';
+    }
+    function next(){
+      i = (i + 1) % SETS.length;
+      cur = SETS[i];
+      draw();
+    }
+    g.querySelector('[data-go]').addEventListener('click', function(){
+      var negs = [], k, prod = 1;
+      for(k = 0; k < cur.length; k++){
+        prod *= cur[k];
+        if(cur[k] < 0) negs.push(k);
+      }
+      var pairs = Math.floor(negs.length / 2), done = 0;
+      var timer = setInterval(function(){
+        if(done >= pairs){
+          clearInterval(timer);
+          fb.className = 'fb ' + (prod < 0 ? 'bad' : 'ok');
+          fb.textContent = negs.length + ' минуса → ' + (negs.length % 2 ? 'нечетен брой, остава МИНУС'
+            : 'четен брой, всички се съкращават') + '. Резултат: ' + num(prod) + '.';
+          return;
+        }
+        var a = row.querySelector('[data-k="' + negs[done * 2] + '"]');
+        var b = row.querySelector('[data-k="' + negs[done * 2 + 1] + '"]');
+        if(a) a.classList.add('gone');
+        if(b) b.classList.add('gone');
+        done++;
+      }, 420);
+    });
+    g.querySelector('[data-next]').addEventListener('click', next);
+    next();
+    return g;
+  }
+
+  /* ── игра: таблото на двубоя с хронометър ────────────────────── */
+  function duelGame(){
+    var TARGET = 10;
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Таблото и хронометърът</h3>'
+      + '<div class="duel">'
+      + '  <div class="side p1"><div class="towers sea" data-tw="0"></div>'
+      + '    <div class="nm">Играч 1</div><div class="sc" data-sc="0">0</div>'
+      + '    <div class="row" style="justify-content:center">'
+      + '      <button class="btn sea" data-add="0">+1</button>'
+      + '      <button class="btn ghost" data-sub="0">−1</button></div></div>'
+      + '  <div class="vs">срещу</div>'
+      + '  <div class="side p2"><div class="towers" data-tw="1"></div>'
+      + '    <div class="nm">Играч 2</div><div class="sc" data-sc="1">0</div>'
+      + '    <div class="row" style="justify-content:center">'
+      + '      <button class="btn terra" data-add="1">+1</button>'
+      + '      <button class="btn ghost" data-sub="1">−1</button></div></div>'
+      + '</div>'
+      + '<svg class="ring" width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">'
+      + '  <circle class="bgc" cx="75" cy="75" r="62"></circle>'
+      + '  <circle class="fgc" cx="75" cy="75" r="62" data-arc'
+      + '    transform="rotate(-90 75 75)"></circle>'
+      + '  <text x="75" y="83" text-anchor="middle" data-t>45</text></svg>'
+      + '<div class="row" style="justify-content:center">'
+      + '  <button class="btn" data-start>Старт</button>'
+      + '  <button class="btn ghost" data-secs="30">30 с</button>'
+      + '  <button class="btn ghost" data-secs="45">45 с</button>'
+      + '  <button class="btn ghost" data-secs="60">60 с</button>'
+      + '  <button class="btn ghost" data-zero>Нулирай таблото</button></div>'
+      + '<p class="fb" data-fb></p>';
+
+    var fb = g.querySelector('[data-fb]');
+    var arc = g.querySelector('[data-arc]');
+    var tEl = g.querySelector('[data-t]');
+    var C = 2 * Math.PI * 62;
+    arc.style.strokeDasharray = C;
+    arc.style.strokeDashoffset = 0;
+
+    function towers(k){
+      var box = g.querySelector('[data-tw="' + k + '"]');
+      box.innerHTML = '';
+      var n = Math.max(1, Math.min(SCORE[k], TARGET)), j;
+      for(j = 0; j < n; j++){
+        var t = el('i');
+        t.style.height = Math.min(16 + j * 8, 88) + 'px';
+        box.appendChild(t);
+      }
+      if(SCORE[k] === 0) box.innerHTML = '';
+    }
+    function view(bump){
+      [0, 1].forEach(function(k){
+        g.querySelector('[data-sc="' + k + '"]').textContent = SCORE[k];
+        towers(k);
+        if(bump === k){
+          var side = g.querySelectorAll('.side')[k];
+          side.classList.add('bump');
+          setTimeout(function(){ side.classList.remove('bump'); }, 260);
+        }
+      });
+      if(SCORE[0] >= TARGET || SCORE[1] >= TARGET){
+        fb.className = 'fb ok';
+        fb.textContent = 'Играч ' + (SCORE[0] >= SCORE[1] ? 1 : 2) + ' стига до ' + TARGET
+          + ' точки — Саграда Фамилия е готова!';
+      }
+    }
+    scoreViews.push(view);
+
+    g.addEventListener('click', function(e){
+      var a = e.target.closest('[data-add]'), s = e.target.closest('[data-sub]');
+      if(a){ var k = Number(a.dataset.add); SCORE[k]++; paintScore(k); }
+      if(s){ var j = Number(s.dataset.sub); SCORE[j] = Math.max(0, SCORE[j] - 1); paintScore(j); }
+    });
+    g.querySelector('[data-zero]').addEventListener('click', function(){
+      SCORE[0] = 0; SCORE[1] = 0;
+      fb.className = 'fb'; fb.textContent = '';
+      paintScore();
+    });
+
+    var secs = 45, left = 45, timer = null;
+    function show(){
+      tEl.textContent = left;
+      arc.style.strokeDashoffset = C * (1 - left / secs);
+      arc.classList.toggle('warn', left <= 10);
+    }
+    function stop(){
+      clearInterval(timer); timer = null;
+      g.querySelector('[data-start]').textContent = 'Старт';
+    }
+    g.querySelector('[data-start]').addEventListener('click', function(){
+      if(timer){ stop(); return; }
+      if(left <= 0) left = secs;
+      this.textContent = 'Стоп';
+      fb.className = 'fb'; fb.textContent = '';
+      timer = setInterval(function(){
+        left--;
+        show();
+        if(left <= 0){
+          stop();
+          fb.className = 'fb bad';
+          fb.textContent = 'Времето свърши. Верен отговор сега носи половин точка.';
+        }
+      }, 1000);
+    });
+    g.addEventListener('click', function(e){
+      var b = e.target.closest('[data-secs]');
+      if(!b) return;
+      stop();
+      secs = Number(b.dataset.secs);
+      left = secs;
+      show();
+    });
+    show();
+    view();
+    return g;
+  }
+
+  /* ── игра: двата ключа ───────────────────────────────────────── */
+  function keysGame(){
+    var CH = [
+      { who:'Играч 1', start:'−7,2', steps:[
+        { op:': 0,9', val:'−8' },
+        { op:'· (−2,5)', val:'20' },
+        { op:': (−4)', val:'−5' }
+      ], key:-5 },
+      { who:'Играч 2', start:'(−3/4)', steps:[
+        { op:'· (−16/9)', val:'4/3' },
+        { op:': (−2/3)', val:'−2' },
+        { op:'· (−6)', val:'12' }
+      ], key:12 }
+    ];
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Двата ключа · по един на човек</h3>'
+      + '<p class="small muted">Всеки решава своята верига наум или на лист и чак тогава отваря '
+      + 'брънката. Кодът е модулът на произведението на двата ключа.</p>'
+      + CH.map(function(c, i){
+          return '<p class="lblw"><b>' + esc(c.who) + '</b> · започва от <span class="mono">'
+            + esc(c.start) + '</span></p>'
+            + '<div class="chain" data-ch="' + i + '"></div>'
+            + '<div class="row"><button class="btn ' + (i ? 'terra' : 'sea') + '" data-step="' + i + '">'
+            + 'Следваща брънка</button>'
+            + '<button class="btn ghost" data-back="' + i + '">Отначало</button></div>';
+        }).join('<hr style="border:0;border-top:1px dashed #E7DFD2;margin:0.9rem 0">')
+      + '<div class="gate" data-gate style="margin-top:0.9rem">Портата на метрото чака и двата ключа</div>'
+      + '<p class="fb" data-fb></p>';
+
+    var shown = [0, 0];
+    var gate = g.querySelector('[data-gate]'), fb = g.querySelector('[data-fb]');
+    function draw(i){
+      var box = g.querySelector('[data-ch="' + i + '"]'), c = CH[i];
+      box.innerHTML = '';
+      box.appendChild(el('div', 'lnk on mono', esc(c.start)));
+      c.steps.forEach(function(s, k){
+        var on = k < shown[i];
+        box.appendChild(el('div', 'lnk mono' + (on ? ' on' : ''), esc(s.op)));
+        box.appendChild(el('div', 'lnk mono' + (on ? ' on' : '') +
+          (on && k === c.steps.length - 1 ? ' fin' : ''), on ? esc(s.val) : '?'));
+      });
+      check();
+    }
+    function check(){
+      var done = shown[0] === CH[0].steps.length && shown[1] === CH[1].steps.length;
+      gate.classList.toggle('open', done);
+      if(done){
+        var code = Math.abs(CH[0].key * CH[1].key);
+        gate.textContent = 'Портата се отвори. Код: ' + code;
+        fb.className = 'fb ok';
+        fb.textContent = 'ключ 1 = ' + num(CH[0].key) + ' · ключ 2 = ' + num(CH[1].key)
+          + ' → |' + num(CH[0].key * CH[1].key) + '| = ' + code;
+      } else {
+        gate.textContent = 'Портата на метрото чака и двата ключа';
+        fb.className = 'fb'; fb.textContent = '';
+      }
+    }
+    g.addEventListener('click', function(e){
+      var s = e.target.closest('[data-step]'), b = e.target.closest('[data-back]');
+      if(s){
+        var i = Number(s.dataset.step);
+        if(shown[i] < CH[i].steps.length) shown[i]++;
+        draw(i);
+      }
+      if(b){
+        var j = Number(b.dataset.back);
+        shown[j] = 0;
+        draw(j);
+      }
+    });
+    draw(0); draw(1);
+    return g;
+  }
+
+  /* ── игра: мозайката на Гауди ────────────────────────────────── */
+  function mosaicGame(){
+    /* Стойностите са пресметнати тук, а цветът идва от знака им —
+       затова картината не може да се разсъгласи с израза. */
+    var TILES = [
+      { e:'(−3/4) · (2/3)', v:-0.5 },   { e:'(−2,5) · (−0,4)', v:1 },
+      { e:'(−1/2)²',        v:0.25 },   { e:'(−6) : 1,5',      v:-4 },
+      { e:'(−8) : (−0,5)',  v:16 },     { e:'(−1/3) · 9',      v:-3 },
+      { e:'2,5 · (−0,8)',   v:-2 },     { e:'(−4/5) · (−5/4)', v:1 },
+      { e:'(−2) · (−3)',    v:6 },      { e:'(−5/6) : (5/3)',  v:-0.5 },
+      { e:'(−0,3) · 10',    v:-3 },     { e:'(−9) : (−3)',     v:3 },
+      { e:'(−1/4) : (1/2)', v:-0.5 },   { e:'(−1,5)²',         v:2.25 },
+      { e:'(−2/7) · (−7/2)', v:1 },     { e:'(−3) · (2/3)',    v:-2 }
+    ];
+    var g = el('div', 'game');
+    g.innerHTML =
+      '<h3>Мозайката на Гауди · редувате се</h3>'
+      + '<p class="small muted">Преди да щракнете: казвате знака на глас. Отрицателните стават сини, '
+      + 'положителните — оранжеви. Като се разкрие всичко, се вижда фигурата.</p>'
+      + '<div class="mos" data-mos></div>'
+      + '<div class="row"><button class="btn ghost" data-all>Разкрий всички</button>'
+      + '<button class="btn ghost" data-reset>Отначало</button></div>'
+      + '<p class="fb" data-fb></p>';
+    var box = g.querySelector('[data-mos]'), fb = g.querySelector('[data-fb]');
+    var open = [];
+    function draw(){
+      box.innerHTML = '';
+      TILES.forEach(function(t, k){
+        var on = open.indexOf(k) >= 0;
+        var cls = 'tile' + (on ? (t.v < 0 ? ' neg' : (t.v > 0 ? ' pos' : ' zero')) : '');
+        var b = el('button', cls, on ? num(t.v) : esc(t.e));
+        b.type = 'button';
+        b.dataset.k = k;
+        box.appendChild(b);
+      });
+      if(open.length === TILES.length){
+        fb.className = 'fb ok';
+        fb.textContent = 'Готово: оранжевото чертае ромб, а синьото остава в ъглите и в средата. '
+          + 'Синя плочка = нечетен брой минуси, оранжева = четен.';
+      } else {
+        fb.className = 'fb';
+        fb.textContent = 'Разкрити: ' + open.length + ' от ' + TILES.length;
+      }
+    }
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('.tile');
+      if(!b) return;
+      var k = Number(b.dataset.k);
+      if(open.indexOf(k) < 0) open.push(k);
+      draw();
+    });
+    g.querySelector('[data-all]').addEventListener('click', function(){
+      open = TILES.map(function(_, k){ return k; });
+      draw();
+    });
+    g.querySelector('[data-reset]').addEventListener('click', function(){ open = []; draw(); });
+    draw();
+    return g;
+  }
+
+  var GAMES = { signs:signsGame, duel:duelGame, keys:keysGame, mosaic:mosaicGame };
+
+  /* ── един етап ───────────────────────────────────────────────── */
+  function buildPanel(st){
+    var p = el('section', null, '');
+    p.id = 'p-' + st.id;
+    p.setAttribute('role', 'tabpanel');
+
+    var head = el('div', 'card'), k;
+    if(st.hero){
+      head.innerHTML = '<div class="hero"><svg data-logo aria-hidden="true"></svg>'
+        + '<div class="t"><h1>Барселона: <em>двубой</em> с рационални числа</h1>'
+        + '<p class="muted">Три етапа за двама: квалификация един срещу един с хронометър, '
+        + 'мисия в екип с два ключа и творчески ден из Барселона. Умножение и деление — '
+        + 'дроби, десетични, степени и капани.</p></div></div>';
+      var sv = head.querySelector('[data-logo]');
+      sv.setAttribute('viewBox', '0 0 52 44');
+      sv.innerHTML = logoSvg();
+      sv.style.width = '190px';
+    } else {
+      head.innerHTML = '<h1>' + esc(st.tab.b) + ' <em>· ' + esc(st.tab.s) + '</em></h1>';
+    }
+    head.appendChild(el('div', 'goal', '<b>Целта на етапа:</b> ' + esc(st.goal)
+      + '<span class="mins">≈ ' + st.mins + ' мин</span>'));
+    head.appendChild(el('div', 'rule' + (st.id === 'ekip' ? ' mint' : (st.id === 'barselona' ? ' violet' : '')), st.rule));
+    p.appendChild(head);
+
+    var ex = el('div', 'card');
+    ex.appendChild(el('h2', null, '<span>🧭</span> На дъската, стъпка по стъпка'));
+    for(k = 0; k < st.examples.length; k++) ex.appendChild(exampleBlock(st.examples[k]));
+    p.appendChild(ex);
+
+    var tk = el('div', 'card');
+    tk.appendChild(el('h2', null, '<span>⚡</span> Задачи — от трудни към по-трудни'));
+    var bar = el('div', 'row');
+    var bAll = el('button', 'btn ghost', 'Покажи всички отговори');
+    var bNone = el('button', 'btn ghost', 'Скрий всички');
+    bar.appendChild(bAll); bar.appendChild(bNone);
+    tk.appendChild(bar);
+    var list = el('div', 'tasks'), cards = [];
+    for(k = 0; k < st.tasks.length; k++){
+      var c = taskBlock(st.tasks[k], k);
+      cards.push(c); list.appendChild(c);
+    }
+    tk.appendChild(list);
+    bAll.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(true); }); });
+    bNone.addEventListener('click', function(){ cards.forEach(function(c){ c.__show(false); }); });
+    p.appendChild(tk);
+
+    var gm = el('div', 'card');
+    gm.appendChild(el('h2', null, '<span>🎮</span> Играта на етапа'));
+    if(GAMES[st.game]) gm.appendChild(GAMES[st.game]());
+    p.appendChild(gm);
+
+    if(st.make){
+      var mk = el('div', 'card');
+      mk.appendChild(el('h2', null, '<span>🎨</span> Творческа работилница'));
+      mk.appendChild(el('p', 'small muted', 'Тези нямат един верен отговор. Всеки измисля своето, '
+        + 'после го защитава пред другия — и другият проверява сметките.'));
+      var box = el('div', 'makes');
+      st.make.forEach(function(m){
+        box.appendChild(el('div', 'make', '<b>' + esc(m.b) + '</b>' + esc(m.t)));
+      });
+      mk.appendChild(box);
+      p.appendChild(mk);
+    }
+
+    var nt = el('div', 'card'), li = '';
+    for(k = 0; k < st.notes.length; k++) li += '<li>' + esc(st.notes[k]) + '</li>';
+    nt.appendChild(el('h2', null, '<span>📝</span> За учителя'));
+    nt.appendChild(el('div', 'notes', '<ul>' + li + '</ul>'));
+    p.appendChild(nt);
+    return p;
+  }
+
+  /* ── етапите ─────────────────────────────────────────────────── */
+  var tabs = document.getElementById('tabs');
+  var panels = document.getElementById('panels');
+  var barTab = document.getElementById('barTab');
+  var btns = [], secs = [];
+
+  STAGES.forEach(function(st, i){
+    var b = el('button', 'tab', '<span class="dot">' + esc(st.dot) + '</span><span><b>' +
+      esc(st.tab.b) + '</b><small>' + esc(st.tab.s) + '</small></span>');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-controls', 'p-' + st.id);
+    b.addEventListener('click', function(){ open(i, true); });
+    tabs.appendChild(b);
+    btns.push(b);
+
+    var s = buildPanel(st);
+    s.hidden = (i !== 0);
+    panels.appendChild(s);
+    secs.push(s);
+  });
+
+  function open(i, push){
+    for(var k = 0; k < btns.length; k++){
+      btns[k].setAttribute('aria-selected', k === i ? 'true' : 'false');
+      secs[k].hidden = (k !== i);
+    }
+    barTab.textContent = STAGES[i].tab.b;
+    if(push && history.replaceState) history.replaceState(null, '', '#' + STAGES[i].id);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  var want = (location.hash || '').replace('#', ''), start = 0;
+  for(var i = 0; i < STAGES.length; i++){ if(STAGES[i].id === want) start = i; }
+  open(start, false);
+  paintScore();
+})();
+</script>
+</body>
+</html>
