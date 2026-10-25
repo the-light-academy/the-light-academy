@@ -149,6 +149,42 @@ on conflict (slug) do update set
   grades      = excluded.grades;
 
 
+-- 6. клас, седмица 10 — „Гран при Каталуня“: същата писта и същият
+-- двигател като „Рационално Гран при“, но върху УМНОЖЕНИЕ и ДЕЛЕНИЕ на
+-- рационални числа. Седем теми на по четири нива — знакът при · и :,
+-- десетични, дроби, деление чрез обратно число, степени на отрицателни
+-- числа, изрази с няколко действия и свойствата. Задачите се раждат на
+-- място, затова две гонки не са еднакви. Три части и накрая таблица по
+-- теми за преподавателя.
+-- Страницата е ЗА ЧАСА: не иска вход и нищо не предава — урокът не се
+-- оценява. Пази напредъка си отделно от урока за седмица 6.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('urok-6-w10',
+   'Урок — Гран при Каталуня',
+   'lesson',
+   'uroci/urok_6_w10.html',
+   'Състезание на писта: умножение и деление на рационални числа в три части, с таблица по теми за учителя.',
+   0,
+   false,
+   10610,
+   10,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+
+
 -- 6. клас, седмица 6 — „Рационално Гран при“: състезание на писта за
 -- Формула 1. От 2 до 8 деца играят на една клавиатура, всяко с по два
 -- клавиша; колата върви напред толкова, колкото е отговорило вярно на
