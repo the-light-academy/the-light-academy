@@ -1329,7 +1329,7 @@ insert into public.assignments
    week, subject_id, grades)
 values
   ('hw6-w10b',
-   'Домашно 10б — Събиране и изваждане · ниво 2',
+   'Домашно — Събиране и изваждане · ниво 2',
    'homework',
    'homework_6_w10b.html',
    'По-трудното от темата, с четири задачи върху числовата ос',
