@@ -57,6 +57,27 @@
     <section class="tla-panel" id="panelResults">
       <div class="tla-card">
         <h2 class="tla-card__title">Всички предадени задания</h2>
+        <div class="tla-filters">
+          <label for="resStudent">Ученик:</label>
+          <select id="resStudent"><option value="">всички</option></select>
+          <label for="resFrom">От:</label>
+          <input type="date" id="resFrom" class="tla-sel" aria-label="От дата" />
+          <label for="resTo">До:</label>
+          <input type="date" id="resTo" class="tla-sel" aria-label="До дата" />
+          <label for="resStatus">Статус:</label>
+          <select id="resStatus">
+            <option value="">всички</option>
+            <option value="todo">чакат оценка</option>
+            <option value="ai">AI · за потвърждение</option>
+            <option value="graded">оценени</option>
+            <option value="auto">завършени (само автоматични)</option>
+            <option value="open">незавършени</option>
+          </select>
+          <label for="resAssign">Задание:</label>
+          <select id="resAssign"><option value="">всички</option></select>
+          <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="resClear">Изчисти</button>
+          <span class="tla-filters__count" id="resCount"></span>
+        </div>
         <div class="tla-tablewrap">
           <table class="tla-table" id="attemptsTable">
             <thead>
@@ -623,7 +644,9 @@
         releases: []       /* which sheets have been given to which students */
       };
       var filters = { rosterGrade: '', assignGrade: '', assignSubject: '',
-                      calGrade: '', calSubject: '' };
+                      calGrade: '', calSubject: '',
+                      /* Резултати: ученик, период, статус, задание. */
+                      resStudent: '', resFrom: '', resTo: '', resStatus: '', resAssign: '' };
 
       /* The class a student is in right now, worked out from the class they
          were entered in and the school year that was. The same arithmetic as
@@ -931,9 +954,34 @@
       }
 
       document.getElementById('copyAllBtn').addEventListener('click', function () {
-        var ids = state.attempts.filter(needsGrading).map(function (t) { return t.id; });
+        /* Показаните, не всички: филтърът важи и тук. */
+        var ids = filteredAttempts().filter(needsGrading).map(function (t) { return t.id; });
         copyForGrading(ids, this);
       });
+
+      /* ---- кой слуша филтрите ---- */
+      [['resStudent', 'resStudent'], ['resFrom', 'resFrom'], ['resTo', 'resTo'],
+       ['resStatus', 'resStatus'], ['resAssign', 'resAssign']].forEach(function (pair) {
+        var el = document.getElementById(pair[0]);
+        if (!el) return;
+        el.addEventListener('change', function () {
+          filters[pair[1]] = this.value;
+          renderAttempts();
+        });
+      });
+      (function () {
+        var btn = document.getElementById('resClear');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          filters.resStudent = filters.resFrom = filters.resTo = '';
+          filters.resStatus = filters.resAssign = '';
+          ['resStudent', 'resFrom', 'resTo', 'resStatus', 'resAssign'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.value = '';
+          });
+          renderAttempts();
+        });
+      })();
 
       document.getElementById('applyAiBtn').addEventListener('click', async function () {
         clearMsgs();
@@ -965,21 +1013,132 @@
         btn.textContent = '3. Приложи оценките';
       });
 
+      /* ==================================================================
+         Филтрите над „Всички предадени задания“
+         ------------------------------------------------------------------
+         Таблицата расте с всяка седмица, а оценяването е по един ученик
+         или по едно задание. Затова отгоре стоят четири филтъра: ученик,
+         период (от и до, включително двата дни), статус и задание.
+
+         Филтърът пипа и бутона „Копирай чакащите за Claude“: ако е
+         стеснен, се копират само работите от показаните — иначе филтрира
+         едно, а изпраща на Claude друго.
+         ================================================================== */
+
+      /* Състоянието на един опит в ЕДНА дума — същото разделение, което
+         показва и значката в колоната „Статус“. */
+      function attKind(t) {
+        if (t.status === 'graded') return 'graded';
+        if (t.status === 'submitted') {
+          if (t.manual_max == null) return 'auto';
+          return t.ai_graded_at ? 'ai' : 'todo';
+        }
+        return 'open';
+      }
+
+      /* „2026-10-27“ от полето за дата → начало и край на този ден по
+         местно време. Сравняваме дни, а не часове: учителят мисли с дати. */
+      function dayStart(v) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+        return m ? new Date(+m[1], +m[2] - 1, +m[3], 0, 0, 0, 0) : null;
+      }
+      function dayEnd(v) {
+        var d = dayStart(v);
+        if (d) d.setHours(23, 59, 59, 999);
+        return d;
+      }
+
+      function resFilterOn() {
+        return !!(filters.resStudent || filters.resFrom || filters.resTo ||
+                  filters.resStatus || filters.resAssign);
+      }
+
+      function filteredAttempts() {
+        var from = dayStart(filters.resFrom), to = dayEnd(filters.resTo);
+        return state.attempts.filter(function (t) {
+          if (filters.resStudent && t.user_id !== filters.resStudent) return false;
+          if (filters.resAssign && t.assignment_id !== filters.resAssign) return false;
+          if (filters.resStatus && attKind(t) !== filters.resStatus) return false;
+          if (from || to) {
+            /* Незавършен опит няма дата на предаване — щом е сложен
+               период, той не може да е вътре в него. */
+            if (!t.submitted_at) return false;
+            var d = new Date(t.submitted_at);
+            if (from && d < from) return false;
+            if (to && d > to) return false;
+          }
+          return true;
+        });
+      }
+
+      /* Падащите менюта се пълнят от самите опити: няма смисъл да се
+         избира ученик, който няма нито един предаден лист. Текущият избор
+         се запазва дори да е изчезнал от данните — иначе филтърът би се
+         нулирал сам при презареждане. */
+      function fillResPickers() {
+        var seenP = {}, seenA = {};
+        state.attempts.forEach(function (t) {
+          if (t.user_id) seenP[t.user_id] = true;
+          if (t.assignment_id) seenA[t.assignment_id] = true;
+        });
+        var people = Object.keys(seenP).map(function (id) {
+          var p = state.profiles[id];
+          return { id: id, name: p ? (p.full_name || '—') : '—' };
+        }).sort(function (a, b) { return a.name.localeCompare(b.name, 'bg'); });
+        var tasks = Object.keys(seenA).map(function (id) {
+          var a = state.assignments[id];
+          return { id: id, name: a ? a.title : '—' };
+        }).sort(function (a, b) { return a.name.localeCompare(b.name, 'bg'); });
+
+        function fill(sel, rows, cur, label) {
+          var has = rows.some(function (r) { return r.id === cur; });
+          sel.innerHTML = '<option value="">' + label + '</option>' +
+            rows.map(function (r) {
+              return '<option value="' + esc(r.id) + '">' + esc(r.name) + '</option>';
+            }).join('') +
+            (cur && !has ? '<option value="' + esc(cur) + '">(вече няма работи)</option>' : '');
+          sel.value = cur;
+        }
+        fill(document.getElementById('resStudent'), people, filters.resStudent, 'всички');
+        fill(document.getElementById('resAssign'), tasks, filters.resAssign, 'всички');
+      }
+
       /* ---- results table ---- */
       function renderAttempts() {
-        var pending = state.attempts.filter(needsGrading).length;
+        fillResPickers();
+        var rows = filteredAttempts();
+        var narrowed = resFilterOn();
+        var pending = rows.filter(needsGrading).length;
+        var pendingAll = state.attempts.filter(needsGrading).length;
+
         document.getElementById('copyAllBtn').disabled = !pending;
         document.getElementById('aiPendingCount').textContent = pending
           ? pending + (pending === 1 ? ' работа чака' : ' работи чакат') +
-            ' оценка на свободните отговори.'
-          : 'Няма работи, които чакат оценка на свободните отговори.';
+            ' оценка на свободните отговори' +
+            (narrowed ? ' в този филтър (от общо ' + pendingAll + ').' : '.')
+          : (narrowed && pendingAll
+              ? 'В този филтър няма работи за оценка (общо чакат ' + pendingAll + ').'
+              : 'Няма работи, които чакат оценка на свободните отговори.');
+
+        var count = document.getElementById('resCount');
+        if (count) {
+          count.textContent = state.attempts.length
+            ? (narrowed ? 'Показани ' + rows.length + ' от ' + state.attempts.length
+                        : state.attempts.length + (state.attempts.length === 1 ? ' работа' : ' работи'))
+            : '';
+        }
 
         var tb = document.querySelector('#attemptsTable tbody');
         if (!state.attempts.length) {
           tb.innerHTML = '<tr><td colspan="8" class="tla-empty">Още няма предадени задания.</td></tr>';
           return;
         }
-        tb.innerHTML = state.attempts.map(function (t) {
+        if (!rows.length) {
+          tb.innerHTML = '<tr><td colspan="8" class="tla-empty">Няма работи по този филтър. ' +
+            'Разширете периода или изберете „всички“.</td></tr>';
+          return;
+        }
+        tb.innerHTML = rows.map(function (t) {
           var p = state.profiles[t.user_id];
           var a = state.assignments[t.assignment_id];
           return '<tr>' +
