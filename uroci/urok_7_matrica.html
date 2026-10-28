@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Изход от Матрицата · умножение на многочлени · 7. клас</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Escape стая за двама: 35 задачи за умножение на многочлен с многочлен, пет сектора, бърза игра „вярно или грешно“ между тях и код за изход накрая. Подготовка за НВО, 7. клас." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" />
+<!-- =====================================================================
+     ИЗХОД ОТ МАТРИЦАТА — 7. клас, умножение на многочлен с многочлен
+     ---------------------------------------------------------------------
+     Стая за бягство за двама ученици и един преподавател. Пет сектора,
+     35 задачи (436–448 от учебника плюс пет за загрявка), а между тях —
+     ГЛИТЧ: бърза игра „вярно или грешно“ на два чифта клавиша, в която
+     двамата играят като отбор срещу машината.
+
+     Трите начина да се отговори:
+       РЕШЕТКА   всяко квадратче е едно произведение, после се привежда;
+       ЧИПОВЕ    отговорът се сглобява от членове, а сред тях стоят и
+                 членовете ОТПРЕДИ привеждането — най-честата грешка;
+       ЧИСЛО     уравненията: въвежда се коренът (пет от тях са дробни).
+
+     Всеки отворен сектор дава фрагмент от кода. Пет фрагмента отварят
+     вратата — и вечерята.
+
+     НИЩО ТУК НЕ Е ПРЕСМЕТНАТО НА РЪКА. Условията стоят в
+     scripts/urok7/misia.py така, както се четат; отговорите, решетките,
+     примамките, обясненията и верността на твърденията в ГЛИТЧ ги смята
+     scripts/build_urok7.py със sympy и ги записва по-долу между
+     „ДАННИ:НАЧАЛО“ и „ДАННИ:КРАЙ“. Проверява ги scripts/check_urok7.py —
+     втори път и по друг път (числено, в случайни точки).
+
+     Страницата не иска вход и нищо не предава към платформата: урокът не
+     се оценява. Работи и без интернет — шрифтът е единственото, което
+     се тегли отвън. Докъде са стигнали двамата се пази в localStorage.
+     ===================================================================== -->
+<style>
+/* ── основи ───────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  color-scheme:dark;
+  --fon:#04070a; --fon2:#070d12;
+  --ton:#00ff9c;            /* цветът на текущия сектор — сменя се от JS */
+  --tekst:#cfe9df; --blqd:#6e8c82;
+  --cherven:#ff4d6d; --zlat:#ffd24a;
+  --ram:rgba(0,255,156,.22);
+  --sqnka:0 0 24px rgba(0,255,156,.10);
+}
+html,body{height:100%}
+body{
+  margin:0; background:var(--fon); color:var(--tekst);
+  font:16px/1.5 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  overflow-x:hidden;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
+}
+#rain{position:fixed;inset:0;z-index:0;display:block}
+.crt{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply}
+body.glitch #kljuchove{display:block}
+.vinetka{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,transparent 40%,rgba(0,0,0,.72) 100%)}
+.obvivka{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 18px 64px}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font:inherit}
+[hidden]{display:none !important}
+
+/* ── таблото отгоре ───────────────────────────────────────────────── */
+#hud{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
+  padding:10px 0 10px;margin-bottom:18px;
+  background:linear-gradient(to bottom,var(--fon) 72%,transparent);
+  border-bottom:1px solid var(--ram)}
+.hud-mark{font-weight:800;letter-spacing:.14em;color:var(--ton);text-shadow:var(--sqnka)}
+.hud-mark small{display:block;font-weight:400;font-size:10px;letter-spacing:.3em;color:var(--blqd)}
+.hud-el{display:flex;align-items:baseline;gap:7px;font-size:13px;color:var(--blqd)}
+.hud-el b{font-size:17px;color:var(--tekst);font-variant-numeric:tabular-nums}
+.hud-push{margin-left:auto;display:flex;gap:8px}
+.ikona{width:36px;height:32px;border:1px solid var(--ram);border-radius:7px;color:var(--blqd);
+  display:grid;place-items:center;font-size:14px;transition:.15s}
+.ikona:hover{color:var(--ton);border-color:var(--ton)}
+#fragLenta{display:flex;gap:5px}
+.frag{width:26px;height:30px;border:1px dashed var(--ram);border-radius:5px;display:grid;place-items:center;
+  font-size:13px;color:#24402f}
+.frag.ima{border-style:solid;border-color:var(--zlat);color:var(--zlat);
+  text-shadow:0 0 10px rgba(255,210,74,.6);animation:popfrag .5s ease}
+@keyframes popfrag{from{transform:scale(.4) rotate(-12deg);opacity:0}}
+
+/* ── общи парчета ─────────────────────────────────────────────────── */
+.panel{border:1px solid var(--ram);border-radius:12px;background:rgba(4,10,8,.78);
+  backdrop-filter:blur(2px);padding:20px;box-shadow:var(--sqnka)}
+.etiket{font-size:11px;letter-spacing:.32em;color:var(--ton);text-transform:uppercase}
+h1,h2,h3{font-weight:800;letter-spacing:.04em;margin:.2em 0 .4em;line-height:1.15}
+h1{font-size:clamp(26px,6vw,46px)}
+h2{font-size:clamp(20px,4vw,30px)}
+.but{display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:9px;
+  border:1px solid var(--ton);color:var(--ton);font-weight:700;letter-spacing:.08em;
+  background:rgba(0,255,156,.06);transition:.15s}
+.but:hover{background:var(--ton);color:#04120c;box-shadow:0 0 22px rgba(0,255,156,.35)}
+.but.tih{border-color:var(--ram);color:var(--blqd);background:none}
+.but.tih:hover{color:var(--tekst);background:rgba(255,255,255,.05);box-shadow:none}
+.but[disabled]{opacity:.35;pointer-events:none}
+.mig{animation:mig 1s steps(2) infinite}
+@keyframes mig{50%{opacity:0}}
+.muten{color:var(--blqd)}
+.kurs{display:inline-block;width:10px;height:1.05em;background:var(--ton);vertical-align:-2px}
+
+/* ── буквите на математиката ──────────────────────────────────────── */
+.mat{font-weight:700;letter-spacing:.01em;line-height:1.35}
+.izraz{font-size:clamp(19px,3.4vw,30px);color:#eafff6;text-shadow:0 0 18px rgba(0,255,156,.18)}
+
+/* ── вход ─────────────────────────────────────────────────────────── */
+#boot .term{min-height:210px;font-size:15px;white-space:pre-wrap}
+#boot .term .z{color:var(--ton)}
+.imena{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0}
+.ime-kutiq{flex:1 1 200px;border:1px solid var(--ram);border-radius:10px;padding:12px 14px}
+.ime-kutiq label{display:block;font-size:11px;letter-spacing:.2em;color:var(--blqd);margin-bottom:6px}
+.ime-kutiq input{width:100%;background:none;border:none;outline:none;color:var(--ton);font-size:19px;font-weight:700}
+.klav{display:inline-grid;place-items:center;min-width:30px;height:30px;padding:0 7px;border-radius:6px;
+  border:1px solid var(--ram);border-bottom-width:3px;font-size:13px;font-weight:700;color:var(--tekst)}
+
+/* ── карта на сектора ─────────────────────────────────────────────── */
+.sektor-glava{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-bottom:6px}
+.sektor-nomer{font-size:clamp(44px,11vw,88px);font-weight:800;line-height:.85;color:var(--ton);
+  text-shadow:0 0 30px rgba(0,255,156,.35)}
+.spisuk{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));margin-top:18px}
+.karta{border:1px solid var(--ram);border-radius:10px;padding:13px 15px;text-align:left;
+  display:flex;flex-direction:column;gap:7px;transition:.15s;background:rgba(255,255,255,.015)}
+.karta:hover{border-color:var(--ton);transform:translateY(-2px)}
+.karta .gl{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.18em;color:var(--blqd)}
+.karta .mat{font-size:15px;color:#dff6ec}
+.karta.gotova{border-color:rgba(0,255,156,.5);background:rgba(0,255,156,.07)}
+.karta.gotova .gl{color:var(--ton)}
+.lenta{height:7px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin:14px 0 4px}
+.lenta i{display:block;height:100%;background:linear-gradient(90deg,var(--ton),var(--zlat));
+  width:0;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+
+/* ── задача ───────────────────────────────────────────────────────── */
+.zad-glava{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.mreja-obvivka{overflow-x:auto;padding-bottom:6px}
+table.mreja{border-collapse:separate;border-spacing:6px;margin:6px auto 2px}
+table.mreja th,table.mreja td{padding:0}
+table.mreja th{font-size:15px;color:var(--ton);font-weight:700;min-width:70px;height:40px;vertical-align:middle}
+table.mreja th.ugul{color:var(--blqd);font-size:12px;letter-spacing:.1em}
+.kletka{width:100%;min-width:76px;height:50px;border:1px solid var(--ram);border-radius:8px;
+  display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--blqd);
+  background:rgba(255,255,255,.02);transition:.15s}
+.kletka:hover{border-color:var(--ton);color:var(--ton)}
+.kletka.otvorena{border-color:var(--zlat);color:var(--zlat);box-shadow:0 0 0 2px rgba(255,210,74,.18)}
+.kletka.puln{border-color:rgba(0,255,156,.55);color:#eafff6;background:rgba(0,255,156,.09);cursor:default}
+.kletka.gresh{animation:tres .35s}
+@keyframes tres{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.izbor{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 2px}
+.izbor .chip{font-size:17px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:9px;
+  border:1px solid var(--ram);font-weight:700;font-size:17px;background:rgba(255,255,255,.025);transition:.12s}
+.chip:hover{border-color:var(--ton);color:var(--ton);transform:translateY(-2px)}
+.chip .nom{font-size:10px;color:var(--blqd);border:1px solid var(--ram);border-radius:4px;padding:0 4px}
+.chip.vzet{opacity:.22;pointer-events:none}
+.chip.gresh{border-color:var(--cherven);color:var(--cherven);animation:tres .35s}
+.redica{min-height:62px;border:1px dashed var(--ram);border-radius:10px;padding:10px;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.redica:empty::before{content:"тук се сглобява отговорът";color:#2b4a3c;font-size:13px}
+.redica .chip{border-color:var(--ton);color:#eafff6;background:rgba(0,255,156,.08)}
+.chislo-red{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}
+.chislo-red input{width:190px;background:rgba(255,255,255,.03);border:1px solid var(--ram);border-radius:9px;
+  padding:11px 14px;color:var(--ton);font-size:22px;font-weight:700;outline:none;text-align:center}
+.chislo-red input:focus{border-color:var(--ton);box-shadow:0 0 0 3px rgba(0,255,156,.12)}
+.zashto{border-left:3px solid var(--ton);padding:10px 0 10px 14px;margin-top:16px;background:rgba(0,255,156,.04)}
+.zashto div{font-weight:700;color:#eafff6}
+.zashto .nd{font-weight:400;color:var(--blqd);font-size:13px;letter-spacing:.14em;margin-bottom:6px}
+
+/* ── глитч ────────────────────────────────────────────────────────── */
+.glitch-stena{display:grid;grid-template-columns:1fr minmax(260px,2fr) 1fr;gap:14px;align-items:stretch}
+@media (max-width:860px){.glitch-stena{grid-template-columns:1fr;}}
+.igrach{border:1px solid var(--ram);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;
+  text-align:center;transition:.15s}
+.igrach b{font-size:19px;color:var(--tekst)}
+.igrach .toch{font-size:34px;font-weight:800;color:var(--ton);font-variant-numeric:tabular-nums}
+.igrach.gori{border-color:var(--ton);box-shadow:0 0 26px rgba(0,255,156,.22)}
+.igrach.vun{opacity:.3}
+.butoni2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.butoni2 button{border:1px solid var(--ram);border-radius:9px;padding:12px 4px;font-weight:800;font-size:13px;
+  letter-spacing:.08em}
+.butoni2 .da{color:var(--ton)} .butoni2 .ne{color:var(--cherven)}
+.butoni2 button:hover{background:rgba(255,255,255,.06)}
+.tvurdenie{display:grid;place-items:center;text-align:center;gap:16px;min-height:220px;
+  border:1px solid var(--ram);border-radius:12px;padding:20px;background:rgba(4,12,9,.7)}
+.tvurdenie .mat{font-size:clamp(20px,4.4vw,34px)}
+.chasovnik{height:8px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden;width:100%}
+.chasovnik i{display:block;height:100%;background:var(--ton);width:100%}
+.presuda{font-size:clamp(22px,5vw,38px);font-weight:800;letter-spacing:.1em}
+.presuda.ok{color:var(--ton)} .presuda.ne{color:var(--cherven)}
+.smut{animation:smut .25s steps(2) 2}
+@keyframes smut{
+  0%{transform:translate(0,0);text-shadow:2px 0 var(--cherven),-2px 0 #22d3ee}
+  50%{transform:translate(-3px,1px);text-shadow:-3px 0 var(--cherven),3px 0 #22d3ee}
+  100%{transform:translate(0,0);text-shadow:none}}
+
+/* ── изход ────────────────────────────────────────────────────────── */
+.vrati{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:18px}
+.vrata{border:1px solid var(--ram);border-radius:12px;padding:22px 16px;text-align:center;transition:.15s;
+  display:flex;flex-direction:column;gap:14px;align-items:center}
+.vrata:hover{border-color:var(--zlat);transform:translateY(-3px)}
+.vrata .rim{font-size:13px;letter-spacing:.3em;color:var(--blqd)}
+.vrata .mat{font-size:17px}
+.vrata.gresh{border-color:var(--cherven);opacity:.45}
+.kluch{display:flex;gap:10px;justify-content:center;margin:18px 0 6px}
+.kluch input{width:58px;height:74px;text-align:center;font-size:34px;font-weight:800;color:var(--zlat);
+  background:rgba(255,210,74,.05);border:1px solid rgba(255,210,74,.35);border-radius:10px;outline:none}
+.kluch input:focus{box-shadow:0 0 0 3px rgba(255,210,74,.18)}
+.kluch.gresh{animation:tres .4s}
+.spisuk-frag{display:grid;gap:8px;margin-top:14px}
+.spisuk-frag div{display:flex;gap:12px;align-items:baseline;font-size:14px}
+.spisuk-frag span{color:var(--zlat);font-weight:800}
+
+/* ── вечерята ─────────────────────────────────────────────────────── */
+.menu{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:16px 0}
+.qdene{border:1px solid rgba(255,210,74,.3);border-radius:11px;padding:14px;text-align:left;transition:.15s}
+.qdene:hover{border-color:var(--zlat);background:rgba(255,210,74,.07)}
+.qdene.izbrano{border-color:var(--zlat);background:rgba(255,210,74,.13)}
+.qdene b{display:block;font-size:16px;color:var(--zlat)}
+.qdene span{font-size:12px;color:var(--blqd)}
+.vaucher{border:1px dashed var(--zlat);border-radius:12px;padding:20px;margin-top:16px}
+.vaucher table{width:100%;border-collapse:collapse;font-size:14px}
+.vaucher td{padding:5px 0;border-bottom:1px dotted rgba(255,210,74,.2)}
+.vaucher td:last-child{text-align:right;color:var(--zlat);font-weight:700}
+
+/* ── дребно ───────────────────────────────────────────────────────── */
+#kljuchove{display:none;position:fixed;left:0;right:0;bottom:0;z-index:4;text-align:center;font-size:11px;
+  color:#2f5345;letter-spacing:.14em;padding:6px;background:linear-gradient(to top,var(--fon),transparent);
+  pointer-events:none}
+@media (max-width:700px){
+  #hud{gap:8px 12px} .hud-el b{font-size:15px} .obvivka{padding:0 12px 70px}
+  .panel{padding:15px}
+}
+@media print{
+  #rain,.crt,.vinetka,#hud,#kljuchove,.but{display:none !important}
+  body{background:#fff;color:#111} .panel,.vaucher{border-color:#999;background:none;box-shadow:none}
+  .qdene{border-color:#999} .qdene b{color:#111} .vaucher td:last-child{color:#111}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  #rain{opacity:.25}
+}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="crt" aria-hidden="true"></div>
+<div class="vinetka" aria-hidden="true"></div>
+
+<div class="obvivka">
+  <header id="hud">
+    <div class="hud-mark">МАТРИЦА<small>7. КЛАС · НВО</small></div>
+    <div class="hud-el" title="колко време сме вътре">време <b id="hChas">00:00</b></div>
+    <div class="hud-el" title="събрана енергия">битове <b id="hBiti">0</b></div>
+    <div class="hud-el" title="решени задачи">решени <b id="hZad">0</b></div>
+    <div class="hud-el">фрагменти <span id="fragLenta"></span></div>
+    <div class="hud-push">
+      <button class="ikona" id="bZvuk" title="звук">♪</button>
+      <button class="ikona" id="bKarta" title="картата на мисията">▦</button>
+      <button class="ikona" id="bNulirai" title="от нулата">⟲</button>
+    </div>
+  </header>
+
+  <main id="scena" aria-live="polite"></main>
+</div>
+
+<div id="kljuchove">ИГРАЧ 1 · A = ВЯРНО · Z = ГРЕШНО &nbsp;&nbsp;|&nbsp;&nbsp; ИГРАЧ 2 · K = ВЯРНО · M = ГРЕШНО &nbsp;&nbsp;|&nbsp;&nbsp; ИНТЕРВАЛ = СЪВЕТ</div>
+
+<script>
+/* ДАННИ:НАЧАЛО — пише ги scripts/build_urok7.py; задачите са в scripts/urok7/misia.py */
+const MISIA = {
+ "sektori": [
+  {
+   "kod": "01",
+   "ime": "ДВЕ СКОБИ",
+   "podnaslov": "Всеки с всеки. Нищо повече.",
+   "briefing": "Матрицата държи всичко в скоби. Първото правило е старо като света: всеки член от лявата скоба среща всеки член от дясната. Четири срещи при две по две.",
+   "nujni": 3,
+   "zadachi": [
+    {
+     "id": "s1z1",
+     "vid": "mreja",
+     "izraz": "(x + 3)(x + 5)",
+     "ideya": "Четири произведения: x·x, x·5, 3·x, 3·5.",
+     "otgovor": [
+      "x²",
+      "8x",
+      "15"
+     ],
+     "chipove": [
+      "x²",
+      "8x",
+      "15",
+      "3x",
+      "5x",
+      "−x²",
+      "−8x"
+     ],
+     "zashto": [
+      "3x + 5x = 8x"
+     ],
+     "sled": "x² + 8x + 15",
+     "mreja": {
+      "redove": [
+       "x",
+       "3"
+      ],
+      "koloni": [
+       "x",
+       "5"
+      ],
+      "kletki": [
+       [
+        {
+         "t": "x²",
+         "p": [
+          "−x²",
+          "x"
+         ]
+        },
+        {
+         "t": "5x",
+         "p": [
+          "6x",
+          "5x²"
+         ]
+        }
+       ],
+       [
+        {
+         "t": "3x",
+         "p": [
+          "3x²",
+          "−3x"
+         ]
+        },
+        {
+         "t": "15",
+         "p": [
+          "−15",
+          "8"
+         ]
+        }
+       ]
+      ]
+     }
+    },
+    {
+     "id": "s1z2",
+     "vid": "mreja",
+     "izraz": "(2a − 1)(3a + 4)",
+     "ideya": "Пази знаците: −1 умножава и двата члена вдясно.",
+     "otgovor": [
+      "6a²",
+      "5a",
+      "−4"
+     ],
+     "chipove": [
+      "6a²",
+      "5a",
+      "−4",
+      "−3a",
+      "8a",
+      "−6a²",
+      "−5a"
+     ],
+     "zashto": [
+      "−3a + 8a = 5a"
+     ],
+     "sled": "6a² + 5a − 4",
+     "mreja": {
+      "redove": [
+       "2a",
+       "−1"
+      ],
+      "koloni": [
+       "3a",
+       "4"
+      ],
+      "kletki": [
+       [
+        {
+         "t": "6a²",
+         "p": [
+          "−6a²",
+          "5a²"
+         ]
+        },
+        {
+         "t": "8a",
+         "p": [
+          "6a",
+          "8a²"
+         ]
+        }
+       ],
+       [
+        {
+         "t": "−3a",
+         "p": [
+          "−3a²",
+          "3a"
+         ]
+        },
+        {
+         "t": "−4",
+         "p": [
+          "4",
+          "3"
+         ]
+        }
+       ]
+      ]
+     }
+    },
+    {
+     "id": "s1z3",
+     "vid": "chipove",
+     "izraz": "(x − 7)(x + 7)",
+     "ideya": "Средните два члена се унищожават взаимно.",
+     "otgovor": [
+      "x²",
+      "−49"
+     ],
+     "chipove": [
+      "x²",
+      "−49",
+      "−7x",
+      "7x",
+      "−x²",
+      "49"
+     ],
+     "zashto": [
+      "−7x + 7x = 0"
+     ],
+     "sled": "x² − 49"
+    },
+    {
+     "id": "s1z4",
+     "vid": "chipove",
+     "izraz": "(3m + 2n)(2m − 5n)",
+     "otgovor": [
+      "6m²",
+      "−11mn",
+      "−10n²"
+     ],
+     "chipove": [
+      "6m²",
+      "−11mn",
+      "−10n²",
+      "−15mn",
+      "4mn",
+      "−6m²",
+      "11mn"
+     ],
+     "zashto": [
+      "−15mn + 4mn = −11mn"
+     ],
+     "sled": "6m² − 11mn − 10n²"
+    },
+    {
+     "id": "s1z5",
+     "vid": "chipove",
+     "izraz": "(y − 4)(y² + 4y + 16)",
+     "ideya": "Шест произведения, но четири от тях се изяждат.",
+     "otgovor": [
+      "y³",
+      "−64"
+     ],
+     "chipove": [
+      "y³",
+      "−64",
+      "−4y²",
+      "−16y",
+      "16y",
+      "4y²"
+     ],
+     "zashto": [
+      "−4y² + 4y² = 0",
+      "−16y + 16y = 0"
+     ],
+     "sled": "y³ − 64"
+    }
+   ],
+   "fragment": {
+    "vupros": "Колко е коефициентът пред x в отговора на задача 1?",
+    "cifra": "8"
+   }
+  },
+  {
+   "kod": "02",
+   "ime": "РЕШЕТКАТА",
+   "podnaslov": "Многочлен срещу многочлен.",
+   "briefing": "Тук скобите имат по три и по четири члена. Ръката се обърква, решетката — не. Всяко квадратче е едно произведение; накрая подобните се събират и редът се скъсява.",
+   "nujni": 4,
+   "zadachi": [
+    {
+     "id": "s2z1",
+     "vid": "mreja",
+     "izraz": "(7 + 3a² − 3a)(−2a + 5 − a³)",
+     "knige": "436.1",
+     "otgovor": [
+      "−3a⁵",
+      "3a⁴",
+      "−13a³",
+      "21a²",
+      "−29a",
+      "35"
+     ],
+     "chipove": [
+      "−3a⁵",
+      "3a⁴",
+      "−13a³",
+      "21a²",
+      "−29a",
+      "35",
+      "−15a",
+      "15a²",
+      "−7a³",
+      "−14a"
+     ],
+     "zashto": [
+      "−15a − 14a = −29a",
+      "15a² + 6a² = 21a²",
+      "−7a³ − 6a³ = −13a³"
+     ],
+     "sled": "−3a⁵ + 3a⁴ − 13a³ + 21a² − 29a + 35",
+     "mreja": {
+      "redove": [
+       "7",
+       "3a²",
+       "−3a"
+      ],
+      "koloni": [
+       "−2a",
+       "5",
+       "−a³"
+      ],
+      "kletki": [
+       [
+        {
+         "t": "−14a",
+         "p": [
+          "5a",
+          "−14a²"
+         ]
+        },
+        {
+         "t": "35",
+         "p": [
+          "12",
+          "−35"
+         ]
+        },
+        {
+         "t": "−7a³",
+         "p": [
+          "−7a⁴",
+          "7a³"
+         ]
+        }
+       ],
+       [
+        {
+         "t": "−6a³",
+         "p": [
+          "6a³",
+          "a³"
+         ]
+        },
+        {
+         "t": "15a²",
+         "p": [
+          "15a³",
+          "8a²"
+         ]
+        },
+        {
+         "t": "−3a⁵",
+         "p": [
+          "2a⁵",
+          "3a⁵"
+         ]
+        }
+       ],
+       [
+        {
+         "t": "6a²",
+         "p": [
+          "−6a²",
+          "−5a²"
+         ]
+        },
+        {
+         "t": "−15a",
+         "p": [
+          "2a",
+          "−15a²"
+         ]
+        },
+        {
+         "t": "3a⁴",
+         "p": [
+          "3a⁵",
+          "−4a⁴"
+         ]
+        }
+       ]
+      ]
+     }
+    },
+    {
+     "id": "s2z2",
+     "vid": "mreja",
+     "izraz": "(3m² + 2mn)(−mn − n³ + 5m³)",
+     "knige": "437.1",
+     "otgovor": [
+      "15m⁵",
+      "10m⁴n",
+      "−3m³n",
+      "−3m²n³",
+      "−2m²n²",
+      "−2mn⁴"
+     ],
+     "chipove": [
+      "15m⁵",
+      "10m⁴n",
+      "−3m³n",
+      "−3m²n³",
+      "−2m²n²",
+      "−2mn⁴",
+      "−15m⁵",
+      "−10m⁴n",
+      "3m³n",
+      "3m²n³"
+     ],
+     "zashto": [
+      "Нищо не се привежда — всеки член остава сам."
+     ],
+     "sled": "15m⁵ + 10m⁴n − 3m³n − 3m²n³ − 2m²n² − 2mn⁴",
+     "mreja": {
+      "redove": [
+       "3m²",
+       "2mn"
+      ],
+      "koloni": [
+       "−mn",
+       "−n³",
+       "5m³"
+      ],
+      "kletki": [
+       [
+        {
+         "t": "−3m³n",
+         "p": [
+          "3m³n",
+          "−3m⁴n"
+         ]
+        },
+        {
+         "t": "−3m²n³",
+         "p": [
+          "3m²n³",
+          "2m²n³"
+         ]
+        },
+        {
+         "t": "15m⁵",
+         "p": [
+          "−15m⁵",
+          "15m⁶"
+         ]
+        }
+       ],
+       [
+        {
+         "t": "−2m²n²",
+         "p": [
+          "−2mn",
+          "2m²n²"
+         ]
+        },
+        {
+         "t": "−2mn⁴",
+         "p": [
+          "−2m²n⁴",
+          "mn⁴"
+         ]
+        },
+        {
+         "t": "10m⁴n",
+         "p": [
+          "10m⁵n",
+          "10m³n"
+         ]
+        }
+       ]
+      ]
+     }
+    },
+    {
+     "id": "s2z3",
+     "vid": "chipove",
+     "izraz": "(5ab² − 3a³ + 2a²b)(−ab + 2a² − 4b³)",
+     "knige": "436.2",
+     "otgovor": [
+      "−6a⁵",
+      "7a⁴b",
+      "12a³b³",
+      "8a³b²",
+      "−8a²b⁴",
+      "−5a²b³",
+      "−20ab⁵"
+     ],
+     "chipove": [
+      "−6a⁵",
+      "7a⁴b",
+      "12a³b³",
+      "8a³b²",
+      "−8a²b⁴",
+      "−5a²b³",
+      "−20ab⁵",
+      "4a⁴b",
+      "10a³b²",
+      "3a⁴b",
+      "−2a³b²"
+     ],
+     "zashto": [
+      "4a⁴b + 3a⁴b = 7a⁴b",
+      "10a³b² − 2a³b² = 8a³b²"
+     ],
+     "sled": "−6a⁵ + 7a⁴b + 12a³b³ + 8a³b² − 8a²b⁴ − 5a²b³ − 20ab⁵"
+    },
+    {
+     "id": "s2z4",
+     "vid": "chipove",
+     "izraz": "(2a² − 5b³ − 3ab)(ab³ + 3a³ + 2a²b³)",
+     "knige": "437.2",
+     "otgovor": [
+      "6a⁵",
+      "4a⁴b³",
+      "−9a⁴b",
+      "−6a³b⁴",
+      "−13a³b³",
+      "−10a²b⁶",
+      "−3a²b⁴",
+      "−5ab⁶"
+     ],
+     "chipove": [
+      "6a⁵",
+      "4a⁴b³",
+      "−9a⁴b",
+      "−6a³b⁴",
+      "−13a³b³",
+      "−10a²b⁶",
+      "−3a²b⁴",
+      "−5ab⁶",
+      "−15a³b³",
+      "2a³b³",
+      "−6a⁵",
+      "−4a⁴b³"
+     ],
+     "zashto": [
+      "−15a³b³ + 2a³b³ = −13a³b³"
+     ],
+     "sled": "6a⁵ + 4a⁴b³ − 9a⁴b − 6a³b⁴ − 13a³b³ − 10a²b⁶ − 3a²b⁴ − 5ab⁶"
+    },
+    {
+     "id": "s2z5",
+     "vid": "chipove",
+     "izraz": "(5m³ − 3m² + 4m − 1)(3 − 2m² − 6m)",
+     "knige": "438.1",
+     "ideya": "Дванадесет произведения. Подреди ги по степени, преди да събираш.",
+     "otgovor": [
+      "−10m⁵",
+      "−24m⁴",
+      "25m³",
+      "−31m²",
+      "18m",
+      "−3"
+     ],
+     "chipove": [
+      "−10m⁵",
+      "−24m⁴",
+      "25m³",
+      "−31m²",
+      "18m",
+      "−3",
+      "−9m²",
+      "12m",
+      "15m³",
+      "6m"
+     ],
+     "zashto": [
+      "−9m² − 24m² + 2m² = −31m²",
+      "12m + 6m = 18m",
+      "15m³ + 18m³ − 8m³ = 25m³",
+      "−30m⁴ + 6m⁴ = −24m⁴"
+     ],
+     "sled": "−10m⁵ − 24m⁴ + 25m³ − 31m² + 18m − 3"
+    },
+    {
+     "id": "s2z6",
+     "vid": "chipove",
+     "izraz": "(−2 + 4x² − 5x − 3x³)(−1 + 6x² + x)",
+     "knige": "438.2",
+     "otgovor": [
+      "−18x⁵",
+      "21x⁴",
+      "−23x³",
+      "−21x²",
+      "3x",
+      "2"
+     ],
+     "chipove": [
+      "−18x⁵",
+      "21x⁴",
+      "−23x³",
+      "−21x²",
+      "3x",
+      "2",
+      "5x",
+      "3x³",
+      "−4x²",
+      "−2x"
+     ],
+     "zashto": [
+      "5x − 2x = 3x",
+      "3x³ + 4x³ − 30x³ = −23x³",
+      "−4x² − 5x² − 12x² = −21x²",
+      "−3x⁴ + 24x⁴ = 21x⁴"
+     ],
+     "sled": "−18x⁵ + 21x⁴ − 23x³ − 21x² + 3x + 2"
+    }
+   ],
+   "fragment": {
+    "vupros": "Колко члена има отговорът на 436.1 след привеждане?",
+    "cifra": "6"
+   }
+  },
+  {
+   "kod": "03",
+   "ime": "МАСКИТЕ",
+   "podnaslov": "x = a + b   ·   y = a − b",
+   "briefing": "В Матрицата x и y са маски. Под тях стоят a и b. Сваляш маската, слагаш скоби около това, което се показва, и чак тогава смяташ. Скобите не са украса — те пазят знака.",
+   "nujni": 5,
+   "zadachi": [
+    {
+     "id": "s3z1",
+     "vid": "zamiana",
+     "izraz": "5x + 3y",
+     "knige": "439.1",
+     "pokazhi": "5x + 3y,  при x = a + b и y = a − b",
+     "zamiana": "5(a + b) + 3(a − b)",
+     "otgovor": [
+      "8a",
+      "2b"
+     ],
+     "chipove": [
+      "8a",
+      "2b",
+      "−3b",
+      "3a",
+      "5a",
+      "5b"
+     ],
+     "zashto": [
+      "5(a + b) + 3(a − b)",
+      "−3b + 5b = 2b",
+      "3a + 5a = 8a"
+     ],
+     "sled": "8a + 2b"
+    },
+    {
+     "id": "s3z2",
+     "vid": "zamiana",
+     "izraz": "4x − 2y",
+     "knige": "439.2",
+     "pokazhi": "4x − 2y,  при x = a + b и y = a − b",
+     "zamiana": "4(a + b) − 2(a − b)",
+     "otgovor": [
+      "2a",
+      "6b"
+     ],
+     "chipove": [
+      "2a",
+      "6b",
+      "−2a",
+      "2b",
+      "4a",
+      "4b"
+     ],
+     "zashto": [
+      "4(a + b) − 2(a − b)",
+      "−2a + 4a = 2a",
+      "2b + 4b = 6b"
+     ],
+     "sled": "2a + 6b"
+    },
+    {
+     "id": "s3z3",
+     "vid": "zamiana",
+     "izraz": "2x − xy",
+     "knige": "439.3",
+     "ideya": "xy е (a + b)(a − b) — разлика на квадрати.",
+     "pokazhi": "2x − xy,  при x = a + b и y = a − b",
+     "zamiana": "2(a + b) − (a + b)(a − b)",
+     "otgovor": [
+      "−a²",
+      "2a",
+      "b²",
+      "2b"
+     ],
+     "chipove": [
+      "−a²",
+      "2a",
+      "b²",
+      "2b",
+      "a²",
+      "−2a",
+      "−b²",
+      "−2b"
+     ],
+     "zashto": [
+      "2(a + b) − (a + b)(a − b)",
+      "Нищо не се привежда — всеки член остава сам."
+     ],
+     "sled": "−a² + 2a + b² + 2b"
+    },
+    {
+     "id": "s3z4",
+     "vid": "zamiana",
+     "izraz": "5y + 3xy",
+     "knige": "440.1",
+     "pokazhi": "5y + 3xy,  при x = a + b и y = a − b",
+     "zamiana": "5(a − b) + 3(a + b)(a − b)",
+     "otgovor": [
+      "3a²",
+      "5a",
+      "−3b²",
+      "−5b"
+     ],
+     "chipove": [
+      "3a²",
+      "5a",
+      "−3b²",
+      "−5b",
+      "−3a²",
+      "−5a",
+      "3b²",
+      "5b"
+     ],
+     "zashto": [
+      "5(a − b) + 3(a + b)(a − b)",
+      "Нищо не се привежда — всеки член остава сам."
+     ],
+     "sled": "3a² + 5a − 3b² − 5b"
+    },
+    {
+     "id": "s3z5",
+     "vid": "zamiana",
+     "izraz": "−3x − 2xy",
+     "knige": "440.2",
+     "pokazhi": "−3x − 2xy,  при x = a + b и y = a − b",
+     "zamiana": "−3(a + b) − 2(a + b)(a − b)",
+     "otgovor": [
+      "−2a²",
+      "−3a",
+      "2b²",
+      "−3b"
+     ],
+     "chipove": [
+      "−2a²",
+      "−3a",
+      "2b²",
+      "−3b",
+      "2a²",
+      "3a",
+      "−2b²",
+      "3b"
+     ],
+     "zashto": [
+      "−3(a + b) − 2(a + b)(a − b)",
+      "Нищо не се привежда — всеки член остава сам."
+     ],
+     "sled": "−2a² − 3a + 2b² − 3b"
+    },
+    {
+     "id": "s3z6",
+     "vid": "zamiana",
+     "izraz": "2x − x(y − 1)",
+     "knige": "440.3",
+     "pokazhi": "2x − x(y − 1),  при x = a + b и y = a − b",
+     "zamiana": "2(a + b) − (a + b)((a − b) − 1)",
+     "otgovor": [
+      "−a²",
+      "3a",
+      "b²",
+      "3b"
+     ],
+     "chipove": [
+      "−a²",
+      "3a",
+      "b²",
+      "3b",
+      "2a",
+      "2b",
+      "a",
+      "b"
+     ],
+     "zashto": [
+      "2(a + b) − (a + b)((a − b) − 1)",
+      "2a + a = 3a",
+      "2b + b = 3b"
+     ],
+     "sled": "−a² + 3a + b² + 3b"
+    },
+    {
+     "id": "s3z7",
+     "vid": "zamiana",
+     "izraz": "3y(2 − x) − 5x(1 − y)",
+     "knige": "441.1",
+     "pokazhi": "3y(2 − x) − 5x(1 − y),  при x = a + b и y = a − b",
+     "zamiana": "3(a − b)(2 − (a + b)) − 5(a + b)(1 − (a − b))",
+     "otgovor": [
+      "2a²",
+      "a",
+      "−2b²",
+      "−11b"
+     ],
+     "chipove": [
+      "2a²",
+      "a",
+      "−2b²",
+      "−11b",
+      "−5a",
+      "−5b",
+      "−5b²",
+      "5a²"
+     ],
+     "zashto": [
+      "3(a − b)(2 − (a + b)) − 5(a + b)(1 − (a − b))",
+      "−5a + 6a = a",
+      "−5b − 6b = −11b",
+      "−5b² + 3b² = −2b²",
+      "5a² − 3a² = 2a²"
+     ],
+     "sled": "2a² + a − 2b² − 11b"
+    },
+    {
+     "id": "s3z8",
+     "vid": "zamiana",
+     "izraz": "2x(x − y) − 3y(x + y)",
+     "knige": "441.2",
+     "pokazhi": "2x(x − y) − 3y(x + y),  при x = a + b и y = a − b",
+     "zamiana": "2(a + b)((a + b) − (a − b)) − 3(a − b)((a + b) + (a − b))",
+     "otgovor": [
+      "−6a²",
+      "10ab",
+      "4b²"
+     ],
+     "chipove": [
+      "−6a²",
+      "10ab",
+      "4b²",
+      "−3a²",
+      "3b²",
+      "−3b²",
+      "6ab"
+     ],
+     "zashto": [
+      "2(a + b)((a + b) − (a − b)) − 3(a − b)((a + b) + (a − b))",
+      "−3a² − 3a² + 2a² − 2a² = −6a²",
+      "3b² − 3b² + 2b² + 2b² = 4b²",
+      "6ab + 4ab = 10ab"
+     ],
+     "sled": "−6a² + 10ab + 4b²"
+    }
+   ],
+   "fragment": {
+    "vupros": "Колко члена има отговорът на 441.2?",
+    "cifra": "3"
+   }
+  },
+  {
+   "kod": "04",
+   "ime": "ТРИ СКОБИ",
+   "podnaslov": "Две наведнъж, после третата.",
+   "briefing": "Три скоби не се умножават наведнъж. Взимаш две, затваряш резултата в скоба и чак тогава идва третата. В някои от тези задачи почти всичко се унищожава — остават два члена. Това не е случайно и ще ти трябва за НВО.",
+   "nujni": 4,
+   "zadachi": [
+    {
+     "id": "s4z1",
+     "vid": "chipove",
+     "izraz": "(x − a)(x − b)(x − c)",
+     "knige": "442.1",
+     "otgovor": [
+      "x³",
+      "−ax²",
+      "−bx²",
+      "−cx²",
+      "abx",
+      "acx",
+      "bcx",
+      "−abc"
+     ],
+     "chipove": [
+      "x³",
+      "−ax²",
+      "−bx²",
+      "−cx²",
+      "abx",
+      "acx",
+      "bcx",
+      "−abc",
+      "−x³",
+      "ax²",
+      "bx²",
+      "cx²"
+     ],
+     "zashto": [
+      "Нищо не се привежда — всеки член остава сам."
+     ],
+     "sled": "x³ − ax² − bx² − cx² + abx + acx + bcx − abc"
+    },
+    {
+     "id": "s4z2",
+     "vid": "chipove",
+     "izraz": "(x² + x + 1)(x² − x + 1)(x² − 1)",
+     "knige": "442.2",
+     "ideya": "Първите две скоби дават x⁴ + x² + 1.",
+     "otgovor": [
+      "x⁶",
+      "−1"
+     ],
+     "chipove": [
+      "x⁶",
+      "−1",
+      "−x²",
+      "x",
+      "−x",
+      "−x³"
+     ],
+     "zashto": [
+      "−x² + x² − x² + x² = 0",
+      "x − x = 0",
+      "−x³ + x³ − x³ + x³ = 0",
+      "−x⁴ + x⁴ − x⁴ + x⁴ = 0",
+      "x⁵ − x⁵ = 0"
+     ],
+     "sled": "x⁶ − 1"
+    },
+    {
+     "id": "s4z3",
+     "vid": "chipove",
+     "izraz": "(−a + b + c)(a − b + c)(a + b − c)",
+     "knige": "443.1",
+     "otgovor": [
+      "−a³",
+      "a²b",
+      "a²c",
+      "ab²",
+      "ac²",
+      "−2abc",
+      "−b³",
+      "−c³",
+      "b²c",
+      "bc²"
+     ],
+     "chipove": [
+      "−a³",
+      "a²b",
+      "a²c",
+      "ab²",
+      "ac²",
+      "−2abc",
+      "−b³",
+      "−c³",
+      "b²c",
+      "bc²",
+      "abc",
+      "−a²c",
+      "−ab²",
+      "−abc"
+     ],
+     "zashto": [
+      "a²b + a²b − a²b = a²b",
+      "a²c − a²c + a²c = a²c",
+      "abc − abc + abc − abc − abc − abc = −2abc",
+      "ac² − ac² + ac² = ac²",
+      "−ab² + ab² + ab² = ab²",
+      "b²c − b²c + b²c = b²c",
+      "bc² − bc² + bc² = bc²"
+     ],
+     "sled": "−a³ + a²b + a²c + ab² + ac² − 2abc − b³ − c³ + b²c + bc²"
+    },
+    {
+     "id": "s4z4",
+     "vid": "chipove",
+     "izraz": "(a³ + a²b + ab² + b³)(a − b)",
+     "knige": "443.2",
+     "otgovor": [
+      "a⁴",
+      "−b⁴"
+     ],
+     "chipove": [
+      "a⁴",
+      "−b⁴",
+      "ab³",
+      "a²b²",
+      "a³b",
+      "−a³b"
+     ],
+     "zashto": [
+      "ab³ − ab³ = 0",
+      "a²b² − a²b² = 0",
+      "a³b − a³b = 0"
+     ],
+     "sled": "a⁴ − b⁴"
+    },
+    {
+     "id": "s4z5",
+     "vid": "chipove",
+     "izraz": "(a⁴ + a³b + a²b² + ab³ + b⁴)(a − b)",
+     "knige": "444.1",
+     "ideya": "Всеки член от средата се появява два пъти — с плюс и с минус.",
+     "otgovor": [
+      "a⁵",
+      "−b⁵"
+     ],
+     "chipove": [
+      "a⁵",
+      "−b⁵",
+      "ab⁴",
+      "a²b³",
+      "a⁴b",
+      "a³b²"
+     ],
+     "zashto": [
+      "ab⁴ − ab⁴ = 0",
+      "a²b³ − a²b³ = 0",
+      "a⁴b − a⁴b = 0",
+      "a³b² − a³b² = 0"
+     ],
+     "sled": "a⁵ − b⁵"
+    },
+    {
+     "id": "s4z6",
+     "vid": "chipove",
+     "izraz": "(a⁴ − a³b + a²b² − ab³ + b⁴)(a + b)",
+     "knige": "444.2",
+     "otgovor": [
+      "a⁵",
+      "b⁵"
+     ],
+     "chipove": [
+      "a⁵",
+      "b⁵",
+      "ab⁴",
+      "a³b²",
+      "−a²b³",
+      "−a⁴b"
+     ],
+     "zashto": [
+      "ab⁴ − ab⁴ = 0",
+      "a³b² − a³b² = 0",
+      "−a²b³ + a²b³ = 0",
+      "−a⁴b + a⁴b = 0"
+     ],
+     "sled": "a⁵ + b⁵"
+    }
+   ],
+   "fragment": {
+    "vupros": "(a⁴ + a³b + a²b² + ab³ + b⁴)(a − b) = aⁿ − bⁿ. Кое е n?",
+    "cifra": "5"
+   }
+  },
+  {
+   "kod": "05",
+   "ime": "УРАВНЕНИЯТА",
+   "podnaslov": "Квадратите се унищожават.",
+   "briefing": "Изглеждат като квадратни. Не са. Отваряш скобите, x² се унищожава от само себе си и остава линейно уравнение. Последните пет имат дробен корен — така е и в учебника. Дробта не е грешка, тя е отговор.",
+   "nujni": 6,
+   "zadachi": [
+    {
+     "id": "s5z1",
+     "vid": "chislo",
+     "izraz": "(3x − 1)(2x + 7) − (x + 1)(6x − 5) = 16",
+     "knige": "445.1",
+     "promenliva": "x",
+     "koren": "1",
+     "p": 1,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "След скобите x² се унищожава: 18x − 2 = 16.",
+      "18x = 18",
+      "x = 1"
+     ]
+    },
+    {
+     "id": "s5z2",
+     "vid": "chislo",
+     "izraz": "3x² − (3x + 2)(x − 1) = 8",
+     "knige": "445.2",
+     "promenliva": "x",
+     "koren": "6",
+     "p": 6,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "След скобите x² се унищожава: x + 2 = 8.",
+      "x = 6",
+      "x = 6"
+     ]
+    },
+    {
+     "id": "s5z3",
+     "vid": "chislo",
+     "izraz": "(3x − 2)(2x + 3) − (6x² − 85) = 99",
+     "knige": "446.1",
+     "promenliva": "x",
+     "koren": "4",
+     "p": 4,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "След скобите x² се унищожава: 5x + 79 = 99.",
+      "5x = 20",
+      "x = 4"
+     ]
+    },
+    {
+     "id": "s5z4",
+     "vid": "chislo",
+     "izraz": "(3y + 1)(4y − 5) − (6y − 11)(2y − 7) = 24",
+     "knige": "446.2",
+     "promenliva": "y",
+     "koren": "2",
+     "p": 2,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "След скобите x² се унищожава: 53y − 82 = 24.",
+      "53y = 106",
+      "y = 2"
+     ]
+    },
+    {
+     "id": "s5z5",
+     "vid": "chislo",
+     "izraz": "(x + 1)(x + 2) − (x − 3)(x + 4) = 6",
+     "knige": "446.3",
+     "promenliva": "x",
+     "koren": "−4",
+     "p": -4,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "След скобите x² се унищожава: 2x + 14 = 6.",
+      "2x = −8",
+      "x = −4"
+     ]
+    },
+    {
+     "id": "s5z6",
+     "vid": "chislo",
+     "izraz": "(2x − 3)(3x − 1) − (6x + 2)(x − 5) = 25",
+     "knige": "447.1",
+     "promenliva": "x",
+     "koren": "12/17",
+     "p": 12,
+     "q": 17,
+     "drob": true,
+     "zashto": [
+      "След скобите x² се унищожава: 17x + 13 = 25.",
+      "17x = 12",
+      "x = 12/17"
+     ]
+    },
+    {
+     "id": "s5z7",
+     "vid": "chislo",
+     "izraz": "3(x + 1)(x + 2) − (3x − 4)(x + 2) = 36",
+     "knige": "447.2",
+     "ideya": "Общият множител (x + 2) може да се изнесе още в началото.",
+     "promenliva": "x",
+     "koren": "22/7",
+     "p": 22,
+     "q": 7,
+     "drob": true,
+     "zashto": [
+      "След скобите x² се унищожава: 7x + 14 = 36.",
+      "7x = 22",
+      "x = 22/7"
+     ]
+    },
+    {
+     "id": "s5z8",
+     "vid": "chislo",
+     "izraz": "2(3x − 1)(2x + 5) − 6(2x − 1)(x + 2) = 48",
+     "knige": "447.3",
+     "promenliva": "x",
+     "koren": "23/4",
+     "p": 23,
+     "q": 4,
+     "drob": true,
+     "zashto": [
+      "След скобите x² се унищожава: 8x + 2 = 48.",
+      "8x = 46",
+      "x = 23/4"
+     ]
+    },
+    {
+     "id": "s5z9",
+     "vid": "chislo",
+     "izraz": "3(−4x + 1)(x − 1) + 2(6x − 4)(x + 3) = 50",
+     "knige": "448.1",
+     "promenliva": "x",
+     "koren": "77/43",
+     "p": 77,
+     "q": 43,
+     "drob": true,
+     "zashto": [
+      "След скобите x² се унищожава: 43x − 27 = 50.",
+      "43x = 77",
+      "x = 77/43"
+     ]
+    },
+    {
+     "id": "s5z10",
+     "vid": "chislo",
+     "izraz": "5(2x + 3)(x + 2) − 2(5x − 4)(x − 1) = 32",
+     "knige": "448.2",
+     "promenliva": "x",
+     "koren": "10/53",
+     "p": 10,
+     "q": 53,
+     "drob": true,
+     "zashto": [
+      "След скобите x² се унищожава: 53x + 22 = 32.",
+      "53x = 10",
+      "x = 10/53"
+     ]
+    }
+   ],
+   "fragment": {
+    "vupros": "Кой е коренът на 446.1?",
+    "cifra": "4"
+   }
+  }
+ ],
+ "glitch": [
+  {
+   "kod": "01",
+   "ime": "ПЪРВИ СБОЙ",
+   "redove": [
+    {
+     "red": "(x + 2)(x + 3) = x² + 5x + 6",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(x − 3)(x − 4) = x² − 7x − 12",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² − 7x + 12."
+    },
+    {
+     "red": "(a − b)(a + b) = a² − b²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "−3a(2a − 5) = −6a² − 15a",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е −6a² + 15a."
+    },
+    {
+     "red": "(2x + 1)(x − 5) = 2x² − 9x − 5",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(y − 1)(y + 1) = y² + 1",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е y² − 1."
+    },
+    {
+     "red": "(x + 5)(x − 2) = x² + 3x − 10",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(3m − 2)(m + 4) = 3m² + 2m − 8",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 3m² + 10m − 8."
+    }
+   ]
+  },
+  {
+   "kod": "02",
+   "ime": "ВТОРИ СБОЙ",
+   "redove": [
+    {
+     "red": "(a + 2)(a² − 2a + 4) = a³ + 8",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(x + 3)² = x² + 9",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² + 6x + 9."
+    },
+    {
+     "red": "(x − 1)(x² + x + 1) = x³ − 1",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(−2a³)(4a²) = −8a⁵",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(2a − 3b)(2a + 3b) = 4a² − 9b²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "5a²·3a² = 15a²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 15a⁴."
+    },
+    {
+     "red": "(m − n)(m² + mn + n²) = m³ − n³",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(−a)(−a²)(−a³) = a⁶",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е −a⁶."
+    }
+   ]
+  },
+  {
+   "kod": "03",
+   "ime": "ТРЕТИ СБОЙ",
+   "redove": [
+    {
+     "red": "−(a − b) = −a + b",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "−2(3 − x) = −6 − 2x",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 2x − 6."
+    },
+    {
+     "red": "3(a − 2) − 2(a − 3) = a",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a + b)² = a² + b²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е a² + 2ab + b²."
+    },
+    {
+     "red": "x(x − y) − y(x − y) = x² − 2xy + y²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a + b)(a − b) = a² − 2ab + b²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е a² − b²."
+    },
+    {
+     "red": "(a + b) + (a − b) = 2a",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "2(x − 3) − (x − 3) = x + 3",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x − 3."
+    }
+   ]
+  },
+  {
+   "kod": "04",
+   "ime": "ЧЕТВЪРТИ СБОЙ",
+   "redove": [
+    {
+     "red": "(x − 1)(x + 1)(x² + 1) = x⁴ − 1",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a − b)(a⁴ + a³b + a²b² + ab³ + b⁴) = a⁵ + b⁵",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е a⁵ − b⁵."
+    },
+    {
+     "red": "(x − 2)(x + 2)(x² + 4) = x⁴ − 16",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(x + y)(x² − xy + y²) = x³ + y³",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(x − 3)(x + 3)(x − 3) = x³ − 27",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x³ − 3x² − 9x + 27."
+    },
+    {
+     "red": "(a − b)(a³ + a²b + ab² + b³) = a⁴ − b⁴",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a + 1)(a + 2)(a + 3) = a³ + 6a² + 11a + 6",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(x + 1)(x² − x + 1)(x³ − 1) = x⁶ + 1",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x⁶ − 1."
+    }
+   ]
+  },
+  {
+   "kod": "05",
+   "ime": "ПОСЛЕДЕН СБОЙ",
+   "redove": [
+    {
+     "red": "(3x − 1)(2x + 7) − (x + 1)(6x − 5) = 18x − 2",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "3x² − (3x + 2)(x − 1) = x − 2",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x + 2."
+    },
+    {
+     "red": "(x + 1)(x + 2) − (x − 3)(x + 4) = 2x + 14",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(2x − 3)(3x − 1) − (6x + 2)(x − 5) = 17x − 13",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 17x + 13."
+    },
+    {
+     "red": "(3x − 2)(2x + 3) − (6x² − 85) = 5x + 79",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "2(3x − 1)(2x + 5) − 6(2x − 1)(x + 2) = 8x + 12",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 8x + 2."
+    },
+    {
+     "red": "5(2x + 3)(x + 2) − 2(5x − 4)(x − 1) = 53x + 22",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(3y + 1)(4y − 5) − (6y − 11)(2y − 7) = 53y − 82",
+     "vqrno": true,
+     "zashto": "Вярно."
+    }
+   ]
+  }
+ ],
+ "vrati": [
+  {
+   "etiket": "I",
+   "red": "(x − 5)(x + 5) = x² + 25",
+   "vqrno": false,
+   "zashto": "Грешно — вярното е x² − 25."
+  },
+  {
+   "etiket": "II",
+   "red": "(2a − 3)(2a + 3) = 4a² − 9",
+   "vqrno": true,
+   "zashto": "Вярно."
+  },
+  {
+   "etiket": "III",
+   "red": "(a + b)(a − b) = a² + 2ab − b²",
+   "vqrno": false,
+   "zashto": "Грешно — вярното е a² − b²."
+  }
+ ],
+ "menu": [
+  [
+   "Пица „Разпределителен закон“",
+   "всеки с всеки — и доматите с моцарелата"
+  ],
+  [
+   "Бургер в три скоби",
+   "хлебче, после пълнеж, после пак хлебче"
+  ],
+  [
+   "Паста „Телескоп“",
+   "средните членове се унищожават, остава сосът"
+  ],
+  [
+   "Палачинки с фрагменти",
+   "пет на брой, по една за всеки сектор"
+  ]
+ ],
+ "kod": "86354"
+};
+/* ДАННИ:КРАЙ */
+</script>
+
+<script>
+"use strict";
+/* =====================================================================
+   1. СЪСТОЯНИЕ — всичко, което трябва да преживее едно презареждане.
+   ===================================================================== */
+const KLJUCH = 'matrica7-v1';
+const TONOVE = ['#00ff9c','#22d3ee','#a78bfa','#fb923c','#f472b6'];
+const ZLAT = '#ffd24a';
+
+const S = {
+  imena:['НЕО','ТРИНИТИ'],
+  biti:0, reshene:{}, otvoreni:[], glitchGotovi:[],
+  tochki:[0,0], naiDulga:0, greshki:0, menu:[null,null],
+  vreme:0, zvuk:true, svurshen:false, kodDaden:[]
+};
+let tiktak = null, pocetak = Date.now();
+
+function zapazi(){
+  S.vreme = minaloto();
+  try{ localStorage.setItem(KLJUCH, JSON.stringify(S)); }catch(e){}
+}
+function vuzstanovi(){
+  try{
+    const r = JSON.parse(localStorage.getItem(KLJUCH) || 'null');
+    if(r && typeof r === 'object') Object.assign(S, r);
+  }catch(e){}
+  pocetak = Date.now();
+}
+function minaloto(){ return S.vreme + Math.floor((Date.now() - pocetak)/1000); }
+function chasovnik(sek){
+  const m = Math.floor(sek/60), s = sek%60;
+  return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+function broiReshene(sektor){
+  return sektor.zadachi.filter(z => S.reshene[z.id]).length;
+}
+function vsichkiReshene(){ return Object.keys(S.reshene).length; }
+function sektorOtvoren(i){ return S.otvoreni.indexOf(i) !== -1; }
+
+/* =====================================================================
+   2. ДРЕБНИ ИНСТРУМЕНТИ
+   ===================================================================== */
+const scena = document.getElementById('scena');
+const $ = (s, pod) => (pod||document).querySelector(s);
+const $$ = (s, pod) => Array.prototype.slice.call((pod||document).querySelectorAll(s));
+function ekraniraj(t){ return String(t).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function razburkai(masiv, seme){
+  /* Еднакво разбъркване при еднакво семе — за да не скача подредбата
+     при всяко прерисуване на една и съща задача. */
+  const a = masiv.slice();
+  let h = 0; for(let i=0;i<seme.length;i++) h = (h*31 + seme.charCodeAt(i)) >>> 0;
+  for(let i=a.length-1;i>0;i--){
+    h = (h*1103515245 + 12345) >>> 0;
+    const j = h % (i+1);
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function tonSektor(i){
+  document.documentElement.style.setProperty('--ton', i === null ? ZLAT : TONOVE[i % TONOVE.length]);
+  const c = getComputedStyle(document.documentElement).getPropertyValue('--ton').trim();
+  document.documentElement.style.setProperty('--ram', boiaAlfa(c,.22));
+  document.documentElement.style.setProperty('--sqnka','0 0 24px '+boiaAlfa(c,.12));
+  dujd.boia = c;
+}
+function boiaAlfa(hex, a){
+  const m = hex.replace('#','');
+  const n = parseInt(m.length === 3 ? m.replace(/./g,c=>c+c) : m, 16);
+  return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';
+}
+
+/* звук — съвсем кратки сигнали, без файлове */
+let AC = null;
+function ton(f, dur, vid, sila){
+  if(!S.zvuk) return;
+  try{
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    if(AC.state === 'suspended') AC.resume();
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = vid || 'sine'; o.frequency.value = f;
+    g.gain.value = sila || 0.05;
+    g.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime + (dur||0.1));
+    o.connect(g); g.connect(AC.destination);
+    o.start(); o.stop(AC.currentTime + (dur||0.1) + 0.02);
+  }catch(e){}
+}
+const zvOk    = () => { ton(680,.07,'triangle',.05); setTimeout(()=>ton(1020,.12,'triangle',.05),70); };
+const zvNe    = () => ton(120,.22,'sawtooth',.045);
+const zvTik   = () => ton(380,.025,'square',.025);
+const zvFrag  = () => { ton(520,.08,'sine',.05); setTimeout(()=>ton(780,.09,'sine',.05),90);
+                        setTimeout(()=>ton(1180,.22,'sine',.05),190); };
+const zvVrata = () => { for(let i=0;i<7;i++) setTimeout(()=>ton(220+i*160,.18,'triangle',.05), i*90); };
+
+/* =====================================================================
+   3. ДЪЖДЪТ ОТЗАД
+   ===================================================================== */
+const dujd = {
+  boia:'#00ff9c', koloni:0, y:[], hod:0, spri:false,
+  znaci:'01ABCХΨΔΣΩ∑∏√∞xyab+−·²³⁴⁵'.split('')
+};
+(function dujdNachalo(){
+  const c = document.getElementById('rain'), g = c.getContext('2d');
+  let w=0, h=0, stupka=16;
+  function razmer(){
+    w = c.width = Math.floor(window.innerWidth * Math.min(devicePixelRatio||1, 2));
+    h = c.height = Math.floor(window.innerHeight * Math.min(devicePixelRatio||1, 2));
+    c.style.width = window.innerWidth+'px'; c.style.height = window.innerHeight+'px';
+    stupka = Math.max(14, Math.round(16 * Math.min(devicePixelRatio||1, 2)));
+    dujd.koloni = Math.ceil(w/stupka);
+    dujd.y = new Array(dujd.koloni).fill(0).map(()=> Math.random()*-60);
+  }
+  window.addEventListener('resize', razmer);
+  razmer();
+  const tiho = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function kadur(){
+    dujd.hod++;
+    if(!tiho && dujd.hod % 2 === 0){
+      g.fillStyle = 'rgba(4,7,10,.12)';
+      g.fillRect(0,0,w,h);
+      g.font = (stupka-2)+'px "JetBrains Mono",monospace';
+      for(let i=0;i<dujd.koloni;i++){
+        const z = dujd.znaci[(Math.random()*dujd.znaci.length)|0];
+        const x = i*stupka, y = dujd.y[i]*stupka;
+        g.fillStyle = boiaAlfa(dujd.boia, .85); g.fillText(z, x, y);
+        g.fillStyle = boiaAlfa(dujd.boia, .22); g.fillText(z, x, y - stupka);
+        if(y > h && Math.random() > 0.975) dujd.y[i] = 0;
+        dujd.y[i] += 1;
+      }
+    }
+    requestAnimationFrame(kadur);
+  }
+  if(tiho){ g.fillStyle = 'rgba(4,7,10,1)'; g.fillRect(0,0,w,h); }
+  requestAnimationFrame(kadur);
+})();
+
+/* =====================================================================
+   4. ТАБЛОТО
+   ===================================================================== */
+function osveji(){
+  $('#hChas').textContent = chasovnik(minaloto());
+  $('#hBiti').textContent = S.biti;
+  $('#hZad').textContent  = vsichkiReshene() + '/' + MISIA.sektori.reduce((n,s)=>n+s.zadachi.length,0);
+  const l = $('#fragLenta');
+  l.innerHTML = MISIA.sektori.map((s,i)=>
+    '<span class="frag'+(sektorOtvoren(i)?' ima':'')+'" title="'+ekraniraj(s.fragment.vupros)+'">'
+    + (sektorOtvoren(i) ? '?' : '·') + '</span>').join('');
+}
+setInterval(()=>{ $('#hChas').textContent = chasovnik(minaloto()); }, 1000);
+$('#bZvuk').addEventListener('click', function(){
+  S.zvuk = !S.zvuk; this.style.color = S.zvuk ? '' : '#3a4a44';
+  this.textContent = S.zvuk ? '♪' : '✕'; zvTik(); zapazi();
+});
+$('#bNulirai').addEventListener('click', function(){
+  if(!confirm('Да започнем ли отначало? Всичко събрано се губи.')) return;
+  try{ localStorage.removeItem(KLJUCH); }catch(e){}
+  location.reload();
+});
+$('#bKarta').addEventListener('click', function(){ ekranKarta(); });
+</script>
+
+<script>
+/* =====================================================================
+   5. ВХОДЪТ
+   ===================================================================== */
+const REDOVE_BOOT = [
+ 'СВЪРЗВАНЕ ... ок',
+ 'ПРОВЕРКА НА СТАЯТА ... заключена',
+ 'ОБЕКТИ ВЪТРЕ: 2',
+ 'ИЗХОД: един. КОД: пет цифри. ФРАГМЕНТИ: разпръснати в пет сектора.',
+ '',
+ 'Матрицата държи всичко в скоби. Докато скобите стоят затворени,',
+ 'вратата стои затворена. Отваряш скобите — отваряш вратата.',
+ '',
+ 'Двама сте. Пресмята един, проверява другият. Така се излиза.'
+];
+
+function ekranBoot(){
+  document.body.classList.remove('glitch');
+  tonSektor(0);
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="etiket">защитен канал · 7. клас · НВО</div>'
+   + '<h1>ИЗХОД ОТ МАТРИЦАТА</h1>'
+   + '<div class="term muten" id="term"></div>'
+   + '<div id="vhod" hidden>'
+   +   '<div class="imena">'
+   +     '<div class="ime-kutiq"><label>ИГРАЧ 1 · клавиши A / Z</label>'
+   +       '<input id="ime1" maxlength="14" value="'+ekraniraj(S.imena[0])+'" /></div>'
+   +     '<div class="ime-kutiq"><label>ИГРАЧ 2 · клавиши K / M</label>'
+   +       '<input id="ime2" maxlength="14" value="'+ekraniraj(S.imena[1])+'" /></div>'
+   +   '</div>'
+   +   '<p class="muten" style="font-size:13px">Пет сектора със задачи. След всеки — ГЛИТЧ: '
+   +     'машината показва равенство, вие казвате вярно или грешно, преди лентата да е свършила. '
+   +     'Всеки отворен сектор дава по един фрагмент от кода за изхода.</p>'
+   +   '<button class="but" id="bZapochni">ВЛЕЗ В МАТРИЦАТА →</button> '
+   +   (vsichkiReshene() ? '<button class="but tih" id="bProdulji">ПРОДЪЛЖИ ОТТАМ, ДОКЪДЕТО СТИГНАХМЕ</button>' : '')
+   + '</div>';
+  const t = $('#term');
+  let r = 0, k = 0, tekst = '';
+  const tiho = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function pishi(){
+    if(r >= REDOVE_BOOT.length){
+      t.innerHTML = tekst + '<span class="kurs mig"></span>';
+      $('#vhod').hidden = false;
+      return;
+    }
+    const red = REDOVE_BOOT[r];
+    if(k <= red.length){
+      const chast = red.slice(0,k);
+      t.innerHTML = tekst + '<span class="z">'+ekraniraj(chast)+'</span><span class="kurs"></span>';
+      k++;
+      setTimeout(pishi, tiho ? 0 : 12);
+    }else{
+      tekst += ekraniraj(red) + '\n'; r++; k = 0;
+      if(!tiho && red) zvTik();
+      setTimeout(pishi, tiho ? 0 : 90);
+    }
+  }
+  pishi();
+  scena.addEventListener('click', function startvane(e){
+    const b = e.target.closest('#bZapochni, #bProdulji');
+    if(!b) return;
+    S.imena = [($('#ime1').value || 'ИГРАЧ 1').toUpperCase().slice(0,14),
+               ($('#ime2').value || 'ИГРАЧ 2').toUpperCase().slice(0,14)];
+    zapazi(); zvOk();
+    ekranSektor(parvNezavursen());
+  });
+}
+function parvNezavursen(){
+  for(let i=0;i<MISIA.sektori.length;i++) if(!sektorOtvoren(i)) return i;
+  return MISIA.sektori.length;
+}
+
+/* =====================================================================
+   6. СЕКТОР
+   ===================================================================== */
+function ekranSektor(i){
+  document.body.classList.remove('glitch');
+  if(i >= MISIA.sektori.length) return ekranIzhod();
+  const s = MISIA.sektori[i];
+  tonSektor(i);
+  const got = broiReshene(s), procent = Math.min(100, Math.round(100*got/s.nujni));
+  const otvoren = sektorOtvoren(i);
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="sektor-glava"><div class="sektor-nomer">'+s.kod+'</div>'
+   +   '<div><div class="etiket">сектор</div><h2>'+ekraniraj(s.ime)+'</h2>'
+   +   '<div class="muten">'+ekraniraj(s.podnaslov)+'</div></div></div>'
+   + '<p style="max-width:62ch">'+ekraniraj(s.briefing)+'</p>'
+   + '<div class="lenta"><i style="width:'+procent+'%"></i></div>'
+   + '<div class="muten" style="font-size:13px">решени '+got+' от '+s.zadachi.length
+   +   ' · за отваряне на шлюза трябват '+s.nujni
+   +   (got>=s.nujni ? ' · <b style="color:var(--ton)">ШЛЮЗЪТ Е ГОТОВ</b>' : '')+'</div>'
+   + '<div class="spisuk">'
+   + s.zadachi.map((z,j)=>
+       '<button class="karta'+(S.reshene[z.id]?' gotova':'')+'" data-z="'+j+'">'
+       + '<span class="gl"><span>'+(z.knige ? 'задача '+z.knige : 'задача '+(j+1))+'</span>'
+       + '<span>'+(S.reshene[z.id]?'✓ решена':vidIme(z.vid))+'</span></span>'
+       + '<span class="mat">'+ekraniraj(z.izraz)+'</span></button>').join('')
+   + '</div>'
+   + '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">'
+   +   (got >= s.nujni
+        ? '<button class="but" id="bOtvori">'+(otvoren ? 'НАПРЕД →' : 'ОТВОРИ ШЛЮЗ '+s.kod+' →')+'</button>'
+        : '<button class="but" disabled>ШЛЮЗЪТ Е ЗАКЛЮЧЕН · остават '+(s.nujni-got)+'</button>')
+   +   (i>0 ? ' <button class="but tih" id="bNazad">← предишен сектор</button>' : '')
+   + '</div></div>';
+
+  $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranZadacha(i, +b.dataset.z)));
+  const bo = $('#bOtvori');
+  if(bo) bo.addEventListener('click', ()=>{
+    if(!otvoren){ S.otvoreni.push(i); zapazi(); osveji(); zvFrag(); return ekranFragment(i); }
+    return S.glitchGotovi.indexOf(i) === -1 ? ekranGlitch(i) : ekranSektor(i+1);
+  });
+  const bn = $('#bNazad');
+  if(bn) bn.addEventListener('click', ()=> ekranSektor(i-1));
+  osveji();
+}
+function vidIme(v){
+  return v === 'mreja' ? 'решетка' : v === 'chislo' ? 'уравнение'
+       : v === 'zamiana' ? 'маски' : 'чипове';
+}
+
+/* =====================================================================
+   7. ФРАГМЕНТ — това, което шлюзът дава, когато се отвори
+   ===================================================================== */
+function ekranFragment(i){
+  document.body.classList.remove('glitch');
+  const s = MISIA.sektori[i];
+  scena.innerHTML =
+   '<div class="panel" style="text-align:center">'
+   + '<div class="etiket">шлюз '+s.kod+' · отворен</div>'
+   + '<h2 style="color:var(--zlat)">ФРАГМЕНТ '+s.kod+'</h2>'
+   + '<p class="muten">Машината не дава цифрата наготово. Дава въпрос. '
+   +   'Отговорът е една цифра — тя е вашият фрагмент. Запишете го някъде: '
+   +   'на вратата ще трябват и петте.</p>'
+   + '<div class="panel" style="border-color:var(--zlat);max-width:620px;margin:18px auto">'
+   +   '<div class="mat izraz" style="color:var(--zlat)">'+ekraniraj(s.fragment.vupros)+'</div></div>'
+   + '<button class="but" id="bNapred">ПРИЕМАМ →</button></div>';
+  $('#bNapred').addEventListener('click', ()=> ekranGlitch(i));
+}
+
+/* =====================================================================
+   8. КАРТА НА МИСИЯТА
+   ===================================================================== */
+function ekranKarta(){
+  document.body.classList.remove('glitch');
+  tonSektor(null);
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="etiket">карта</div><h2>КЪДЕ СМЕ</h2>'
+   + '<div class="spisuk">'
+   + MISIA.sektori.map((s,i)=>{
+       const g = broiReshene(s);
+       return '<button class="karta'+(sektorOtvoren(i)?' gotova':'')+'" data-s="'+i+'">'
+         + '<span class="gl"><span>СЕКТОР '+s.kod+'</span><span>'+g+'/'+s.zadachi.length+'</span></span>'
+         + '<span class="mat">'+ekraniraj(s.ime)+'</span>'
+         + '<span class="muten" style="font-size:12px">'+(sektorOtvoren(i)
+             ? 'фрагмент: '+ekraniraj(s.fragment.vupros) : 'шлюзът е заключен')+'</span></button>';
+     }).join('')
+   + '</div>'
+   + '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">'
+   +   (S.otvoreni.length === MISIA.sektori.length
+       ? '<button class="but" id="bIzhod">КЪМ ВРАТАТА →</button>' : '')
+   +   '<button class="but tih" id="bObratno">← обратно</button></div></div>';
+  $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranSektor(+b.dataset.s)));
+  const bi = $('#bIzhod'); if(bi) bi.addEventListener('click', ekranIzhod);
+  $('#bObratno').addEventListener('click', ()=> ekranSektor(parvNezavursen()));
+}
+</script>
+
+<script>
+/* =====================================================================
+   9. ЗАДАЧА — три начина да се отговори
+   ===================================================================== */
+let OPIT = null;   /* текущият опит: грешки, взета ли е идеята */
+
+function ekranZadacha(si, zi){
+  document.body.classList.remove('glitch');
+  const s = MISIA.sektori[si], z = s.zadachi[zi];
+  tonSektor(si);
+  OPIT = {greshki:0, ideya:false, faza: z.vid === 'mreja' ? 'mreja' : 'chipove',
+          kletka:null, izbrani:[], si:si, zi:zi};
+
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="zad-glava">'
+   +   '<div><div class="etiket">сектор '+s.kod+' · '+(z.knige ? 'задача '+z.knige : 'задача '+(zi+1))+'</div>'
+   +   '<div class="muten" style="font-size:12px">'+vidIme(z.vid)+'</div></div>'
+   +   '<button class="but tih" id="bKumSektor">← сектор '+s.kod+'</button></div>'
+   + '<div class="mat izraz" id="uslovie">'+ekraniraj(z.pokazhi || z.izraz)+'</div>'
+   + (z.ideya ? '<div style="margin-top:10px"><button class="but tih" id="bIdeya">ИДЕЯ · −3 бита</button>'
+                + '<span id="ideyaTekst" class="muten" style="margin-left:10px"></span></div>' : '')
+   + '<div id="tqlo"></div>'
+   + '<div id="zashtoKutiq"></div>'
+   + '</div>';
+
+  $('#bKumSektor').addEventListener('click', ()=> ekranSektor(si));
+  const bi = $('#bIdeya');
+  if(bi) bi.addEventListener('click', function(){
+    OPIT.ideya = true; S.biti = Math.max(0, S.biti - 3); zapazi(); osveji();
+    $('#ideyaTekst').textContent = z.ideya; this.disabled = true;
+  });
+
+  if(z.vid === 'chislo') risuvaiChislo(z);
+  else if(z.vid === 'mreja') risuvaiMreja(z);
+  else risuvaiChipove(z, false);
+}
+
+/* ── 9.1 решетката ───────────────────────────────────────────────── */
+function risuvaiMreja(z){
+  const m = z.mreja;
+  const puln = {};
+  const tqlo = $('#tqlo');
+  tqlo.innerHTML =
+    '<p class="muten" style="font-size:13px;margin-top:14px">Всяко квадратче е едно произведение: '
+    + 'членът отляво по члена отгоре. Щракни върху квадратче и избери.</p>'
+    + '<div class="mreja-obvivka"><table class="mreja"><thead><tr><th class="ugul">·</th>'
+    + m.koloni.map(k=>'<th>'+ekraniraj(k)+'</th>').join('') + '</tr></thead><tbody>'
+    + m.redove.map((r,ri)=>'<tr><th>'+ekraniraj(r)+'</th>'
+        + m.koloni.map((k,ki)=>'<td><button class="kletka" id="kl-'+ri+'-'+ki+'" '
+            + 'data-r="'+ri+'" data-k="'+ki+'">?</button></td>').join('')+'</tr>').join('')
+    + '</tbody></table></div>'
+    + '<div class="izbor" id="tabla"></div>';
+
+  function otvori(ri, ki){
+    if(puln[ri+'-'+ki]) return;
+    OPIT.kletka = [ri, ki];
+    $$('.kletka', tqlo).forEach(b => b.classList.remove('otvorena'));
+    $('#kl-'+ri+'-'+ki).classList.add('otvorena');
+    const kl = m.kletki[ri][ki];
+    const vsichki = razburkai([kl.t].concat(kl.p), z.id+ri+'x'+ki);
+    $('#tabla').innerHTML = vsichki.map((t,i)=>
+      '<button class="chip" data-t="'+ekraniraj(t)+'"><span class="nom">'+(i+1)+'</span>'
+      + ekraniraj(t)+'</button>').join('');
+    $$('#tabla .chip').forEach(b => b.addEventListener('click', ()=> pusni(b, kl.t, ri, ki)));
+  }
+  function pusni(buton, veren, ri, ki){
+    if(buton.dataset.t === veren){
+      puln[ri+'-'+ki] = true;
+      const k = $('#kl-'+ri+'-'+ki);
+      k.textContent = veren; k.className = 'kletka puln';
+      $('#tabla').innerHTML = ''; OPIT.kletka = null;
+      zvOk();
+      const ostava = m.redove.length * m.koloni.length - Object.keys(puln).length;
+      if(ostava === 0){ setTimeout(()=> risuvaiChipove(z, true), 420); }
+      else{
+        for(let a=0;a<m.redove.length;a++) for(let b=0;b<m.koloni.length;b++)
+          if(!puln[a+'-'+b]) return otvori(a,b);
+      }
+    }else{
+      buton.classList.add('gresh'); buton.disabled = true;
+      $('#kl-'+ri+'-'+ki).classList.add('gresh');
+      setTimeout(()=> $('#kl-'+ri+'-'+ki).classList.remove('gresh'), 360);
+      OPIT.greshki++; S.biti = Math.max(0, S.biti-1); S.greshki++; zapazi(); osveji(); zvNe();
+    }
+  }
+  $$('.kletka', tqlo).forEach(b => b.addEventListener('click', ()=> otvori(+b.dataset.r, +b.dataset.k)));
+  otvori(0,0);
+}
+
+/* ── 9.2 чиповете ────────────────────────────────────────────────── */
+function risuvaiChipove(z, sledMreja){
+  OPIT.faza = 'chipove'; OPIT.izbrani = [];
+  const pool = razburkai(z.chipove, z.id);
+  const tqlo = $('#tqlo');
+  const stari = sledMreja ? $('.mreja-obvivka', tqlo).outerHTML : '';
+  tqlo.innerHTML = stari
+    + '<p class="muten" style="font-size:13px;margin-top:16px">'
+    + (sledMreja ? 'Решетката е пълна. Сега приведи подобните и сглоби отговора — '
+                 + 'внимавай, сред чиповете стоят и членовете ОТПРЕДИ привеждането.'
+                 : 'Сглоби отговора от членовете. Част от тях са примамки.')
+    + '</p>'
+    + '<div class="redica" id="redica"></div>'
+    + '<div class="izbor" id="pool">'
+    + pool.map((t,i)=>'<button class="chip" data-t="'+ekraniraj(t)+'"><span class="nom">'
+        +(i+1)+'</span>'+ekraniraj(t)+'</button>').join('')
+    + '</div>'
+    + '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">'
+    +   '<button class="but" id="bProveri">ПРОВЕРИ</button>'
+    +   '<button class="but tih" id="bIzchisti">изчисти</button></div>';
+
+  function prerisuvai(){
+    $('#redica').innerHTML = OPIT.izbrani.map((t,i)=>
+      '<button class="chip" data-i="'+i+'">'+ekraniraj(t)+' ×</button>').join('');
+    $$('#redica .chip').forEach(b => b.addEventListener('click', ()=>{
+      OPIT.izbrani.splice(+b.dataset.i,1); prerisuvai(); zvTik();
+    }));
+    $$('#pool .chip').forEach(b => {
+      const vzeto = OPIT.izbrani.filter(t => t === b.dataset.t).length;
+      const imaGi = pool.filter(t => t === b.dataset.t).length;
+      b.classList.toggle('vzet', vzeto >= imaGi);
+    });
+  }
+  $$('#pool .chip').forEach(b => b.addEventListener('click', ()=>{
+    OPIT.izbrani.push(b.dataset.t); prerisuvai(); zvTik();
+  }));
+  $('#bIzchisti').addEventListener('click', ()=>{ OPIT.izbrani = []; prerisuvai(); });
+  $('#bProveri').addEventListener('click', ()=> proveriChipove(z));
+  prerisuvai();
+}
+
+function proveriChipove(z){
+  const dadeni = OPIT.izbrani.slice().sort();
+  const verni = z.otgovor.slice().sort();
+  const ednakvi = dadeni.length === verni.length && dadeni.every((t,i)=> t === verni[i]);
+  if(ednakvi) return uspeh(z);
+  OPIT.greshki++; S.greshki++; S.biti = Math.max(0, S.biti-2); zapazi(); osveji(); zvNe();
+  const greshni = OPIT.izbrani.filter(t => z.otgovor.indexOf(t) === -1).length;
+  const lipsvat = z.otgovor.filter(t => OPIT.izbrani.indexOf(t) === -1).length;
+  const red = $('#redica');
+  red.classList.add('smut'); setTimeout(()=> red.classList.remove('smut'), 500);
+  if(OPIT.greshki >= 2){
+    $$('#redica .chip').forEach(b=>{
+      if(z.otgovor.indexOf(b.textContent.replace(' ×','')) === -1) b.classList.add('gresh');
+    });
+  }
+  kaji(greshni && lipsvat
+        ? greshni+' сгрешени и '+lipsvat+' липсващи члена.'
+        : greshni ? greshni+' от избраните не са в отговора.'
+        : 'Липсват '+lipsvat+' члена.');
+}
+
+/* ── 9.3 уравненията ─────────────────────────────────────────────── */
+function risuvaiChislo(z){
+  $('#tqlo').innerHTML =
+     '<p class="muten" style="font-size:13px;margin-top:14px">Отвори скобите, приведи и реши. '
+     + 'Дробен корен се пише с наклонена черта: 12/17.</p>'
+     + '<div class="chislo-red"><span class="mat" style="font-size:24px">'+z.promenliva+' =</span>'
+     + '<input id="poleKoren" inputmode="text" autocomplete="off" spellcheck="false" placeholder="?" />'
+     + '<button class="but" id="bProveri">ПРОВЕРИ</button></div>';
+  const pole = $('#poleKoren');
+  pole.focus();
+  pole.addEventListener('keydown', e => { if(e.key === 'Enter') proveriChislo(z); });
+  $('#bProveri').addEventListener('click', ()=> proveriChislo(z));
+}
+function chetiChislo(t){
+  const s = String(t).trim().replace(/−/g,'-').replace(/\s/g,'').replace(',','.');
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if(m) return {p:+m[1], q:+m[2], drob:true};
+  m = s.match(/^(-?\d+(?:\.\d+)?)$/);
+  if(m) return {v:parseFloat(m[1]), drob:false};
+  return null;
+}
+function proveriChislo(z){
+  const d = chetiChislo($('#poleKoren').value);
+  if(!d) return kaji('Това не е число. Пиши 6, −4 или 12/17.');
+  const tochno = d.drob ? (d.p * z.q === z.p * d.q)
+                        : Math.abs(d.v * z.q - z.p) < 1e-9;
+  if(tochno) return uspeh(z);
+  OPIT.greshki++; S.greshki++; S.biti = Math.max(0, S.biti-2); zapazi(); osveji(); zvNe();
+  const red = $('.chislo-red');
+  red.classList.add('smut'); setTimeout(()=> red.classList.remove('smut'), 500);
+  if(!d.drob && z.q !== 1 && Math.abs(d.v - z.p/z.q) < 0.01)
+    return kaji('Близо е, но тази дроб не се записва точно като десетично число. Напиши я с черта.');
+  kaji(OPIT.greshki >= 2
+       ? 'Пак не. Отвори скобите наново: квадратите трябва да се унищожат и да остане едно '+z.promenliva+'.'
+       : 'Не е този корен. Провери знаците при отварянето на скобите.');
+}
+
+/* ── 9.4 общото: успех и съобщения ───────────────────────────────── */
+function kaji(tekst){
+  let k = $('#kazano');
+  if(!k){
+    k = document.createElement('div');
+    k.id = 'kazano'; k.style.cssText = 'margin-top:12px;color:var(--cherven);font-weight:700';
+    $('#tqlo').appendChild(k);
+  }
+  k.textContent = tekst;
+}
+function uspeh(z){
+  const parvi = !S.reshene[z.id];
+  let nagrada = 10;
+  if(OPIT.ideya) nagrada -= 4;
+  nagrada -= Math.min(6, OPIT.greshki*2);
+  nagrada = Math.max(2, nagrada);
+  if(parvi){ S.reshene[z.id] = true; S.biti += nagrada; }
+  zapazi(); osveji(); zvOk();
+
+  const s = MISIA.sektori[OPIT.si];
+  const sled = s.zadachi.findIndex((q,j)=> j > OPIT.zi && !S.reshene[q.id]);
+  $('#tqlo').querySelectorAll('button').forEach(b => b.disabled = true);
+  $('#zashtoKutiq').innerHTML =
+     '<div class="zashto"><div class="nd">ЗАЩО</div>'
+     + (z.sled ? '<div class="mat">'+ekraniraj(z.izraz)+' = '+ekraniraj(z.sled)+'</div>' : '')
+     + z.zashto.map(r=>'<div class="mat" style="font-weight:400;color:var(--tekst)">'
+         +ekraniraj(r)+'</div>').join('')
+     + '</div>'
+     + '<div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
+     +   '<b style="color:var(--ton)">+'+(parvi?nagrada:0)+' бита</b>'
+     +   (sled !== -1 ? '<button class="but" id="bSled">СЛЕДВАЩА ЗАДАЧА →</button>' : '')
+     +   '<button class="but'+(sled === -1 ? '' : ' tih')+'" id="bNazadSektor">КЪМ СЕКТОР '+s.kod+'</button>'
+     + '</div>';
+  const bs = $('#bSled');
+  if(bs) bs.addEventListener('click', ()=> ekranZadacha(OPIT.si, sled));
+  $('#bNazadSektor').addEventListener('click', ()=> ekranSektor(OPIT.si));
+  $('#zashtoKutiq').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+
+<script>
+/* =====================================================================
+   10. ГЛИТЧ — бързата игра между секторите
+   ===================================================================== */
+let GL = null, GL_TIK = null;
+function spriGlitch(){ if(GL_TIK){ clearInterval(GL_TIK); GL_TIK = null; } }
+
+const SEK_NA_RED = 12;
+
+function ekranGlitch(i){
+  spriGlitch();
+  const g = MISIA.glitch[i];
+  tonSektor(i);
+  document.body.classList.add('glitch');
+  GL = {i:i, k:0, toch:[0,0], seriq:0, naiDulga:0, suveti:2,
+        zakl:[false,false], pauza:false, ostava:SEK_NA_RED, prikliuchil:false, biti:0};
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="zad-glava"><div><div class="etiket">глитч '+g.kod+'</div>'
+   +   '<h2>'+ekraniraj(g.ime)+'</h2></div>'
+   +   '<div class="muten" style="text-align:right;font-size:13px">равенство след равенство<br>'
+   +   'казвате бързо: вярно или грешно</div></div>'
+   + '<div class="glitch-stena">'
+   +   igrachPanel(0) + '<div id="scenaGl"></div>' + igrachPanel(1)
+   + '</div>'
+   + '<div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">'
+   +   '<button class="but tih" id="bSuvet">СЪВЕТ · интервал <span id="brSuveti">2</span></button>'
+   +   '<span class="muten" style="font-size:12px">съветът спира лентата за 10 секунди — '
+   +   'колкото да се посъветвате</span></div>'
+   + '</div>';
+  $('#bSuvet').addEventListener('click', suvet);
+  pokajiRed();
+}
+function igrachPanel(n){
+  return '<div class="igrach" id="igr'+n+'">'
+    + '<div class="etiket">играч '+(n+1)+'</div><b>'+ekraniraj(S.imena[n])+'</b>'
+    + '<div class="toch" id="toch'+n+'">0</div>'
+    + '<div class="butoni2">'
+    +   '<button class="da" data-i="'+n+'" data-v="1"><span class="klav">'+(n?'K':'A')+'</span><br>ВЯРНО</button>'
+    +   '<button class="ne" data-i="'+n+'" data-v="0"><span class="klav">'+(n?'M':'Z')+'</span><br>ГРЕШНО</button>'
+    + '</div></div>';
+}
+function pokajiRed(){
+  const g = MISIA.glitch[GL.i];
+  if(GL.k >= g.redove.length) return krajGlitch();
+  const r = g.redove[GL.k];
+  GL.zakl = [false,false]; GL.ostava = SEK_NA_RED; GL.prikliuchil = false; GL.pauza = false;
+  $('#igr0').className = 'igrach'; $('#igr1').className = 'igrach';
+  $('#scenaGl').innerHTML =
+    '<div class="tvurdenie">'
+    + '<div class="etiket">'+(GL.k+1)+' от '+g.redove.length+(GL.seriq>1?' · серия '+GL.seriq:'')+'</div>'
+    + '<div class="mat" id="redGl">'+ekraniraj(r.red)+'</div>'
+    + '<div class="chasovnik"><i id="lenta"></i></div>'
+    + '<div class="presuda" id="presuda">&nbsp;</div></div>';
+  $$('.butoni2 button').forEach(b => b.onclick = ()=> otgovori(+b.dataset.i, b.dataset.v === '1'));
+  GL_TIK = setInterval(tik, 50);
+}
+function tik(){
+  if(GL.pauza || GL.prikliuchil) return;
+  GL.ostava -= 0.05;
+  const l = $('#lenta');
+  if(l) l.style.width = Math.max(0, 100*GL.ostava/SEK_NA_RED)+'%';
+  if(GL.ostava <= 2.5 && Math.abs(GL.ostava % 1) < 0.05) zvTik();
+  if(GL.ostava <= 0) razkrii(null);
+}
+function suvet(){
+  if(!GL || GL.suveti <= 0 || GL.prikliuchil) return;
+  GL.suveti--; GL.pauza = true;
+  $('#brSuveti').textContent = GL.suveti;
+  $('#presuda').textContent = 'СЪВЕТ · 10';
+  let ost = 10;
+  const t = setInterval(()=>{
+    ost--;
+    const p = $('#presuda'); if(p) p.textContent = 'СЪВЕТ · '+ost;
+    if(ost <= 0){ clearInterval(t); GL.pauza = false; const q = $('#presuda'); if(q) q.innerHTML = '&nbsp;'; }
+  }, 1000);
+}
+function otgovori(n, kazva){
+  if(!GL || GL.prikliuchil || GL.zakl[n] || GL.pauza) return;
+  const r = MISIA.glitch[GL.i].redove[GL.k];
+  if(kazva === r.vqrno){
+    GL.toch[n] += 2; S.tochki[n] += 2; GL.biti += 2; S.biti += 2;
+    GL.seriq++; GL.naiDulga = Math.max(GL.naiDulga, GL.seriq);
+    S.naiDulga = Math.max(S.naiDulga, GL.seriq);
+    if(GL.seriq >= 3){ GL.biti++; S.biti++; }
+    $('#toch'+n).textContent = GL.toch[n];
+    $('#igr'+n).classList.add('gori');
+    zvOk(); razkrii(n);
+  }else{
+    GL.zakl[n] = true; GL.seriq = 0;
+    S.biti = Math.max(0, S.biti-1); GL.biti -= 1;
+    $('#igr'+n).classList.add('vun');
+    const red = $('#redGl'); red.classList.add('smut');
+    setTimeout(()=> red.classList.remove('smut'), 500);
+    zvNe();
+    if(GL.zakl[0] && GL.zakl[1]) razkrii(null);
+  }
+  osveji(); zapazi();
+}
+function razkrii(pobeditel){
+  if(GL.prikliuchil) return;
+  GL.prikliuchil = true; spriGlitch();
+  const r = MISIA.glitch[GL.i].redove[GL.k];
+  const p = $('#presuda');
+  p.className = 'presuda ' + (r.vqrno ? 'ok' : 'ne');
+  p.textContent = (r.vqrno ? 'ВЯРНО' : 'ГРЕШНО')
+    + (pobeditel === null ? ' · никой' : ' · ' + S.imena[pobeditel]);
+  if(!r.vqrno){
+    const red = $('#redGl');
+    red.insertAdjacentHTML('afterend',
+      '<div class="muten" style="font-size:14px">'+ekraniraj(r.zashto)+'</div>');
+  }
+  setTimeout(()=>{ GL.k++; pokajiRed(); }, r.vqrno ? 1100 : 2100);
+}
+function krajGlitch(){
+  spriGlitch();
+  document.body.classList.remove('glitch');
+  const i = GL.i;
+  if(S.glitchGotovi.indexOf(i) === -1) S.glitchGotovi.push(i);
+  zapazi(); osveji();
+  const posleden = i >= MISIA.sektori.length - 1;
+  scena.innerHTML =
+   '<div class="panel" style="text-align:center">'
+   + '<div class="etiket">глитч '+MISIA.glitch[i].kod+' · край</div>'
+   + '<h2>СБОЯТ Е ОТБИТ</h2>'
+   + '<div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:20px 0">'
+   +   '<div><div class="etiket">'+ekraniraj(S.imena[0])+'</div><div class="toch">'+GL.toch[0]+'</div></div>'
+   +   '<div><div class="etiket">най-дълга серия</div><div class="toch" style="color:var(--zlat)">'
+       +GL.naiDulga+'</div></div>'
+   +   '<div><div class="etiket">'+ekraniraj(S.imena[1])+'</div><div class="toch">'+GL.toch[1]+'</div></div>'
+   + '</div>'
+   + '<p class="muten">отборът спечели <b style="color:var(--ton)">'+Math.max(0,GL.biti)+' бита</b></p>'
+   + '<button class="but" id="bNapred">'+(posleden ? 'КЪМ ВРАТАТА →' : 'СЕКТОР '
+       + MISIA.sektori[i+1].kod+' →')+'</button>'
+   + ' <button class="but tih" id="bPak">още веднъж</button></div>';
+  $('#bNapred').addEventListener('click', ()=> posleden ? ekranIzhod() : ekranSektor(i+1));
+  $('#bPak').addEventListener('click', ()=> ekranGlitch(i));
+}
+
+/* =====================================================================
+   11. ВРАТАТА
+   ===================================================================== */
+function ekranIzhod(){
+  document.body.classList.remove('glitch');
+  spriGlitch(); tonSektor(null);
+  const nezavursheni = MISIA.sektori.filter((s,i)=> !sektorOtvoren(i));
+  if(nezavursheni.length){
+    scena.innerHTML = '<div class="panel" style="text-align:center">'
+      + '<h2>ВРАТАТА МЪЛЧИ</h2><p class="muten">Липсват фрагменти от '
+      + nezavursheni.map(s=>'сектор '+s.kod).join(', ')
+      + '.</p><button class="but" id="bObratno">ОБРАТНО</button></div>';
+    $('#bObratno').addEventListener('click', ()=> ekranSektor(parvNezavursen()));
+    return;
+  }
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="etiket">край на коридора</div><h2 style="color:var(--zlat)">ТРИ ВРАТИ</h2>'
+   + '<p>Само на едната написаното е вярно. Другите две са нарисувани от машината, '
+   +   'за да изглеждат като изход. Проверете, преди да бутнете.</p>'
+   + '<div class="vrati">'
+   + MISIA.vrati.map((v,i)=>'<button class="vrata" data-v="'+i+'">'
+       + '<span class="rim">ВРАТА '+v.etiket+'</span>'
+       + '<span class="mat">'+ekraniraj(v.red)+'</span>'
+       + '<span class="muten" style="font-size:12px">бутни</span></button>').join('')
+   + '</div></div>';
+  $$('.vrata').forEach(b => b.addEventListener('click', ()=>{
+    const v = MISIA.vrati[+b.dataset.v];
+    if(v.vqrno){ zvOk(); ekranKljuch(); }
+    else{
+      b.classList.add('gresh'); b.disabled = true;
+      S.biti = Math.max(0, S.biti-5); S.greshki++; zapazi(); osveji(); zvNe();
+      b.insertAdjacentHTML('beforeend',
+        '<span style="color:var(--cherven);font-size:12px">'+ekraniraj(v.zashto)+'</span>');
+    }
+  }));
+}
+
+function ekranKljuch(){
+  let opiti = 0;
+  scena.innerHTML =
+   '<div class="panel" style="text-align:center">'
+   + '<div class="etiket">ключалка</div><h2 style="color:var(--zlat)">ПЕТ ЦИФРИ</h2>'
+   + '<p class="muten">По една от всеки сектор, в реда на секторите.</p>'
+   + '<div class="kluch" id="kluch">'
+   + MISIA.sektori.map((s,i)=>'<input id="c'+i+'" inputmode="numeric" maxlength="1" '
+       + 'aria-label="фрагмент '+s.kod+'" />').join('')
+   + '</div>'
+   + '<button class="but" id="bOtkliuchi">ОТКЛЮЧИ</button>'
+   + '<div id="kljuchKaz" style="margin-top:12px;min-height:24px;font-weight:700"></div>'
+   + '<div class="spisuk-frag">'
+   + MISIA.sektori.map(s=>'<div><span>'+s.kod+'</span>'+ekraniraj(s.fragment.vupros)+'</div>').join('')
+   + '</div>'
+   + '<div style="margin-top:14px"><button class="but tih" id="bPodskazka" hidden>'
+   +   'ПОДСКАЗКА · −10 бита</button></div></div>';
+
+  const poleta = MISIA.sektori.map((s,i)=> $('#c'+i));
+  poleta.forEach((p,i)=>{
+    p.addEventListener('input', ()=>{
+      p.value = p.value.replace(/\D/g,'').slice(0,1);
+      if(p.value && poleta[i+1]) poleta[i+1].focus();
+    });
+    p.addEventListener('keydown', e=>{
+      if(e.key === 'Backspace' && !p.value && poleta[i-1]) poleta[i-1].focus();
+      if(e.key === 'Enter') opitai();
+    });
+  });
+  poleta[0].focus();
+  $('#bOtkliuchi').addEventListener('click', opitai);
+  $('#bPodskazka').addEventListener('click', ()=>{
+    const i = poleta.findIndex((p,j)=> p.value !== MISIA.kod[j]);
+    if(i === -1) return;
+    poleta[i].value = MISIA.kod[i];
+    S.biti = Math.max(0, S.biti-10); zapazi(); osveji();
+    $('#kljuchKaz').innerHTML = '<span class="muten">Една цифра дойде наготово. Остава останалото.</span>';
+  });
+
+  function opitai(){
+    const dadeno = poleta.map(p=>p.value || '·').join('');
+    if(dadeno === MISIA.kod){ zvVrata(); return ekranKraj(); }
+    opiti++; S.greshki++; zapazi();
+    const vqrni = poleta.filter((p,i)=> p.value === MISIA.kod[i]).length;
+    $('#kluch').classList.add('gresh');
+    setTimeout(()=> $('#kluch').classList.remove('gresh'), 420);
+    zvNe();
+    $('#kljuchKaz').innerHTML = '<span style="color:var(--cherven)">НЕ. На място са '
+      + vqrni + ' от 5 цифри.</span>';
+    if(opiti >= 3) $('#bPodskazka').hidden = false;
+  }
+}
+</script>
+
+<script>
+/* =====================================================================
+   12. ВЕЧЕРЯТА
+   ===================================================================== */
+function ekranKraj(){
+  document.body.classList.remove('glitch');
+  spriGlitch(); tonSektor(null);
+  S.svurshen = true; zapazi(); osveji();
+  dujd.boia = ZLAT;
+  const sek = minaloto();
+  const vsichki = MISIA.sektori.reduce((n,s)=> n + s.zadachi.length, 0);
+  scena.innerHTML =
+   '<div class="panel" style="border-color:var(--zlat)">'
+   + '<div class="etiket" style="color:var(--zlat)">вратата е отворена</div>'
+   + '<h1 style="color:var(--zlat)">ИЗЛЯЗОХМЕ.</h1>'
+   + '<p style="max-width:64ch">Матрицата държеше всичко в скоби. Вие ги отворихте '
+   +   'една по една — член по член, без да изгубите нито един знак. Отвън мирише на вечеря.</p>'
+   + '<div class="vaucher"><table>'
+   +   red2('време вътре', chasovnik(sek))
+   +   red2('събрани битове', S.biti)
+   +   red2('решени задачи', vsichkiReshene()+' от '+vsichki)
+   +   red2('ГЛИТЧ · '+ekraniraj(S.imena[0]), S.tochki[0])
+   +   red2('ГЛИТЧ · '+ekraniraj(S.imena[1]), S.tochki[1])
+   +   red2('най-дълга серия', S.naiDulga)
+   +   red2('кодът', MISIA.kod)
+   + '</table></div>'
+   + '<h2 style="margin-top:26px">МЕНЮ</h2>'
+   + '<p class="muten" id="chiiRed">'+ekraniraj(S.imena[0])+', ти избираш пръв(а).</p>'
+   + '<div class="menu" id="menu">'
+   + MISIA.menu.map((q,i)=>'<button class="qdene" data-q="'+i+'"><b>'+ekraniraj(q[0])+'</b>'
+       + '<span>'+ekraniraj(q[1])+'</span></button>').join('')
+   + '</div>'
+   + '<div id="poruchka"></div>'
+   + '<div class="zashto" style="border-color:var(--zlat);margin-top:26px">'
+   +   '<div class="nd">КАКВО ОСТАВА СЛЕД ТАЗИ СТАЯ</div>'
+   +   '<div class="mat" style="font-weight:400">Всеки член от първата скоба среща всеки от втората.</div>'
+   +   '<div class="mat" style="font-weight:400">Подобните се събират накрая, не по средата.</div>'
+   +   '<div class="mat" style="font-weight:400">Минусът пред скоба сменя знака на всичко вътре.</div>'
+   +   '<div class="mat" style="font-weight:400">В уравненията x² се унищожава — остава линейно.</div>'
+   +   '<div class="mat" style="font-weight:400">Дробният корен е корен, не грешка.</div>'
+   + '</div>'
+   + '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">'
+   +   '<button class="but" id="bPechat">ПЕЧАТ НА ВАУЧЕРА</button>'
+   +   '<button class="but tih" id="bPakVsichko">ОТНАЧАЛО</button></div></div>';
+
+  $$('#menu .qdene').forEach(b => b.addEventListener('click', ()=>{
+    const n = S.menu[0] === null ? 0 : 1;
+    S.menu[n] = +b.dataset.q; zapazi(); zvOk();
+    $$('#menu .qdene').forEach(x => x.classList.toggle('izbrano',
+      S.menu.indexOf(+x.dataset.q) !== -1));
+    if(S.menu[1] === null){
+      $('#chiiRed').textContent = S.imena[1] + ', сега ти.';
+    }else{
+      $('#chiiRed').textContent = 'Поръчката е приета.';
+      $('#poruchka').innerHTML = '<div class="vaucher"><div class="etiket" style="color:var(--zlat)">'
+        + 'ваучер за вечеря</div><table>'
+        + red2(ekraniraj(S.imena[0]), ekraniraj(MISIA.menu[S.menu[0]][0]))
+        + red2(ekraniraj(S.imena[1]), ekraniraj(MISIA.menu[S.menu[1]][0]))
+        + red2('изход от Матрицата за', chasovnik(sek))
+        + '</table></div>';
+    }
+  }));
+  if(S.menu[0] !== null && S.menu[1] !== null) $('#menu .qdene').click();
+  $('#bPechat').addEventListener('click', ()=> window.print());
+  $('#bPakVsichko').addEventListener('click', ()=> $('#bNulirai').click());
+  zvVrata();
+}
+function red2(a,b){ return '<tr><td>'+a+'</td><td>'+b+'</td></tr>'; }
+
+/* =====================================================================
+   13. КЛАВИАТУРАТА
+   ===================================================================== */
+document.addEventListener('keydown', function(e){
+  const vhvInput = document.activeElement && document.activeElement.tagName === 'INPUT';
+
+  /* глитч: двата чифта клавиши работят и на кирилица, защото се гледа
+     кой КЛАВИШ е натиснат, а не коя буква излиза */
+  if(GL && $('.glitch-stena')){
+    if(e.code === 'KeyA'){ otgovori(0, true);  e.preventDefault(); return; }
+    if(e.code === 'KeyZ'){ otgovori(0, false); e.preventDefault(); return; }
+    if(e.code === 'KeyK'){ otgovori(1, true);  e.preventDefault(); return; }
+    if(e.code === 'KeyM'){ otgovori(1, false); e.preventDefault(); return; }
+    if(e.code === 'Space'){ suvet(); e.preventDefault(); return; }
+  }
+  if(vhvInput) return;
+
+  const tabla = $('#tabla');
+  if(tabla && tabla.children.length){
+    const n = +(e.key) ;
+    if(n >= 1 && n <= tabla.children.length){ tabla.children[n-1].click(); e.preventDefault(); }
+    return;
+  }
+  const pool = $('#pool');
+  if(pool){
+    const n = +(e.key);
+    if(n >= 1 && n <= pool.children.length){
+      const c = pool.children[n-1];
+      if(!c.classList.contains('vzet')) c.click();
+      e.preventDefault(); return;
+    }
+    if(e.key === 'Backspace'){
+      const r = $('#redica');
+      if(r && r.lastElementChild){ r.lastElementChild.click(); e.preventDefault(); }
+      return;
+    }
+    if(e.key === 'Enter'){ const b = $('#bProveri'); if(b && !b.disabled) b.click(); }
+  }
+});
+
+/* =====================================================================
+   14. ПАЛИМ
+   ===================================================================== */
+vuzstanovi();
+osveji();
+if(S.zvuk === false){ $('#bZvuk').textContent = '✕'; $('#bZvuk').style.color = '#3a4a44'; }
+window.addEventListener('beforeunload', zapazi);
+setInterval(zapazi, 15000);
+ekranBoot();
+</script>
+</body>
+</html>
