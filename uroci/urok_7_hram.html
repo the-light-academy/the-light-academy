@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Храмът на трите печата · съкратено умножение · 7. клас</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Интерактивен урок за 7. клас за формулите (a + b)², (a − b)² и (a − b)(a + b): четири зали, 34 задачи, сглобяване на формулата като картина, бърза игра между залите и изход с код." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" />
+<!-- =====================================================================
+     ХРАМЪТ НА ТРИТЕ ПЕЧАТА — 7. клас, формули за съкратено умножение
+     ---------------------------------------------------------------------
+     Сестра на „Изход от Матрицата“ (uroci/urok_7_matrica.html): същият
+     двигател за двама — зали със задачи, бърза игра между тях, печати,
+     които отварят изхода. Темата обаче е друга и затова и работата е
+     друга: тук формулата първо се СГЛОБЯВА КАТО КАРТИНА.
+
+       ЗАЛА I   (a + b)²       квадратът се реже на четири парчета
+       ЗАЛА II  (a − b)²       отрязваме две ивици, връщаме ъгълчето
+       ЗАЛА III (a − b)(a + b) изрязваме квадратче и пренареждаме
+       ЗАЛА IV  трите заедно   разпознаване и обратна посока
+
+     Пет вида работа: МОЗАЙКА (картината), ЧИПОВЕ (отговорът се сглобява
+     от членове, а сред тях стоят и типичните грешки), НАУМ (101², 53 · 47
+     през формулата), ИЗБОР (кое от трите е) и ЧИСЛО (уравнения).
+
+     Фонът стои мирно. Нищо не пада, нищо не минава, нищо не мига —
+     двама души гледат този екран цял час.
+
+     НИЩО ТУК НЕ Е ПРЕСМЕТНАТО НА РЪКА. Условията стоят в
+     scripts/urok7/hram.py така, както се четат; отговорите, парчетата на
+     картината, примамките, веригите наум и верността на твърденията при
+     СТРАЖИТЕ ги смята scripts/build_hram.py със sympy и ги записва
+     по-долу. Проверява ги scripts/check_hram.py — по друг път, числено.
+
+     Страницата не иска вход и нищо не предава към платформата: урокът не
+     се оценява. Докъде са стигнали двамата се пази в localStorage.
+     ===================================================================== -->
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  color-scheme:dark;
+  --kamak:#14100c; --kamak2:#1b1610;
+  --ton:#e8b44f;                 /* цветът на залата — сменя се от JS */
+  --tekst:#efe4d2; --blqd:#9a8a74;
+  --cherven:#e0613f; --zlat:#f0c667; --zelen:#7fbf8f;
+  --ram:rgba(232,180,79,.26);
+  --sqnka:0 10px 40px rgba(0,0,0,.55);
+}
+html,body{height:100%}
+body{
+  margin:0; color:var(--tekst);
+  background:
+    radial-gradient(ellipse at 50% -10%,rgba(232,180,79,.10),transparent 60%),
+    linear-gradient(180deg,var(--kamak2),var(--kamak));
+  background-attachment:fixed;
+  font:16px/1.55 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  overflow-x:hidden;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
+}
+/* Зидарията отзад: неподвижна, само за да не е плосък фонът. */
+.zid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.028) 2px,transparent 2px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 2px,transparent 2px);
+  background-size:168px 84px,168px 84px;
+  background-position:0 0,0 0}
+.vinetka{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 38%,transparent 42%,rgba(0,0,0,.72) 100%)}
+.obvivka{position:relative;z-index:2;max-width:1150px;margin:0 auto;padding:0 18px 70px}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font:inherit}
+[hidden]{display:none !important}
+
+/* ── таблото ──────────────────────────────────────────────────────── */
+#hud{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
+  padding:10px 0;margin-bottom:18px;
+  background:linear-gradient(to bottom,var(--kamak2) 74%,transparent);
+  border-bottom:1px solid var(--ram)}
+.hud-mark{font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;font-weight:700;
+  letter-spacing:.06em;color:var(--ton)}
+.hud-mark small{display:block;font-family:"JetBrains Mono",monospace;font-weight:400;
+  font-size:10px;letter-spacing:.3em;color:var(--blqd)}
+.hud-el{display:flex;align-items:baseline;gap:7px;font-size:13px;color:var(--blqd)}
+.hud-el b{font-size:17px;color:var(--tekst);font-variant-numeric:tabular-nums}
+.hud-push{margin-left:auto;display:flex;gap:8px}
+.ikona{width:36px;height:32px;border:1px solid var(--ram);border-radius:7px;color:var(--blqd);
+  display:grid;place-items:center;font-size:14px;transition:.15s}
+.ikona:hover{color:var(--ton);border-color:var(--ton)}
+#pechatLenta{display:flex;gap:5px}
+.pch{width:26px;height:30px;border:1px dashed var(--ram);border-radius:5px;display:grid;
+  place-items:center;font-size:12px;color:#4a3c28}
+.pch.ima{border-style:solid;border-color:var(--zlat);color:var(--zlat)}
+
+/* ── общи ─────────────────────────────────────────────────────────── */
+.panel{border:1px solid var(--ram);border-radius:14px;background:rgba(10,8,5,.72);
+  padding:22px;box-shadow:var(--sqnka)}
+.etiket{font-size:11px;letter-spacing:.32em;color:var(--ton);text-transform:uppercase}
+h1,h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;letter-spacing:.02em;
+  margin:.15em 0 .35em;line-height:1.1}
+h1{font-size:clamp(30px,7vw,54px)}
+h2{font-size:clamp(23px,4.5vw,36px)}
+.but{display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:9px;
+  border:1px solid var(--ton);color:var(--ton);font-weight:700;letter-spacing:.06em;
+  background:rgba(232,180,79,.07);transition:.15s}
+.but:hover{background:var(--ton);color:#1a1206}
+.but.tih{border-color:var(--ram);color:var(--blqd);background:none}
+.but.tih:hover{color:var(--tekst);background:rgba(255,255,255,.05)}
+.but[disabled]{opacity:.35;pointer-events:none}
+.muten{color:var(--blqd)}
+.mat{font-weight:700;letter-spacing:.01em}
+.izraz{font-size:clamp(20px,3.6vw,32px);color:#fff6e6}
+.lenta{height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin:14px 0 4px}
+.lenta i{display:block;height:100%;background:linear-gradient(90deg,var(--ton),var(--zlat));width:0;
+  transition:width .5s}
+.tres{animation:tres .35s}
+@keyframes tres{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+
+/* ── зала ─────────────────────────────────────────────────────────── */
+.zala-glava{display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap}
+.rim{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(46px,11vw,92px);
+  line-height:.82;color:var(--ton)}
+.formula-red{display:inline-block;margin-top:10px;padding:10px 18px;border:1px solid var(--ram);
+  border-radius:10px;background:rgba(232,180,79,.06);font-size:clamp(16px,2.6vw,22px)}
+.spisuk{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-top:18px}
+.karta{border:1px solid var(--ram);border-radius:10px;padding:13px 15px;text-align:left;
+  display:flex;flex-direction:column;gap:7px;transition:.15s;background:rgba(255,255,255,.015)}
+.karta:hover{border-color:var(--ton);transform:translateY(-2px)}
+.karta .gl{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.16em;color:var(--blqd)}
+.karta .mat{font-size:16px;color:#f6ecd9}
+.karta.gotova{border-color:rgba(127,191,143,.5);background:rgba(127,191,143,.08)}
+.karta.gotova .gl{color:var(--zelen)}
+
+/* ── мозайката ────────────────────────────────────────────────────── */
+.mozaika{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;margin-top:16px}
+.mozaika svg{width:min(360px,86vw);height:auto;flex:0 0 auto}
+.mz-oblast{cursor:pointer;transition:.15s}
+.mz-oblast:hover .mz-fon{fill-opacity:.42}
+.mz-fon{transition:.2s}
+.mz-text{font:700 17px "JetBrains Mono",monospace;fill:#fff6e6;pointer-events:none}
+.mz-malak{font:400 13px "JetBrains Mono",monospace;fill:var(--blqd);pointer-events:none}
+.uravnenie{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:19px;font-weight:700}
+.slot{min-width:72px;height:48px;border:1px dashed var(--ram);border-radius:9px;display:grid;
+  place-items:center;color:#5c4b33;font-size:18px;transition:.15s;background:rgba(255,255,255,.02)}
+.slot:hover{border-color:var(--ton);color:var(--ton)}
+.slot.aktiven{border-style:solid;border-color:var(--zlat);box-shadow:0 0 0 3px rgba(240,198,103,.15);
+  color:var(--zlat)}
+.slot.puln{border-style:solid;border-color:rgba(127,191,143,.55);background:rgba(127,191,143,.1);
+  color:#fff6e6;cursor:default;animation:pop .3s}
+
+/* ── чипове ───────────────────────────────────────────────────────── */
+.izbor{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0 2px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:9px;
+  border:1px solid var(--ram);font-weight:700;font-size:17px;background:rgba(255,255,255,.025);
+  transition:.12s}
+.chip:hover{border-color:var(--ton);color:var(--ton);transform:translateY(-2px)}
+.chip .nom{font-size:10px;color:var(--blqd);border:1px solid var(--ram);border-radius:4px;padding:0 4px}
+.chip.vzet{opacity:.22;pointer-events:none}
+.chip.gresh{border-color:var(--cherven);color:var(--cherven);animation:tres .35s}
+.redica{min-height:62px;border:1px dashed var(--ram);border-radius:10px;padding:10px;display:flex;
+  gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0;background:rgba(255,255,255,.015)}
+.redica:empty::before{content:"тук се сглобява отговорът";color:#52432d;font-size:13px}
+.redica .chip{border-color:var(--ton);color:#fff6e6;background:rgba(232,180,79,.1)}
+.golemi{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:16px 0}
+.golemi button{border:1px solid var(--ram);border-radius:11px;padding:16px;font-size:19px;
+  font-weight:700;transition:.15s;background:rgba(255,255,255,.02)}
+.golemi button:hover{border-color:var(--ton);color:var(--ton)}
+.golemi button.gresh{border-color:var(--cherven);color:var(--cherven);opacity:.5}
+.golemi button.vqrno{border-color:var(--zelen);color:var(--zelen);background:rgba(127,191,143,.1)}
+.chislo-red{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}
+.chislo-red input{width:200px;background:rgba(255,255,255,.04);border:1px solid var(--ram);
+  border-radius:9px;padding:11px 14px;color:var(--zlat);font-size:23px;font-weight:700;outline:none;
+  text-align:center}
+.chislo-red input:focus{border-color:var(--ton);box-shadow:0 0 0 3px rgba(232,180,79,.14)}
+.zashto{border-left:3px solid var(--ton);padding:12px 0 12px 15px;margin-top:18px;
+  background:rgba(232,180,79,.05)}
+.zashto .nd{font-size:11px;letter-spacing:.2em;color:var(--blqd);margin-bottom:6px}
+.zashto .mat{color:#fff6e6}
+
+/* ── стражите ─────────────────────────────────────────────────────── */
+.stena{display:grid;grid-template-columns:1fr minmax(260px,2fr) 1fr;gap:14px}
+@media (max-width:880px){.stena{grid-template-columns:1fr}}
+.igrach{border:1px solid var(--ram);border-radius:12px;padding:14px;text-align:center;
+  display:flex;flex-direction:column;gap:10px;transition:.15s}
+.igrach b{font-size:19px}
+.igrach .toch{font-size:34px;font-weight:800;color:var(--ton);font-variant-numeric:tabular-nums}
+.igrach.gori{border-color:var(--zelen);box-shadow:0 0 26px rgba(127,191,143,.2)}
+.igrach.vun{opacity:.32}
+.butoni2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.butoni2 button{border:1px solid var(--ram);border-radius:9px;padding:12px 4px;font-weight:800;
+  font-size:13px;letter-spacing:.06em}
+.butoni2 .da{color:var(--zelen)} .butoni2 .ne{color:var(--cherven)}
+.butoni2 button:hover{background:rgba(255,255,255,.06)}
+.klav{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 7px;border-radius:6px;
+  border:1px solid var(--ram);border-bottom-width:3px;font-size:13px;font-weight:700}
+.tvurdenie{display:grid;place-items:center;text-align:center;gap:16px;min-height:220px;
+  border:1px solid var(--ram);border-radius:12px;padding:20px;background:rgba(0,0,0,.3)}
+.tvurdenie .mat{font-size:clamp(19px,4.2vw,32px)}
+.chasovnik{height:8px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden;width:100%}
+.chasovnik i{display:block;height:100%;background:var(--ton);width:100%}
+.presuda{font-size:clamp(21px,4.6vw,34px);font-weight:800;letter-spacing:.08em}
+.presuda.ok{color:var(--zelen)} .presuda.ne{color:var(--cherven)}
+
+/* ── изход ────────────────────────────────────────────────────────── */
+.vrati{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:18px}
+.vrata{border:1px solid var(--ram);border-radius:12px;padding:22px 16px;text-align:center;
+  display:flex;flex-direction:column;gap:14px;align-items:center;transition:.15s}
+.vrata:hover{border-color:var(--zlat);transform:translateY(-3px)}
+.vrata.gresh{border-color:var(--cherven);opacity:.45}
+.kluch{display:flex;gap:10px;justify-content:center;margin:18px 0 6px}
+.kluch input{width:58px;height:74px;text-align:center;font-size:34px;font-weight:800;color:var(--zlat);
+  background:rgba(240,198,103,.06);border:1px solid rgba(240,198,103,.35);border-radius:10px;outline:none}
+.spisuk-frag{display:grid;gap:8px;margin-top:14px;text-align:left}
+.spisuk-frag div{display:flex;gap:12px;align-items:baseline;font-size:14px}
+.spisuk-frag span{color:var(--zlat);font-weight:800;min-width:30px}
+
+/* ── пирът ────────────────────────────────────────────────────────── */
+.menu{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:16px 0}
+.qdene{border:1px solid rgba(240,198,103,.3);border-radius:11px;padding:14px;text-align:left;transition:.15s}
+.qdene:hover{border-color:var(--zlat);background:rgba(240,198,103,.08)}
+.qdene.izbrano{border-color:var(--zlat);background:rgba(240,198,103,.14)}
+.qdene b{display:block;font-size:16px;color:var(--zlat)}
+.qdene span{font-size:12px;color:var(--blqd)}
+.vaucher{border:1px dashed var(--zlat);border-radius:12px;padding:20px;margin-top:16px}
+.vaucher table{width:100%;border-collapse:collapse;font-size:14px}
+.vaucher td{padding:5px 0;border-bottom:1px dotted rgba(240,198,103,.2)}
+.vaucher td:last-child{text-align:right;color:var(--zlat);font-weight:700}
+
+#kljuchove{display:none;position:fixed;left:0;right:0;bottom:0;z-index:4;text-align:center;
+  font-size:11px;color:#6b5a40;letter-spacing:.12em;padding:6px;
+  background:linear-gradient(to top,var(--kamak),transparent);pointer-events:none}
+body.straji #kljuchove{display:block}
+@media (max-width:700px){#hud{gap:8px 12px}.obvivka{padding:0 12px 70px}.panel{padding:16px}}
+@media print{
+  .zid,.vinetka,#hud,#kljuchove,.but{display:none !important}
+  body{background:#fff;color:#111}.panel,.vaucher{border-color:#999;background:none;box-shadow:none}
+  .qdene b,.vaucher td:last-child{color:#111}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div class="zid" aria-hidden="true"></div>
+<div class="vinetka" aria-hidden="true"></div>
+
+<div class="obvivka">
+  <header id="hud">
+    <div class="hud-mark">Храмът<small>7. КЛАС · НВО</small></div>
+    <div class="hud-el">време <b id="hChas">00:00</b></div>
+    <div class="hud-el">факли <b id="hBiti">0</b></div>
+    <div class="hud-el">решени <b id="hZad">0</b></div>
+    <div class="hud-el">печати <span id="pechatLenta"></span></div>
+    <div class="hud-push">
+      <button class="ikona" id="bZvuk" title="звук">♪</button>
+      <button class="ikona" id="bKarta" title="планът на храма">▦</button>
+      <button class="ikona" id="bNulirai" title="от нулата">⟲</button>
+    </div>
+  </header>
+  <main id="scena" aria-live="polite"></main>
+</div>
+
+<div id="kljuchove">ИГРАЧ 1 · A = ВЯРНО · Z = ГРЕШНО &nbsp;|&nbsp; ИГРАЧ 2 · K = ВЯРНО · M = ГРЕШНО &nbsp;|&nbsp; ИНТЕРВАЛ = СЪВЕТ</div>
+
+<script>
+/* ДАННИ:НАЧАЛО — пише ги scripts/build_hram.py; условията са в scripts/urok7/hram.py */
+const HRAM = {
+ "zali": [
+  {
+   "kod": "I",
+   "ime": "ПЕЧАТЪТ НА СБОРА",
+   "formula": "(a + b)² = a² + 2ab + b²",
+   "podnaslov": "Квадратът не се разпада на два квадрата.",
+   "briefing": "Първата зала пази най-скъпата грешка в училищната алгебра: (a + b)² = a² + b². Не е. Квадратът със страна a + b се реже на четири парчета и две от тях са еднакви — оттам идва двойката. Сглоби картината и печатът ще се отвори.",
+   "nujni": 5,
+   "zadachi": [
+    {
+     "id": "h1z1",
+     "vid": "mozaika",
+     "izraz": "(a + b)²",
+     "otgovor": [
+      "a²",
+      "2ab",
+      "b²"
+     ],
+     "chipove": [
+      "a²",
+      "2ab",
+      "b²",
+      "ab",
+      "−a²",
+      "−2ab",
+      "−b²"
+     ],
+     "sled": "a² + 2ab + b²",
+     "zashto": [
+      "ab + ab = 2ab"
+     ]
+    },
+    {
+     "id": "h1z2",
+     "vid": "chipove",
+     "izraz": "(x + 3)²",
+     "otgovor": [
+      "x²",
+      "6x",
+      "9"
+     ],
+     "chipove": [
+      "x²",
+      "6x",
+      "9",
+      "3x",
+      "−x²",
+      "−6x",
+      "−9"
+     ],
+     "sled": "x² + 6x + 9",
+     "zashto": [
+      "3x + 3x = 6x"
+     ]
+    },
+    {
+     "id": "h1z3",
+     "vid": "chipove",
+     "izraz": "(2a + 5)²",
+     "otgovor": [
+      "4a²",
+      "20a",
+      "25"
+     ],
+     "chipove": [
+      "4a²",
+      "20a",
+      "25",
+      "10a",
+      "−4a²",
+      "−20a",
+      "−25"
+     ],
+     "sled": "4a² + 20a + 25",
+     "zashto": [
+      "10a + 10a = 20a"
+     ]
+    },
+    {
+     "id": "h1z4",
+     "vid": "chipove",
+     "izraz": "(3m + 2n)²",
+     "ideya": "Двойното произведение е 2 · 3m · 2n.",
+     "otgovor": [
+      "9m²",
+      "12mn",
+      "4n²"
+     ],
+     "chipove": [
+      "9m²",
+      "12mn",
+      "4n²",
+      "6mn",
+      "−9m²",
+      "−12mn",
+      "−4n²"
+     ],
+     "sled": "9m² + 12mn + 4n²",
+     "zashto": [
+      "6mn + 6mn = 12mn"
+     ]
+    },
+    {
+     "id": "h1z5",
+     "vid": "chipove",
+     "izraz": "(x² + 4)²",
+     "ideya": "Първият член е (x²)², а не x².",
+     "otgovor": [
+      "x⁴",
+      "8x²",
+      "16"
+     ],
+     "chipove": [
+      "x⁴",
+      "8x²",
+      "16",
+      "4x²",
+      "−x⁴",
+      "−8x²",
+      "−16"
+     ],
+     "sled": "x⁴ + 8x² + 16",
+     "zashto": [
+      "4x² + 4x² = 8x²"
+     ]
+    },
+    {
+     "id": "h1z6",
+     "vid": "chipove",
+     "izraz": "(7 + y)²",
+     "otgovor": [
+      "y²",
+      "14y",
+      "49"
+     ],
+     "chipove": [
+      "y²",
+      "14y",
+      "49",
+      "7y",
+      "−y²",
+      "−14y",
+      "−49"
+     ],
+     "sled": "y² + 14y + 49",
+     "zashto": [
+      "7y + 7y = 14y"
+     ]
+    },
+    {
+     "id": "h1z7",
+     "vid": "naum",
+     "izraz": "101²",
+     "koren": "10201",
+     "p": 10201,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(100 + 1)²",
+     "zashto": [
+      "101² = (100 + 1)²",
+      "100² + 2 · 100 · 1 + 1²",
+      "10000 + 200 + 1",
+      "= 10201"
+     ]
+    },
+    {
+     "id": "h1z8",
+     "vid": "naum",
+     "izraz": "52²",
+     "koren": "2704",
+     "p": 2704,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(50 + 2)²",
+     "zashto": [
+      "52² = (50 + 2)²",
+      "50² + 2 · 50 · 2 + 2²",
+      "2500 + 200 + 4",
+      "= 2704"
+     ]
+    }
+   ],
+   "mozaika": {
+    "vid": "sbor",
+    "vupros": "Квадрат със страна a + b. Сложи четирите парчета по местата им.",
+    "slotove": [
+     "a²",
+     "ab",
+     "ab",
+     "b²"
+    ],
+    "primamki": [
+     "2ab",
+     "a",
+     "b",
+     "ab²"
+    ],
+    "izvod": "(a + b)² = a² + ab + ab + b² = a² + 2ab + b²"
+   },
+   "pechat": {
+    "vupros": "Колко е коефициентът пред x в (x + 3)²?",
+    "cifra": "6",
+    "na": "h1z2",
+    "kontrol": "koef"
+   }
+  },
+  {
+   "kod": "II",
+   "ime": "ПЕЧАТЪТ НА РАЗЛИКАТА",
+   "formula": "(a − b)² = a² − 2ab + b²",
+   "podnaslov": "Отрязваме два пъти, връщаме веднъж.",
+   "briefing": "Втората зала е същият квадрат, но отвътре. Малкият квадрат със страна a − b се получава, като от големия отрежем две ивици — а те се застъпват в едно ъгълче, което трябва да върнем обратно. Затова последният член е +b², а не −b².",
+   "nujni": 5,
+   "zadachi": [
+    {
+     "id": "h2z1",
+     "vid": "mozaika",
+     "izraz": "(a − b)²",
+     "otgovor": [
+      "a²",
+      "−2ab",
+      "b²"
+     ],
+     "chipove": [
+      "a²",
+      "−2ab",
+      "b²",
+      "−ab",
+      "−a²",
+      "2ab",
+      "−b²"
+     ],
+     "sled": "a² − 2ab + b²",
+     "zashto": [
+      "−ab − ab = −2ab"
+     ]
+    },
+    {
+     "id": "h2z2",
+     "vid": "chipove",
+     "izraz": "(x − 4)²",
+     "otgovor": [
+      "x²",
+      "−8x",
+      "16"
+     ],
+     "chipove": [
+      "x²",
+      "−8x",
+      "16",
+      "−4x",
+      "−x²",
+      "8x",
+      "−16"
+     ],
+     "sled": "x² − 8x + 16",
+     "zashto": [
+      "−4x − 4x = −8x"
+     ]
+    },
+    {
+     "id": "h2z3",
+     "vid": "chipove",
+     "izraz": "(3a − 1)²",
+     "otgovor": [
+      "9a²",
+      "−6a",
+      "1"
+     ],
+     "chipove": [
+      "9a²",
+      "−6a",
+      "1",
+      "−3a",
+      "−9a²",
+      "6a",
+      "−1"
+     ],
+     "sled": "9a² − 6a + 1",
+     "zashto": [
+      "−3a − 3a = −6a"
+     ]
+    },
+    {
+     "id": "h2z4",
+     "vid": "chipove",
+     "izraz": "(5x − 2y)²",
+     "otgovor": [
+      "25x²",
+      "−20xy",
+      "4y²"
+     ],
+     "chipove": [
+      "25x²",
+      "−20xy",
+      "4y²",
+      "−10xy",
+      "−25x²",
+      "20xy",
+      "−4y²"
+     ],
+     "sled": "25x² − 20xy + 4y²",
+     "zashto": [
+      "−10xy − 10xy = −20xy"
+     ]
+    },
+    {
+     "id": "h2z5",
+     "vid": "chipove",
+     "izraz": "(a² − 3)²",
+     "otgovor": [
+      "a⁴",
+      "−6a²",
+      "9"
+     ],
+     "chipove": [
+      "a⁴",
+      "−6a²",
+      "9",
+      "−3a²",
+      "−a⁴",
+      "6a²",
+      "−9"
+     ],
+     "sled": "a⁴ − 6a² + 9",
+     "zashto": [
+      "−3a² − 3a² = −6a²"
+     ]
+    },
+    {
+     "id": "h2z6",
+     "vid": "chipove",
+     "izraz": "(−x + 6)²",
+     "ideya": "Квадратът изяжда знака: (−x + 6)² е същото като (6 − x)².",
+     "otgovor": [
+      "x²",
+      "−12x",
+      "36"
+     ],
+     "chipove": [
+      "x²",
+      "−12x",
+      "36",
+      "−6x",
+      "−x²",
+      "12x",
+      "−36"
+     ],
+     "sled": "x² − 12x + 36",
+     "zashto": [
+      "−6x − 6x = −12x"
+     ]
+    },
+    {
+     "id": "h2z7",
+     "vid": "naum",
+     "izraz": "99²",
+     "koren": "9801",
+     "p": 9801,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(100 − 1)²",
+     "zashto": [
+      "99² = (100 − 1)²",
+      "100² − 2 · 100 · 1 + 1²",
+      "10000 − 200 + 1",
+      "= 9801"
+     ]
+    },
+    {
+     "id": "h2z8",
+     "vid": "naum",
+     "izraz": "48²",
+     "koren": "2304",
+     "p": 2304,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(50 − 2)²",
+     "zashto": [
+      "48² = (50 − 2)²",
+      "50² − 2 · 50 · 2 + 2²",
+      "2500 − 200 + 4",
+      "= 2304"
+     ]
+    }
+   ],
+   "mozaika": {
+    "vid": "razlika",
+    "vupros": "От квадрата a² махаме двете ивици и връщаме застъпеното ъгълче. Подреди трите действия.",
+    "slotove": [
+     "−ab",
+     "−ab",
+     "b²"
+    ],
+    "primamki": [
+     "ab",
+     "−b²",
+     "−2ab",
+     "b"
+    ],
+    "nachalo": "a²",
+    "izvod": "(a − b)² = a² − ab − ab + b² = a² − 2ab + b²"
+   },
+   "pechat": {
+    "vupros": "Колко е свободният член в (3a − 1)²?",
+    "cifra": "1",
+    "na": "h2z3",
+    "kontrol": "svoboden"
+   }
+  },
+  {
+   "kod": "III",
+   "ime": "ПЕЧАТЪТ НА ОГЛЕДАЛОТО",
+   "formula": "(a − b)(a + b) = a² − b²",
+   "podnaslov": "Средните два члена се унищожават.",
+   "briefing": "Третата зала е огледална: едното и същото число веднъж се вади и веднъж се прибавя. Като отворим скобите, средните два члена са −ab и +ab и се изяждат. Остават два квадрата и минус между тях. Това е формулата, с която се смята наум по-бързо, отколкото с калкулатор.",
+   "nujni": 5,
+   "zadachi": [
+    {
+     "id": "h3z1",
+     "vid": "mozaika",
+     "izraz": "(a − b)(a + b)",
+     "otgovor": [
+      "a²",
+      "−b²"
+     ],
+     "chipove": [
+      "a²",
+      "−b²",
+      "−ab",
+      "ab",
+      "−a²",
+      "b²"
+     ],
+     "sled": "a² − b²",
+     "zashto": [
+      "−ab + ab = 0"
+     ]
+    },
+    {
+     "id": "h3z2",
+     "vid": "chipove",
+     "izraz": "(x − 7)(x + 7)",
+     "otgovor": [
+      "x²",
+      "−49"
+     ],
+     "chipove": [
+      "x²",
+      "−49",
+      "−7x",
+      "7x",
+      "−x²",
+      "49"
+     ],
+     "sled": "x² − 49",
+     "zashto": [
+      "−7x + 7x = 0"
+     ]
+    },
+    {
+     "id": "h3z3",
+     "vid": "chipove",
+     "izraz": "(2a + 3b)(2a − 3b)",
+     "otgovor": [
+      "4a²",
+      "−9b²"
+     ],
+     "chipove": [
+      "4a²",
+      "−9b²",
+      "−6ab",
+      "6ab",
+      "−4a²",
+      "9b²"
+     ],
+     "sled": "4a² − 9b²",
+     "zashto": [
+      "−6ab + 6ab = 0"
+     ]
+    },
+    {
+     "id": "h3z4",
+     "vid": "chipove",
+     "izraz": "(x² − 5)(x² + 5)",
+     "otgovor": [
+      "x⁴",
+      "−25"
+     ],
+     "chipove": [
+      "x⁴",
+      "−25",
+      "−5x²",
+      "5x²",
+      "−x⁴",
+      "25"
+     ],
+     "sled": "x⁴ − 25",
+     "zashto": [
+      "−5x² + 5x² = 0"
+     ]
+    },
+    {
+     "id": "h3z5",
+     "vid": "chipove",
+     "izraz": "(3 − y)(3 + y)",
+     "otgovor": [
+      "−y²",
+      "9"
+     ],
+     "chipove": [
+      "−y²",
+      "9",
+      "−3y",
+      "3y",
+      "y²",
+      "−9"
+     ],
+     "sled": "−y² + 9",
+     "zashto": [
+      "−3y + 3y = 0"
+     ]
+    },
+    {
+     "id": "h3z6",
+     "vid": "chipove",
+     "izraz": "(a − b)(a + b)(a² + b²)",
+     "ideya": "Първите две скоби дават a² − b². После пак огледало.",
+     "otgovor": [
+      "a⁴",
+      "−b⁴"
+     ],
+     "chipove": [
+      "a⁴",
+      "−b⁴",
+      "a²b²",
+      "−a³b",
+      "−ab³",
+      "a³b"
+     ],
+     "sled": "a⁴ − b⁴",
+     "zashto": [
+      "a²b² − a²b² = 0",
+      "−a³b + a³b = 0",
+      "−ab³ + ab³ = 0"
+     ]
+    },
+    {
+     "id": "h3z7",
+     "vid": "naum",
+     "izraz": "53 · 47",
+     "koren": "2491",
+     "p": 2491,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(50 + 3)(50 − 3)",
+     "zashto": [
+      "53 · 47 = (50 + 3)(50 − 3)",
+      "50² − 3²",
+      "2500 − 9",
+      "= 2491"
+     ]
+    },
+    {
+     "id": "h3z8",
+     "vid": "naum",
+     "izraz": "102 · 98",
+     "koren": "9996",
+     "p": 9996,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(100 + 2)(100 − 2)",
+     "zashto": [
+      "102 · 98 = (100 + 2)(100 − 2)",
+      "100² − 2²",
+      "10000 − 4",
+      "= 9996"
+     ]
+    }
+   ],
+   "mozaika": {
+    "vid": "ogledalo",
+    "vupros": "От квадрата a² изрязваме квадратчето b² и подреждаме останалото в правоъгълник със страни a − b и a + b. Кои два члена остават?",
+    "slotove": [
+     "a²",
+     "−b²"
+    ],
+    "primamki": [
+     "b²",
+     "−ab",
+     "ab",
+     "−a²"
+    ],
+    "izvod": "(a − b)(a + b) = a² − ab + ab − b² = a² − b²"
+   },
+   "pechat": {
+    "vupros": "В a⁴ − b⁴ кой е най-големият показател?",
+    "cifra": "4",
+    "na": "h3z6",
+    "kontrol": "stepen"
+   }
+  },
+  {
+   "kod": "IV",
+   "ime": "ЗАЛАТА НА ТРИТЕ ЗАЕДНО",
+   "formula": "коя от трите?",
+   "podnaslov": "Разпознаване и обратна посока.",
+   "briefing": "В последната зала формулите не са подредени. Трябва да ги разпознаеш — и да ги четеш наобратно: от x² + 10x + 25 обратно към (x + 5)². Това е най-полезното за НВО: формулата да работи и в двете посоки.",
+   "nujni": 6,
+   "zadachi": [
+    {
+     "id": "h4z1",
+     "vid": "izbor",
+     "izraz": "x² + 10x + 25",
+     "vupros": "Кое е същото?",
+     "kontrol": "ravenstvo",
+     "izbori": [
+      "(x + 5)²",
+      "(x + 5)(x − 5)",
+      "(x − 5)²",
+      "x² + 25"
+     ],
+     "veren": "(x + 5)²",
+     "zashto": [
+      "Двойното произведение 10x = 2 · x · 5 сочи сбор."
+     ]
+    },
+    {
+     "id": "h4z2",
+     "vid": "izbor",
+     "izraz": "x² − 25",
+     "vupros": "Кое е същото?",
+     "kontrol": "ravenstvo",
+     "izbori": [
+      "(x − 5)(x + 5)",
+      "(x − 5)²",
+      "(x + 5)²",
+      "x(x − 25)"
+     ],
+     "veren": "(x − 5)(x + 5)",
+     "zashto": [
+      "Два квадрата с минус между тях — това е огледалото."
+     ]
+    },
+    {
+     "id": "h4z3",
+     "vid": "izbor",
+     "izraz": "4a² − 12a + 9",
+     "vupros": "Кое е същото?",
+     "kontrol": "ravenstvo",
+     "izbori": [
+      "(2a − 3)²",
+      "(2a + 3)²",
+      "(2a − 3)(2a + 3)",
+      "(4a − 3)²"
+     ],
+     "veren": "(2a − 3)²",
+     "zashto": [
+      "4a² = (2a)², 9 = 3², а 12a = 2 · 2a · 3 — с минус, значи разлика."
+     ]
+    },
+    {
+     "id": "h4z4",
+     "vid": "izbor",
+     "izraz": "x² + 7x + 9",
+     "vupros": "Пълен квадрат ли е?",
+     "kontrol": "ne_e_kvadrat",
+     "izbori": [
+      "не е",
+      "(x + 3)²",
+      "(x + 7)²"
+     ],
+     "veren": "не е",
+     "zashto": [
+      "За (x + 3)² средният член трябва да е 6x, а не 7x.",
+      "Проверка: b² − 4ac = 13 ≠ 0, значи не е пълен квадрат."
+     ]
+    },
+    {
+     "id": "h4z5",
+     "vid": "chipove",
+     "izraz": "(x + 2)² − (x − 2)²",
+     "otgovor": [
+      "8x"
+     ],
+     "chipove": [
+      "8x",
+      "4",
+      "2x",
+      "x²",
+      "−4"
+     ],
+     "sled": "8x",
+     "zashto": [
+      "4 − 4 = 0",
+      "2x + 2x + 2x + 2x = 8x",
+      "x² − x² = 0"
+     ]
+    },
+    {
+     "id": "h4z6",
+     "vid": "chipove",
+     "izraz": "(a + b)² − (a − b)²",
+     "otgovor": [
+      "4ab"
+     ],
+     "chipove": [
+      "4ab",
+      "a²",
+      "ab",
+      "b²",
+      "−a²"
+     ],
+     "sled": "4ab",
+     "zashto": [
+      "a² − a² = 0",
+      "ab + ab + ab + ab = 4ab",
+      "b² − b² = 0"
+     ]
+    },
+    {
+     "id": "h4z7",
+     "vid": "chipove",
+     "izraz": "(x − 3)(x + 3) − (x − 3)²",
+     "otgovor": [
+      "6x",
+      "−18"
+     ],
+     "chipove": [
+      "6x",
+      "−18",
+      "−9",
+      "3x",
+      "−x²",
+      "−3x"
+     ],
+     "sled": "6x − 18",
+     "zashto": [
+      "−9 − 9 = −18",
+      "3x + 3x − 3x + 3x = 6x",
+      "−x² + x² = 0"
+     ]
+    },
+    {
+     "id": "h4z8",
+     "vid": "naum",
+     "izraz": "(x + 5)² − (x + 2)(x + 8)",
+     "ideya": "Пресметни двете части и виж какво остава от x.",
+     "koren": "9",
+     "p": 9,
+     "q": 1,
+     "drob": false,
+     "promenliva": "отговорът",
+     "razbivane": "(x² + 10x + 25) − (x² + 10x + 16)",
+     "zashto": [
+      "(x + 5)² − (x + 2)(x + 8) = (x² + 10x + 25) − (x² + 10x + 16)",
+      "= 9"
+     ]
+    },
+    {
+     "id": "h4z9",
+     "vid": "chislo",
+     "izraz": "(x + 4)² − (x − 1)(x + 1) = 25",
+     "promenliva": "x",
+     "koren": "1",
+     "p": 1,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "Формулите изяждат квадратите: 8x + 17 = 25.",
+      "x = 1"
+     ]
+    },
+    {
+     "id": "h4z10",
+     "vid": "chislo",
+     "izraz": "(3x − 1)² − 9x² = 7",
+     "promenliva": "x",
+     "koren": "−1",
+     "p": -1,
+     "q": 1,
+     "drob": false,
+     "zashto": [
+      "Формулите изяждат квадратите: −6x + 1 = 7.",
+      "x = −1"
+     ]
+    }
+   ],
+   "mozaika": null,
+   "pechat": {
+    "vupros": "Колко остава от (x + 5)² − (x + 2)(x + 8)?",
+    "cifra": "9",
+    "na": "h4z8",
+    "kontrol": "stoinost"
+   }
+  }
+ ],
+ "straji": [
+  {
+   "kod": "I",
+   "ime": "СТРАЖИТЕ НА СБОРА",
+   "redove": [
+    {
+     "red": "(x + 1)² = x² + 2x + 1",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(2x + 3)² = 4x² + 12x + 9",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a + b)² = a² + b²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е a² + 2ab + b²."
+    },
+    {
+     "red": "(x + 5)² = x² + 10x + 25",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(3a + 1)² = 9a² + 3a + 1",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 9a² + 6a + 1."
+    },
+    {
+     "red": "(x + 4)² = x² + 8x + 8",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² + 8x + 16."
+    },
+    {
+     "red": "(m + n)² = m² + 2mn + n²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(y + 10)² = y² + 20y + 100",
+     "vqrno": true,
+     "zashto": "Вярно."
+    }
+   ]
+  },
+  {
+   "kod": "II",
+   "ime": "СТРАЖИТЕ НА РАЗЛИКАТА",
+   "redove": [
+    {
+     "red": "(x − 1)² = x² − 2x + 1",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a − b)² = a² − 2ab − b²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е a² − 2ab + b²."
+    },
+    {
+     "red": "(x − 6)² = x² − 12x + 36",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(3x − 2)² = 9x² − 12x + 4",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(x − 7)² = x² − 49",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² − 14x + 49."
+    },
+    {
+     "red": "(a − b)² = (b − a)²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(2a − 5)² = 4a² − 10a + 25",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 4a² − 20a + 25."
+    },
+    {
+     "red": "(5 − y)² = 25 − 10y + y²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    }
+   ]
+  },
+  {
+   "kod": "III",
+   "ime": "СТРАЖИТЕ НА ОГЛЕДАЛОТО",
+   "redove": [
+    {
+     "red": "(x − 3)(x + 3) = x² − 9",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "x² + 9 = (x + 3)(x − 3)",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² + 9."
+    },
+    {
+     "red": "(2x − 5)(2x + 5) = 4x² − 25",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "49 − y² = (7 − y)(7 + y)",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a + b)(a − b) = a² + b²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е a² − b²."
+    },
+    {
+     "red": "(x² − 4)(x² + 4) = x⁴ − 16",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(3a − b)(3a + b) = 3a² − b²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 9a² − b²."
+    },
+    {
+     "red": "(x − 1)(x + 1)(x² + 1) = x⁴ − 1",
+     "vqrno": true,
+     "zashto": "Вярно."
+    }
+   ]
+  },
+  {
+   "kod": "IV",
+   "ime": "СТРАЖИТЕ НА ЧИСЛАТА",
+   "redove": [
+    {
+     "red": "101² = 10201",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "99² = 9801",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "98² = 9064",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 9604."
+    },
+    {
+     "red": "53 · 47 = 2491",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "49² = 2301",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 2401."
+    },
+    {
+     "red": "51² = 2601",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "102 · 98 = 9996",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "65² = 4225",
+     "vqrno": true,
+     "zashto": "Вярно."
+    }
+   ]
+  },
+  {
+   "kod": "V",
+   "ime": "ПОСЛЕДНИТЕ СТРАЖИ",
+   "redove": [
+    {
+     "red": "x² + 6x + 9 = (x + 3)²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "x² − 2x + 4 = (x − 2)²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² − 2x + 4."
+    },
+    {
+     "red": "x² − 10x + 25 = (x − 5)²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "9a² − 16 = (3a − 4)(3a + 4)",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "x² + 9x + 9 = (x + 3)²",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е x² + 9x + 9."
+    },
+    {
+     "red": "4x² + 4x + 1 = (2x + 1)²",
+     "vqrno": true,
+     "zashto": "Вярно."
+    },
+    {
+     "red": "(a + b)² − (a − b)² = 2ab",
+     "vqrno": false,
+     "zashto": "Грешно — вярното е 4ab."
+    },
+    {
+     "red": "(x + 2)² − (x − 2)² = 8x",
+     "vqrno": true,
+     "zashto": "Вярно."
+    }
+   ]
+  }
+ ],
+ "pechati": [
+  {
+   "etiket": "I",
+   "red": "(a + b)² = a² + b²",
+   "vqrno": false,
+   "zashto": "Грешно — вярното е a² + 2ab + b²."
+  },
+  {
+   "etiket": "II",
+   "red": "(a − b)(a + b) = a² − b²",
+   "vqrno": true,
+   "zashto": "Вярно."
+  },
+  {
+   "etiket": "III",
+   "red": "(a − b)² = a² − b²",
+   "vqrno": false,
+   "zashto": "Грешно — вярното е a² − 2ab + b²."
+  }
+ ],
+ "pir": [
+  [
+   "Питки „Квадрат на сбора“",
+   "четири парчета, две от които еднакви"
+  ],
+  [
+   "Яхния в три скоби",
+   "готви се бавно, яде се бързо"
+  ],
+  [
+   "Баница „Огледало“",
+   "средните два члена се изяждат сами"
+  ],
+  [
+   "Мед и орехи",
+   "за този, който смята наум по-бързо от калкулатора"
+  ]
+ ],
+ "kod": "6149"
+};
+/* ДАННИ:КРАЙ */
+</script>
+
+<script>
+"use strict";
+/* =====================================================================
+   1. СЪСТОЯНИЕ
+   ===================================================================== */
+const KLJUCH = 'hram7-v1';
+const TONOVE = ['#e8b44f','#d98c5f','#5fb6a8','#b08ad6'];
+const ZLAT = '#f0c667';
+
+const S = {
+  imena:['ОРФЕЙ','СЕВТ'],
+  biti:0, reshene:{}, otvoreni:[], strajiGotovi:[],
+  tochki:[0,0], naiDulga:0, greshki:0, menu:[null,null],
+  vreme:0, zvuk:true, svurshen:false
+};
+let pocetak = Date.now();
+
+function zapazi(){ S.vreme = minaloto(); try{ localStorage.setItem(KLJUCH, JSON.stringify(S)); }catch(e){} }
+function vuzstanovi(){
+  try{ const r = JSON.parse(localStorage.getItem(KLJUCH) || 'null');
+       if(r && typeof r === 'object') Object.assign(S, r); }catch(e){}
+  pocetak = Date.now();
+}
+function minaloto(){ return S.vreme + Math.floor((Date.now()-pocetak)/1000); }
+function chasovnik(sek){ const m = Math.floor(sek/60), s = sek%60;
+  return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
+function broiReshene(z){ return z.zadachi.filter(q => S.reshene[q.id]).length; }
+function vsichkiReshene(){ return Object.keys(S.reshene).length; }
+function zalaOtvorena(i){ return S.otvoreni.indexOf(i) !== -1; }
+function parvNezavursena(){
+  for(let i=0;i<HRAM.zali.length;i++) if(!zalaOtvorena(i)) return i;
+  return HRAM.zali.length;
+}
+
+/* =====================================================================
+   2. ИНСТРУМЕНТИ
+   ===================================================================== */
+const scena = document.getElementById('scena');
+const $ = (s,p) => (p||document).querySelector(s);
+const $$ = (s,p) => Array.prototype.slice.call((p||document).querySelectorAll(s));
+function ekraniraj(t){ return String(t).replace(/[&<>"]/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function razburkai(masiv, seme){
+  const a = masiv.slice();
+  let h = 0; for(let i=0;i<seme.length;i++) h = (h*31 + seme.charCodeAt(i)) >>> 0;
+  for(let i=a.length-1;i>0;i--){
+    h = (h*1103515245 + 12345) >>> 0;
+    const j = h % (i+1); const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function boiaAlfa(hex,a){
+  const m = hex.replace('#','');
+  const n = parseInt(m.length === 3 ? m.replace(/./g,c=>c+c) : m, 16);
+  return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';
+}
+function tonZala(i){
+  const c = i === null ? ZLAT : TONOVE[i % TONOVE.length];
+  const r = document.documentElement.style;
+  r.setProperty('--ton', c);
+  r.setProperty('--ram', boiaAlfa(c,.26));
+}
+let AC = null;
+function ton(f,dur,vid,sila){
+  if(!S.zvuk) return;
+  try{
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    if(AC.state === 'suspended') AC.resume();
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = vid || 'sine'; o.frequency.value = f; g.gain.value = sila || .05;
+    g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime + (dur||.1));
+    o.connect(g); g.connect(AC.destination);
+    o.start(); o.stop(AC.currentTime + (dur||.1) + .02);
+  }catch(e){}
+}
+const zvOk    = () => { ton(620,.08,'triangle',.05); setTimeout(()=>ton(930,.14,'triangle',.05),75); };
+const zvNe    = () => ton(130,.24,'sawtooth',.045);
+const zvTik   = () => ton(340,.03,'square',.022);
+const zvPechat= () => { ton(440,.1,'sine',.05); setTimeout(()=>ton(660,.1,'sine',.05),100);
+                        setTimeout(()=>ton(880,.26,'sine',.05),210); };
+const zvVrata = () => { for(let i=0;i<6;i++) setTimeout(()=>ton(180+i*140,.2,'triangle',.05), i*110); };
+
+function osveji(){
+  $('#hChas').textContent = chasovnik(minaloto());
+  $('#hBiti').textContent = S.biti;
+  $('#hZad').textContent = vsichkiReshene()+'/'+HRAM.zali.reduce((n,z)=>n+z.zadachi.length,0);
+  $('#pechatLenta').innerHTML = HRAM.zali.map((z,i)=>
+    '<span class="pch'+(zalaOtvorena(i)?' ima':'')+'" title="'+ekraniraj(z.pechat.vupros)+'">'
+    + (zalaOtvorena(i) ? z.kod : '·') + '</span>').join('');
+}
+setInterval(()=>{ $('#hChas').textContent = chasovnik(minaloto()); }, 1000);
+$('#bZvuk').addEventListener('click', function(){
+  S.zvuk = !S.zvuk; this.textContent = S.zvuk ? '♪' : '✕';
+  this.style.color = S.zvuk ? '' : '#4a3c28'; zvTik(); zapazi();
+});
+$('#bNulirai').addEventListener('click', function(){
+  if(!confirm('Да започнем ли отначало? Всичко събрано се губи.')) return;
+  try{ localStorage.removeItem(KLJUCH); }catch(e){}
+  location.reload();
+});
+$('#bKarta').addEventListener('click', function(){ ekranPlan(); });
+
+/* =====================================================================
+   3. ВХОДЪТ
+   ===================================================================== */
+const VHOD = [
+ 'Пред вас е храм с четири зали.',
+ 'На всяка врата има печат, а всеки печат е една формула.',
+ 'Формулите не се помнят наизуст — тук се сглобяват от парчета и се',
+ 'виждат като картина. Това, което се види веднъж, не се забравя.',
+ '',
+ 'Двама сте. Единият смята, другият проверява. После си сменяте местата.'
+];
+function ekranVhod(){
+  document.body.classList.remove('straji');
+  tonZala(0);
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="etiket">7. клас · съкратено умножение</div>'
+   + '<h1>Храмът на трите печата</h1>'
+   + '<div class="muten" id="term" style="white-space:pre-wrap;min-height:150px"></div>'
+   + '<div id="vhod" hidden>'
+   +   '<div style="display:flex;gap:14px;flex-wrap:wrap;margin:18px 0">'
+   +     imePole(0,'A / Z') + imePole(1,'K / M')
+   +   '</div>'
+   +   '<p class="muten" style="font-size:13px">Четири зали със задачи, а между тях — СТРАЖИТЕ: '
+   +     'храмът показва равенство, вие казвате вярно или грешно, преди факлата да е догоряла. '
+   +     'Всяка отворена зала дава по един печат. Четирите печата отварят изхода.</p>'
+   +   '<button class="but" id="bZapochni">ВЛЕЗ В ХРАМА →</button> '
+   +   (vsichkiReshene() ? '<button class="but tih" id="bProdulji">ПРОДЪЛЖИ ОТТАМ, ДОКЪДЕТО СТИГНАХМЕ</button>' : '')
+   + '</div></div>';
+  const t = $('#term');
+  const tiho = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let r = 0, k = 0, sglobeno = '';
+  (function pishi(){
+    if(r >= VHOD.length){ t.textContent = sglobeno; $('#vhod').hidden = false; return; }
+    const red = VHOD[r];
+    if(k <= red.length){ t.textContent = sglobeno + red.slice(0,k); k++; setTimeout(pishi, tiho?0:14); }
+    else { sglobeno += red + '\n'; r++; k = 0; setTimeout(pishi, tiho?0:110); }
+  })();
+  scena.addEventListener('click', function(e){
+    if(!e.target.closest('#bZapochni, #bProdulji')) return;
+    S.imena = [($('#ime1').value||'ИГРАЧ 1').toUpperCase().slice(0,14),
+               ($('#ime2').value||'ИГРАЧ 2').toUpperCase().slice(0,14)];
+    zapazi(); zvOk(); ekranZala(parvNezavursena());
+  });
+}
+function imePole(n, klavishi){
+  return '<div style="flex:1 1 200px;border:1px solid var(--ram);border-radius:10px;padding:12px 14px">'
+    + '<label for="ime'+(n+1)+'" style="display:block;font-size:11px;letter-spacing:.2em;'
+    + 'color:var(--blqd);margin-bottom:6px">ИЗСЛЕДОВАТЕЛ '+(n+1)+' · клавиши '+klavishi+'</label>'
+    + '<input id="ime'+(n+1)+'" maxlength="14" value="'+ekraniraj(S.imena[n])+'" '
+    + 'style="width:100%;background:none;border:none;outline:none;color:var(--ton);'
+    + 'font-size:19px;font-weight:700" /></div>';
+}
+
+/* =====================================================================
+   4. ЗАЛА
+   ===================================================================== */
+function ekranZala(i){
+  document.body.classList.remove('straji'); spriStraji();
+  if(i >= HRAM.zali.length) return ekranIzhod();
+  const z = HRAM.zali[i];
+  tonZala(i);
+  const got = broiReshene(z), otvorena = zalaOtvorena(i);
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div class="zala-glava"><div class="rim">'+z.kod+'</div>'
+   +   '<div><div class="etiket">зала</div><h2>'+ekraniraj(z.ime)+'</h2>'
+   +   '<div class="muten">'+ekraniraj(z.podnaslov)+'</div></div></div>'
+   + '<div class="formula-red mat">'+ekraniraj(z.formula)+'</div>'
+   + '<p style="max-width:62ch">'+ekraniraj(z.briefing)+'</p>'
+   + '<div class="lenta"><i style="width:'+Math.min(100,Math.round(100*got/z.nujni))+'%"></i></div>'
+   + '<div class="muten" style="font-size:13px">решени '+got+' от '+z.zadachi.length
+   +   ' · за печата трябват '+z.nujni
+   +   (got>=z.nujni?' · <b style="color:var(--zlat)">ПЕЧАТЪТ Е ГОТОВ</b>':'')+'</div>'
+   + '<div class="spisuk">'
+   + z.zadachi.map((q,j)=>
+       '<button class="karta'+(S.reshene[q.id]?' gotova':'')+'" data-z="'+j+'">'
+       + '<span class="gl"><span>'+(j+1)+' · '+vidIme(q.vid)+'</span>'
+       + '<span>'+(S.reshene[q.id]?'✓':'')+'</span></span>'
+       + '<span class="mat">'+ekraniraj(q.izraz)+'</span></button>').join('')
+   + '</div>'
+   + '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">'
+   +   (got >= z.nujni
+       ? '<button class="but" id="bOtvori">'+(otvorena?'НАПРЕД →':'ВЗЕМИ ПЕЧАТ '+z.kod+' →')+'</button>'
+       : '<button class="but" disabled>ПЕЧАТЪТ Е ЗАКЛЮЧЕН · остават '+(z.nujni-got)+'</button>')
+   +   (i>0?' <button class="but tih" id="bNazad">← предишна зала</button>':'')
+   + '</div></div>';
+  $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranZadacha(i, +b.dataset.z)));
+  const bo = $('#bOtvori');
+  if(bo) bo.addEventListener('click', ()=>{
+    if(!otvorena){ S.otvoreni.push(i); zapazi(); osveji(); zvPechat(); return ekranPechat(i); }
+    return S.strajiGotovi.indexOf(i) === -1 ? ekranStraji(i) : ekranZala(i+1);
+  });
+  const bn = $('#bNazad'); if(bn) bn.addEventListener('click', ()=> ekranZala(i-1));
+  osveji();
+}
+function vidIme(v){
+  return v === 'mozaika' ? 'картина' : v === 'naum' ? 'наум'
+       : v === 'chislo' ? 'уравнение' : v === 'izbor' ? 'разпознаване' : 'сглобяване';
+}
+
+function ekranPechat(i){
+  document.body.classList.remove('straji');
+  const z = HRAM.zali[i];
+  scena.innerHTML =
+   '<div class="panel" style="text-align:center">'
+   + '<div class="etiket">зала '+z.kod+' · отворена</div>'
+   + '<h2 style="color:var(--zlat)">ПЕЧАТ '+z.kod+'</h2>'
+   + '<p class="muten">Печатът не е цифра, а въпрос. Отговорът му е една цифра — '
+   +   'запишете я, на изхода ще трябват и четирите.</p>'
+   + '<div class="panel" style="border-color:var(--zlat);max-width:620px;margin:18px auto">'
+   +   '<div class="mat izraz" style="color:var(--zlat)">'+ekraniraj(z.pechat.vupros)+'</div></div>'
+   + '<button class="but" id="bNapred">НАТАТЪК →</button></div>';
+  $('#bNapred').addEventListener('click', ()=> ekranStraji(i));
+}
+
+function ekranPlan(){
+  document.body.classList.remove('straji'); spriStraji();
+  tonZala(null);
+  scena.innerHTML =
+   '<div class="panel"><div class="etiket">план на храма</div><h2>Къде сме</h2>'
+   + '<div class="spisuk">'
+   + HRAM.zali.map((z,i)=>'<button class="karta'+(zalaOtvorena(i)?' gotova':'')+'" data-s="'+i+'">'
+       + '<span class="gl"><span>ЗАЛА '+z.kod+'</span><span>'+broiReshene(z)+'/'+z.zadachi.length+'</span></span>'
+       + '<span class="mat">'+ekraniraj(z.ime)+'</span>'
+       + '<span class="muten" style="font-size:12px">'+(zalaOtvorena(i)
+           ? 'печат: '+ekraniraj(z.pechat.vupros) : 'печатът е заключен')+'</span></button>').join('')
+   + '</div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">'
+   + (S.otvoreni.length === HRAM.zali.length ? '<button class="but" id="bIzhod">КЪМ ИЗХОДА →</button>':'')
+   + '<button class="but tih" id="bObratno">← обратно</button></div></div>';
+  $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranZala(+b.dataset.s)));
+  const bi = $('#bIzhod'); if(bi) bi.addEventListener('click', ekranIzhod);
+  $('#bObratno').addEventListener('click', ()=> ekranZala(parvNezavursena()));
+}
+</script>
+
+<script>
+/* =====================================================================
+   5. ЗАДАЧА
+   ===================================================================== */
+let OPIT = null;
+
+function ekranZadacha(zi, qi){
+  document.body.classList.remove('straji'); spriStraji();
+  const z = HRAM.zali[zi], q = z.zadachi[qi];
+  tonZala(zi);
+  OPIT = {zi:zi, qi:qi, greshki:0, ideya:false, izbrani:[], slotove:null, aktiven:0};
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center">'
+   +   '<div><div class="etiket">зала '+z.kod+' · задача '+(qi+1)+'</div>'
+   +   '<div class="muten" style="font-size:12px">'+vidIme(q.vid)+'</div></div>'
+   +   '<button class="but tih" id="bKumZala">← зала '+z.kod+'</button></div>'
+   + '<div class="mat izraz" style="margin-top:10px">'
+   +   ekraniraj(q.vupros ? q.vupros + '   ' + q.izraz : q.izraz)+'</div>'
+   + (q.ideya ? '<div style="margin-top:10px"><button class="but tih" id="bIdeya">ИДЕЯ · −3 факли</button>'
+                + '<span id="ideyaTekst" class="muten" style="margin-left:10px"></span></div>' : '')
+   + '<div id="tqlo"></div><div id="zashtoKutiq"></div></div>';
+  $('#bKumZala').addEventListener('click', ()=> ekranZala(zi));
+  const bi = $('#bIdeya');
+  if(bi) bi.addEventListener('click', function(){
+    OPIT.ideya = true; S.biti = Math.max(0, S.biti-3); zapazi(); osveji();
+    $('#ideyaTekst').textContent = q.ideya; this.disabled = true;
+  });
+
+  if(q.vid === 'mozaika') risuvaiMozaika(q, z.mozaika);
+  else if(q.vid === 'izbor') risuvaiIzbor(q);
+  else if(q.vid === 'chislo' || q.vid === 'naum') risuvaiChislo(q);
+  else risuvaiChipove(q);
+}
+
+/* ── 5.1 мозайката: формулата като картина ───────────────────────── */
+function chertej(vid, aktiven, stoinosti){
+  const T = 'var(--ton)';
+  function oblast(i, x, y, w, h, nadpis){
+    /* nadpis: {t:'?', x:…, y:…} — там, където центърът на правоъгълника
+       пада върху застъпване, надписът се мести настрани. */
+    const n = nadpis || {};
+    const puln = stoinosti[i] != null;
+    const izbran = aktiven === i;
+    return '<g class="mz-oblast" data-i="'+i+'">'
+      + '<rect class="mz-fon" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" '
+      +   'fill="'+T+'" fill-opacity="'+(puln ? .34 : (izbran ? .3 : (n.gust||.12)))+'" '
+      +   'stroke="'+T+'" stroke-opacity="'+(izbran?1:.6)+'" stroke-width="'+(izbran?3:1.5)+'" '
+      +   (puln ? '' : 'stroke-dasharray="5 4" ') + '/>'
+      + '<text class="mz-text" x="'+(n.x!=null?n.x:x+w/2)+'" y="'+(n.y!=null?n.y:y+h/2+6)+'" '
+      +   'text-anchor="middle">' + (puln ? ekraniraj(stoinosti[i]) : (n.t||'?')) + '</text></g>';
+  }
+  if(vid === 'sbor'){
+    return '<svg viewBox="0 0 300 300" role="img" aria-label="квадрат със страна a + b">'
+      + '<text class="mz-malak" x="115" y="16" text-anchor="middle">a</text>'
+      + '<text class="mz-malak" x="245" y="16" text-anchor="middle">b</text>'
+      + '<text class="mz-malak" x="12" y="120" text-anchor="middle">a</text>'
+      + '<text class="mz-malak" x="12" y="250" text-anchor="middle">b</text>'
+      + oblast(0, 30, 30, 170, 170) + oblast(1, 200, 30, 70, 170)
+      + oblast(2, 30, 200, 170, 70) + oblast(3, 200, 200, 70, 70)
+      + '</svg>';
+  }
+  if(vid === 'razlika'){
+    /* Двете ивици са ЦЕЛИ: всяка е a на b. Затова се застъпват в
+       ъгълчето — то се маха два пъти и веднъж трябва да се върне. */
+    return '<svg viewBox="0 0 300 310" role="img" aria-label="квадратът a² с двете цели ивици">'
+      + '<text class="mz-malak" x="150" y="16" text-anchor="middle">a</text>'
+      + '<text class="mz-malak" x="12" y="150" text-anchor="middle">a</text>'
+      + '<rect x="30" y="30" width="240" height="240" fill="none" stroke="var(--ton)" '
+      +   'stroke-opacity=".45" stroke-width="1.5"/>'
+      + '<rect x="30" y="30" width="170" height="170" fill="var(--zlat)" fill-opacity=".16" '
+      +   'stroke="var(--zlat)" stroke-width="2"/>'
+      + '<text class="mz-text" x="115" y="118" text-anchor="middle" fill="var(--zlat)">(a − b)²</text>'
+      + '<text class="mz-malak" x="115" y="138" text-anchor="middle">това търсим</text>'
+      + oblast(0, 200, 30, 70, 240, {x:235, y:110})
+      + oblast(1, 30, 200, 240, 70, {x:112, y:245})
+      + oblast(2, 200, 200, 70, 70, {gust:.3})
+      + '<text class="mz-malak" x="150" y="294" text-anchor="middle">'
+      +   'ъгълчето е махнато два пъти</text>'
+      + '</svg>';
+  }
+  return '<svg viewBox="0 0 360 260" role="img" aria-label="квадратът a² без квадратчето b²">'
+    + '<text class="mz-malak" x="105" y="26" text-anchor="middle">a</text>'
+    + '<text class="mz-malak" x="300" y="26" text-anchor="middle">a + b</text>'
+    + oblast(0, 30, 40, 160, 160)
+    + oblast(1, 130, 140, 60, 60, {gust:.3})
+    + '<path d="M205 120 h26 m-8 -7 l8 7 l-8 7" stroke="var(--ton)" stroke-width="2" fill="none"/>'
+    + '<rect x="240" y="78" width="100" height="84" fill="var(--ton)" fill-opacity=".14" '
+    +   'stroke="var(--ton)" stroke-opacity=".6" stroke-width="1.5"/>'
+    + '<text class="mz-malak" x="290" y="124" text-anchor="middle">a − b</text>'
+    + '<text class="mz-malak" x="110" y="222" text-anchor="middle">махаме b²</text>'
+    + '</svg>';
+}
+
+function risuvaiMozaika(q, m){
+  OPIT.slotove = new Array(m.slotove.length).fill(null);
+  OPIT.aktiven = 0;
+  const pool = razburkai(m.slotove.concat(m.primamki), q.id);
+  const vzeti = new Array(pool.length).fill(false);
+  const tqlo = $('#tqlo');
+
+  function prerisuvai(){
+    const gotovo = OPIT.slotove.every(s => s != null);
+    tqlo.innerHTML =
+      '<p class="muten" style="font-size:13px;margin-top:14px">'+ekraniraj(m.vupros)+'</p>'
+      + '<div class="mozaika">' + chertej(m.vid, gotovo ? -1 : OPIT.aktiven, OPIT.slotove)
+      + '<div style="flex:1 1 300px">'
+      +   '<div class="uravnenie">' + '<span>'+ekraniraj(q.izraz)+' =</span>'
+      +   (m.nachalo ? '<span class="slot puln" style="cursor:default">'+ekraniraj(m.nachalo)+'</span>' : '')
+      +   OPIT.slotove.map((s,i)=>
+            (m.vid === 'sbor' && (i > 0) ? '<span>+</span>' : '')
+            + '<button class="slot'+(s!=null?' puln':(OPIT.aktiven===i?' aktiven':''))
+            + '" data-s="'+i+'">'+(s!=null?ekraniraj(s):'?')+'</button>').join('')
+      +   '</div>'
+      +   (gotovo ? '' : '<div class="izbor" id="pool">'
+          + pool.map((t,i)=> vzeti[i] ? '' :
+              '<button class="chip" data-i="'+i+'" data-t="'+ekraniraj(t)+'">'
+              + '<span class="nom">'+(i+1)+'</span>' + ekraniraj(t)+'</button>').join('') + '</div>')
+      + '</div></div>';
+    $$('.mz-oblast', tqlo).forEach(g => g.addEventListener('click', ()=>{
+      const i = +g.dataset.i;
+      if(OPIT.slotove[i] == null){ OPIT.aktiven = i; prerisuvai(); }
+    }));
+    $$('.slot[data-s]', tqlo).forEach(b => b.addEventListener('click', ()=>{
+      const i = +b.dataset.s;
+      if(OPIT.slotove[i] == null){ OPIT.aktiven = i; prerisuvai(); }
+    }));
+    $$('#pool .chip', tqlo).forEach(b => b.addEventListener('click', ()=> sloji(+b.dataset.i, b)));
+    if(gotovo){
+      tqlo.insertAdjacentHTML('beforeend',
+        '<div class="zashto" style="border-color:var(--zlat)"><div class="nd">КАРТИНАТА КАЗВА</div>'
+        + '<div class="mat izraz">'+ekraniraj(m.izvod)+'</div></div>');
+      setTimeout(()=> uspeh(q), 300);
+    }
+  }
+  function sloji(i, buton){
+    const i2 = OPIT.aktiven;
+    if(OPIT.slotove[i2] != null) return;
+    if(pool[i] === m.slotove[i2]){
+      OPIT.slotove[i2] = pool[i]; vzeti[i] = true;
+      const sled = OPIT.slotove.findIndex(s => s == null);
+      OPIT.aktiven = sled === -1 ? -1 : sled;
+      zvOk(); prerisuvai();
+    }else{
+      buton.classList.add('gresh'); buton.disabled = true;
+      OPIT.greshki++; S.greshki++; S.biti = Math.max(0,S.biti-1); zapazi(); osveji(); zvNe();
+      kaji('Това парче не пасва тук. Виж коя част от картината свети.');
+    }
+  }
+  prerisuvai();
+}
+
+/* ── 5.2 чипове ──────────────────────────────────────────────────── */
+function risuvaiChipove(q){
+  OPIT.izbrani = [];
+  const pool = razburkai(q.chipove, q.id);
+  $('#tqlo').innerHTML =
+     '<p class="muten" style="font-size:13px;margin-top:14px">Сглоби отговора от членовете. '
+   + 'Част от тях са типичните грешки.</p>'
+   + '<div class="redica" id="redica"></div>'
+   + '<div class="izbor" id="pool">'
+   + pool.map((t,i)=>'<button class="chip" data-t="'+ekraniraj(t)+'"><span class="nom">'
+       +(i+1)+'</span>'+ekraniraj(t)+'</button>').join('')
+   + '</div>'
+   + '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">'
+   +   '<button class="but" id="bProveri">ПРОВЕРИ</button>'
+   +   '<button class="but tih" id="bIzchisti">изчисти</button></div>';
+  function prerisuvai(){
+    $('#redica').innerHTML = OPIT.izbrani.map((t,i)=>
+      '<button class="chip" data-i="'+i+'">'+ekraniraj(t)+' ×</button>').join('');
+    $$('#redica .chip').forEach(b => b.addEventListener('click', ()=>{
+      OPIT.izbrani.splice(+b.dataset.i,1); prerisuvai(); zvTik();
+    }));
+    $$('#pool .chip').forEach(b => {
+      const vzeto = OPIT.izbrani.filter(t => t === b.dataset.t).length;
+      const ima = pool.filter(t => t === b.dataset.t).length;
+      b.classList.toggle('vzet', vzeto >= ima);
+    });
+  }
+  $$('#pool .chip').forEach(b => b.addEventListener('click', ()=>{
+    OPIT.izbrani.push(b.dataset.t); prerisuvai(); zvTik();
+  }));
+  $('#bIzchisti').addEventListener('click', ()=>{ OPIT.izbrani = []; prerisuvai(); });
+  $('#bProveri').addEventListener('click', ()=> proveriChipove(q));
+  prerisuvai();
+}
+function proveriChipove(q){
+  const dadeni = OPIT.izbrani.slice().sort(), verni = q.otgovor.slice().sort();
+  if(dadeni.length === verni.length && dadeni.every((t,i)=> t === verni[i])) return uspeh(q);
+  OPIT.greshki++; S.greshki++; S.biti = Math.max(0,S.biti-2); zapazi(); osveji(); zvNe();
+  const greshni = OPIT.izbrani.filter(t => q.otgovor.indexOf(t) === -1).length;
+  const lipsvat = q.otgovor.filter(t => OPIT.izbrani.indexOf(t) === -1).length;
+  const r = $('#redica'); r.classList.add('tres'); setTimeout(()=> r.classList.remove('tres'), 450);
+  if(OPIT.greshki >= 2) $$('#redica .chip').forEach(b=>{
+    if(q.otgovor.indexOf(b.textContent.replace(' ×','')) === -1) b.classList.add('gresh');
+  });
+  kaji(greshni && lipsvat ? greshni+' сгрешени и '+lipsvat+' липсващи члена.'
+      : greshni ? greshni+' от избраните не са в отговора.' : 'Липсват '+lipsvat+' члена.');
+}
+
+/* ── 5.3 разпознаване ────────────────────────────────────────────── */
+function risuvaiIzbor(q){
+  const red = razburkai(q.izbori, q.id);
+  $('#tqlo').innerHTML =
+    '<div class="golemi">' + red.map(t =>
+      '<button data-t="'+ekraniraj(t)+'">'+ekraniraj(t)+'</button>').join('') + '</div>';
+  $$('.golemi button').forEach(b => b.addEventListener('click', ()=>{
+    if(b.dataset.t === q.veren){ b.classList.add('vqrno'); return uspeh(q); }
+    b.classList.add('gresh'); b.disabled = true;
+    OPIT.greshki++; S.greshki++; S.biti = Math.max(0,S.biti-2); zapazi(); osveji(); zvNe();
+    kaji('Не е това. Погледни средния член — той издава коя е формулата.');
+  }));
+}
+
+/* ── 5.4 число и наум ────────────────────────────────────────────── */
+function risuvaiChislo(q){
+  const naum = q.vid === 'naum';
+  $('#tqlo').innerHTML =
+    '<p class="muten" style="font-size:13px;margin-top:14px">'
+    + (naum ? 'Пресметни наум, през формулата. Калкулаторът остава в чантата.'
+            : 'Отвори скобите с формулите, приведи и реши. Дробен корен се пише с черта: 7/2.')
+    + '</p>'
+    + '<div class="chislo-red"><span class="mat" style="font-size:23px">'
+    + (naum ? '=' : ekraniraj(q.promenliva)+' =') + '</span>'
+    + '<input id="poleKoren" inputmode="text" autocomplete="off" spellcheck="false" placeholder="?" />'
+    + '<button class="but" id="bProveri">ПРОВЕРИ</button></div>';
+  const pole = $('#poleKoren');
+  pole.focus();
+  pole.addEventListener('keydown', e => { if(e.key === 'Enter') proveriChislo(q); });
+  $('#bProveri').addEventListener('click', ()=> proveriChislo(q));
+}
+function chetiChislo(t){
+  const s = String(t).trim().replace(/−/g,'-').replace(/\s/g,'').replace(',','.');
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if(m) return {p:+m[1], q:+m[2], drob:true};
+  m = s.match(/^(-?\d+(?:\.\d+)?)$/);
+  if(m) return {v:parseFloat(m[1]), drob:false};
+  return null;
+}
+function proveriChislo(q){
+  const d = chetiChislo($('#poleKoren').value);
+  if(!d) return kaji('Това не е число. Пиши 9, −4 или 7/2.');
+  const tochno = d.drob ? (d.p * q.q === q.p * d.q) : Math.abs(d.v * q.q - q.p) < 1e-9;
+  if(tochno) return uspeh(q);
+  OPIT.greshki++; S.greshki++; S.biti = Math.max(0,S.biti-2); zapazi(); osveji(); zvNe();
+  const r = $('.chislo-red'); r.classList.add('tres'); setTimeout(()=> r.classList.remove('tres'), 450);
+  kaji(q.vid === 'naum'
+       ? (OPIT.greshki >= 2 ? 'Разбий числото на кръгло и малко: 101 = 100 + 1, 47 = 50 − 3.'
+                            : 'Не е това. Коя формула пасва на тези две числа?')
+       : (OPIT.greshki >= 2 ? 'Отвори скобите наново — квадратите трябва да се унищожат.'
+                            : 'Не е този корен. Провери знака на средния член.'));
+}
+
+/* ── 5.5 общото ──────────────────────────────────────────────────── */
+function kaji(tekst){
+  let k = $('#kazano');
+  if(!k){
+    k = document.createElement('div'); k.id = 'kazano';
+    k.style.cssText = 'margin-top:12px;color:var(--cherven);font-weight:700';
+    $('#tqlo').appendChild(k);
+  }
+  k.textContent = tekst;
+}
+function uspeh(q){
+  const parvi = !S.reshene[q.id];
+  let nagrada = 10 - (OPIT.ideya ? 4 : 0) - Math.min(6, OPIT.greshki*2);
+  nagrada = Math.max(2, nagrada);
+  if(parvi){ S.reshene[q.id] = true; S.biti += nagrada; }
+  zapazi(); osveji(); zvOk();
+  const z = HRAM.zali[OPIT.zi];
+  const sled = z.zadachi.findIndex((x,j)=> j > OPIT.qi && !S.reshene[x.id]);
+  $$('#tqlo button').forEach(b => b.disabled = true);
+  $('#zashtoKutiq').innerHTML =
+     '<div class="zashto"><div class="nd">ЗАЩО</div>'
+   + (q.sled ? '<div class="mat">'+ekraniraj(q.izraz)+' = '+ekraniraj(q.sled)+'</div>' : '')
+   + (q.razbivane && q.vid === 'naum' ? '' : '')
+   + q.zashto.map(r=>'<div class="mat" style="font-weight:400">'+ekraniraj(r)+'</div>').join('')
+   + '</div>'
+   + '<div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
+   +   '<b style="color:var(--zlat)">+'+(parvi?nagrada:0)+' факли</b>'
+   +   (sled !== -1 ? '<button class="but" id="bSled">СЛЕДВАЩА →</button>' : '')
+   +   '<button class="but'+(sled === -1 ? '' : ' tih')+'" id="bNazadZala">КЪМ ЗАЛА '+z.kod+'</button>'
+   + '</div>';
+  const bs = $('#bSled');
+  if(bs) bs.addEventListener('click', ()=> ekranZadacha(OPIT.zi, sled));
+  $('#bNazadZala').addEventListener('click', ()=> ekranZala(OPIT.zi));
+  $('#zashtoKutiq').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+
+<script>
+/* =====================================================================
+   6. СТРАЖИТЕ
+   ===================================================================== */
+let GL = null, GL_TIK = null;
+const SEK_NA_RED = 12;
+function spriStraji(){ if(GL_TIK){ clearInterval(GL_TIK); GL_TIK = null; } }
+
+function ekranStraji(i){
+  spriStraji();
+  document.body.classList.add('straji');
+  const g = HRAM.straji[i];
+  tonZala(i);
+  GL = {i:i, k:0, toch:[0,0], seriq:0, naiDulga:0, suveti:2, zakl:[false,false],
+        pauza:false, ostava:SEK_NA_RED, prikliuchil:false, biti:0};
+  scena.innerHTML =
+   '<div class="panel">'
+   + '<div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap">'
+   +   '<div><div class="etiket">стражи '+g.kod+'</div><h2>'+ekraniraj(g.ime)+'</h2></div>'
+   +   '<div class="muten" style="text-align:right;font-size:13px">храмът показва равенство<br>'
+   +   'казвате бързо: вярно или грешно</div></div>'
+   + '<div class="stena">'+igrachPanel(0)+'<div id="scenaGl"></div>'+igrachPanel(1)+'</div>'
+   + '<div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">'
+   +   '<button class="but tih" id="bSuvet">СЪВЕТ · интервал <span id="brSuveti">2</span></button>'
+   +   '<span class="muten" style="font-size:12px">съветът спира факлата за 10 секунди — '
+   +   'колкото да се посъветвате</span></div></div>';
+  $('#bSuvet').addEventListener('click', suvet);
+  pokajiRed();
+}
+function igrachPanel(n){
+  return '<div class="igrach" id="igr'+n+'"><div class="etiket">изследовател '+(n+1)+'</div>'
+    + '<b>'+ekraniraj(S.imena[n])+'</b><div class="toch" id="toch'+n+'">0</div>'
+    + '<div class="butoni2">'
+    + '<button class="da" data-i="'+n+'" data-v="1"><span class="klav">'+(n?'K':'A')+'</span><br>ВЯРНО</button>'
+    + '<button class="ne" data-i="'+n+'" data-v="0"><span class="klav">'+(n?'M':'Z')+'</span><br>ГРЕШНО</button>'
+    + '</div></div>';
+}
+function pokajiRed(){
+  const g = HRAM.straji[GL.i];
+  if(GL.k >= g.redove.length) return krajStraji();
+  const r = g.redove[GL.k];
+  GL.zakl = [false,false]; GL.ostava = SEK_NA_RED; GL.prikliuchil = false; GL.pauza = false;
+  $('#igr0').className = 'igrach'; $('#igr1').className = 'igrach';
+  $('#scenaGl').innerHTML =
+    '<div class="tvurdenie"><div class="etiket">'+(GL.k+1)+' от '+g.redove.length
+    + (GL.seriq>1?' · серия '+GL.seriq:'')+'</div>'
+    + '<div class="mat" id="redGl">'+ekraniraj(r.red)+'</div>'
+    + '<div class="chasovnik"><i id="lenta"></i></div>'
+    + '<div class="presuda" id="presuda">&nbsp;</div></div>';
+  $$('.butoni2 button').forEach(b => b.onclick = ()=> otgovori(+b.dataset.i, b.dataset.v === '1'));
+  GL_TIK = setInterval(tik, 50);
+}
+function tik(){
+  if(GL.pauza || GL.prikliuchil) return;
+  GL.ostava -= .05;
+  const l = $('#lenta'); if(l) l.style.width = Math.max(0, 100*GL.ostava/SEK_NA_RED)+'%';
+  if(GL.ostava <= 2.5 && Math.abs(GL.ostava % 1) < .05) zvTik();
+  if(GL.ostava <= 0) razkrii(null);
+}
+function suvet(){
+  if(!GL || GL.suveti <= 0 || GL.prikliuchil) return;
+  GL.suveti--; GL.pauza = true; $('#brSuveti').textContent = GL.suveti;
+  let ost = 10; $('#presuda').textContent = 'СЪВЕТ · 10';
+  const t = setInterval(()=>{
+    ost--; const p = $('#presuda'); if(p) p.textContent = 'СЪВЕТ · '+ost;
+    if(ost <= 0){ clearInterval(t); GL.pauza = false; const q = $('#presuda'); if(q) q.innerHTML = '&nbsp;'; }
+  }, 1000);
+}
+function otgovori(n, kazva){
+  if(!GL || GL.prikliuchil || GL.zakl[n] || GL.pauza) return;
+  const r = HRAM.straji[GL.i].redove[GL.k];
+  if(kazva === r.vqrno){
+    GL.toch[n] += 2; S.tochki[n] += 2; GL.biti += 2; S.biti += 2;
+    GL.seriq++; GL.naiDulga = Math.max(GL.naiDulga, GL.seriq);
+    S.naiDulga = Math.max(S.naiDulga, GL.seriq);
+    if(GL.seriq >= 3){ GL.biti++; S.biti++; }
+    $('#toch'+n).textContent = GL.toch[n];
+    $('#igr'+n).classList.add('gori'); zvOk(); razkrii(n);
+  }else{
+    GL.zakl[n] = true; GL.seriq = 0;
+    S.biti = Math.max(0,S.biti-1); GL.biti -= 1;
+    $('#igr'+n).classList.add('vun');
+    const red = $('#redGl'); red.classList.add('tres');
+    setTimeout(()=> red.classList.remove('tres'), 450);
+    zvNe();
+    if(GL.zakl[0] && GL.zakl[1]) razkrii(null);
+  }
+  osveji(); zapazi();
+}
+function razkrii(pobeditel){
+  if(GL.prikliuchil) return;
+  GL.prikliuchil = true; spriStraji();
+  const r = HRAM.straji[GL.i].redove[GL.k];
+  const p = $('#presuda');
+  p.className = 'presuda ' + (r.vqrno ? 'ok' : 'ne');
+  p.textContent = (r.vqrno ? 'ВЯРНО' : 'ГРЕШНО')
+    + (pobeditel === null ? ' · никой' : ' · ' + S.imena[pobeditel]);
+  if(!r.vqrno) $('#redGl').insertAdjacentHTML('afterend',
+    '<div class="muten" style="font-size:14px">'+ekraniraj(r.zashto)+'</div>');
+  setTimeout(()=>{ GL.k++; pokajiRed(); }, r.vqrno ? 1100 : 2100);
+}
+function krajStraji(){
+  spriStraji(); document.body.classList.remove('straji');
+  const i = GL.i;
+  if(S.strajiGotovi.indexOf(i) === -1) S.strajiGotovi.push(i);
+  zapazi(); osveji();
+  const posledna = i >= HRAM.zali.length - 1;
+  scena.innerHTML =
+   '<div class="panel" style="text-align:center">'
+   + '<div class="etiket">стражи '+HRAM.straji[i].kod+' · край</div><h2>ПРЕМИНАХТЕ</h2>'
+   + '<div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:20px 0">'
+   +   '<div><div class="etiket">'+ekraniraj(S.imena[0])+'</div><div class="toch">'+GL.toch[0]+'</div></div>'
+   +   '<div><div class="etiket">най-дълга серия</div><div class="toch" style="color:var(--zlat)">'
+       +GL.naiDulga+'</div></div>'
+   +   '<div><div class="etiket">'+ekraniraj(S.imena[1])+'</div><div class="toch">'+GL.toch[1]+'</div></div>'
+   + '</div>'
+   + '<p class="muten">отборът спечели <b style="color:var(--zlat)">'+Math.max(0,GL.biti)+' факли</b></p>'
+   + '<button class="but" id="bNapred">'+(posledna ? 'КЪМ ИЗХОДА →' : 'ЗАЛА '+HRAM.zali[i+1].kod+' →')+'</button>'
+   + ' <button class="but tih" id="bPak">още веднъж</button></div>';
+  $('#bNapred').addEventListener('click', ()=> posledna ? ekranIzhod() : ekranZala(i+1));
+  $('#bPak').addEventListener('click', ()=> ekranStraji(i));
+}
+
+/* =====================================================================
+   7. ИЗХОДЪТ
+   ===================================================================== */
+function ekranIzhod(){
+  spriStraji(); document.body.classList.remove('straji'); tonZala(null);
+  const lipsvat = HRAM.zali.filter((z,i)=> !zalaOtvorena(i));
+  if(lipsvat.length){
+    scena.innerHTML = '<div class="panel" style="text-align:center"><h2>ИЗХОДЪТ МЪЛЧИ</h2>'
+      + '<p class="muten">Липсват печати от '+lipsvat.map(z=>'зала '+z.kod).join(', ')+'.</p>'
+      + '<button class="but" id="bObratno">ОБРАТНО</button></div>';
+    $('#bObratno').addEventListener('click', ()=> ekranZala(parvNezavursena()));
+    return;
+  }
+  scena.innerHTML =
+   '<div class="panel"><div class="etiket">последната врата</div>'
+   + '<h2 style="color:var(--zlat)">ТРИ ПЕЧАТА</h2>'
+   + '<p>На вратата има три печата, но само на единия написаното е вярно. '
+   +   'Другите два са поставени, за да изглеждат като изход.</p>'
+   + '<div class="vrati">'
+   + HRAM.pechati.map((p,i)=>'<button class="vrata" data-v="'+i+'">'
+       + '<span class="etiket">печат '+p.etiket+'</span>'
+       + '<span class="mat izraz" style="font-size:18px">'+ekraniraj(p.red)+'</span>'
+       + '<span class="muten" style="font-size:12px">натисни</span></button>').join('')
+   + '</div></div>';
+  $$('.vrata').forEach(b => b.addEventListener('click', ()=>{
+    const p = HRAM.pechati[+b.dataset.v];
+    if(p.vqrno){ zvOk(); return ekranKljuch(); }
+    b.classList.add('gresh'); b.disabled = true;
+    S.biti = Math.max(0,S.biti-5); S.greshki++; zapazi(); osveji(); zvNe();
+    b.insertAdjacentHTML('beforeend',
+      '<span style="color:var(--cherven);font-size:12px">'+ekraniraj(p.zashto)+'</span>');
+  }));
+}
+function ekranKljuch(){
+  let opiti = 0;
+  scena.innerHTML =
+   '<div class="panel" style="text-align:center"><div class="etiket">ключалка</div>'
+   + '<h2 style="color:var(--zlat)">ЧЕТИРИ ЦИФРИ</h2>'
+   + '<p class="muten">По една от всяка зала, в реда на залите.</p>'
+   + '<div class="kluch" id="kluch">'
+   + HRAM.zali.map((z,i)=>'<input id="c'+i+'" inputmode="numeric" maxlength="1" '
+       + 'aria-label="печат '+z.kod+'" />').join('')
+   + '</div><button class="but" id="bOtkliuchi">ОТКЛЮЧИ</button>'
+   + '<div id="kljuchKaz" style="margin-top:12px;min-height:24px;font-weight:700"></div>'
+   + '<div class="spisuk-frag">'
+   + HRAM.zali.map(z=>'<div><span>'+z.kod+'</span>'+ekraniraj(z.pechat.vupros)+'</div>').join('')
+   + '</div><div style="margin-top:14px"><button class="but tih" id="bPodskazka" hidden>'
+   + 'ПОДСКАЗКА · −10 факли</button></div></div>';
+  const poleta = HRAM.zali.map((z,i)=> $('#c'+i));
+  poleta.forEach((p,i)=>{
+    p.addEventListener('input', ()=>{
+      p.value = p.value.replace(/\D/g,'').slice(0,1);
+      if(p.value && poleta[i+1]) poleta[i+1].focus();
+    });
+    p.addEventListener('keydown', e=>{
+      if(e.key === 'Backspace' && !p.value && poleta[i-1]) poleta[i-1].focus();
+      if(e.key === 'Enter') opitai();
+    });
+  });
+  poleta[0].focus();
+  $('#bOtkliuchi').addEventListener('click', opitai);
+  $('#bPodskazka').addEventListener('click', ()=>{
+    const i = poleta.findIndex((p,j)=> p.value !== HRAM.kod[j]);
+    if(i === -1) return;
+    poleta[i].value = HRAM.kod[i];
+    S.biti = Math.max(0,S.biti-10); zapazi(); osveji();
+    $('#kljuchKaz').innerHTML = '<span class="muten">Една цифра дойде наготово.</span>';
+  });
+  function opitai(){
+    if(poleta.map(p=>p.value||'·').join('') === HRAM.kod){ zvVrata(); return ekranPir(); }
+    opiti++; S.greshki++; zapazi();
+    const vqrni = poleta.filter((p,i)=> p.value === HRAM.kod[i]).length;
+    $('#kluch').classList.add('tres'); setTimeout(()=> $('#kluch').classList.remove('tres'), 450);
+    zvNe();
+    $('#kljuchKaz').innerHTML = '<span style="color:var(--cherven)">НЕ. На място са '
+      + vqrni + ' от 4 цифри.</span>';
+    if(opiti >= 3) $('#bPodskazka').hidden = false;
+  }
+}
+
+/* =====================================================================
+   8. ПИРЪТ
+   ===================================================================== */
+function ekranPir(){
+  spriStraji(); tonZala(null);
+  S.svurshen = true; zapazi(); osveji();
+  const sek = minaloto();
+  const vsichki = HRAM.zali.reduce((n,z)=> n + z.zadachi.length, 0);
+  scena.innerHTML =
+   '<div class="panel" style="border-color:var(--zlat)">'
+   + '<div class="etiket" style="color:var(--zlat)">вратата е отворена</div>'
+   + '<h1 style="color:var(--zlat)">Излязохме от храма.</h1>'
+   + '<p style="max-width:64ch">Трите формули вече не са три неща за помнене, а три картини: '
+   +   'квадрат на четири парчета, квадрат без две ивици и огледало, в което средните членове '
+   +   'се изяждат. Отвън е сложена маса.</p>'
+   + '<div class="vaucher"><table>'
+   +   red2('време вътре', chasovnik(sek)) + red2('събрани факли', S.biti)
+   +   red2('решени задачи', vsichkiReshene()+' от '+vsichki)
+   +   red2('СТРАЖИ · '+ekraniraj(S.imena[0]), S.tochki[0])
+   +   red2('СТРАЖИ · '+ekraniraj(S.imena[1]), S.tochki[1])
+   +   red2('най-дълга серия', S.naiDulga) + red2('кодът', HRAM.kod)
+   + '</table></div>'
+   + '<h2 style="margin-top:26px">Пирът</h2>'
+   + '<p class="muten" id="chiiRed">'+ekraniraj(S.imena[0])+', ти избираш пръв(а).</p>'
+   + '<div class="menu" id="menu">'
+   + HRAM.pir.map((q,i)=>'<button class="qdene" data-q="'+i+'"><b>'+ekraniraj(q[0])+'</b>'
+       + '<span>'+ekraniraj(q[1])+'</span></button>').join('')
+   + '</div><div id="poruchka"></div>'
+   + '<div class="zashto" style="border-color:var(--zlat);margin-top:26px">'
+   +   '<div class="nd">КАКВО ОСТАВА СЛЕД ТОЗИ ХРАМ</div>'
+   +   ['(a + b)² = a² + 2ab + b² — двойката идва от двете еднакви парчета.',
+       '(a − b)² = a² − 2ab + b² — ъгълчето се връща, затова последният член е с плюс.',
+       '(a − b)(a + b) = a² − b² — средните два члена се изяждат.',
+       'Формулите работят и наобратно: от x² + 10x + 25 обратно към (x + 5)².',
+       '101² и 53 · 47 се смятат наум — през същите формули.']
+       .map(r=>'<div class="mat" style="font-weight:400">'+r+'</div>').join('')
+   + '</div>'
+   + '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">'
+   +   '<button class="but" id="bPechat">ПЕЧАТ НА ПОКАНАТА</button>'
+   +   '<button class="but tih" id="bPakVsichko">ОТНАЧАЛО</button></div></div>';
+  $$('#menu .qdene').forEach(b => b.addEventListener('click', ()=>{
+    const n = S.menu[0] === null ? 0 : 1;
+    S.menu[n] = +b.dataset.q; zapazi(); zvOk();
+    $$('#menu .qdene').forEach(x => x.classList.toggle('izbrano', S.menu.indexOf(+x.dataset.q) !== -1));
+    if(S.menu[1] === null) $('#chiiRed').textContent = S.imena[1] + ', сега ти.';
+    else{
+      $('#chiiRed').textContent = 'Масата е сложена.';
+      $('#poruchka').innerHTML = '<div class="vaucher"><div class="etiket" style="color:var(--zlat)">'
+        + 'покана за пир</div><table>'
+        + red2(ekraniraj(S.imena[0]), ekraniraj(HRAM.pir[S.menu[0]][0]))
+        + red2(ekraniraj(S.imena[1]), ekraniraj(HRAM.pir[S.menu[1]][0]))
+        + red2('излязохме за', chasovnik(sek)) + '</table></div>';
+    }
+  }));
+  $('#bPechat').addEventListener('click', ()=> window.print());
+  $('#bPakVsichko').addEventListener('click', ()=> $('#bNulirai').click());
+  zvVrata();
+}
+function red2(a,b){ return '<tr><td>'+a+'</td><td>'+b+'</td></tr>'; }
+
+/* =====================================================================
+   9. КЛАВИАТУРАТА
+   ===================================================================== */
+document.addEventListener('keydown', function(e){
+  if(GL && $('.stena')){
+    if(e.code === 'KeyA'){ otgovori(0,true);  e.preventDefault(); return; }
+    if(e.code === 'KeyZ'){ otgovori(0,false); e.preventDefault(); return; }
+    if(e.code === 'KeyK'){ otgovori(1,true);  e.preventDefault(); return; }
+    if(e.code === 'KeyM'){ otgovori(1,false); e.preventDefault(); return; }
+    if(e.code === 'Space'){ suvet(); e.preventDefault(); return; }
+  }
+  if(document.activeElement && document.activeElement.tagName === 'INPUT') return;
+  const pool = $('#pool');
+  if(pool){
+    const n = +(e.key);
+    if(n >= 1 && n <= pool.children.length){
+      const c = pool.children[n-1];
+      if(c && !c.classList.contains('vzet')) c.click();
+      e.preventDefault(); return;
+    }
+    if(e.key === 'Backspace'){
+      const r = $('#redica');
+      if(r && r.lastElementChild){ r.lastElementChild.click(); e.preventDefault(); }
+      return;
+    }
+  }
+  if(e.key === 'Enter'){ const b = $('#bProveri'); if(b && !b.disabled) b.click(); }
+});
+
+/* =====================================================================
+   10. ПАЛИМ
+   ===================================================================== */
+vuzstanovi();
+osveji();
+if(S.zvuk === false){ $('#bZvuk').textContent = '✕'; $('#bZvuk').style.color = '#4a3c28'; }
+window.addEventListener('beforeunload', zapazi);
+setInterval(zapazi, 15000);
+ekranVhod();
+</script>
+</body>
+</html>
