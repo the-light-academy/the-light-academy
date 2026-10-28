@@ -57,10 +57,13 @@ body{
   overflow-x:hidden;
   padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
 }
-#rain{position:fixed;inset:0;z-index:0;display:block}
-.crt{position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);
-  mix-blend-mode:multiply}
+/* Фонът стои мирно. Нито букви, които падат, нито линии, които минават:
+   двама души гледат този екран по цял час. Остава решетката — същата,
+   с която се умножава — и тя само сменя цвета си по сектори. */
+.mrejaFon{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.06;
+  background-image:linear-gradient(var(--ton) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--ton) 1px,transparent 1px);
+  background-size:56px 56px;transition:opacity .4s}
 body.glitch #kljuchove{display:block}
 .vinetka{position:fixed;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(ellipse at 50% 42%,transparent 40%,rgba(0,0,0,.72) 100%)}
@@ -238,19 +241,17 @@ table.mreja th.ugul{color:var(--blqd);font-size:12px;letter-spacing:.1em}
   .panel{padding:15px}
 }
 @media print{
-  #rain,.crt,.vinetka,#hud,#kljuchove,.but{display:none !important}
+  .mrejaFon,.vinetka,#hud,#kljuchove,.but{display:none !important}
   body{background:#fff;color:#111} .panel,.vaucher{border-color:#999;background:none;box-shadow:none}
   .qdene{border-color:#999} .qdene b{color:#111} .vaucher td:last-child{color:#111}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
-  #rain{opacity:.25}
 }
 </style>
 </head>
 <body>
-<canvas id="rain" aria-hidden="true"></canvas>
-<div class="crt" aria-hidden="true"></div>
+<div class="mrejaFon" aria-hidden="true"></div>
 <div class="vinetka" aria-hidden="true"></div>
 
 <div class="obvivka">
@@ -1794,7 +1795,6 @@ function tonSektor(i){
   const c = getComputedStyle(document.documentElement).getPropertyValue('--ton').trim();
   document.documentElement.style.setProperty('--ram', boiaAlfa(c,.22));
   document.documentElement.style.setProperty('--sqnka','0 0 24px '+boiaAlfa(c,.12));
-  dujd.boia = c;
 }
 function boiaAlfa(hex, a){
   const m = hex.replace('#','');
@@ -1823,48 +1823,6 @@ const zvTik   = () => ton(380,.025,'square',.025);
 const zvFrag  = () => { ton(520,.08,'sine',.05); setTimeout(()=>ton(780,.09,'sine',.05),90);
                         setTimeout(()=>ton(1180,.22,'sine',.05),190); };
 const zvVrata = () => { for(let i=0;i<7;i++) setTimeout(()=>ton(220+i*160,.18,'triangle',.05), i*90); };
-
-/* =====================================================================
-   3. ДЪЖДЪТ ОТЗАД
-   ===================================================================== */
-const dujd = {
-  boia:'#00ff9c', koloni:0, y:[], hod:0, spri:false,
-  znaci:'01ABCХΨΔΣΩ∑∏√∞xyab+−·²³⁴⁵'.split('')
-};
-(function dujdNachalo(){
-  const c = document.getElementById('rain'), g = c.getContext('2d');
-  let w=0, h=0, stupka=16;
-  function razmer(){
-    w = c.width = Math.floor(window.innerWidth * Math.min(devicePixelRatio||1, 2));
-    h = c.height = Math.floor(window.innerHeight * Math.min(devicePixelRatio||1, 2));
-    c.style.width = window.innerWidth+'px'; c.style.height = window.innerHeight+'px';
-    stupka = Math.max(14, Math.round(16 * Math.min(devicePixelRatio||1, 2)));
-    dujd.koloni = Math.ceil(w/stupka);
-    dujd.y = new Array(dujd.koloni).fill(0).map(()=> Math.random()*-60);
-  }
-  window.addEventListener('resize', razmer);
-  razmer();
-  const tiho = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function kadur(){
-    dujd.hod++;
-    if(!tiho && dujd.hod % 2 === 0){
-      g.fillStyle = 'rgba(4,7,10,.12)';
-      g.fillRect(0,0,w,h);
-      g.font = (stupka-2)+'px "JetBrains Mono",monospace';
-      for(let i=0;i<dujd.koloni;i++){
-        const z = dujd.znaci[(Math.random()*dujd.znaci.length)|0];
-        const x = i*stupka, y = dujd.y[i]*stupka;
-        g.fillStyle = boiaAlfa(dujd.boia, .85); g.fillText(z, x, y);
-        g.fillStyle = boiaAlfa(dujd.boia, .22); g.fillText(z, x, y - stupka);
-        if(y > h && Math.random() > 0.975) dujd.y[i] = 0;
-        dujd.y[i] += 1;
-      }
-    }
-    requestAnimationFrame(kadur);
-  }
-  if(tiho){ g.fillStyle = 'rgba(4,7,10,1)'; g.fillRect(0,0,w,h); }
-  requestAnimationFrame(kadur);
-})();
 
 /* =====================================================================
    4. ТАБЛОТО
@@ -2529,7 +2487,6 @@ function ekranKraj(){
   document.body.classList.remove('glitch');
   spriGlitch(); tonSektor(null);
   S.svurshen = true; zapazi(); osveji();
-  dujd.boia = ZLAT;
   const sek = minaloto();
   const vsichki = MISIA.sektori.reduce((n,s)=> n + s.zadachi.length, 0);
   scena.innerHTML =
