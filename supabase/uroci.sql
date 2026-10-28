@@ -541,6 +541,47 @@ on conflict (slug) do update set
   subject_id  = excluded.subject_id,
   grades      = excluded.grades;
   -- published нарочно липсва: решава се от таблото.
+-- 7. клас, седмица 7 — „Изход от Матрицата“: умножение на многочлен с
+-- многочлен като стая за бягство за ДВАМА. Пет сектора с 35 задачи
+-- (436–448 от сборника плюс пет за загрявка) и три начина да се
+-- отговори: РЕШЕТКА — всяко квадратче е едно произведение, после се
+-- привежда; ЧИПОВЕ — отговорът се сглобява от членове, а сред тях стоят
+-- и членовете ОТПРЕДИ привеждането, тоест най-честата грешка; ЧИСЛО —
+-- уравненията, в които x² се унищожава (пет от тях с дробен корен).
+-- Между секторите е ГЛИТЧ: бърза игра „вярно или грешно“ на два чифта
+-- клавиша (A/Z и K/M), с общи точки за отбора и бутон СЪВЕТ, който
+-- спира лентата, за да се посъветват. Всеки отворен сектор дава по един
+-- фрагмент от кода; петте фрагмента отварят вратата — и вечерята.
+-- Страницата е ЗА ЧАСА: не иска вход и нищо не предава — урокът не се
+-- оценява. Докъде са стигнали двамата се пази в самия браузър.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('urok-7-matrica',
+   'Урок — Изход от Матрицата',
+   'lesson',
+   'uroci/urok_7_matrica.html',
+   'Стая за бягство за двама: 35 задачи за умножение на многочлен с многочлен в пет сектора, бърза игра „вярно или грешно“ между тях и код от пет цифри за изхода. Подготовка за НВО.',
+   0,
+   false,
+   10707,
+   7,
+   (select id from public.subjects where slug = 'matematika'),
+   '{7}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва: решава се от таблото.
+
+
 -- Какво има до момента:
 select kind as вид,
        count(*) as брой,
