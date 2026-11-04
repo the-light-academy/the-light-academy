@@ -178,7 +178,8 @@ def main():
         ok('[фуете %s] има и верни, и грешни' % g['kod'], 0 < vqrni < len(g['redove']), vqrni)
     ok('фуететата са 32', redove == 32, redove)
 
-    ok('магията: кубът дава 1331', int(data['magiq']['otgovor']) ** 3 == 1331)
+    ok('последното число: кубът дава 1331',
+       int(data['posledno']['otgovor']) ** 3 == 1331)
 
     html = (ROOT / 'uroci' / 'urok_7_ezero.html').read_text(encoding='utf-8')
     red = html[html.index('/* ДАННИ:НАЧАЛО'):].split('\n')
@@ -188,7 +189,7 @@ def main():
        not re.search(r'<script[^>]+src=', html) and not re.search(r'<img', html))
     ok('фонът не се движи',
        'requestAnimationFrame' not in html and '<canvas' not in html)
-    ok('отговорът на магията не стои изписан', html.count('>11<') == 0)
+    ok('отговорът не стои изписан наготово', html.count('>11<') == 0)
 
     print('задачи: %d · фуете: %d · проверки: %d' % (broi, redove, minali))
     if fails:
