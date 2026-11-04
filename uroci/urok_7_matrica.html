@@ -248,6 +248,17 @@ table.mreja th.ugul{color:var(--blqd);font-size:12px;letter-spacing:.1em}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
 }
+
+/* Уроците са за дъската: задачите се решават на дъската, а тук само се
+   отмятат. Затова всяка карта носи кръгче за отметка, а нищо не е
+   заключено — влиза се във всяко ниво по всяко време. */
+.karta-red{position:relative;display:flex}
+.karta-red .karta{flex:1}
+.otmetka{position:absolute;top:9px;right:9px;width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--ram);color:#5c6a86;display:grid;place-items:center;font-size:14px;
+  background:rgba(0,0,0,.3);transition:.15s;z-index:2}
+.otmetka:hover{border-color:var(--ton);color:var(--ton);transform:scale(1.08)}
+.otmetka.ima{border-color:var(--zlat);color:var(--zlat);background:rgba(240,198,106,.14)}
 </style>
 </head>
 <body>
@@ -1940,23 +1951,28 @@ function ekranSektor(i){
    + '<p style="max-width:62ch">'+ekraniraj(s.briefing)+'</p>'
    + '<div class="lenta"><i style="width:'+procent+'%"></i></div>'
    + '<div class="muten" style="font-size:13px">решени '+got+' от '+s.zadachi.length
-   +   ' · за отваряне на шлюза трябват '+s.nujni
-   +   (got>=s.nujni ? ' · <b style="color:var(--ton)">ШЛЮЗЪТ Е ГОТОВ</b>' : '')+'</div>'
+   +   (got ? ' · <b style="color:var(--ton)">'+got+' отметнати</b>' : '')+'</div>'
    + '<div class="spisuk">'
    + s.zadachi.map((z,j)=>
-       '<button class="karta'+(S.reshene[z.id]?' gotova':'')+'" data-z="'+j+'">'
+       '<div class="karta-red">'
+       + '<button class="karta'+(S.reshene[z.id]?' gotova':'')+'" data-z="'+j+'">'
        + '<span class="gl"><span>'+(z.knige ? 'задача '+z.knige : 'задача '+(j+1))+'</span>'
        + '<span>'+(S.reshene[z.id]?'✓ решена':vidIme(z.vid))+'</span></span>'
-       + '<span class="mat">'+ekraniraj(z.izraz)+'</span></button>').join('')
+       + '<span class="mat">'+ekraniraj(z.izraz)+'</span></button>'
+       + '<button class="otmetka'+(S.reshene[z.id]?' ima':'')+'" data-o="'+j+'" '
+       + 'title="отметни я като решена">✓</button></div>').join('')
    + '</div>'
    + '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">'
    +   (got >= s.nujni
         ? '<button class="but" id="bOtvori">'+(otvoren ? 'НАПРЕД →' : 'ОТВОРИ ШЛЮЗ '+s.kod+' →')+'</button>'
-        : '<button class="but" disabled>ШЛЮЗЪТ Е ЗАКЛЮЧЕН · остават '+(s.nujni-got)+'</button>')
+        : '<button class="but" id="bOtvori">ОТВОРИ ШЛЮЗ '+s.kod+' →</button>')
    +   (i>0 ? ' <button class="but tih" id="bNazad">← предишен сектор</button>' : '')
    + '</div></div>';
 
   $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranZadacha(i, +b.dataset.z)));
+  $$('.otmetka', scena).forEach(b => b.addEventListener('click', function(e){
+    e.stopPropagation(); otmetni(i, +b.dataset.o);
+  }));
   const bo = $('#bOtvori');
   if(bo) bo.addEventListener('click', ()=>{
     if(!otvoren){ S.otvoreni.push(i); zapazi(); osveji(); zvFrag(); return ekranFragment(i); }
@@ -1965,6 +1981,14 @@ function ekranSektor(i){
   const bn = $('#bNazad');
   if(bn) bn.addEventListener('click', ()=> ekranSektor(i-1));
   osveji();
+}
+function otmetni(si, zi){
+  /* Отмятането е за преподавателя: задачата е решена на дъската и тук
+     само се маркира. Повторното щракване я връща неотметната. */
+  const z = MISIA.sektori[si].zadachi[zi];
+  if(S.reshene[z.id]){ delete S.reshene[z.id]; S.biti = Math.max(0, S.biti - 10); }
+  else { S.reshene[z.id] = true; S.biti += 10; zvOk(); }
+  zapazi(); osveji(); ekranSektor(si);
 }
 function vidIme(v){
   return v === 'mreja' ? 'решетка' : v === 'chislo' ? 'уравнение'
@@ -2006,12 +2030,11 @@ function ekranKarta(){
          + '<span class="gl"><span>СЕКТОР '+s.kod+'</span><span>'+g+'/'+s.zadachi.length+'</span></span>'
          + '<span class="mat">'+ekraniraj(s.ime)+'</span>'
          + '<span class="muten" style="font-size:12px">'+(sektorOtvoren(i)
-             ? 'фрагмент: '+ekraniraj(s.fragment.vupros) : 'шлюзът е заключен')+'</span></button>';
+             ? 'фрагмент: '+ekraniraj(s.fragment.vupros) : 'фрагментът още не е взет')+'</span></button>';
      }).join('')
    + '</div>'
    + '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">'
-   +   (S.otvoreni.length === MISIA.sektori.length
-       ? '<button class="but" id="bIzhod">КЪМ ВРАТАТА →</button>' : '')
+   +   '<button class="but" id="bIzhod">КЪМ ВРАТАТА →</button>'
    +   '<button class="but tih" id="bObratno">← обратно</button></div></div>';
   $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranSektor(+b.dataset.s)));
   const bi = $('#bIzhod'); if(bi) bi.addEventListener('click', ekranIzhod);
@@ -2041,11 +2064,14 @@ function ekranZadacha(si, zi){
    + '<div class="mat izraz" id="uslovie">'+ekraniraj(z.pokazhi || z.izraz)+'</div>'
    + (z.ideya ? '<div style="margin-top:10px"><button class="but tih" id="bIdeya">ИДЕЯ · −3 бита</button>'
                 + '<span id="ideyaTekst" class="muten" style="margin-left:10px"></span></div>' : '')
+   + '<div style="margin-top:12px"><button class="but" id="bReshena">'
+   +   'РЕШИХМЕ Я НА ДЪСКАТА · покажи отговора</button></div>'
    + '<div id="tqlo"></div>'
    + '<div id="zashtoKutiq"></div>'
    + '</div>';
 
   $('#bKumSektor').addEventListener('click', ()=> ekranSektor(si));
+  $('#bReshena').addEventListener('click', ()=> uspeh(z));
   const bi = $('#bIdeya');
   if(bi) bi.addEventListener('click', function(){
     OPIT.ideya = true; S.biti = Math.max(0, S.biti - 3); zapazi(); osveji();
@@ -2230,6 +2256,7 @@ function uspeh(z){
   const s = MISIA.sektori[OPIT.si];
   const sled = s.zadachi.findIndex((q,j)=> j > OPIT.zi && !S.reshene[q.id]);
   $('#tqlo').querySelectorAll('button').forEach(b => b.disabled = true);
+  const bRe = $('#bReshena'); if(bRe) bRe.disabled = true;
   $('#zashtoKutiq').innerHTML =
      '<div class="zashto"><div class="nd">ЗАЩО</div>'
      + (z.sled ? '<div class="mat">'+ekraniraj(z.izraz)+' = '+ekraniraj(z.sled)+'</div>' : '')
@@ -2393,15 +2420,8 @@ function krajGlitch(){
 function ekranIzhod(){
   document.body.classList.remove('glitch');
   spriGlitch(); tonSektor(null);
-  const nezavursheni = MISIA.sektori.filter((s,i)=> !sektorOtvoren(i));
-  if(nezavursheni.length){
-    scena.innerHTML = '<div class="panel" style="text-align:center">'
-      + '<h2>ВРАТАТА МЪЛЧИ</h2><p class="muten">Липсват фрагменти от '
-      + nezavursheni.map(s=>'сектор '+s.kod).join(', ')
-      + '.</p><button class="but" id="bObratno">ОБРАТНО</button></div>';
-    $('#bObratno').addEventListener('click', ()=> ekranSektor(parvNezavursen()));
-    return;
-  }
+  /* Нищо не се заключва: финалът е достъпен по всяко време, защото
+     задачите се решават на дъската, а не се въвеждат тук. */
   scena.innerHTML =
    '<div class="panel">'
    + '<div class="etiket">край на коридора</div><h2 style="color:var(--zlat)">ТРИ ВРАТИ</h2>'
@@ -2435,7 +2455,8 @@ function ekranKljuch(){
    + MISIA.sektori.map((s,i)=>'<input id="c'+i+'" inputmode="numeric" maxlength="1" '
        + 'aria-label="фрагмент '+s.kod+'" />').join('')
    + '</div>'
-   + '<button class="but" id="bOtkliuchi">ОТКЛЮЧИ</button>'
+   + '<button class="but" id="bOtkliuchi">ОТКЛЮЧИ</button> '
+   + '<button class="but tih" id="bBezKod">отвори без код</button>'
    + '<div id="kljuchKaz" style="margin-top:12px;min-height:24px;font-weight:700"></div>'
    + '<div class="spisuk-frag">'
    + MISIA.sektori.map(s=>'<div><span>'+s.kod+'</span>'+ekraniraj(s.fragment.vupros)+'</div>').join('')
@@ -2456,6 +2477,7 @@ function ekranKljuch(){
   });
   poleta[0].focus();
   $('#bOtkliuchi').addEventListener('click', opitai);
+  $('#bBezKod').addEventListener('click', ()=>{ zvVrata(); ekranKraj(); });
   $('#bPodskazka').addEventListener('click', ()=>{
     const i = poleta.findIndex((p,j)=> p.value !== MISIA.kod[j]);
     if(i === -1) return;
