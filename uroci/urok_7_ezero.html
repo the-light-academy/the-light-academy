@@ -35,6 +35,10 @@
      Накрая всичко се заключва в едно число: коефициентите 1, 3, 3, 1
      дават 1331, а 1331 = 11³.
 
+     Урокът се води от дъската: нищо не е заключено, никъде не се пише.
+     Всяка задача се отмята с кръгчето ✓ на картата ѝ или с бутона
+     „РЕШИХМЕ Я НА ДЪСКАТА“, който показва и отговора.
+
      Фонът стои мирно — нищо не пада и нищо не минава.
 
      НИЩО ТУК НЕ Е ПРЕСМЕТНАТО НА РЪКА. Условията стоят в
@@ -149,12 +153,15 @@ h2{font-size:clamp(24px,4.6vw,38px)}
   padding:10px 14px;background:rgba(255,255,255,.02)}
 .parche .ime{font-size:19px;font-weight:700;min-width:54px}
 .parche .opis{font-size:12px;color:var(--blqd);flex:1}
-.parche input{width:62px;height:42px;text-align:center;font-size:20px;font-weight:700;
-  color:var(--ton);background:rgba(255,255,255,.04);border:1px solid var(--ram);border-radius:9px;
-  outline:none}
-.parche input:focus{border-color:var(--ton)}
+.parche .broeve{display:flex;gap:6px}
+.parche .broj{width:40px;height:40px;border-radius:10px;border:1px solid var(--ram);
+  font-size:18px;font-weight:700;color:var(--tekst);background:rgba(255,255,255,.03);
+  transition:.12s}
+.parche .broj:hover{border-color:var(--ton);color:var(--ton)}
+.parche .broj.gresh{border-color:var(--cherven);color:var(--cherven);animation:tres .35s}
 .parche.ok{border-color:rgba(127,208,180,.6);background:rgba(127,208,180,.09)}
-.parche.ok input{color:var(--zelen)}
+.parche.ok .izbrano{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;
+  border:1px solid rgba(127,208,180,.6);color:var(--zelen);font-size:20px;font-weight:800}
 
 /* ── Паскал ───────────────────────────────────────────────────────── */
 .paskal{display:grid;gap:8px;justify-items:center;margin:16px 0}
@@ -1609,7 +1616,8 @@ const UVERTURA = [
  'ще ги видим: кубът се разглобява на осем парчета, а числата 1, 3, 3, 1',
  'идват от триъгълника на Паскал.',
  '',
- 'Двама сте. Единият смята, другият проверява — после сменяте ролите.'
+ 'Двама сте. Единият смята, другият проверява — после сменяте ролите.',
+ 'Задачите се решават на дъската. Тук само се щрака.'
 ];
 function ekranUvertura(){
   document.body.classList.remove('fuete');
@@ -1647,7 +1655,7 @@ function ekranUvertura(){
 function imePole(n, klavishi){
   return '<div style="flex:1 1 200px;border:1px solid var(--ram);border-radius:12px;padding:12px 14px">'
     + '<label for="ime'+(n+1)+'" style="display:block;font-size:11px;letter-spacing:.2em;'
-    + 'color:var(--blqd);margin-bottom:6px">ТАНЦЬОР '+(n+1)+' · клавиши '+klavishi+'</label>'
+    + 'color:var(--blqd);margin-bottom:6px">ТАНЦЬОР '+(n+1)+' · клавиши '+klavishi+' · по желание</label>'
     + '<input id="ime'+(n+1)+'" maxlength="14" value="'+ekraniraj(S.imena[n])+'" '
     + 'style="width:100%;background:none;border:none;outline:none;color:var(--ton);'
     + 'font-size:19px;font-weight:700" /></div>';
@@ -1754,11 +1762,12 @@ function ekranZadacha(di, qi){
    +   ekraniraj(q.vupros && q.vid === 'izbor' ? q.vupros + ' ' + q.izraz : q.izraz)+'</div>'
    + (q.ideya ? '<div style="margin-top:10px"><button class="but tih" id="bIdeya">ИДЕЯ · −3 точки</button>'
                 + '<span id="ideyaTekst" class="muten" style="margin-left:10px"></span></div>' : '')
-   + '<div style="margin-top:12px"><button class="but" id="bReshena">'
-   +   'РЕШИХМЕ Я НА ДЪСКАТА · покажи отговора</button></div>'
+   + (q.vid === 'chislo' || q.vid === 'naum' ? ''
+      : '<div style="margin-top:12px"><button class="but" id="bReshena">'
+      + 'РЕШИХМЕ Я НА ДЪСКАТА · покажи отговора</button></div>')
    + '<div id="tqlo"></div><div id="zashtoKutiq"></div></div>';
   $('#bKumAkt').addEventListener('click', ()=> ekranAkt(di));
-  $('#bReshena').addEventListener('click', ()=> uspeh(q));
+  const bRe0 = $('#bReshena'); if(bRe0) bRe0.addEventListener('click', ()=> uspeh(q));
   const bi = $('#bIdeya');
   if(bi) bi.addEventListener('click', function(){
     OPIT.ideya = true; S.biti = Math.max(0, S.biti-3); zapazi(); osveji();
@@ -1813,39 +1822,47 @@ function kubSvg(){
 }
 const KUB_OPIS = {'a³':'кубчето a · a · a', 'a²b':'плочка a · a · b',
                   'ab²':'летва a · b · b', 'b³':'малкото кубче b · b · b'};
+const KUB_IZBOR = [1, 2, 3, 4, 6];
+
 function risuvaiKub(q){
+  /* Никъде не се пише: броят парчета се избира с щракане. Вярното
+     число заключва реда, грешното се разтърсва и отпада. */
+  const gotovi = {};
   $('#tqlo').innerHTML =
-    '<p class="muten" style="font-size:13px;margin-top:14px">'+ekraniraj(q.vupros)+'</p>'
+    '<p class="muten" style="font-size:13px;margin-top:14px">' + ekraniraj(q.vupros) + '</p>'
     + '<div class="kub">' + kubSvg()
     + '<div class="parcheta">'
-    + q.parcheta.map((p,i)=>
-        '<div class="parche" id="p-'+i+'"><span class="ime mat">'+ekraniraj(p[0])+'</span>'
-        + '<span class="opis">'+ekraniraj(KUB_OPIS[p[0]] || '')+'</span>'
-        + '<input id="br-'+i+'" inputmode="numeric" maxlength="1" aria-label="брой '+p[0]+'" /></div>').join('')
-    + '<button class="but" id="bProveri" style="justify-self:start">ПРОВЕРИ</button>'
+    + q.parcheta.map(function(p, i){
+        return '<div class="parche" id="p-' + i + '">'
+          + '<span class="ime mat">' + ekraniraj(p[0]) + '</span>'
+          + '<span class="opis">' + ekraniraj(KUB_OPIS[p[0]] || '') + '</span>'
+          + '<span class="broeve" id="b-' + i + '">'
+          + KUB_IZBOR.map(function(n){
+              return '<button class="broj" data-p="' + i + '" data-n="' + n + '">' + n + '</button>';
+            }).join('')
+          + '</span></div>';
+      }).join('')
     + '</div></div>';
-  $('#br-0').focus();
-  $$('.parche input').forEach((inp,i)=>{
-    inp.addEventListener('input', ()=>{
-      inp.value = inp.value.replace(/\D/g,'').slice(0,1);
-      const sled = $('#br-'+(i+1)); if(inp.value && sled) sled.focus();
+  $$('.broj', $('#tqlo')).forEach(function(b){
+    b.addEventListener('click', function(){
+      const i = +b.dataset.p, veren = q.parcheta[i][1];
+      if(+b.dataset.n === veren){
+        gotovi[i] = true;
+        $('#b-' + i).innerHTML = '<span class="izbrano">' + veren + '</span>';
+        $('#p-' + i).classList.add('ok');
+        zvOk();
+        if(Object.keys(gotovi).length === q.parcheta.length)
+          setTimeout(function(){ uspeh(q); }, 300);
+      }else{
+        b.classList.add('gresh'); b.disabled = true;
+        OPIT.greshki++; S.greshki++; S.biti = Math.max(0, S.biti - 1);
+        zapazi(); osveji(); zvNe();
+        kaji(OPIT.greshki >= 2
+          ? 'Плочките a²b и летвите ab² са по равно.'
+          : 'Не е този брой. Погледни колко парчета от този вид има на чертежа.');
+      }
     });
-    inp.addEventListener('keydown', e => { if(e.key === 'Enter') proveriKub(q); });
   });
-  $('#bProveri').addEventListener('click', ()=> proveriKub(q));
-}
-function proveriKub(q){
-  let vsichki = true;
-  q.parcheta.forEach((p,i)=>{
-    const ok = $('#br-'+i).value === String(p[1]);
-    $('#p-'+i).classList.toggle('ok', ok);
-    if(!ok) vsichki = false;
-  });
-  if(vsichki) return uspeh(q);
-  OPIT.greshki++; S.greshki++; S.biti = Math.max(0,S.biti-1); zapazi(); osveji(); zvNe();
-  kaji(OPIT.greshki >= 2
-    ? 'Броят на плочките a²b е същият като броя на летвите ab². Двете групи са по равно.'
-    : 'Не всички са верни. Колко стени има кубът и по колко парчета пада на всяка?');
 }
 
 /* ── 6.2 триъгълникът на Паскал ──────────────────────────────────── */
@@ -1992,38 +2009,26 @@ function risuvaiIzbor(q){
 }
 
 /* ── 6.6 число и наум ────────────────────────────────────────────── */
+/* Урокът се води от дъската: тук никъде не се пише. Задачата се чете,
+   смята се на дъската, а бутонът показва отговора и я отмята. */
 function risuvaiChislo(q){
   const naum = q.vid === 'naum';
   $('#tqlo').innerHTML =
     '<p class="muten" style="font-size:13px;margin-top:14px">'
-    + (naum ? 'Пресметни наум, през формулата. Без вдигане на куб направо.'
-            : 'Запиши отговора като число. Дроб се пише с черта: 7/2.') + '</p>'
-    + '<div class="chislo-red"><span class="mat" style="font-size:23px">'
-    + (naum || q.promenliva === 'отговорът' ? '=' : ekraniraj(q.promenliva)+' =') + '</span>'
-    + '<input id="poleKoren" inputmode="text" autocomplete="off" spellcheck="false" placeholder="?" />'
-    + '<button class="but" id="bProveri">ПРОВЕРИ</button></div>';
-  const pole = $('#poleKoren');
-  pole.focus();
-  pole.addEventListener('keydown', e => { if(e.key === 'Enter') proveriChislo(q); });
-  $('#bProveri').addEventListener('click', ()=> proveriChislo(q));
-}
-function chetiChislo(t){
-  const s = String(t).trim().replace(/−/g,'-').replace(/\s/g,'').replace(',','.');
-  let m = s.match(/^(-?\d+)\/(\d+)$/);
-  if(m) return {p:+m[1], q:+m[2], drob:true};
-  m = s.match(/^(-?\d+(?:\.\d+)?)$/);
-  if(m) return {v:parseFloat(m[1]), drob:false};
-  return null;
-}
-function proveriChislo(q){
-  const d = chetiChislo($('#poleKoren').value);
-  if(!d) return kaji('Това не е число.');
-  const tochno = d.drob ? (d.p * q.q === q.p * d.q) : Math.abs(d.v * q.q - q.p) < 1e-9;
-  if(tochno) return uspeh(q);
-  OPIT.greshki++; S.greshki++; S.biti = Math.max(0,S.biti-2); zapazi(); osveji(); zvNe();
-  const r = $('.chislo-red'); r.classList.add('tres'); setTimeout(()=> r.classList.remove('tres'), 450);
-  kaji(OPIT.greshki >= 2 ? 'Опитай пак — напиши формулата отстрани и замести.'
-                         : 'Не е това число. Провери знаците.');
+    + (naum ? 'Пресметнете наум, през формулата — на дъската.'
+            : 'Решете я на дъската.')
+    + ' Когато сте готови, покажете отговора.</p>'
+    + '<div class="chislo-red">'
+    +   '<button class="but" id="bPokaji">ПОКАЖИ ОТГОВОРА</button>'
+    +   '<span class="mat izraz" id="otgovorut" hidden></span>'
+    + '</div>';
+  $('#bPokaji').addEventListener('click', function(){
+    const o = $('#otgovorut');
+    o.hidden = false;
+    o.textContent = (naum || q.promenliva === 'отговорът' ? '= ' : q.promenliva + ' = ')
+                  + q.koren;
+    uspeh(q);
+  });
 }
 
 /* ── 6.7 общото ──────────────────────────────────────────────────── */
@@ -2193,37 +2198,28 @@ function krajFuete(){
    ===================================================================== */
 function ekranPosledno(){
   spriFuete(); document.body.classList.remove('fuete'); tonAkt(null);
-  /* Нищо не се заключва: финалът е достъпен по всяко време, защото
-     задачите се решават на дъската, а не се въвеждат тук. */
-  let opiti = 0;
+  /* Нищо не се заключва и нищо не се въвежда: въпросът се мисли на
+     дъската, а бутонът показва отговора. */
   scena.innerHTML =
    '<div class="panel">' + dekor()
    + '<div class="etiket" style="color:var(--zlat)">финал</div>'
    + '<h2 style="color:var(--zlat)">Последното число</h2>'
    + '<div class="posledno"><p class="proza">'+ekraniraj(EZERO.posledno.vupros)+'</p>'
    + '<div class="chislo-red" style="justify-content:center">'
-   +   '<input id="poleFinal" inputmode="numeric" maxlength="4" placeholder="?" />'
-   +   '<button class="but" id="bOtgovori">ОТГОВОРИ</button>'
-   +   '<button class="but tih" id="bBezKod">продължи без отговор</button></div>'
-   + '<div id="finalKaz" style="min-height:24px;font-weight:700"></div>'
-   + '<button class="but tih" id="bPodskazka" hidden>ПОДСКАЗКА · −10 точки</button>'
+   +   '<button class="but" id="bPokajiKraj">ПОКАЖИ ОТГОВОРА</button>'
+   +   '<span class="mat izraz" id="otgKraj" style="color:var(--zlat)" hidden></span></div>'
+   + '<div id="finalKaz" class="muten" style="min-height:24px"></div>'
+   + '<button class="but" id="bNatatuk" hidden>ЗОРАТА ИЗГРЯВА →</button>'
    + '</div></div>';
-  const pole = $('#poleFinal');
-  pole.focus();
-  pole.addEventListener('keydown', e => { if(e.key === 'Enter') opitai(); });
-  $('#bOtgovori').addEventListener('click', opitai);
-  $('#bBezKod').addEventListener('click', ()=>{ zvFinal(); ekranFinal(); });
-  $('#bPodskazka').addEventListener('click', ()=>{
-    S.biti = Math.max(0,S.biti-10); zapazi(); osveji();
-    $('#finalKaz').innerHTML = '<span class="muten">Числото е двуцифрено и започва с 1.</span>';
+  $('#bPokajiKraj').addEventListener('click', function(){
+    this.disabled = true;
+    const o = $('#otgKraj');
+    o.hidden = false; o.textContent = EZERO.posledno.otgovor;
+    $('#finalKaz').textContent = EZERO.posledno.zashto;
+    $('#bNatatuk').hidden = false;
+    zvFinal();
   });
-  function opitai(){
-    if(pole.value.trim() === EZERO.posledno.otgovor){ zvFinal(); return ekranFinal(); }
-    opiti++; S.greshki++; zapazi(); zvNe();
-    pole.classList.add('tres'); setTimeout(()=> pole.classList.remove('tres'), 450);
-    $('#finalKaz').innerHTML = '<span style="color:var(--cherven)">Не. Езерото остава тъмно.</span>';
-    if(opiti >= 2) $('#bPodskazka').hidden = false;
-  }
+  $('#bNatatuk').addEventListener('click', ekranFinal);
 }
 
 /* =====================================================================
