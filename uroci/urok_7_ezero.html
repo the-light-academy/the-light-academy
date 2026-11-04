@@ -256,6 +256,17 @@ body.fuete #kljuchove{display:block}
   .rolq b,.vaucher td:last-child{color:#111}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* Уроците са за дъската: задачите се решават на дъската, а тук само се
+   отмятат. Затова всяка карта носи кръгче за отметка, а нищо не е
+   заключено — влиза се във всяко ниво по всяко време. */
+.karta-red{position:relative;display:flex}
+.karta-red .karta{flex:1}
+.otmetka{position:absolute;top:9px;right:9px;width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--ram);color:#5c6a86;display:grid;place-items:center;font-size:14px;
+  background:rgba(0,0,0,.3);transition:.15s;z-index:2}
+.otmetka:hover{border-color:var(--ton);color:var(--ton);transform:scale(1.08)}
+.otmetka.ima{border-color:var(--zlat);color:var(--zlat);background:rgba(240,198,106,.14)}
 </style>
 </head>
 <body>
@@ -1658,22 +1669,27 @@ function ekranAkt(i){
    + '<p class="proza" style="max-width:60ch">'+ekraniraj(d.briefing)+'</p>'
    + '<div class="lenta"><i style="width:'+Math.min(100,Math.round(100*got/d.nujni))+'%"></i></div>'
    + '<div class="muten" style="font-size:13px">решени '+got+' от '+d.zadachi.length
-   +   ' · за следващото действие трябват '+d.nujni
-   +   (got>=d.nujni?' · <b style="color:var(--zlat)">ГОТОВО</b>':'')+'</div>'
+   +   (got ? ' · <b style="color:var(--zlat)">'+got+' отметнати</b>' : '')+'</div>'
    + '<div class="spisuk">'
    + d.zadachi.map((q,j)=>
-       '<button class="karta'+(S.reshene[q.id]?' gotova':'')+'" data-z="'+j+'">'
+       '<div class="karta-red">'
+       + '<button class="karta'+(S.reshene[q.id]?' gotova':'')+'" data-z="'+j+'">'
        + '<span class="gl"><span>'+(j+1)+' · '+vidIme(q.vid)+'</span>'
        + '<span>'+(S.reshene[q.id]?'✓':'')+'</span></span>'
-       + '<span class="mat">'+ekraniraj(q.izraz)+'</span></button>').join('')
+       + '<span class="mat">'+ekraniraj(q.izraz)+'</span></button>'
+       + '<button class="otmetka'+(S.reshene[q.id]?' ima':'')+'" data-o="'+j+'" '
+       + 'title="отметни я като решена">✓</button></div>').join('')
    + '</div>'
    + '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">'
    +   (got >= d.nujni
        ? '<button class="but" id="bOtvori">'+(otvoren?'НАПРЕД →':'ЗАВЕСАТА ПАДА →')+'</button>'
-       : '<button class="but" disabled>ОСТАВАТ ОЩЕ '+(d.nujni-got)+'</button>')
+       : '<button class="but" id="bOtvori">ЗАВЕСАТА ПАДА →</button>')
    +   (i>0?' <button class="but tih" id="bNazad">← предишно действие</button>':'')
    + '</div></div>';
   $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranZadacha(i, +b.dataset.z)));
+  $$('.otmetka', scena).forEach(b => b.addEventListener('click', function(e){
+    e.stopPropagation(); otmetni(i, +b.dataset.o);
+  }));
   const bo = $('#bOtvori');
   if(bo) bo.addEventListener('click', ()=>{
     if(!otvoren){ S.otvoreni.push(i); zapazi(); osveji(); zvAkt(); }
@@ -1682,6 +1698,14 @@ function ekranAkt(i){
   });
   const bn = $('#bNazad'); if(bn) bn.addEventListener('click', ()=> ekranAkt(i-1));
   osveji();
+}
+function otmetni(di, qi){
+  /* Отмятането е за преподавателя: задачата е решена на дъската и тук
+     само се маркира. Повторното щракване я връща неотметната. */
+  const q = EZERO.deistviq[di].zadachi[qi];
+  if(S.reshene[q.id]){ delete S.reshene[q.id]; S.biti = Math.max(0, S.biti - 10); }
+  else { S.reshene[q.id] = true; S.biti += 10; zvOk(); }
+  zapazi(); osveji(); ekranAkt(di);
 }
 function vidIme(v){
   return v === 'kub' ? 'модел' : v === 'paskal' ? 'триъгълник' : v === 'dvoiki' ? 'свързване'
@@ -1699,7 +1723,7 @@ function ekranProgram(){
        + '<span class="mat">'+ekraniraj(d.ime)+'</span>'
        + '<span class="muten" style="font-size:12px">'+ekraniraj(d.formula)+'</span></button>').join('')
    + '</div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">'
-   + (S.otvoreni.length === EZERO.deistviq.length ? '<button class="but" id="bFinal">КЪМ ФИНАЛА →</button>':'')
+   + '<button class="but" id="bFinal">КЪМ ФИНАЛА →</button>'
    + '<button class="but tih" id="bObratno">← обратно</button></div></div>';
   $$('.karta', scena).forEach(b => b.addEventListener('click', ()=> ekranAkt(+b.dataset.s)));
   const bf = $('#bFinal'); if(bf) bf.addEventListener('click', ekranPosledno);
@@ -1728,8 +1752,11 @@ function ekranZadacha(di, qi){
    +   ekraniraj(q.vupros && q.vid === 'izbor' ? q.vupros + ' ' + q.izraz : q.izraz)+'</div>'
    + (q.ideya ? '<div style="margin-top:10px"><button class="but tih" id="bIdeya">ИДЕЯ · −3 точки</button>'
                 + '<span id="ideyaTekst" class="muten" style="margin-left:10px"></span></div>' : '')
+   + '<div style="margin-top:12px"><button class="but" id="bReshena">'
+   +   'РЕШИХМЕ Я НА ДЪСКАТА · покажи отговора</button></div>'
    + '<div id="tqlo"></div><div id="zashtoKutiq"></div></div>';
   $('#bKumAkt').addEventListener('click', ()=> ekranAkt(di));
+  $('#bReshena').addEventListener('click', ()=> uspeh(q));
   const bi = $('#bIdeya');
   if(bi) bi.addEventListener('click', function(){
     OPIT.ideya = true; S.biti = Math.max(0, S.biti-3); zapazi(); osveji();
@@ -2016,6 +2043,7 @@ function uspeh(q){
   const d = EZERO.deistviq[OPIT.di];
   const sled = d.zadachi.findIndex((x,j)=> j > OPIT.qi && !S.reshene[x.id]);
   $$('#tqlo button').forEach(b => b.disabled = true);
+  const bRe = $('#bReshena'); if(bRe) bRe.disabled = true;
   $$('#tqlo input').forEach(b => b.disabled = true);
   $('#zashtoKutiq').innerHTML =
      '<div class="zashto"><div class="nd">ЗАЩО</div>'
@@ -2163,14 +2191,8 @@ function krajFuete(){
    ===================================================================== */
 function ekranPosledno(){
   spriFuete(); document.body.classList.remove('fuete'); tonAkt(null);
-  const lipsvat = EZERO.deistviq.filter((d,i)=> !aktOtvoren(i));
-  if(lipsvat.length){
-    scena.innerHTML = '<div class="panel" style="text-align:center"><h2>Още е нощ</h2>'
-      + '<p class="muten">Липсват действия: '+lipsvat.map(d=>d.kod).join(', ')+'.</p>'
-      + '<button class="but" id="bObratno">ОБРАТНО</button></div>';
-    $('#bObratno').addEventListener('click', ()=> ekranAkt(parvNezavursen()));
-    return;
-  }
+  /* Нищо не се заключва: финалът е достъпен по всяко време, защото
+     задачите се решават на дъската, а не се въвеждат тук. */
   let opiti = 0;
   scena.innerHTML =
    '<div class="panel">' + dekor()
@@ -2179,7 +2201,8 @@ function ekranPosledno(){
    + '<div class="posledno"><p class="proza">'+ekraniraj(EZERO.posledno.vupros)+'</p>'
    + '<div class="chislo-red" style="justify-content:center">'
    +   '<input id="poleFinal" inputmode="numeric" maxlength="4" placeholder="?" />'
-   +   '<button class="but" id="bOtgovori">ОТГОВОРИ</button></div>'
+   +   '<button class="but" id="bOtgovori">ОТГОВОРИ</button>'
+   +   '<button class="but tih" id="bBezKod">продължи без отговор</button></div>'
    + '<div id="finalKaz" style="min-height:24px;font-weight:700"></div>'
    + '<button class="but tih" id="bPodskazka" hidden>ПОДСКАЗКА · −10 точки</button>'
    + '</div></div>';
@@ -2187,6 +2210,7 @@ function ekranPosledno(){
   pole.focus();
   pole.addEventListener('keydown', e => { if(e.key === 'Enter') opitai(); });
   $('#bOtgovori').addEventListener('click', opitai);
+  $('#bBezKod').addEventListener('click', ()=>{ zvFinal(); ekranFinal(); });
   $('#bPodskazka').addEventListener('click', ()=>{
     S.biti = Math.max(0,S.biti-10); zapazi(); osveji();
     $('#finalKaz').innerHTML = '<span class="muten">Числото е двуцифрено и започва с 1.</span>';
