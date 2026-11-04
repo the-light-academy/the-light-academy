@@ -19,7 +19,7 @@ from sympy import Add, Rational, Symbol, expand, solve, symbols
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
 from urok7.algebra import fmt_num, fmt_poly, fmt_terms, parse              # noqa: E402
-from urok7.ezero import DEISTVIQ, FUETE, MAGIQ, PROGRAMKA                  # noqa: E402
+from urok7.ezero import DEISTVIQ, FUETE, POSLEDNO, PROGRAMKA                  # noqa: E402
 from build_urok7 import primamki, razsipi, red_glitch, zashto_proizvedenie  # noqa: E402
 
 A, B = symbols('a b')
@@ -174,9 +174,10 @@ def sglobi():
                          'nujni': d['nujni'], 'zadachi': zadachi, 'znak': d['znak']})
     fuete = [{'kod': f['kod'], 'ime': f['ime'],
               'redove': [red_glitch(r) for r in f['redove']]} for f in FUETE]
-    if int(MAGIQ['otgovor']) ** 3 != 1331:
-        sys.exit('магията: кубът не дава 1331')
-    return {'deistviq': deistviq, 'fuete': fuete, 'magiq': MAGIQ, 'programka': PROGRAMKA}
+    if int(POSLEDNO['otgovor']) ** 3 != 1331:
+        sys.exit('последното число: кубът не дава 1331')
+    return {'deistviq': deistviq, 'fuete': fuete, 'posledno': POSLEDNO,
+            'programka': PROGRAMKA}
 
 
 def main():
