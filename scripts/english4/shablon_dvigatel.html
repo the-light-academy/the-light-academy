@@ -1,0 +1,390 @@
+<script>
+"use strict";
+/* =====================================================================
+   Двигателят на листа: четири вида упражнения, една проверка.
+   ===================================================================== */
+const $ = (s, p) => (p || document).querySelector(s);
+const $$ = (s, p) => Array.prototype.slice.call((p || document).querySelectorAll(s));
+function ekraniraj(t){
+  return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+/* Отговорите се сравняват меко: главни букви, двойни интервали, кривият
+   апостроф и точката накрая не са грешка в четвърти клас. */
+function norm(t){
+  return String(t == null ? '' : t).toLowerCase()
+    .replace(/[’ʼ`]/g, "'")
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([?!.,])/g, '$1')
+    .replace(/[.!?]+$/, '')
+    .trim();
+}
+function razburkai(masiv, seme){
+  const a = masiv.slice();
+  let h = 0;
+  for(let i = 0; i < seme.length; i++) h = (h * 31 + seme.charCodeAt(i)) >>> 0;
+  for(let i = a.length - 1; i > 0; i--){
+    h = (h * 1103515245 + 12345) >>> 0;
+    const j = h % (i + 1);
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+const BOI = ['#8E6BEA', '#2BA8A0', '#F07C3E', '#E05C8A', '#4C7DF0',
+             '#1FA463', '#C8541F', '#7A5BD6', '#2B8FBE', '#D4A017'];
+
+/* ── чудовищата в шапката: нарисувани, не емоджи ─────────────────── */
+function chudovishte(boia, ochi, vd){
+  const o = [];
+  for(let i = 0; i < ochi; i++){
+    const x = 28 + (i - (ochi - 1) / 2) * 20;
+    o.push('<circle cx="' + x + '" cy="30" r="7" fill="#fff"/>'
+         + '<circle cx="' + x + '" cy="31" r="3.4" fill="#16233F"/>');
+  }
+  return '<svg width="56" height="64" viewBox="0 0 56 64" role="img" aria-label="чудовище">'
+    + '<path d="M6 30a22 22 0 0 1 44 0v18a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="' + boia + '"/>'
+    + '<path d="M' + (vd ? '14 8 l6 10' : '42 8 l-6 10') + '" stroke="' + boia
+    + '" stroke-width="4" stroke-linecap="round"/>'
+    + '<circle cx="' + (vd ? 14 : 42) + '" cy="7" r="4" fill="' + boia + '"/>'
+    + o.join('')
+    + '<path d="M18 44 q10 8 20 0" stroke="#16233F" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    + '</svg>';
+}
+
+/* ── състояние ───────────────────────────────────────────────────── */
+const S = { otg: {}, dvoiki: {}, red: {}, proveren: false };
+let OBSHTO = 0;
+
+function kluch(ui, ri){ return ui + '-' + ri; }
+
+/* ── рисуване ────────────────────────────────────────────────────── */
+function risuvai(){
+  $('#monsters').innerHTML =
+    chudovishte(BOI[0], 2, true) + chudovishte(BOI[1], 1, false)
+    + chudovishte(BOI[3], 3, true) + chudovishte(BOI[2], 2, false);
+
+  $('#uprajneniq').innerHTML = DANNI.upr.map(function(u, ui){
+    const boia = BOI[ui % BOI.length];
+    return '<section class="ex" id="ex-' + ui + '">'
+      + '<div class="ex__top">'
+      +   '<div class="ex__num" style="background:' + boia + '">' + u.kod + '</div>'
+      +   '<div><div class="ex__ime">' + ekraniraj(u.ime) + '</div>'
+      +   '<div class="ex__bg">' + ekraniraj(u.bg) + '</div></div></div>'
+      + '<p class="ex__ukazanie">' + ekraniraj(u.ukazanie) + '</p>'
+      + tqlo(u, ui)
+      + '<div class="zashto" id="z-' + ui + '" hidden></div>'
+      + '</section>';
+  }).join('');
+
+  DANNI.upr.forEach(function(u, ui){
+    if(u.vid === 'tap') vurjiTap(u, ui);
+    else if(u.vid === 'type') vurjiType(u, ui);
+    else if(u.vid === 'dvoiki') vurjiDvoiki(u, ui);
+    else if(u.vid === 'red') vurjiRed(u, ui);
+  });
+  osveji();
+}
+
+function tqlo(u, ui){
+  if(u.vid === 'tap'){
+    return '<div class="redove">' + u.redove.map(function(r, ri){
+      const izbori = r.izbori || u.izbori;
+      return '<div class="red' + (u.shirok ? ' shirok' : '') + '" id="r-' + ui + '-' + ri + '">'
+        + '<span class="nom">' + (ri + 1) + '</span>'
+        + '<span class="txt">' + ekraniraj(r.predi) + (u.shirok ? '' : ' ___ ')
+        +   ekraniraj(r.sled) + '</span>'
+        + '<span class="taps">' + izbori.map(function(iz){
+            return '<button class="tap" data-u="' + ui + '" data-r="' + ri + '" '
+                 + 'data-v="' + ekraniraj(iz) + '">' + ekraniraj(iz) + '</button>';
+          }).join('') + '</span>'
+        + '<span class="vqrno-e" id="ve-' + ui + '-' + ri + '" hidden></span></div>';
+    }).join('') + '</div>';
+  }
+  if(u.vid === 'type'){
+    return '<div class="redove">' + u.redove.map(function(r, ri){
+      const dalgo = !!u.dalgo;
+      return '<div class="red' + (dalgo ? ' shirok' : '') + '" id="r-' + ui + '-' + ri + '">'
+        + '<span class="txt"><span class="nom">' + (ri + 1) + '</span>'
+        +   ekraniraj(r.predi) + (dalgo ? '' : ' ') + '</span>'
+        + (dalgo ? '' : '')
+        + '<input class="dupka' + (dalgo ? ' dalga' : '') + '" id="i-' + ui + '-' + ri + '" '
+        +   'type="text" autocomplete="off" autocapitalize="off" spellcheck="false" '
+        +   'data-u="' + ui + '" data-r="' + ri + '" placeholder="' + (dalgo ? '…' : '?') + '" />'
+        + (r.sled ? '<span class="txt">' + ekraniraj(r.sled) + '</span>' : '')
+        + '<span class="vqrno-e" id="ve-' + ui + '-' + ri + '" hidden></span></div>';
+    }).join('') + '</div>';
+  }
+  if(u.vid === 'dvoiki'){
+    const levi = u.dvojki.map(p => p[0]);
+    const desni = razburkai(u.dvojki.map(p => p[1]), 'd' + ui);
+    return '<div class="dvoiki" id="dv-' + ui + '">'
+      + '<div class="kol">' + levi.map(function(t){
+          return '<button data-l="' + ekraniraj(t) + '">' + ekraniraj(t) + '</button>'; }).join('')
+      + '</div><div class="kol">' + desni.map(function(t){
+          return '<button data-d="' + ekraniraj(t) + '">' + ekraniraj(t) + '</button>'; }).join('')
+      + '</div></div>';
+  }
+  /* подреждане */
+  return '<div class="redove">' + u.redove.map(function(r, ri){
+    const dumi = razburkai(r.otgovor.split(' '), 'r' + ui + ri);
+    return '<div class="red shirok" id="r-' + ui + '-' + ri + '">'
+      + '<div class="red-stroi">'
+      +   '<div class="stroi-liniq" id="l-' + ui + '-' + ri + '"></div>'
+      +   '<div class="taps" id="d-' + ui + '-' + ri + '">' + dumi.map(function(d, di){
+            return '<button class="duma" data-u="' + ui + '" data-r="' + ri + '" '
+                 + 'data-i="' + di + '">' + ekraniraj(d) + '</button>'; }).join('')
+      +   '</div></div>'
+      + '<span class="vqrno-e" id="ve-' + ui + '-' + ri + '" hidden></span></div>';
+  }).join('') + '</div>';
+}
+
+/* ── закачане ────────────────────────────────────────────────────── */
+function vurjiTap(u, ui){
+  $$('#ex-' + ui + ' .tap').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(S.proveren) return;
+      const ri = +b.dataset.r;
+      $$('#r-' + ui + '-' + ri + ' .tap').forEach(x => x.classList.remove('izbran'));
+      b.classList.add('izbran');
+      S.otg[kluch(ui, ri)] = b.dataset.v;
+      osveji();
+    });
+  });
+}
+function vurjiType(u, ui){
+  $$('#ex-' + ui + ' .dupka').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      S.otg[kluch(ui, +inp.dataset.r)] = inp.value;
+      osveji();
+    });
+    inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') proveri(); });
+  });
+}
+function vurjiDvoiki(u, ui){
+  let izbran = null;
+  const karta = {};
+  u.dvojki.forEach(p => { karta[p[0]] = p[1]; });
+  S.dvoiki[ui] = S.dvoiki[ui] || {};
+  $$('#dv-' + ui + ' [data-l]').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(S.proveren) return;
+      $$('#dv-' + ui + ' [data-l]').forEach(x => x.classList.remove('izbran'));
+      b.classList.add('izbran');
+      izbran = b.dataset.l;
+    });
+  });
+  $$('#dv-' + ui + ' [data-d]').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(S.proveren || !izbran) return;
+      S.dvoiki[ui][izbran] = b.dataset.d;
+      if(karta[izbran] === b.dataset.d){
+        b.classList.add('svurzan');
+        const l = $('#dv-' + ui + ' [data-l="' + CSS.escape(izbran) + '"]');
+        l.classList.add('svurzan'); l.classList.remove('izbran');
+        /* Двойката се изписва цяла, за да не се чуди после кое с кое е. */
+        l.innerHTML = ekraniraj(izbran) + ' <span class="strelka">→</span> '
+                    + ekraniraj(b.dataset.d);
+      }else{
+        b.classList.add('greshni');
+        setTimeout(function(){ b.classList.remove('greshni'); }, 500);
+      }
+      izbran = null;
+      osveji();
+    });
+  });
+}
+function vurjiRed(u, ui){
+  u.redove.forEach(function(r, ri){
+    const liniq = $('#l-' + ui + '-' + ri);
+    S.red[kluch(ui, ri)] = [];
+    $$('#d-' + ui + '-' + ri + ' .duma').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(S.proveren || b.classList.contains('vzeta')) return;
+        b.classList.add('vzeta');
+        S.red[kluch(ui, ri)].push({ duma: b.textContent, i: +b.dataset.i });
+        prerisuvaiRed(ui, ri);
+        osveji();
+      });
+    });
+    liniq.addEventListener('click', function(e){
+      if(S.proveren) return;
+      const d = e.target.closest('.duma');
+      if(!d) return;
+      const k = +d.dataset.vzeta;
+      const vzeti = S.red[kluch(ui, ri)];
+      const mqsto = vzeti.findIndex(x => x.i === k);
+      if(mqsto !== -1){
+        vzeti.splice(mqsto, 1);
+        $('#d-' + ui + '-' + ri + ' .duma[data-i="' + k + '"]').classList.remove('vzeta');
+        prerisuvaiRed(ui, ri);
+        osveji();
+      }
+    });
+  });
+}
+function prerisuvaiRed(ui, ri){
+  $('#l-' + ui + '-' + ri).innerHTML = S.red[kluch(ui, ri)].map(function(x){
+    return '<button class="duma" data-vzeta="' + x.i + '">' + ekraniraj(x.duma) + '</button>';
+  }).join('');
+}
+
+/* ── проверка ────────────────────────────────────────────────────── */
+function verenLi(u, ui, ri){
+  const r = (u.redove || [])[ri];
+  if(u.vid === 'dvoiki'){
+    const p = u.dvojki[ri];
+    return (S.dvoiki[ui] || {})[p[0]] === p[1];
+  }
+  if(u.vid === 'red'){
+    const dadeno = (S.red[kluch(ui, ri)] || []).map(x => x.duma).join(' ');
+    return norm(dadeno) === norm(r.otgovor);
+  }
+  const dadeno = S.otg[kluch(ui, ri)];
+  if(dadeno == null || String(dadeno).trim() === '') return false;
+  const verni = [r.otgovor].concat(r.oshte || []);
+  return verni.some(v => norm(v) === norm(dadeno));
+}
+function broiRedove(u){ return u.vid === 'dvoiki' ? u.dvojki.length : u.redove.length; }
+function otgovoreni(){
+  let n = 0;
+  DANNI.upr.forEach(function(u, ui){
+    for(let ri = 0; ri < broiRedove(u); ri++){
+      if(u.vid === 'dvoiki'){ if((S.dvoiki[ui] || {})[u.dvojki[ri][0]]) n++; }
+      else if(u.vid === 'red'){ if((S.red[kluch(ui, ri)] || []).length) n++; }
+      else if(S.otg[kluch(ui, ri)] != null && String(S.otg[kluch(ui, ri)]).trim() !== '') n++;
+    }
+  });
+  return n;
+}
+function osveji(){
+  const n = otgovoreni();
+  $('#progressFill').style.width = (OBSHTO ? Math.round(100 * n / OBSHTO) : 0) + '%';
+  $('#progressLabel').textContent = n + ' / ' + OBSHTO + ' отговорени';
+}
+
+function proveri(){
+  S.proveren = true;
+  let verni = 0;
+  DANNI.upr.forEach(function(u, ui){
+    for(let ri = 0; ri < broiRedove(u); ri++){
+      const red = $('#r-' + ui + '-' + ri);
+      const ok = verenLi(u, ui, ri);
+      if(ok) verni++;
+      if(u.vid === 'dvoiki'){
+        const p = u.dvojki[ri];
+        const l = $('#dv-' + ui + ' [data-l="' + CSS.escape(p[0]) + '"]');
+        const d = $('#dv-' + ui + ' [data-d="' + CSS.escape(p[1]) + '"]');
+        if(ok){ l.classList.add('svurzan'); d.classList.add('svurzan'); }
+        else {
+          l.classList.add('greshni'); d.classList.add('greshni');
+          l.innerHTML = ekraniraj(p[0]) + ' <span class="strelka">→</span> '
+                      + ekraniraj(p[1]);
+        }
+        continue;
+      }
+      red.classList.add(ok ? 'ok' : 'ne');
+      const bel = $('#ve-' + ui + '-' + ri);
+      bel.hidden = false;
+      if(ok){ bel.className = 'vqrno-e'; bel.textContent = '✓'; }
+      else {
+        bel.className = 'greshka-e';
+        bel.textContent = '✗ вярно е: ' + (u.redove[ri].otgovor);
+      }
+      if(u.vid === 'tap'){
+        $$('#r-' + ui + '-' + ri + ' .tap').forEach(function(b){
+          if(b.dataset.v === u.redove[ri].otgovor) b.classList.add('verni');
+          else if(b.classList.contains('izbran')) b.classList.add('greshni');
+        });
+      }
+    }
+    const z = $('#z-' + ui);
+    z.hidden = false;
+    z.innerHTML = '<b>Защо:</b> ' + ekraniraj(u.zashto);
+  });
+
+  $('#scoreNow').textContent = verni;
+  const proc = Math.round(100 * verni / OBSHTO);
+  const r = $('#result');
+  r.hidden = false;
+  $('#resultScore').textContent = verni + ' / ' + OBSHTO;
+  $('#resultTitle').textContent = proc >= 90 ? 'Monster champion!' :
+                                  proc >= 70 ? 'Well done!' : 'Good try!';
+  $('#resultSub').textContent = proc >= 90 ? DANNI.pohvali[0]
+                              : proc >= 70 ? DANNI.pohvali[1] : DANNI.pohvali[2];
+  r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  $('#checkBtn').disabled = true;
+  zapishi(verni);
+}
+
+function nulirai(){
+  S.otg = {}; S.dvoiki = {}; S.red = {}; S.proveren = false;
+  $('#result').hidden = true;
+  $('#checkBtn').disabled = false;
+  $('#scoreNow').textContent = '0';
+  risuvai();
+}
+
+/* ── записване в профила ─────────────────────────────────────────── */
+let zapisano = false;
+async function zapishi(verni){
+  const note = $('#savedNote');
+  if(typeof TLA === 'undefined' || !TLA.isConfigured() || zapisano) return;
+  zapisano = true;
+  const records = [];
+  DANNI.upr.forEach(function(u, ui){
+    for(let ri = 0; ri < broiRedove(u); ri++){
+      const ok = verenLi(u, ui, ri);
+      const uslovie = u.vid === 'dvoiki' ? u.dvojki[ri][0]
+                    : u.vid === 'red' ? '(подреди) ' + u.redove[ri].otgovor
+                    : (u.redove[ri].predi + ' ___ ' + (u.redove[ri].sled || '')).trim();
+      const dadeno = u.vid === 'dvoiki' ? ((S.dvoiki[ui] || {})[u.dvojki[ri][0]] || '')
+                   : u.vid === 'red' ? (S.red[kluch(ui, ri)] || []).map(x => x.duma).join(' ')
+                   : (S.otg[kluch(ui, ri)] || '');
+      records.push({
+        id: u.kod + '.' + (ri + 1),
+        points: 1,
+        text: u.ime + ' · ' + uslovie,
+        kind: 'free',
+        chosenAnswer: String(dadeno).trim() === '' ? '(без отговор)' : String(dadeno),
+        correctAnswer: u.vid === 'dvoiki' ? u.dvojki[ri][1] : u.redove[ri].otgovor,
+        earned: ok ? 1 : 0,
+        correct: ok,
+        explanation: u.zashto
+      });
+    }
+  });
+  try{
+    await TLA.saveAttempt(DANNI.slug, {
+      autoScore: verni, autoMax: OBSHTO, manualMax: null,
+      records: records, part2: null
+    });
+    note.textContent = '✓ Резултатът е записан в профила ти.';
+    note.hidden = false;
+  }catch(err){
+    note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
+    note.hidden = false;
+  }
+}
+
+/* ── палим ───────────────────────────────────────────────────────── */
+document.getElementById('signOutBtn').addEventListener('click', () => TLA.signOut());
+$('#checkBtn').addEventListener('click', proveri);
+$('#resetBtn').addEventListener('click', nulirai);
+
+(async function(){
+  const gate = $('#gate'), sheet = $('#sheet');
+  OBSHTO = DANNI.upr.reduce((n, u) => n + broiRedove(u), 0);
+  $('#scoreMax').textContent = OBSHTO;
+  if(typeof TLA === 'undefined' || !TLA.isConfigured()){
+    gate.textContent = 'Няма връзка с платформата. Отвори домашното отново от профила си.';
+    gate.hidden = false;
+    return;
+  }
+  const auth = await TLA.requireAuth();
+  if(!auth) return;
+  sheet.hidden = false;
+  risuvai();
+})();
+</script>
+</body>
+</html>

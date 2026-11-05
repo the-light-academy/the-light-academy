@@ -64,7 +64,11 @@ with proverki(подредба, какво, готово, файл) as (
     (14, 'Трите нови листа (НОД/НОК, рационални ниво 2, многочлени)',
         (select count(*) = 3 from public.assignments
           where slug in ('hw5-w09b','hw6-w10b','hw7-w06b')),
-        'supabase/assignments.sql')
+        'supabase/assignments.sql'),
+    (15, 'Домашното по английски за 4. клас (to be)',
+        (select exists (select 1 from public.assignments
+                         where slug = 'hw4-en-tobe')),
+        'supabase/domashno-angliyski-4.sql')
 )
 select подредба                                   as "№",
        какво,

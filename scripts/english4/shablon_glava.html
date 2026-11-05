@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Домашно — To be: am, is, are — 4. клас · The Light Academy</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Домашно по английски за 4. клас: глаголът to be — am, is, are. Десет упражнения със семейството чудовища: избор, попълване, кратки форми, отрицание, въпроси, кратки отговори, хващане на грешка, свързване и подреждане." />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap');
+
+/* =====================================================================
+   ДОМАШНО ПО АНГЛИЙСКИ — 4. клас: to be (am · is · are)
+   ---------------------------------------------------------------------
+   Десет упражнения около едно семейство чудовища. Четири вида работа:
+   щракане върху вярната дума, писане, свързване на двойки и подреждане
+   на разбъркани думи — за да не е десет пъти едно и също.
+
+   Листът е като другите домашни: иска вход, записва резултата в профила
+   на ученика и нищо не се оценява на ръка.
+
+   Задачите стоят в scripts/english4/tobe.py и се вграждат тук от
+   scripts/build_english4.py. Проверяват се от scripts/check_english4.py,
+   който ИЗВЕЖДА всеки отговор наново от правилата (I → am, you/we/they →
+   are, he/she/it → is; отрицание с not; въпрос с разместване), вместо да
+   вярва на написаното.
+   ===================================================================== */
+</style>
+<style>__BAR_CSS__</style>
+<style>
+/* ── листът ───────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Nunito',system-ui,sans-serif; font-size:17px; line-height:1.55;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:860px; margin:0 auto; padding:18px clamp(12px,4vw,24px) 120px}
+h1,h2,h3{font-family:'Fredoka',system-ui,sans-serif; margin:0}
+button{font:inherit; cursor:pointer}
+input{font:inherit}
+[hidden]{display:none !important}
+
+/* шапката на домашното */
+.hw{margin:18px 0 10px}
+.eyebrow{display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink);
+  background:var(--accent-soft); border-radius:999px; padding:6px 12px}
+.eyebrow .dot{width:7px; height:7px; border-radius:50%; background:var(--accent)}
+.hw h1{font-size:clamp(28px,6vw,42px); line-height:1.05; margin:10px 0 6px}
+.hw h1 em{font-style:normal; color:var(--accent-ink)}
+.subhead{color:var(--ink-soft); max-width:60ch}
+.monsters{display:flex; gap:10px; align-items:flex-end; margin:14px 0 2px}
+.progress-row{display:flex; align-items:center; gap:12px; margin-top:16px}
+.progress-track{flex:1; height:10px; border-radius:999px; background:var(--pencil-soft); overflow:hidden}
+.progress-fill{height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),#7ED3B2); transition:width .4s}
+.progress-label{font-weight:700; font-size:14px; color:var(--ink-soft); white-space:nowrap}
+
+/* картата на упражнението */
+.ex{background:var(--paper-raised); border:1px solid var(--grid); border-radius:20px;
+  padding:18px clamp(14px,3vw,22px); margin:16px 0; box-shadow:0 10px 30px hsl(var(--shadow) / .06)}
+.ex__top{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.ex__num{width:42px; height:42px; border-radius:14px; display:grid; place-items:center;
+  font-family:'Fredoka',sans-serif; font-size:20px; font-weight:700; color:#fff; flex:none}
+.ex__ime{font-family:'Fredoka',sans-serif; font-size:20px; line-height:1.1}
+.ex__bg{font-size:13px; color:var(--ink-soft)}
+.ex__ukazanie{margin:10px 0 14px; color:var(--ink-soft); font-size:15px}
+.redove{display:grid; gap:10px}
+
+/* ред с изречение */
+.red{display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:10px 12px; border-radius:14px; background:#FBF8F1; border:1px solid transparent}
+.red.shirok{flex-direction:column; align-items:stretch; gap:8px}
+.red.ok{background:var(--success-soft); border-color:#BBE3CC}
+.red.ne{background:var(--error-soft); border-color:#F2C9C6}
+.red .txt{font-size:18px}
+.red .nom{width:22px; font-weight:800; color:var(--ink-soft); font-size:14px; flex:none}
+.taps{display:flex; gap:6px; flex-wrap:wrap}
+.tap{border:2px solid var(--pencil-soft); background:#fff; border-radius:12px;
+  padding:6px 14px; font-weight:800; font-size:17px; color:var(--pencil); transition:.12s}
+.tap:hover{border-color:var(--accent); transform:translateY(-1px)}
+.tap.izbran{background:var(--pencil); border-color:var(--pencil); color:#fff}
+.tap.verni{background:var(--success-soft); border-color:#5FB98A; color:var(--success)}
+.tap.greshni{background:var(--error-soft); border-color:#D98B86; color:var(--error)}
+.dupka{width:96px; padding:6px 10px; border:2px solid var(--pencil-soft); border-radius:12px;
+  background:#fff; font-weight:800; font-size:17px; text-align:center; color:var(--pencil)}
+.dupka.dalga{width:min(100%,460px); text-align:left}
+.dupka:focus{outline:none; border-color:var(--accent)}
+.red.ok .dupka{border-color:#5FB98A; background:#fff}
+.red.ne .dupka{border-color:#D98B86}
+.vqrno-e{font-size:14px; font-weight:700; color:var(--success)}
+.greshka-e{font-size:14px; font-weight:700; color:var(--error)}
+
+/* свързване на двойки */
+.dvoiki{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.dvoiki .kol{display:grid; gap:8px}
+.dvoiki button{border:2px solid var(--pencil-soft); background:#fff; border-radius:14px;
+  padding:11px; font-weight:700; font-size:16px; transition:.12s}
+.dvoiki button:hover{border-color:var(--accent)}
+.dvoiki button.izbran{border-color:var(--pencil); background:var(--pencil-soft)}
+.dvoiki button.svurzan{border-color:#5FB98A; background:var(--success-soft);
+  color:var(--success); pointer-events:none}
+.dvoiki button.greshni{border-color:#D98B86; background:var(--error-soft)}
+.dvoiki button[data-d].svurzan{opacity:.4}
+.dvoiki button .strelka{color:var(--accent-ink)}
+
+/* подреждане на думи */
+.red-stroi{display:grid; gap:8px}
+.stroi-liniq{min-height:52px; border:2px dashed var(--pencil-soft); border-radius:14px;
+  padding:8px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; background:#fff}
+.stroi-liniq:empty::before{content:'тук се подрежда изречението'; color:#B9B2A2; font-size:14px}
+.duma{border:2px solid var(--pencil-soft); background:#fff; border-radius:11px;
+  padding:5px 12px; font-weight:800; font-size:17px; color:var(--pencil)}
+.duma:hover{border-color:var(--accent)}
+.duma.vzeta{opacity:.25; pointer-events:none}
+.stroi-liniq .duma{border-color:var(--accent); background:var(--accent-soft)}
+
+/* обяснението */
+.zashto{margin-top:12px; padding:10px 14px; border-radius:14px; background:var(--pencil-soft);
+  font-size:15px; color:var(--pencil)}
+.zashto b{font-family:'Fredoka',sans-serif}
+
+/* долната лента */
+.dock{position:fixed; left:0; right:0; bottom:0; z-index:40; padding:10px 12px;
+  background:rgba(255,253,247,.92); backdrop-filter:blur(10px);
+  border-top:1px solid var(--grid)}
+.dock-inner{max-width:860px; margin:0 auto; display:flex; align-items:center; gap:12px}
+.dock-score{font-weight:800}
+.dock-fill{flex:1}
+.dock button{border:none; border-radius:999px; padding:11px 22px; font-weight:800;
+  background:var(--accent); color:#4A2E02}
+.dock button.secondary{background:var(--pencil-soft); color:var(--pencil)}
+.dock button:hover{filter:brightness(1.05)}
+
+/* резултатът */
+.result{margin-top:22px; padding:22px; border-radius:22px; text-align:center;
+  background:var(--paper-raised); border:1px solid var(--grid)}
+.result h2{font-size:30px; margin-bottom:6px}
+.result .ocenka{font-size:46px; font-family:'Fredoka',sans-serif; color:var(--accent-ink)}
+.result-back{display:inline-block; margin-top:14px; font-weight:800; color:var(--pencil)}
+.saved-note{font-size:14px; color:var(--ink-soft); margin-top:8px}
+
+@media (max-width:560px){
+  .dvoiki{grid-template-columns:1fr}
+  .dupka{width:84px}
+  .dock-score{white-space:nowrap; font-size:14px}
+  .dock button{padding:11px 16px}
+  .dock-inner{gap:8px}
+}
+@media print{
+  .tlp-bar,.dock,.zashto{display:none !important}
+  .ex{break-inside:avoid; box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+
+<header class="tlp-bar">
+  <div class="tlp-bar__left">
+    <a href="index.html" class="tlp-bar__logo">
+      <img src="theLightAcademyLogo.png" alt="" />
+      <span class="tlp-bar__name">LightSpace</span>
+    </a>
+    <span class="tlp-bar__sep" aria-hidden="true"></span>
+    <span class="tlp-bar__where">
+      <span class="tlp-bar__long">Домашно · английски · 4. клас</span>
+      <span class="tlp-bar__short">Домашно</span>
+    </span>
+  </div>
+  <button type="button" class="tlp-bar__out" id="signOutBtn">Изход</button>
+</header>
+
+<p class="gate" id="gate" hidden></p>
+
+<div class="wrap" id="sheet" hidden>
+  <header class="hw">
+    <div class="eyebrow"><span class="dot"></span>Домашно · английски · 4. клас</div>
+    <h1>Monster Family Album<br /><em>to be</em> — am · is · are</h1>
+    <div class="subhead">Семейството чудовища се представя. За да им помогнеш, трябва ти
+      само един глагол — <b>to be</b>. Десет упражнения: щракаш, пишеш, свързваш и
+      подреждаш.</div>
+    <div class="monsters" id="monsters"></div>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 0 отговорени</div>
+    </div>
+  </header>
+
+  <div id="uprajneniq"></div>
+
+  <div class="result" id="result" hidden>
+    <h2 id="resultTitle"></h2>
+    <div class="ocenka" id="resultScore"></div>
+    <div id="resultSub" class="subhead" style="margin:0 auto"></div>
+    <p class="saved-note" id="savedNote" hidden></p>
+    <a class="result-back" href="portal.html">Към моя профил</a>
+  </div>
+</div>
+
+<div class="dock">
+  <div class="dock-inner">
+    <div class="dock-score"><b id="scoreNow">0</b>/<span id="scoreMax">0</span> верни</div>
+    <div class="dock-fill"></div>
+    <button class="secondary" id="resetBtn">Отначало</button>
+    <button id="checkBtn">Провери</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+/* ДАННИ:НАЧАЛО — пише ги scripts/build_english4.py; задачите са в scripts/english4/tobe.py */
+const DANNI = {};
+/* ДАННИ:КРАЙ */
+</script>
