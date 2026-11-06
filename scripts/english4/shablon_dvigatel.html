@@ -33,21 +33,53 @@ function razburkai(masiv, seme){
 const BOI = ['#8E6BEA', '#2BA8A0', '#F07C3E', '#E05C8A', '#4C7DF0',
              '#1FA463', '#C8541F', '#7A5BD6', '#2B8FBE', '#D4A017'];
 
-/* ── чудовищата в шапката: нарисувани, не емоджи ─────────────────── */
-function chudovishte(boia, ochi, vd){
-  const o = [];
-  for(let i = 0; i < ochi; i++){
-    const x = 28 + (i - (ochi - 1) / 2) * 20;
-    o.push('<circle cx="' + x + '" cy="30" r="7" fill="#fff"/>'
-         + '<circle cx="' + x + '" cy="31" r="3.4" fill="#16233F"/>');
+/* ── котетата в шапката: нарисувани, не емоджи ───────────────────── */
+/*  Едно котенце: глава, уши, мустаци, опашка. `kak` сменя дребното,
+    което ги прави различни — райета, панделка или петно на окото. */
+function kote(boia, kak){
+  const svet = 'rgba(255,255,255,.42)';   /* райета и петна — по-светли */
+  const roz = '#F2A0B4';
+  let dop = '';
+  if(kak === 1){                      /* райета по челото */
+    dop = '<path d="M21 14 q10 4 20 0 M19 20 q12 5 24 0" stroke="' + svet
+        + '" stroke-width="3.4" fill="none" stroke-linecap="round"/>';
+  }else if(kak === 2){                /* нашийник със звънче */
+    dop = '<path d="M20 43 q11 7 22 0" stroke="#fff" stroke-width="4.2"'
+        + ' fill="none" stroke-linecap="round"/>'
+        + '<circle cx="31" cy="48.5" r="4" fill="#F7AD19"/>'
+        + '<circle cx="31" cy="49.4" r="1.2" fill="#8A5A06"/>';
+  }else if(kak === 3){                /* петно около едното око */
+    dop = '<ellipse cx="22" cy="25" rx="9" ry="8.5" fill="' + svet + '"/>';
   }
-  return '<svg width="56" height="64" viewBox="0 0 56 64" role="img" aria-label="чудовище">'
-    + '<path d="M6 30a22 22 0 0 1 44 0v18a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="' + boia + '"/>'
-    + '<path d="M' + (vd ? '14 8 l6 10' : '42 8 l-6 10') + '" stroke="' + boia
-    + '" stroke-width="4" stroke-linecap="round"/>'
-    + '<circle cx="' + (vd ? 14 : 42) + '" cy="7" r="4" fill="' + boia + '"/>'
-    + o.join('')
-    + '<path d="M18 44 q10 8 20 0" stroke="#16233F" stroke-width="3" fill="none" stroke-linecap="round"/>'
+  return '<svg width="62" height="66" viewBox="0 0 62 66" role="img" aria-label="коте">'
+    /* опашка */
+    + '<path d="M48 56 q12 2 9-9" stroke="' + boia
+    + '" stroke-width="7" fill="none" stroke-linecap="round"/>'
+    /* тяло */
+    + '<path d="M10 63 q0-24 21-24 t21 24z" fill="' + boia + '"/>'
+    /* уши */
+    + '<path d="M13 20 l2-15 13 9z" fill="' + boia + '"/>'
+    + '<path d="M49 20 l-2-15-13 9z" fill="' + boia + '"/>'
+    + '<path d="M17 17 l1-8 7 5z" fill="' + roz + '"/>'
+    + '<path d="M45 17 l-1-8-7 5z" fill="' + roz + '"/>'
+    /* глава */
+    + '<ellipse cx="31" cy="26" rx="19" ry="17" fill="' + boia + '"/>'
+    + dop
+    /* очи */
+    + '<ellipse cx="23" cy="26" rx="4.6" ry="5.4" fill="#16233F"/>'
+    + '<ellipse cx="39" cy="26" rx="4.6" ry="5.4" fill="#16233F"/>'
+    + '<circle cx="24.6" cy="24" r="1.7" fill="#fff"/>'
+    + '<circle cx="40.6" cy="24" r="1.7" fill="#fff"/>'
+    /* нос и усмивка */
+    + '<path d="M28.5 33 h5 l-2.5 2.6z" fill="' + roz + '"/>'
+    + '<path d="M31 35.6 q-3 3.4-6 .6 M31 35.6 q3 3.4 6 .6" stroke="#16233F"'
+    + ' stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+    /* мустаци */
+    + '<path d="M12 29 l8 1 M12 34 l8-1 M50 29 l-8 1 M50 34 l-8-1" stroke="#16233F"'
+    + ' stroke-width="1.5" opacity=".55" stroke-linecap="round"/>'
+    /* лапички */
+    + '<ellipse cx="23" cy="61" rx="6" ry="3.6" fill="#fff" opacity=".75"/>'
+    + '<ellipse cx="39" cy="61" rx="6" ry="3.6" fill="#fff" opacity=".75"/>'
     + '</svg>';
 }
 
@@ -59,9 +91,8 @@ function kluch(ui, ri){ return ui + '-' + ri; }
 
 /* ── рисуване ────────────────────────────────────────────────────── */
 function risuvai(){
-  $('#monsters').innerHTML =
-    chudovishte(BOI[0], 2, true) + chudovishte(BOI[1], 1, false)
-    + chudovishte(BOI[3], 3, true) + chudovishte(BOI[2], 2, false);
+  $('#kotki').innerHTML =
+    kote(BOI[0], 1) + kote(BOI[1], 0) + kote(BOI[3], 2) + kote(BOI[2], 3);
 
   $('#uprajneniq').innerHTML = DANNI.upr.map(function(u, ui){
     const boia = BOI[ui % BOI.length];
@@ -307,7 +338,7 @@ function proveri(){
   const r = $('#result');
   r.hidden = false;
   $('#resultScore').textContent = verni + ' / ' + OBSHTO;
-  $('#resultTitle').textContent = proc >= 90 ? 'Monster champion!' :
+  $('#resultTitle').textContent = proc >= 90 ? 'Purrfect!' :
                                   proc >= 70 ? 'Well done!' : 'Good try!';
   $('#resultSub').textContent = proc >= 90 ? DANNI.pohvali[0]
                               : proc >= 70 ? DANNI.pohvali[1] : DANNI.pohvali[2];

@@ -1,5 +1,5 @@
 -- =====================================================================
---  Домашно по АНГЛИЙСКИ за 4. клас — „Monster Family Album“ (to be)
+--  Домашно по АНГЛИЙСКИ за 4. клас — „Cat Family Album“ (to be)
 --  ---------------------------------------------------------------------
 --  Листът е homework_4_english_to_be.html: десет упражнения върху
 --  глагола to be (am · is · are) — спрежението на „съм“. 49 отговора,
@@ -60,7 +60,7 @@ begin
      sort_order, week, subject_id, grades)
   values
     ('hw4-en-tobe',
-     'Домашно — To be: am, is, are (Monster Family Album)',
+     'Домашно — To be: am, is, are (Cat Family Album)',
      'homework',
      'homework_4_english_to_be.html',
      'Десет упражнения върху глагола to be: избор, попълване, кратки форми, '

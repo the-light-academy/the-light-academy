@@ -80,7 +80,7 @@ begin
     (slug, title, kind, url, description, max_points, published,
      sort_order, week, subject_id, grades)
   values
-    ('hw4-en-tobe', 'Домашно — To be: am, is, are (Monster Family Album)',
+    ('hw4-en-tobe', 'Домашно — To be: am, is, are (Cat Family Album)',
      'homework', 'homework_4_english_to_be.html', 'описание', 49, false, 408, 8,
      (select id from public.subjects where slug = 'angliiski'), '{4}')
   on conflict (slug) do update set
