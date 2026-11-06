@@ -88,12 +88,28 @@ Language focus, Speaking, Writing, Review, English Plus options) и
 — страниците в учебника вървят по строг модел и проверката го ползва,
 за да хване сбъркана цифра.
 
+## Unit 1 за 5. клас — петте листа
+
+`domashni-angliyski-5-u1.sql` вкарва домашното за 12 ноември, разделено
+на пет листа: разказът „The Lost Backpack“, подреждането, „Grammar
+Detective“, смесената граматика и речникът. Всички са по английски, за
+5. клас, в Unit 1 — всеки в своята част на юнита (Reading, Language
+focus, Review, Vocabulary) и без седмица.
+
+Разказът има и седем въпроса с цели изречения. Те не се проверяват
+автоматично: записват се в `part2` с `manual_max = 7` и излизат в
+таблото за ръчна оценка, заедно с образцов отговор към всеки.
+
+Страниците се сглобяват от `scripts/build_english5.py`, задачите стоят
+в `scripts/english5/`, а `scripts/check_english5.py` ги сверява наново
+с правилата на юнита.
+
 ## Тестовете
 
 `tests/*.sql` са в транзакция, която завършва с `rollback`, и отказват
-да тръгнат, ако видят истински данни. Седем от тях (`rls-test`,
+да тръгнат, ако видят истински данни. Осем от тях (`rls-test`,
 `lessons-test`, `feedback-test`, `english-test`, `english-homework-test`,
-`tracks-test`, `lesson-test`) вървят и върху съвсем празна база,
-направена само от файловете тук. Останалите четири (`race-test`, `academy-race-test`,
+`english5-unit1-test`, `tracks-test`, `lesson-test`) вървят и върху
+съвсем празна база, направена само от файловете тук. Останалите четири (`race-test`, `academy-race-test`,
 `birthday-test`, `starcard-test`) очакват хора, които съществуват в
 черновата база — там се пускат.
