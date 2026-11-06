@@ -60,9 +60,8 @@ begin
   perform pg_temp.chk('файл', a.url, 'homework_4_english_to_be.html'::text);
   perform pg_temp.chk('точки', a.max_points, 49::numeric);
   perform pg_temp.chk('клас', a.grades, array[4]);
-  perform pg_temp.chk('седмица 8 — там го търси порталът', a.week, 8);
-  perform pg_temp.chk('и застава до математиката за тази седмица',
-    a.sort_order, (select sort_order from public.assignments where slug = 'hw4-w08'));
+  --  Английският върви по юнити, не по седмици: седмица НЕ бива да има.
+  perform pg_temp.chk('без седмица — английският е по юнити', a.week, null::int);
   perform pg_temp.chk('още не се вижда', a.published, false);
 end $$;
 
@@ -81,7 +80,7 @@ begin
      sort_order, week, subject_id, grades)
   values
     ('hw4-en-tobe', 'Домашно — To be: am, is, are (Cat Family Album)',
-     'homework', 'homework_4_english_to_be.html', 'описание', 49, false, 408, 8,
+     'homework', 'homework_4_english_to_be.html', 'описание', 49, false, 408, null,
      (select id from public.subjects where slug = 'angliiski'), '{4}')
   on conflict (slug) do update set
     title = excluded.title, kind = excluded.kind, url = excluded.url,
