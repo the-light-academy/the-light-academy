@@ -28,7 +28,8 @@ KOREN = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOREN / 'scripts'))
 
 from english4.tobe import UPRAJNENIQ, GEROI, POHVALI  # noqa: E402
-from build_english4 import SLUG, IZHOD, broi_redove    # noqa: E402
+from build_english4 import SLUG, IZHOD              # noqa: E402
+from english.build import za_ocenka as broi_redove   # noqa: E402
 
 PROVERKI = 0
 GRESHKI = []

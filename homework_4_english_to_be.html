@@ -13,23 +13,30 @@
 </head>
 <body>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500&family=Pacifico&display=swap');
 
 /* =====================================================================
-   ДОМАШНО ПО АНГЛИЙСКИ — 4. клас: to be (am · is · are)
+   ОБЩИЯТ ЛИСТ ЗА ДОМАШНИТЕ ПО АНГЛИЙСКИ
    ---------------------------------------------------------------------
-   Десет упражнения около едно семейство котета. Четири вида работа:
-   щракане върху вярната дума, писане, свързване на двойки и подреждане
-   на разбъркани думи — за да не е десет пъти едно и също.
+   Един шаблон за всички листове по английски — 4. и 5. клас. Какво има
+   на него се решава от данните, не от разметката: заглавието, подзаглавието
+   и упражненията се вграждат при сглобяването.
 
-   Листът е като другите домашни: иска вход, записва резултата в профила
-   на ученика и нищо не се оценява на ръка.
+   Видовете работа са седем, за да не е десет пъти едно и също:
+     tap       щракане върху вярната дума
+     type      писане в празно място
+     dvoiki    свързване на двойки
+     red       подреждане на разбъркани думи
+     razkaz    цял разказ с празни места вътре в текста
+     greshka   щракане върху сгрешената дума в изречението
+     svoboden  свободен отговор, който преподавателят чете и оценява
 
-   Задачите стоят в scripts/english4/tobe.py и се вграждат тук от
-   scripts/build_english4.py. Проверяват се от scripts/check_english4.py,
-   който ИЗВЕЖДА всеки отговор наново от правилата (I → am, you/we/they →
-   are, he/she/it → is; отрицание с not; въпрос с разместване), вместо да
-   вярва на написаното.
+   Листът е като другите домашни: иска вход и записва резултата в профила
+   на ученика.
+
+   Сглобява се от scripts/english/build.py. Задачите стоят в
+   scripts/english4/ и scripts/english5/, а проверките ги сверяват наново
+   с правилата, вместо да вярват на написаното.
    ===================================================================== */
 </style>
 <style>:root{
@@ -225,6 +232,52 @@ input{font:inherit}
 .duma.vzeta{opacity:.25; pointer-events:none}
 .stroi-liniq .duma{border-color:var(--accent); background:var(--accent-soft)}
 
+/* кутията с думи над упражнението */
+.kutiq{margin:0 0 14px; padding:12px 14px; border-radius:16px;
+  background:var(--accent-soft); border:1px dashed var(--accent)}
+.kutiq b{display:block; font-family:'Fredoka',sans-serif; font-size:13px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:8px}
+.kutiq span{display:flex; flex-wrap:wrap; gap:6px}
+.kutiq i{font-style:normal; background:#fff; border:1px solid var(--grid);
+  border-radius:999px; padding:3px 11px; font-weight:700; font-size:15px; color:var(--pencil)}
+
+/* разказът с празни места вътре в текста */
+.razkaz{font-size:17.5px; line-height:2.1}
+.razkaz p{margin:0 0 6px}
+.razkaz p:empty{height:8px}
+.dupka-red{display:inline-flex; align-items:center; gap:4px}
+.dupka.dupka-v-tekst{width:118px; padding:2px 8px; font-size:16px; text-align:center}
+.dupka-red.ok .dupka{border-color:#5FB98A; background:var(--success-soft)}
+.dupka-red.ne .dupka{border-color:#D98B86; background:var(--error-soft)}
+.dupka-red .vqrno-e,.dupka-red .greshka-e{font-size:13px}
+
+/* хвани грешката: изречението е от бутони */
+.greshka-red .izrechenie{display:flex; flex-wrap:wrap; align-items:center; gap:4px;
+  font-size:17px}
+.duma-g{border:1.5px solid transparent; background:transparent; border-radius:9px;
+  padding:3px 7px; font-size:17px; color:var(--ink); transition:.12s}
+.duma-g:hover{border-color:var(--accent); background:#fff}
+.duma-g.posochena{background:var(--pencil); border-color:var(--pencil); color:#fff; font-weight:700}
+.duma-g.tochno{background:var(--success-soft); border-color:#5FB98A; color:var(--success);
+  font-weight:800}
+.duma-g.ne-tam{background:var(--error-soft); border-color:#D98B86; color:var(--error)}
+.greshka-red .krai{font-size:17px; margin-left:-4px}
+
+/* свободен отговор — чете го преподавателят */
+.svob-v{margin:0 0 8px; font-size:17px}
+.svob-v .nom{display:inline-block; margin-right:7px}
+.svob{width:100%; border:2px solid var(--pencil-soft); border-radius:12px; padding:9px 12px;
+  font:inherit; font-size:16px; color:var(--pencil); background:#fff; resize:vertical}
+.svob:focus{outline:none; border-color:var(--accent)}
+.svob[readonly]{background:#FBF8F1}
+.obrazec{margin:8px 0 0; padding:9px 12px; border-radius:12px; background:var(--success-soft);
+  font-size:15px; color:var(--success)}
+.obrazec b{font-family:'Fredoka',sans-serif}
+
+/* подсказката с първата буква */
+.podskazka{font-family:'JetBrains Mono',ui-monospace,monospace; font-size:15px;
+  letter-spacing:.14em; color:var(--ink-soft)}
+
 /* обяснението */
 .zashto{margin-top:12px; padding:10px 14px; border-radius:14px; background:var(--pencil-soft);
   font-size:15px; color:var(--pencil)}
@@ -251,6 +304,8 @@ input{font:inherit}
 .saved-note{font-size:14px; color:var(--ink-soft); margin-top:8px}
 
 @media (max-width:560px){
+  .razkaz{font-size:16px; line-height:2}
+  .dupka.dupka-v-tekst{width:96px}
   .dvoiki{grid-template-columns:1fr}
   .dupka{width:84px}
   .dock-score{white-space:nowrap; font-size:14px}
@@ -322,6 +377,7 @@ input{font:inherit}
 /* ДАННИ:НАЧАЛО — пише ги scripts/build_english4.py; задачите са в scripts/english4/tobe.py */
 const DANNI = {
  "slug": "hw4-en-tobe",
+ "shapka": "kotki",
  "upr": [
   {
    "kod": "1",
@@ -721,8 +777,9 @@ function ekraniraj(t){
 function norm(t){
   return String(t == null ? '' : t).toLowerCase()
     .replace(/[’ʼ`]/g, "'")
+    .replace(/,/g, '')
     .replace(/\s+/g, ' ')
-    .replace(/\s+([?!.,])/g, '$1')
+    .replace(/\s+([?!.])/g, '$1')
     .replace(/[.!?]+$/, '')
     .trim();
 }
@@ -791,16 +848,61 @@ function kote(boia, kak){
     + '</svg>';
 }
 
+/* ── градът в шапката: местата от Unit 1, нарисувани ──────────────── */
+/*  0 библиотека · 1 кино · 2 кафене · 3 гара · 4 парк  */
+function sgrada(boia, kak){
+  const tyh = 'rgba(0,0,0,.14)', bql = 'rgba(255,255,255,.9)';
+  let telo = '', znak = '';
+  if(kak === 0){                      /* библиотека: колони и фронтон */
+    telo = '<rect x="8" y="22" width="48" height="34" rx="3" fill="' + boia + '"/>'
+         + '<path d="M4 22 L32 8 L60 22z" fill="' + boia + '"/>'
+         + [14, 24, 34, 44].map(x => '<rect x="' + x + '" y="28" width="6" height="28" '
+             + 'fill="' + bql + '" opacity=".55"/>').join('');
+    znak = '<rect x="26" y="40" width="12" height="9" rx="1.5" fill="#fff"/>'
+         + '<path d="M32 40 v9" stroke="' + boia + '" stroke-width="1.4"/>';
+  }else if(kak === 1){                /* кино: екран и звезда */
+    telo = '<rect x="8" y="14" width="48" height="42" rx="4" fill="' + boia + '"/>'
+         + '<rect x="14" y="22" width="36" height="20" rx="2" fill="' + bql + '" opacity=".85"/>';
+    znak = '<path d="M32 25 l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" '
+         + 'fill="' + boia + '"/>';
+  }else if(kak === 2){                /* кафене: чаша и навес */
+    telo = '<rect x="10" y="24" width="44" height="32" rx="3" fill="' + boia + '"/>'
+         + '<path d="M6 24 h52 l-4-8 H10z" fill="' + tyh + '"/>';
+    znak = '<path d="M22 36 h16 v8 a8 8 0 0 1-16 0z" fill="#fff"/>'
+         + '<path d="M38 38 h4 a3.5 3.5 0 0 1 0 7h-4" stroke="#fff" stroke-width="2.4" fill="none"/>'
+         + '<path d="M26 30 q2-3 0-6 M32 30 q2-3 0-6" stroke="#fff" stroke-width="1.8" '
+         + 'fill="none" stroke-linecap="round" opacity=".8"/>';
+  }else if(kak === 3){                /* гара: часовник и перон */
+    telo = '<rect x="10" y="18" width="44" height="38" rx="3" fill="' + boia + '"/>'
+         + '<rect x="4" y="50" width="56" height="6" rx="2" fill="' + tyh + '"/>';
+    znak = '<circle cx="32" cy="32" r="10" fill="#fff"/>'
+         + '<path d="M32 26 v6 l4 3" stroke="' + boia + '" stroke-width="2.4" '
+         + 'fill="none" stroke-linecap="round"/>';
+  }else{                              /* парк: дърво и пейка */
+    telo = '<rect x="6" y="50" width="52" height="6" rx="3" fill="' + boia + '" opacity=".35"/>'
+         + '<circle cx="32" cy="26" r="16" fill="' + boia + '"/>'
+         + '<circle cx="20" cy="33" r="9" fill="' + boia + '" opacity=".85"/>'
+         + '<circle cx="44" cy="33" r="9" fill="' + boia + '" opacity=".85"/>';
+    znak = '<rect x="29" y="38" width="6" height="14" rx="2" fill="#8A5A30"/>';
+  }
+  return '<svg width="64" height="60" viewBox="0 0 64 60" role="img" aria-label="място">'
+    + telo + znak + '</svg>';
+}
+
 /* ── състояние ───────────────────────────────────────────────────── */
-const S = { otg: {}, dvoiki: {}, red: {}, proveren: false };
+const S = { otg: {}, dvoiki: {}, red: {}, greshki: {}, proveren: false };
 let OBSHTO = 0;
 
 function kluch(ui, ri){ return ui + '-' + ri; }
 
 /* ── рисуване ────────────────────────────────────────────────────── */
 function risuvai(){
-  $('#kotki').innerHTML =
-    kote(BOI[0], 1) + kote(BOI[1], 0) + kote(BOI[3], 2) + kote(BOI[2], 3);
+  const shapka = $('#kotki');
+  if(DANNI.shapka === 'kotki')
+    shapka.innerHTML = kote(BOI[0], 1) + kote(BOI[1], 0) + kote(BOI[3], 2) + kote(BOI[2], 3);
+  else if(DANNI.shapka === 'grad')
+    shapka.innerHTML = [0,1,2,3,4].map(i => sgrada(BOI[i], i)).join('');
+  else shapka.hidden = true;
 
   $('#uprajneniq').innerHTML = DANNI.upr.map(function(u, ui){
     const boia = BOI[ui % BOI.length];
@@ -810,6 +912,8 @@ function risuvai(){
       +   '<div><div class="ex__ime">' + ekraniraj(u.ime) + '</div>'
       +   '<div class="ex__bg">' + ekraniraj(u.bg) + '</div></div></div>'
       + '<p class="ex__ukazanie">' + ekraniraj(u.ukazanie) + '</p>'
+      + (u.kutiq ? '<div class="kutiq"><b>Word Box</b><span>'
+          + u.kutiq.map(d => '<i>' + ekraniraj(d) + '</i>').join('') + '</span></div>' : '')
       + tqlo(u, ui)
       + '<div class="zashto" id="z-' + ui + '" hidden></div>'
       + '</section>';
@@ -817,9 +921,11 @@ function risuvai(){
 
   DANNI.upr.forEach(function(u, ui){
     if(u.vid === 'tap') vurjiTap(u, ui);
-    else if(u.vid === 'type') vurjiType(u, ui);
+    else if(u.vid === 'type' || u.vid === 'razkaz') vurjiType(u, ui);
     else if(u.vid === 'dvoiki') vurjiDvoiki(u, ui);
     else if(u.vid === 'red') vurjiRed(u, ui);
+    else if(u.vid === 'greshka') vurjiGreshka(u, ui);
+    else if(u.vid === 'svoboden') vurjiSvoboden(u, ui);
   });
   osveji();
 }
@@ -850,7 +956,50 @@ function tqlo(u, ui){
         +   'type="text" autocomplete="off" autocapitalize="off" spellcheck="false" '
         +   'data-u="' + ui + '" data-r="' + ri + '" placeholder="' + (dalgo ? '…' : '?') + '" />'
         + (r.sled ? '<span class="txt">' + ekraniraj(r.sled) + '</span>' : '')
+        + (r.podskazka ? '<span class="podskazka">' + ekraniraj(r.podskazka) + '</span>' : '')
         + '<span class="vqrno-e" id="ve-' + ui + '-' + ri + '" hidden></span></div>';
+    }).join('') + '</div>';
+  }
+  if(u.vid === 'razkaz'){
+    /* Разказът се изписва цял, а празните места са вътре в текста: така
+       се чете като история, а не като списък от редове. */
+    let n = -1;
+    const tqlo_ = ekraniraj(u.tekst).replace(/[{](\d+)[}]/g, function(_, nomer){
+      n++;
+      const ri = n;
+      return '<span class="dupka-red" id="r-' + ui + '-' + ri + '">'
+           + '<input class="dupka dupka-v-tekst" id="i-' + ui + '-' + ri + '" type="text" '
+           + 'autocomplete="off" autocapitalize="off" spellcheck="false" '
+           + 'data-u="' + ui + '" data-r="' + ri + '" placeholder="' + nomer + '" />'
+           + '<span class="vqrno-e" id="ve-' + ui + '-' + ri + '" hidden></span></span>';
+    });
+    return '<div class="razkaz">'
+      + tqlo_.split('\n').map(red => '<p>' + red + '</p>').join('')
+      + '</div>';
+  }
+  if(u.vid === 'greshka'){
+    return '<div class="redove">' + u.redove.map(function(r, ri){
+      return '<div class="red shirok greshka-red" id="r-' + ui + '-' + ri + '">'
+        + '<div class="izrechenie">'
+        +   '<span class="nom">' + (ri + 1) + '</span>'
+        +   r.dumi.map(function(d, di){
+              return '<button class="duma-g" data-u="' + ui + '" data-r="' + ri + '" '
+                   + 'data-i="' + di + '">' + ekraniraj(d) + '</button>';
+            }).join('')
+        +   '<span class="krai">' + ekraniraj(r.krai || '') + '</span>'
+        + '</div>'
+        + '<span class="vqrno-e" id="ve-' + ui + '-' + ri + '" hidden></span></div>';
+    }).join('') + '</div>';
+  }
+  if(u.vid === 'svoboden'){
+    return '<div class="redove">' + u.redove.map(function(r, ri){
+      return '<div class="red shirok" id="r-' + ui + '-' + ri + '">'
+        + '<p class="svob-v"><span class="nom">' + (ri + 1) + '</span>'
+        +   ekraniraj(r.vupros) + '</p>'
+        + '<textarea class="svob" id="t-' + ui + '-' + ri + '" rows="2" '
+        +   'data-u="' + ui + '" data-r="' + ri + '" '
+        +   'placeholder="Write a full sentence\u2026"></textarea>'
+        + '<p class="obrazec" id="o-' + ui + '-' + ri + '" hidden></p></div>';
     }).join('') + '</div>';
   }
   if(u.vid === 'dvoiki'){
@@ -865,7 +1014,10 @@ function tqlo(u, ui){
   }
   /* подреждане */
   return '<div class="redove">' + u.redove.map(function(r, ri){
-    const dumi = razburkai(r.otgovor.split(' '), 'r' + ui + ri);
+    /* Ако листът носи своето разбъркване (както е на хартия), то се
+       ползва; иначе се разбърква тук, но винаги по един и същи начин. */
+    const dumi = r.razburkano ? r.razburkano.slice()
+                              : razburkai(r.otgovor.split(' '), 'r' + ui + ri);
     return '<div class="red shirok" id="r-' + ui + '-' + ri + '">'
       + '<div class="red-stroi">'
       +   '<div class="stroi-liniq" id="l-' + ui + '-' + ri + '"></div>'
@@ -897,6 +1049,30 @@ function vurjiType(u, ui){
       osveji();
     });
     inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') proveri(); });
+  });
+}
+/* Щракането върху сгрешената дума: включва се и се изключва, защото
+   едно от изреченията има две грешки и детето трябва да може да си
+   поправи избора. */
+function vurjiGreshka(u, ui){
+  $$('#ex-' + ui + ' .duma-g').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(S.proveren) return;
+      const ri = +b.dataset.r, di = +b.dataset.i, k = kluch(ui, ri);
+      const vzeti = S.greshki[k] || (S.greshki[k] = []);
+      const mqsto = vzeti.indexOf(di);
+      if(mqsto === -1){ vzeti.push(di); b.classList.add('posochena'); }
+      else { vzeti.splice(mqsto, 1); b.classList.remove('posochena'); }
+      osveji();
+    });
+  });
+}
+function vurjiSvoboden(u, ui){
+  $$('#ex-' + ui + ' .svob').forEach(function(t){
+    t.addEventListener('input', function(){
+      S.otg[kluch(ui, +t.dataset.r)] = t.value;
+      osveji();
+    });
   });
 }
 function vurjiDvoiki(u, ui){
@@ -968,11 +1144,35 @@ function prerisuvaiRed(ui, ri){
 }
 
 /* ── проверка ────────────────────────────────────────────────────── */
+/* Вярното на един ред, както се показва при грешка. */
+function vqrnoto(u, ri){
+  if(u.vid === 'razkaz') return u.dupki[ri].otgovor;
+  if(u.vid === 'greshka') return u.redove[ri].vqrno;
+  return u.redove[ri].otgovor;
+}
+/* Свободните отговори ги чете преподавателят: те не носят точки тук и
+   не влизат в броя верни. Затова се питат отделно. */
+function rucheno(u){ return u.vid === 'svoboden'; }
+
 function verenLi(u, ui, ri){
   const r = (u.redove || [])[ri];
   if(u.vid === 'dvoiki'){
     const p = u.dvojki[ri];
     return (S.dvoiki[ui] || {})[p[0]] === p[1];
+  }
+  if(u.vid === 'razkaz'){
+    const dadeno = S.otg[kluch(ui, ri)];
+    if(dadeno == null || String(dadeno).trim() === '') return false;
+    const o = u.dupki[ri];
+    return [o.otgovor].concat(o.oshte || []).some(v => norm(v) === norm(dadeno));
+  }
+  if(u.vid === 'greshka'){
+    /* Вярно е, когато посочените думи са точно тези, които трябва:
+       нито по-малко, нито една в повече. */
+    const dadeni = (S.greshki[kluch(ui, ri)] || []).slice().sort((a, b) => a - b);
+    const trqbva = r.greshni.slice().sort((a, b) => a - b);
+    return dadeni.length === trqbva.length
+        && dadeni.every((x, i) => x === trqbva[i]);
   }
   if(u.vid === 'red'){
     const dadeno = (S.red[kluch(ui, ri)] || []).map(x => x.duma).join(' ');
@@ -983,13 +1183,20 @@ function verenLi(u, ui, ri){
   const verni = [r.otgovor].concat(r.oshte || []);
   return verni.some(v => norm(v) === norm(dadeno));
 }
-function broiRedove(u){ return u.vid === 'dvoiki' ? u.dvojki.length : u.redove.length; }
+function broiRedove(u){
+  if(u.vid === 'dvoiki') return u.dvojki.length;
+  if(u.vid === 'razkaz') return u.dupki.length;
+  return u.redove.length;
+}
+/* Колко от тях се броят за оценка — свободните отговори не се броят. */
+function broiZaOcenka(u){ return rucheno(u) ? 0 : broiRedove(u); }
 function otgovoreni(){
   let n = 0;
   DANNI.upr.forEach(function(u, ui){
-    for(let ri = 0; ri < broiRedove(u); ri++){
+    for(let ri = 0; ri < broiZaOcenka(u); ri++){
       if(u.vid === 'dvoiki'){ if((S.dvoiki[ui] || {})[u.dvojki[ri][0]]) n++; }
       else if(u.vid === 'red'){ if((S.red[kluch(ui, ri)] || []).length) n++; }
+      else if(u.vid === 'greshka'){ if((S.greshki[kluch(ui, ri)] || []).length) n++; }
       else if(S.otg[kluch(ui, ri)] != null && String(S.otg[kluch(ui, ri)]).trim() !== '') n++;
     }
   });
@@ -1005,6 +1212,20 @@ function proveri(){
   S.proveren = true;
   let verni = 0;
   DANNI.upr.forEach(function(u, ui){
+    if(rucheno(u)){
+      /* Тук няма вярно и грешно: отговорът отива при преподавателя, а
+         детето вижда един възможен образец, за да се сравни. */
+      u.redove.forEach(function(r, ri){
+        const o = $('#o-' + ui + '-' + ri);
+        o.hidden = false;
+        o.innerHTML = '<b>One possible answer:</b> ' + ekraniraj(r.obrazec);
+        $('#t-' + ui + '-' + ri).readOnly = true;
+      });
+      const z0 = $('#z-' + ui);
+      z0.hidden = false;
+      z0.innerHTML = '<b>Защо:</b> ' + ekraniraj(u.zashto);
+      return;
+    }
     for(let ri = 0; ri < broiRedove(u); ri++){
       const red = $('#r-' + ui + '-' + ri);
       const ok = verenLi(u, ui, ri);
@@ -1027,7 +1248,17 @@ function proveri(){
       if(ok){ bel.className = 'vqrno-e'; bel.textContent = '✓'; }
       else {
         bel.className = 'greshka-e';
-        bel.textContent = '✗ вярно е: ' + (u.redove[ri].otgovor);
+        const kaztova = (u.vid === 'razkaz' ? u.dupki[ri] : u.redove[ri]).zashto;
+        bel.textContent = '✗ вярно е: ' + vqrnoto(u, ri) + (kaztova ? ' — ' + kaztova : '');
+      }
+      if(u.vid === 'greshka'){
+        /* Показва се кои думи са били сгрешени и как звучи поправено. */
+        const r2 = u.redove[ri];
+        $$('#r-' + ui + '-' + ri + ' .duma-g').forEach(function(b){
+          const di = +b.dataset.i;
+          if(r2.greshni.indexOf(di) !== -1) b.classList.add('tochno');
+          else if(b.classList.contains('posochena')) b.classList.add('ne-tam');
+        });
       }
       if(u.vid === 'tap'){
         $$('#r-' + ui + '-' + ri + ' .tap').forEach(function(b){
@@ -1046,8 +1277,9 @@ function proveri(){
   const r = $('#result');
   r.hidden = false;
   $('#resultScore').textContent = verni + ' / ' + OBSHTO;
-  $('#resultTitle').textContent = proc >= 90 ? 'Purrfect!' :
-                                  proc >= 70 ? 'Well done!' : 'Good try!';
+  const titli = DANNI.titli || ['Purrfect!', 'Well done!', 'Good try!'];
+  $('#resultTitle').textContent = proc >= 90 ? titli[0]
+                                : proc >= 70 ? titli[1] : titli[2];
   $('#resultSub').textContent = proc >= 90 ? DANNI.pohvali[0]
                               : proc >= 70 ? DANNI.pohvali[1] : DANNI.pohvali[2];
   r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1056,7 +1288,7 @@ function proveri(){
 }
 
 function nulirai(){
-  S.otg = {}; S.dvoiki = {}; S.red = {}; S.proveren = false;
+  S.otg = {}; S.dvoiki = {}; S.red = {}; S.greshki = {}; S.proveren = false;
   $('#result').hidden = true;
   $('#checkBtn').disabled = false;
   $('#scoreNow').textContent = '0';
@@ -1069,15 +1301,36 @@ async function zapishi(verni){
   const note = $('#savedNote');
   if(typeof TLA === 'undefined' || !TLA.isConfigured() || zapisano) return;
   zapisano = true;
-  const records = [];
+  const records = [], svobodni = [];
   DANNI.upr.forEach(function(u, ui){
+    if(rucheno(u)){
+      /* Свободните отговори отиват в part2 — точно във формата, която
+         таблото чете, за да ги покаже за ръчна оценка. */
+      u.redove.forEach(function(r, ri){
+        const dadeno = String(S.otg[kluch(ui, ri)] || '').trim();
+        svobodni.push({
+          id: u.kod + '.' + (ri + 1),
+          taskId: u.kod,
+          points: 1,
+          prompt: r.vupros,
+          studentAnswer: dadeno || '(няма отговор)',
+          solution: r.obrazec
+        });
+      });
+      return;
+    }
     for(let ri = 0; ri < broiRedove(u); ri++){
       const ok = verenLi(u, ui, ri);
       const uslovie = u.vid === 'dvoiki' ? u.dvojki[ri][0]
                     : u.vid === 'red' ? '(подреди) ' + u.redove[ri].otgovor
+                    : u.vid === 'greshka' ? '(хвани грешката) ' + u.redove[ri].izr
+                    : u.vid === 'razkaz' ? '(празно място ' + (ri + 1) + ')'
                     : (u.redove[ri].predi + ' ___ ' + (u.redove[ri].sled || '')).trim();
       const dadeno = u.vid === 'dvoiki' ? ((S.dvoiki[ui] || {})[u.dvojki[ri][0]] || '')
                    : u.vid === 'red' ? (S.red[kluch(ui, ri)] || []).map(x => x.duma).join(' ')
+                   : u.vid === 'greshka'
+                       ? (S.greshki[kluch(ui, ri)] || []).slice().sort((a, b) => a - b)
+                           .map(i => u.redove[ri].dumi[i]).join(' ')
                    : (S.otg[kluch(ui, ri)] || '');
       records.push({
         id: u.kod + '.' + (ri + 1),
@@ -1085,7 +1338,7 @@ async function zapishi(verni){
         text: u.ime + ' · ' + uslovie,
         kind: 'free',
         chosenAnswer: String(dadeno).trim() === '' ? '(без отговор)' : String(dadeno),
-        correctAnswer: u.vid === 'dvoiki' ? u.dvojki[ri][1] : u.redove[ri].otgovor,
+        correctAnswer: u.vid === 'dvoiki' ? u.dvojki[ri][1] : vqrnoto(u, ri),
         earned: ok ? 1 : 0,
         correct: ok,
         explanation: u.zashto
@@ -1094,10 +1347,13 @@ async function zapishi(verni){
   });
   try{
     await TLA.saveAttempt(DANNI.slug, {
-      autoScore: verni, autoMax: OBSHTO, manualMax: null,
-      records: records, part2: null
+      autoScore: verni, autoMax: OBSHTO,
+      manualMax: svobodni.length ? svobodni.length : null,
+      records: records, part2: svobodni.length ? svobodni : null
     });
-    note.textContent = '✓ Резултатът е записан в профила ти.';
+    note.textContent = svobodni.length
+      ? '\u2713 Записано. Свободните отговори ги проверява преподавателят.'
+      : '\u2713 Резултатът е записан в профила ти.';
     note.hidden = false;
   }catch(err){
     note.textContent = 'Резултатът не беше записан: ' + (err.message || err);
@@ -1112,7 +1368,7 @@ $('#resetBtn').addEventListener('click', nulirai);
 
 (async function(){
   const gate = $('#gate'), sheet = $('#sheet');
-  OBSHTO = DANNI.upr.reduce((n, u) => n + broiRedove(u), 0);
+  OBSHTO = DANNI.upr.reduce((n, u) => n + broiZaOcenka(u), 0);
   $('#scoreMax').textContent = OBSHTO;
   if(typeof TLA === 'undefined' || !TLA.isConfigured()){
     gate.textContent = 'Няма връзка с платформата. Отвори домашното отново от профила си.';

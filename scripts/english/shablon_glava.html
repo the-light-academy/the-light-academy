@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Домашно — To be: am, is, are — 4. клас · The Light Academy</title>
+<title>__TITLE__ · The Light Academy</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Домашно по английски за 4. клас: глаголът to be — am, is, are. Десет упражнения със семейството котета: избор, попълване, кратки форми, отрицание, въпроси, кратки отговори, хващане на грешка, свързване и подреждане." />
+<meta name="description" content="__OPISANIE__" />
 <link rel="icon" href="favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,23 +13,30 @@
 </head>
 <body>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500&family=Pacifico&display=swap');
 
 /* =====================================================================
-   ДОМАШНО ПО АНГЛИЙСКИ — 4. клас: to be (am · is · are)
+   ОБЩИЯТ ЛИСТ ЗА ДОМАШНИТЕ ПО АНГЛИЙСКИ
    ---------------------------------------------------------------------
-   Десет упражнения около едно семейство котета. Четири вида работа:
-   щракане върху вярната дума, писане, свързване на двойки и подреждане
-   на разбъркани думи — за да не е десет пъти едно и също.
+   Един шаблон за всички листове по английски — 4. и 5. клас. Какво има
+   на него се решава от данните, не от разметката: заглавието, подзаглавието
+   и упражненията се вграждат при сглобяването.
 
-   Листът е като другите домашни: иска вход, записва резултата в профила
-   на ученика и нищо не се оценява на ръка.
+   Видовете работа са седем, за да не е десет пъти едно и също:
+     tap       щракане върху вярната дума
+     type      писане в празно място
+     dvoiki    свързване на двойки
+     red       подреждане на разбъркани думи
+     razkaz    цял разказ с празни места вътре в текста
+     greshka   щракане върху сгрешената дума в изречението
+     svoboden  свободен отговор, който преподавателят чете и оценява
 
-   Задачите стоят в scripts/english4/tobe.py и се вграждат тук от
-   scripts/build_english4.py. Проверяват се от scripts/check_english4.py,
-   който ИЗВЕЖДА всеки отговор наново от правилата (I → am, you/we/they →
-   are, he/she/it → is; отрицание с not; въпрос с разместване), вместо да
-   вярва на написаното.
+   Листът е като другите домашни: иска вход и записва резултата в профила
+   на ученика.
+
+   Сглобява се от scripts/english/build.py. Задачите стоят в
+   scripts/english4/ и scripts/english5/, а проверките ги сверяват наново
+   с правилата, вместо да вярват на написаното.
    ===================================================================== */
 </style>
 <style>__BAR_CSS__</style>
@@ -122,6 +129,52 @@ input{font:inherit}
 .duma.vzeta{opacity:.25; pointer-events:none}
 .stroi-liniq .duma{border-color:var(--accent); background:var(--accent-soft)}
 
+/* кутията с думи над упражнението */
+.kutiq{margin:0 0 14px; padding:12px 14px; border-radius:16px;
+  background:var(--accent-soft); border:1px dashed var(--accent)}
+.kutiq b{display:block; font-family:'Fredoka',sans-serif; font-size:13px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:8px}
+.kutiq span{display:flex; flex-wrap:wrap; gap:6px}
+.kutiq i{font-style:normal; background:#fff; border:1px solid var(--grid);
+  border-radius:999px; padding:3px 11px; font-weight:700; font-size:15px; color:var(--pencil)}
+
+/* разказът с празни места вътре в текста */
+.razkaz{font-size:17.5px; line-height:2.1}
+.razkaz p{margin:0 0 6px}
+.razkaz p:empty{height:8px}
+.dupka-red{display:inline-flex; align-items:center; gap:4px}
+.dupka.dupka-v-tekst{width:118px; padding:2px 8px; font-size:16px; text-align:center}
+.dupka-red.ok .dupka{border-color:#5FB98A; background:var(--success-soft)}
+.dupka-red.ne .dupka{border-color:#D98B86; background:var(--error-soft)}
+.dupka-red .vqrno-e,.dupka-red .greshka-e{font-size:13px}
+
+/* хвани грешката: изречението е от бутони */
+.greshka-red .izrechenie{display:flex; flex-wrap:wrap; align-items:center; gap:4px;
+  font-size:17px}
+.duma-g{border:1.5px solid transparent; background:transparent; border-radius:9px;
+  padding:3px 7px; font-size:17px; color:var(--ink); transition:.12s}
+.duma-g:hover{border-color:var(--accent); background:#fff}
+.duma-g.posochena{background:var(--pencil); border-color:var(--pencil); color:#fff; font-weight:700}
+.duma-g.tochno{background:var(--success-soft); border-color:#5FB98A; color:var(--success);
+  font-weight:800}
+.duma-g.ne-tam{background:var(--error-soft); border-color:#D98B86; color:var(--error)}
+.greshka-red .krai{font-size:17px; margin-left:-4px}
+
+/* свободен отговор — чете го преподавателят */
+.svob-v{margin:0 0 8px; font-size:17px}
+.svob-v .nom{display:inline-block; margin-right:7px}
+.svob{width:100%; border:2px solid var(--pencil-soft); border-radius:12px; padding:9px 12px;
+  font:inherit; font-size:16px; color:var(--pencil); background:#fff; resize:vertical}
+.svob:focus{outline:none; border-color:var(--accent)}
+.svob[readonly]{background:#FBF8F1}
+.obrazec{margin:8px 0 0; padding:9px 12px; border-radius:12px; background:var(--success-soft);
+  font-size:15px; color:var(--success)}
+.obrazec b{font-family:'Fredoka',sans-serif}
+
+/* подсказката с първата буква */
+.podskazka{font-family:'JetBrains Mono',ui-monospace,monospace; font-size:15px;
+  letter-spacing:.14em; color:var(--ink-soft)}
+
 /* обяснението */
 .zashto{margin-top:12px; padding:10px 14px; border-radius:14px; background:var(--pencil-soft);
   font-size:15px; color:var(--pencil)}
@@ -148,6 +201,8 @@ input{font:inherit}
 .saved-note{font-size:14px; color:var(--ink-soft); margin-top:8px}
 
 @media (max-width:560px){
+  .razkaz{font-size:16px; line-height:2}
+  .dupka.dupka-v-tekst{width:96px}
   .dvoiki{grid-template-columns:1fr}
   .dupka{width:84px}
   .dock-score{white-space:nowrap; font-size:14px}
@@ -169,7 +224,7 @@ input{font:inherit}
     </a>
     <span class="tlp-bar__sep" aria-hidden="true"></span>
     <span class="tlp-bar__where">
-      <span class="tlp-bar__long">Домашно · английски · 4. клас</span>
+      <span class="tlp-bar__long">__LENTA__</span>
       <span class="tlp-bar__short">Домашно</span>
     </span>
   </div>
@@ -180,11 +235,9 @@ input{font:inherit}
 
 <div class="wrap" id="sheet" hidden>
   <header class="hw">
-    <div class="eyebrow"><span class="dot"></span>Домашно · английски · 4. клас</div>
-    <h1>Cat Family Album<br /><em>to be</em> — am · is · are</h1>
-    <div class="subhead">Семейството котета се представя: Milo, Daisy, Luna и
-      близнаците Tom и Tim. За да им помогнеш, трябва ти само един глагол —
-      <b>to be</b>. Десет упражнения: щракаш, пишеш, свързваш и подреждаш.</div>
+    <div class="eyebrow"><span class="dot"></span>__NADPIS__</div>
+    <h1>__H1__</h1>
+    <div class="subhead">__PODNASLOV__</div>
     <div class="kotki" id="kotki"></div>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>

@@ -84,7 +84,12 @@ with proverki(подредба, какво, готово, файл) as (
            select 1 from public.assignments a
              join public.subjects s on s.id = a.subject_id
             where s.slug = 'angliiski' and a.week is not null)),
-        'supabase/domashno-angliyski-4.sql')
+        'supabase/domashno-angliyski-4.sql'),
+    --  Домашното на Кали за 12 ноември, разделено на пет листа в Unit 1.
+    (18, 'Петте листа за 5. клас, Unit 1 (English Plus 1)',
+        (select count(*) = 5 from public.assignments
+          where slug like 'en5-u1-%' and track = 'ep1_unit1'),
+        'supabase/domashni-angliyski-5-u1.sql')
 )
 select подредба                                   as "№",
        какво,
