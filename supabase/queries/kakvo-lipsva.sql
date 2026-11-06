@@ -68,6 +68,22 @@ with proverki(подредба, какво, готово, файл) as (
     (15, 'Домашното по английски за 4. клас (to be)',
         (select exists (select 1 from public.assignments
                          where slug = 'hw4-en-tobe')),
+        'supabase/domashno-angliyski-4.sql'),
+    --  Разделите вътре в предмета: кръговете на олимпиадата и юнитите
+    --  по английски. Самите раздели са в assets/tracks.js; базата пази
+    --  само кой лист в кой раздел е — за това трябват двете колони.
+    (16, 'Раздели вътре в предмета (кръгове и юнити)',
+        (select count(*) = 2 from information_schema.columns
+          where table_schema = 'public' and table_name = 'assignments'
+            and column_name in ('track', 'section')),
+        'supabase/schema-v8.sql'),
+    --  Английският няма седмици: ако някой лист по него още носи
+    --  седмица, порталът ще го подреди на погрешно място.
+    (17, 'Английският е без седмици (върви по юнити)',
+        (select not exists (
+           select 1 from public.assignments a
+             join public.subjects s on s.id = a.subject_id
+            where s.slug = 'angliiski' and a.week is not null)),
         'supabase/domashno-angliyski-4.sql')
 )
 select подредба                                   as "№",
