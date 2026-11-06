@@ -2486,8 +2486,24 @@
 
          Четат се от calAll, защото календарът чете оттам; а празните
          кръгове не се крият — те са мястото, което чака да се напълни. */
-      /* Предмети, чиято година се мери в състезания, не в седмици. */
-      var BY_TRACKS = ['sastezatelna-matematika'];
+      /* Предмети, чиято година НЕ се мери в седмици. Стойността е с
+         какво се мери — влиза в изречението, което вижда човекът, щом
+         избере предмета. Състезателната математика върви от турнир на
+         турнир, а английският — по юнитите на учебника. За тях в
+         календара не се показват седмици: разделите отгоре СА
+         разпределението. */
+      var BY_TRACKS = {
+        'sastezatelna-matematika':
+          'по състезания: разделите отгоре са разпределението ѝ. ' +
+          'Датите на състезанията са в календара на състезанията.',
+        'angliiski':
+          'по юнитите на учебника: юнитите отгоре са разпределението му, ' +
+          'с темата и страниците на всеки.'
+      };
+      function byTracks(subjectSlug) {
+        return Object.prototype.hasOwnProperty.call(BY_TRACKS, subjectSlug)
+          ? BY_TRACKS[subjectSlug] : null;
+      }
 
       function calTrackBoard(prog) {
         if (!window.TLA || !TLA.Tracks || !TLA.Tracks.all.length) return '';
@@ -2536,13 +2552,13 @@
                   (sg.items.length
                     ? sg.items.map(function (a) { return calRow(a, { noUnpin: true }); }).join('')
                     : '<p class="tla-round__none">Още няма листове. Качват се с ' +
-                      '<code>supabase/assignments.sql</code>, а кой лист в кой кръг е се ' +
+                      '<code>supabase/assignments.sql</code>, а кой лист къде стои се ' +
                       'избира в „Задания“ → „Клас и предмет“.</p>') +
                 '</div>';
               }).join('') +
             '</div>' +
             (box.loose.length
-              ? '<p class="tla-muted tla-track__loose">В раздела, но без кръг: ' +
+              ? '<p class="tla-muted tla-track__loose">В раздела, но без част: ' +
                 box.loose.map(function (a) { return esc(a.title); }).join(', ') + '.</p>'
               : '') +
           '</div>';
@@ -2636,11 +2652,11 @@
              турнир: разделите горе СА разпределението ѝ. Показваха се и
              трийсет и четирите седмици на математиката, празни — това не
              е календар на този предмет, а чужд календар без теми. */
-          if (BY_TRACKS.indexOf(mySubject) !== -1) {
+          var kak = byTracks(mySubject);
+          if (kak) {
             return html + '<p class="tla-muted tlc__alien">' +
               esc(subjectNameBySlug(mySubject) || 'Този предмет') +
-              ' не върви по седмици, а по състезания: разделите отгоре са разпределението ѝ. ' +
-              'Датите на състезанията са в календара на състезанията.</p>';
+              ' не върви по седмици, а ' + esc(kak) + '</p>';
           }
           return html + renderWeeksFlat(prog, bucket, now);
         }
@@ -3578,7 +3594,17 @@
       function sectionOptions(a) {
         var now = (a.track || '') + (a.section ? '/' + a.section : '');
         var out = ['<option value=""' + (now ? '' : ' selected') + '>без раздел</option>'];
+        /* Разделите са много — четиринайсет състезания и девет юнита по
+           английски. Затова се групират по предмет и клас: иначе менюто
+           е сто реда, в които се търси на око. */
+        var grupa = null;
         TLA.Tracks.all.forEach(function (t) {
+          var sega = (subjectNameBySlug(t.subject) || t.subject) + ' · ' + TLA.gradeLabel(t.grade);
+          if (sega !== grupa) {
+            if (grupa !== null) out.push('</optgroup>');
+            out.push('<optgroup label="' + esc(sega) + '">');
+            grupa = sega;
+          }
           out.push('<option value="' + esc(t.id) + '"' +
             (now === t.id ? ' selected' : '') + '>' + esc(t.title) + ' — всичко</option>');
           (t.sections || []).forEach(function (sec) {
@@ -3587,6 +3613,7 @@
               '>' + esc(t.title) + ' · ' + esc(sec.title) + '</option>');
           });
         });
+        if (grupa !== null) out.push('</optgroup>');
         /* Задание, сочещо към раздел, какъвто вече го няма: показва се,
            вместо да се превърне тихо в „без раздел“ при първото запазване. */
         if (now && !TLA.Tracks.byId(a.track)) {

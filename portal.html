@@ -848,9 +848,31 @@
         var ex = published.filter(function (a) { return a.kind === 'exam'; });
         var lessons = published.filter(function (a) { return a.kind === 'lesson'; });
 
-        var hwHtml = weekOrder(hw.concat(lessons)).map(function (a) {
+        /* Листовете, закачени за раздел (английският върви по юнитите на
+           учебника, не по седмици), застават под своя юнит със своята
+           тема. Останалите — по седмици, както досега. Показват се само
+           юнитите, в които НАИСТИНА има нещо: за ученика празен юнит е
+           обещание, което никой не му е давал. */
+        var karta = function (a) {
           return a.kind === 'lesson' ? lessonCard(a) : assignmentCard(a);
-        }).join('');
+        };
+        var hwAll = hw.concat(lessons);
+        var hwGrp = TLA.Tracks ? TLA.Tracks.groupPresent(hwAll)
+                               : { tracks: [], rest: hwAll };
+        var hwHtml = hwGrp.tracks.map(function (g) {
+          return '<section class="tlp__track">' +
+            '<h3 class="tlp__track-h">' + esc(g.track.title) + '</h3>' +
+            (g.track.note ? '<p class="tlp__track-n">' + esc(g.track.note) + '</p>' : '') +
+            g.sections.map(function (sg) {
+              return '<div class="tlp__round">' +
+                '<p class="tlp__round-h">' + esc(sg.section.title) +
+                  '<span class="tlp__round-n">' + sg.items.length + '</span></p>' +
+                sg.items.map(karta).join('') +
+              '</div>';
+            }).join('') +
+            g.loose.map(karta).join('') +
+          '</section>';
+        }).join('') + weekOrder(hwGrp.rest).map(karta).join('');
 
         $('hwList').innerHTML = (hw.length || lessons.length)
           ? hwHtml +
