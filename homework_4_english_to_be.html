@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Домашно — To be: am, is, are — 4. клас · The Light Academy</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Домашно по английски за 4. клас: глаголът to be — am, is, are. Десет упражнения със семейството чудовища: избор, попълване, кратки форми, отрицание, въпроси, кратки отговори, хващане на грешка, свързване и подреждане." />
+<meta name="description" content="Домашно по английски за 4. клас: глаголът to be — am, is, are. Десет упражнения със семейството котета: избор, попълване, кратки форми, отрицание, въпроси, кратки отговори, хващане на грешка, свързване и подреждане." />
 <link rel="icon" href="favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,7 +18,7 @@
 /* =====================================================================
    ДОМАШНО ПО АНГЛИЙСКИ — 4. клас: to be (am · is · are)
    ---------------------------------------------------------------------
-   Десет упражнения около едно семейство чудовища. Четири вида работа:
+   Десет упражнения около едно семейство котета. Четири вида работа:
    щракане върху вярната дума, писане, свързване на двойки и подреждане
    на разбъркани думи — за да не е десет пъти едно и също.
 
@@ -159,7 +159,7 @@ input{font:inherit}
 .hw h1{font-size:clamp(28px,6vw,42px); line-height:1.05; margin:10px 0 6px}
 .hw h1 em{font-style:normal; color:var(--accent-ink)}
 .subhead{color:var(--ink-soft); max-width:60ch}
-.monsters{display:flex; gap:10px; align-items:flex-end; margin:14px 0 2px}
+.kotki{display:flex; gap:10px; align-items:flex-end; margin:14px 0 2px}
 .progress-row{display:flex; align-items:center; gap:12px; margin-top:16px}
 .progress-track{flex:1; height:10px; border-radius:999px; background:var(--pencil-soft); overflow:hidden}
 .progress-fill{height:100%; width:0; border-radius:999px;
@@ -284,11 +284,11 @@ input{font:inherit}
 <div class="wrap" id="sheet" hidden>
   <header class="hw">
     <div class="eyebrow"><span class="dot"></span>Домашно · английски · 4. клас</div>
-    <h1>Monster Family Album<br /><em>to be</em> — am · is · are</h1>
-    <div class="subhead">Семейството чудовища се представя. За да им помогнеш, трябва ти
-      само един глагол — <b>to be</b>. Десет упражнения: щракаш, пишеш, свързваш и
-      подреждаш.</div>
-    <div class="monsters" id="monsters"></div>
+    <h1>Cat Family Album<br /><em>to be</em> — am · is · are</h1>
+    <div class="subhead">Семейството котета се представя: Milo, Daisy, Luna и
+      близнаците Tom и Tim. За да им помогнеш, трябва ти само един глагол —
+      <b>to be</b>. Десет упражнения: щракаш, пишеш, свързваш и подреждаш.</div>
+    <div class="kotki" id="kotki"></div>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <div class="progress-label" id="progressLabel">0 / 0 отговорени</div>
@@ -325,8 +325,8 @@ const DANNI = {
  "upr": [
   {
    "kod": "1",
-   "ime": "MEET THE MONSTERS",
-   "bg": "Запознай се с чудовищата",
+   "ime": "MEET THE CATS",
+   "bg": "Запознай се с котетата",
    "ukazanie": "Щракни върху вярната дума: am, is или are.",
    "vid": "tap",
    "izbori": [
@@ -337,7 +337,7 @@ const DANNI = {
    "redove": [
     {
      "predi": "I",
-     "sled": "a little monster.",
+     "sled": "a little kitten.",
      "otgovor": "am"
     },
     {
@@ -346,23 +346,23 @@ const DANNI = {
      "otgovor": "are"
     },
     {
-     "predi": "Gigi",
-     "sled": "very tall.",
+     "predi": "Daisy",
+     "sled": "very fluffy.",
      "otgovor": "is"
     },
     {
-     "predi": "Zig and Zag",
+     "predi": "Tom and Tim",
      "sled": "twins.",
      "otgovor": "are"
     },
     {
      "predi": "It",
-     "sled": "a chocolate cookie.",
+     "sled": "a ball of wool.",
      "otgovor": "is"
     },
     {
      "predi": "We",
-     "sled": "a happy family.",
+     "sled": "a happy cat family.",
      "otgovor": "are"
     }
    ],
@@ -370,14 +370,14 @@ const DANNI = {
   },
   {
    "kod": "2",
-   "ime": "MOMO'S DIARY",
-   "bg": "Дневникът на Момо",
+   "ime": "MILO'S DIARY",
+   "bg": "Дневникът на Майло",
    "ukazanie": "Напиши am, is или are в празното място.",
    "vid": "type",
    "redove": [
     {
      "predi": "My name",
-     "sled": "Momo.",
+     "sled": "Milo.",
      "otgovor": "is"
     },
     {
@@ -396,12 +396,12 @@ const DANNI = {
      "otgovor": "are"
     },
     {
-     "predi": "The cat",
-     "sled": "purple.",
+     "predi": "The kitten",
+     "sled": "grey.",
      "otgovor": "is"
     }
    ],
-   "zashto": "Гледай КОЙ върши действието. „My brothers“ са повече от един — are. „The cat“ е един — is."
+   "zashto": "Гледай КОЙ върши действието. „My brothers“ са повече от един — are. „The kitten“ е едно — is."
   },
   {
    "kod": "3",
@@ -464,21 +464,21 @@ const DANNI = {
      ]
     },
     {
-     "predi": "They are sad.",
+     "predi": "They are sleepy.",
      "sled": "",
-     "otgovor": "They are not sad.",
+     "otgovor": "They are not sleepy.",
      "oshte": [
-      "They're not sad.",
-      "They aren't sad."
+      "They're not sleepy.",
+      "They aren't sleepy."
      ]
     },
     {
-     "predi": "Gigi is small.",
+     "predi": "Daisy is small.",
      "sled": "",
-     "otgovor": "Gigi is not small.",
+     "otgovor": "Daisy is not small.",
      "oshte": [
-      "Gigi isn't small.",
-      "Gigi's not small."
+      "Daisy isn't small.",
+      "Daisy's not small."
      ]
     }
    ],
@@ -493,9 +493,9 @@ const DANNI = {
    "dalgo": true,
    "redove": [
     {
-     "predi": "You are a robot.",
+     "predi": "You are a kitten.",
      "sled": "",
-     "otgovor": "Are you a robot?"
+     "otgovor": "Are you a kitten?"
     },
     {
      "predi": "They are hungry.",
@@ -508,9 +508,9 @@ const DANNI = {
      "otgovor": "Am I late?"
     },
     {
-     "predi": "Momo is funny.",
+     "predi": "Milo is funny.",
      "sled": "",
-     "otgovor": "Is Momo funny?"
+     "otgovor": "Is Milo funny?"
     }
    ],
    "zashto": "При въпрос am, is и are скачат най-отпред и си разменят мястото с подлога."
@@ -524,7 +524,7 @@ const DANNI = {
    "shirok": true,
    "redove": [
     {
-     "predi": "Are you a monster?",
+     "predi": "Are you a cat?",
      "sled": "(YES)",
      "otgovor": "Yes, I am.",
      "izbori": [
@@ -544,7 +544,7 @@ const DANNI = {
      ]
     },
     {
-     "predi": "Is Gigi green?",
+     "predi": "Is Daisy grey?",
      "sled": "(YES)",
      "otgovor": "Yes, she is.",
      "izbori": [
@@ -579,12 +579,12 @@ const DANNI = {
      "otgovor": "are"
     },
     {
-     "predi": "I are a monster.",
+     "predi": "I are a kitten.",
      "sled": "",
      "otgovor": "am"
     },
     {
-     "predi": "Gigi am tall.",
+     "predi": "Daisy am fluffy.",
      "sled": "",
      "otgovor": "is"
     },
@@ -637,13 +637,13 @@ const DANNI = {
   },
   {
    "kod": "9",
-   "ime": "MONSTER PUZZLE",
+   "ime": "CAT PUZZLE",
    "bg": "Подреди думите",
    "ukazanie": "Щракай думите по ред, за да стане изречение.",
    "vid": "red",
    "redove": [
     {
-     "otgovor": "I am not a robot."
+     "otgovor": "I am not a dog."
     },
     {
      "otgovor": "Are you tired?"
@@ -652,21 +652,21 @@ const DANNI = {
      "otgovor": "They are my friends."
     },
     {
-     "otgovor": "Pixel is a cat."
+     "otgovor": "Luna is a kitten."
     }
    ],
    "zashto": "В английското изречение редът е строг: първо подлогът, после глаголът — освен при въпрос, където глаголът изскача отпред."
   },
   {
    "kod": "10",
-   "ime": "★ MONSTER ID CARD",
-   "bg": "Картата на чудовището",
+   "ime": "★ CAT ID CARD",
+   "bg": "Картата на котето",
    "ukazanie": "Попълни цялата карта с am, is или are.",
    "vid": "type",
    "redove": [
     {
      "predi": "Hello! My name",
-     "sled": "Momo.",
+     "sled": "Milo.",
      "otgovor": "is"
     },
     {
@@ -676,7 +676,7 @@ const DANNI = {
     },
     {
      "predi": "My sisters",
-     "sled": "Gigi and Lulu.",
+     "sled": "Daisy and Luna.",
      "otgovor": "are"
     },
     {
@@ -685,13 +685,13 @@ const DANNI = {
      "otgovor": "are"
     },
     {
-     "predi": "Our cat",
-     "sled": "purple.",
+     "predi": "Our basket",
+     "sled": "warm and soft.",
      "otgovor": "is"
     },
     {
      "predi": "We",
-     "sled": "a monster family!",
+     "sled": "a cat family!",
      "otgovor": "are"
     }
    ],
@@ -699,7 +699,7 @@ const DANNI = {
   }
  ],
  "pohvali": [
-  "Чудовищата ти ръкопляскат! 🎉",
+  "Котетата мъркат от радост! 🐾",
   "Браво! Почти всичко е вярно. 👏",
   "Добро начало — виж кои редове светят в червено и ги оправи. 💪"
  ]
@@ -741,21 +741,53 @@ function razburkai(masiv, seme){
 const BOI = ['#8E6BEA', '#2BA8A0', '#F07C3E', '#E05C8A', '#4C7DF0',
              '#1FA463', '#C8541F', '#7A5BD6', '#2B8FBE', '#D4A017'];
 
-/* ── чудовищата в шапката: нарисувани, не емоджи ─────────────────── */
-function chudovishte(boia, ochi, vd){
-  const o = [];
-  for(let i = 0; i < ochi; i++){
-    const x = 28 + (i - (ochi - 1) / 2) * 20;
-    o.push('<circle cx="' + x + '" cy="30" r="7" fill="#fff"/>'
-         + '<circle cx="' + x + '" cy="31" r="3.4" fill="#16233F"/>');
+/* ── котетата в шапката: нарисувани, не емоджи ───────────────────── */
+/*  Едно котенце: глава, уши, мустаци, опашка. `kak` сменя дребното,
+    което ги прави различни — райета, панделка или петно на окото. */
+function kote(boia, kak){
+  const svet = 'rgba(255,255,255,.42)';   /* райета и петна — по-светли */
+  const roz = '#F2A0B4';
+  let dop = '';
+  if(kak === 1){                      /* райета по челото */
+    dop = '<path d="M21 14 q10 4 20 0 M19 20 q12 5 24 0" stroke="' + svet
+        + '" stroke-width="3.4" fill="none" stroke-linecap="round"/>';
+  }else if(kak === 2){                /* нашийник със звънче */
+    dop = '<path d="M20 43 q11 7 22 0" stroke="#fff" stroke-width="4.2"'
+        + ' fill="none" stroke-linecap="round"/>'
+        + '<circle cx="31" cy="48.5" r="4" fill="#F7AD19"/>'
+        + '<circle cx="31" cy="49.4" r="1.2" fill="#8A5A06"/>';
+  }else if(kak === 3){                /* петно около едното око */
+    dop = '<ellipse cx="22" cy="25" rx="9" ry="8.5" fill="' + svet + '"/>';
   }
-  return '<svg width="56" height="64" viewBox="0 0 56 64" role="img" aria-label="чудовище">'
-    + '<path d="M6 30a22 22 0 0 1 44 0v18a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="' + boia + '"/>'
-    + '<path d="M' + (vd ? '14 8 l6 10' : '42 8 l-6 10') + '" stroke="' + boia
-    + '" stroke-width="4" stroke-linecap="round"/>'
-    + '<circle cx="' + (vd ? 14 : 42) + '" cy="7" r="4" fill="' + boia + '"/>'
-    + o.join('')
-    + '<path d="M18 44 q10 8 20 0" stroke="#16233F" stroke-width="3" fill="none" stroke-linecap="round"/>'
+  return '<svg width="62" height="66" viewBox="0 0 62 66" role="img" aria-label="коте">'
+    /* опашка */
+    + '<path d="M48 56 q12 2 9-9" stroke="' + boia
+    + '" stroke-width="7" fill="none" stroke-linecap="round"/>'
+    /* тяло */
+    + '<path d="M10 63 q0-24 21-24 t21 24z" fill="' + boia + '"/>'
+    /* уши */
+    + '<path d="M13 20 l2-15 13 9z" fill="' + boia + '"/>'
+    + '<path d="M49 20 l-2-15-13 9z" fill="' + boia + '"/>'
+    + '<path d="M17 17 l1-8 7 5z" fill="' + roz + '"/>'
+    + '<path d="M45 17 l-1-8-7 5z" fill="' + roz + '"/>'
+    /* глава */
+    + '<ellipse cx="31" cy="26" rx="19" ry="17" fill="' + boia + '"/>'
+    + dop
+    /* очи */
+    + '<ellipse cx="23" cy="26" rx="4.6" ry="5.4" fill="#16233F"/>'
+    + '<ellipse cx="39" cy="26" rx="4.6" ry="5.4" fill="#16233F"/>'
+    + '<circle cx="24.6" cy="24" r="1.7" fill="#fff"/>'
+    + '<circle cx="40.6" cy="24" r="1.7" fill="#fff"/>'
+    /* нос и усмивка */
+    + '<path d="M28.5 33 h5 l-2.5 2.6z" fill="' + roz + '"/>'
+    + '<path d="M31 35.6 q-3 3.4-6 .6 M31 35.6 q3 3.4 6 .6" stroke="#16233F"'
+    + ' stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+    /* мустаци */
+    + '<path d="M12 29 l8 1 M12 34 l8-1 M50 29 l-8 1 M50 34 l-8-1" stroke="#16233F"'
+    + ' stroke-width="1.5" opacity=".55" stroke-linecap="round"/>'
+    /* лапички */
+    + '<ellipse cx="23" cy="61" rx="6" ry="3.6" fill="#fff" opacity=".75"/>'
+    + '<ellipse cx="39" cy="61" rx="6" ry="3.6" fill="#fff" opacity=".75"/>'
     + '</svg>';
 }
 
@@ -767,9 +799,8 @@ function kluch(ui, ri){ return ui + '-' + ri; }
 
 /* ── рисуване ────────────────────────────────────────────────────── */
 function risuvai(){
-  $('#monsters').innerHTML =
-    chudovishte(BOI[0], 2, true) + chudovishte(BOI[1], 1, false)
-    + chudovishte(BOI[3], 3, true) + chudovishte(BOI[2], 2, false);
+  $('#kotki').innerHTML =
+    kote(BOI[0], 1) + kote(BOI[1], 0) + kote(BOI[3], 2) + kote(BOI[2], 3);
 
   $('#uprajneniq').innerHTML = DANNI.upr.map(function(u, ui){
     const boia = BOI[ui % BOI.length];
@@ -1015,7 +1046,7 @@ function proveri(){
   const r = $('#result');
   r.hidden = false;
   $('#resultScore').textContent = verni + ' / ' + OBSHTO;
-  $('#resultTitle').textContent = proc >= 90 ? 'Monster champion!' :
+  $('#resultTitle').textContent = proc >= 90 ? 'Purrfect!' :
                                   proc >= 70 ? 'Well done!' : 'Good try!';
   $('#resultSub').textContent = proc >= 90 ? DANNI.pohvali[0]
                               : proc >= 70 ? DANNI.pohvali[1] : DANNI.pohvali[2];

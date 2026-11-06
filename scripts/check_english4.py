@@ -187,8 +187,9 @@ def obshti(u):
     tvurdi(len(u['ukazanie']) >= 15, u['kod'] + ': указанието е много късо')
     tvurdi(u['vid'] in ('tap', 'type', 'dvoiki', 'red'), u['kod'] + ': непознат вид')
     for tekst in (u['ime'], u['bg'], u['ukazanie'], u['zashto']):
-        tvurdi('магия' not in tekst.lower() and 'magic' not in tekst.lower(),
-               u['kod'] + ': думата „магия“ е забранена')
+        for duma in ('магия', 'magic', 'monster', 'чудовищ'):
+            tvurdi(duma not in tekst.lower(),
+                   u['kod'] + ': думата „' + duma + '“ не бива да е тук')
 
 
 def dupka(u, formi):
@@ -343,6 +344,15 @@ def stranicata():
     tvurdi(s.rstrip().endswith('</html>'), 'страницата не завършва с </html>')
     tvurdi('.tlp-bar{' in s and '--accent-ink:' in s, 'лентата не е вградена')
     tvurdi('магия' not in s.lower(), 'думата „магия“ е в страницата')
+    tvurdi('Cat Family Album' in s, 'заглавието не е „Cat Family Album“')
+    for kote in ('Milo', 'Daisy', 'Luna', 'Tom and Tim'):
+        tvurdi(kote in s, 'липсва котето ' + kote)
+    #  Четирите котета в шапката се рисуват, не са емоджи.
+    tvurdi(s.count('function kote(') == 1 and s.count('kote(BOI[') == 4,
+           'котетата в шапката не са четири нарисувани')
+    #  Листът е за котета — от чудовищата не бива да е останала следа.
+    for duma in ('monster', 'чудовищ'):
+        tvurdi(duma not in s.lower(), 'останала е думата „' + duma + '“')
     tvurdi('noindex' in s, 'листът трябва да е noindex')
 
     #  Всеки отговор трябва да стои в данните — иначе не може да се познае.
@@ -357,6 +367,12 @@ def stranicata():
     #  Двигателят трябва да познава всички видове.
     for vid in sorted({u['vid'] for u in UPRAJNENIQ}):
         tvurdi("'" + vid + "'" in s, 'двигателят не познава вид ' + vid)
+    #  Редът в базата и страницата трябва да си говорят едно и също.
+    red = (KOREN / 'supabase/domashno-angliyski-4.sql').read_text(encoding='utf-8')
+    tvurdi("'" + SLUG + "'" in red, 'слугът липсва от SQL файла')
+    tvurdi("'" + IZHOD.name + "'" in red, 'SQL файлът сочи друга страница')
+    tvurdi('Cat Family Album' in red, 'SQL файлът още пише старото заглавие')
+    tvurdi('\n     49,' in red, 'точките в SQL файла не са 49')
     return len(s)
 
 
