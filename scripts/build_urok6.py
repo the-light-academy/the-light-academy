@@ -18,7 +18,7 @@ import sys
 KOREN = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOREN / 'scripts'))
 
-from urok6 import stepeni, uravneniq                      # noqa: E402
+from urok6 import igra, stepeni, uravneniq                # noqa: E402
 
 SLUG = 'urok-6-stepeni-uravneniq'
 IZHOD = KOREN / 'uroci/urok_6_stepeni_uravneniq.html'
@@ -156,6 +156,59 @@ button{font:inherit; cursor:pointer}
 .otmetka:hover{border-color:var(--accent); color:var(--accent-ink)}
 .otmetka.ima{border-color:#5FB98A; background:var(--success-soft); color:var(--success)}
 
+/* ── ключалката ─────────────────────────────────────────────────── */
+.igra__uvod{background:var(--pencil); color:#DCE6F7; border-radius:20px;
+  padding:18px clamp(14px,3vw,22px); margin:16px 0; font-size:15.5px; line-height:1.6}
+.igra__uvod b{color:#fff}
+.kod{display:flex; gap:8px; justify-content:center; margin:14px 0 2px; flex-wrap:wrap}
+.kod span{width:52px; height:62px; border-radius:14px; display:grid; place-items:center;
+  background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.22);
+  font-family:'Fredoka',sans-serif; font-size:30px; color:#fff; font-weight:700}
+.kod span.ima{border-color:var(--accent); background:rgba(247,173,25,.18)}
+.kod span.otvoren{border-color:#7ED3B2; background:rgba(126,211,178,.22)}
+
+.klyuchalka{background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:20px; padding:18px clamp(14px,3vw,22px); margin:14px 0;
+  box-shadow:0 10px 30px hsl(var(--shadow) / .06)}
+.klyuchalka.gotova{border-color:#BBE3CC; background:linear-gradient(#F4FBF7,#fff)}
+.klyuchalka__top{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.klyuchalka__n{width:42px; height:42px; border-radius:50%; display:grid; place-items:center;
+  background:var(--zvezda); color:#fff; font-family:'Fredoka',sans-serif;
+  font-size:19px; font-weight:700; flex:none}
+.klyuchalka.gotova .klyuchalka__n{background:var(--success)}
+.klyuchalka__ime{font-family:'Fredoka',sans-serif; font-size:19px; line-height:1.1}
+.klyuchalka__tema{font-size:13px; color:var(--ink-soft)}
+.klyuchalka__u{font-size:20px; font-weight:800; color:var(--pencil); margin:12px 0 0;
+  line-height:1.45}
+.klyuchalka__u.dulag{font-size:17px; font-weight:600; color:var(--ink)}
+.cifri{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px}
+.cifra{width:42px; height:42px; border-radius:12px; border:2px solid var(--pencil-soft);
+  background:#fff; font-family:'Fredoka',sans-serif; font-size:19px; font-weight:700;
+  color:var(--pencil); transition:.12s}
+.cifra:hover{border-color:var(--accent)}
+.cifra.izbrana{background:var(--pencil); border-color:var(--pencil); color:#fff}
+.klyuchalka.gotova .cifra.izbrana{background:var(--success); border-color:var(--success)}
+.klyuchalka__dolu{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px}
+.podskazka-b{border:1.5px solid var(--pencil-soft); background:#fff; color:var(--pencil);
+  border-radius:999px; padding:6px 16px; font-size:13.5px; font-weight:800}
+.podskazka-b:hover{border-color:var(--accent); color:var(--accent-ink)}
+.podskazka{margin-top:10px; padding:11px 15px; border-radius:14px;
+  background:var(--accent-soft); font-size:15px; color:var(--accent-ink)}
+.vrata{margin:18px 0 0; text-align:center}
+.razbij{border:none; border-radius:999px; padding:15px 34px; font-size:18px;
+  font-weight:800; font-family:'Fredoka',sans-serif;
+  background:var(--accent); color:#4A2E02; box-shadow:0 8px 22px rgba(247,173,25,.35)}
+.razbij:hover{filter:brightness(1.05)}
+.razbij:disabled{background:var(--pencil-soft); color:var(--ink-soft); box-shadow:none}
+.otzvuk{margin-top:12px; font-weight:800; font-size:16px; min-height:24px}
+.otzvuk.greshka{color:#93231F}
+.otzvuk.uspeh{color:var(--success)}
+.opiti{font-size:13px; color:var(--ink-soft); margin-top:6px}
+.kraj{margin-top:16px; padding:22px; border-radius:22px; text-align:center;
+  background:var(--success-soft); border:1px solid #BBE3CC}
+.kraj h2{font-size:28px; color:var(--success); margin-bottom:6px}
+.kraj p{margin:0 auto; max-width:56ch; color:var(--ink)}
+
 /* ── долната лента ──────────────────────────────────────────────── */
 .dolu{position:fixed; left:0; right:0; bottom:0; z-index:40; padding:10px 12px;
   background:rgba(255,253,247,.94); backdrop-filter:blur(10px);
@@ -233,9 +286,13 @@ function zapazi(){
 }
 
 function vsichkiZadachi(t){
+  if(t.vid === 'igra') return t.klyuchalki.map(k => ({ id: k.kod }));
   return t.razdeli.reduce((a, r) => a.concat(r.zadachi), []);
 }
+/* При играта за „решена“ се брои ключалка, чиято цифра е НА мястото си —
+   не просто нагласена. Иначе броячът би хвалил напразно. */
 function reshenivT(t){
+  if(t.vid === 'igra') return t.klyuchalki.filter(k => S[k.kod] === k.cifra).length;
   return vsichkiZadachi(t).filter(z => S[z.id]).length;
 }
 
@@ -258,6 +315,7 @@ function risuvaiTabove(){
 
 function risuvaiTqlo(){
   const t = UROK.tabove[tabSega];
+  if(t.vid === 'igra'){ risuvaiIgra(t); return; }
   $('#sudurjanie').innerHTML = t.razdeli.map(function(r, ri){
     const reshenи = r.zadachi.filter(z => S[z.id]).length;
     return '<section class="razdel' + (r.zvezda ? ' zvezda' : '') + '" id="r-' + r.kod + '">'
@@ -290,6 +348,133 @@ function risuvaiTqlo(){
   $$('.pokaji').forEach(function(b){
     b.addEventListener('click', function(){ pokaji(b.dataset.p, b); });
   });
+}
+
+/* ── ключалката ─────────────────────────────────────────────────── */
+/*  Пет задачи, пет цифри. Цифрите се НАГЛАСЯВАТ с бутони, не се пишат:
+    урокът се води на дъската и тук не се въвежда нищо.
+    Вратата казва само КОЛКО цифри са верни — не и кои. Иначе кодът се
+    отваря с пробване цифра по цифра и задачите стават излишни. */
+function risuvaiIgra(t){
+  const otvorena = !!S[t.kod + '-otvorena'];
+  $('#sudurjanie').innerHTML =
+    '<div class="igra__uvod"><b>' + ek(t.podnaslov) + '</b><br />' + ek(t.uvod)
+    + '<div class="kod" id="kod"></div></div>'
+    + t.klyuchalki.map(function(k, i){
+        const izbrana = S[k.kod];
+        return '<section class="klyuchalka' + (izbrana != null ? ' gotova' : '') + '" '
+          +   'id="kl-' + k.kod + '">'
+          + '<div class="klyuchalka__top">'
+          +   '<div class="klyuchalka__n">' + (i + 1) + '</div>'
+          +   '<div><div class="klyuchalka__ime">' + ek(k.ime) + '</div>'
+          +   '<div class="klyuchalka__tema">' + ek(k.tema) + '</div></div>'
+          + '</div>'
+          + '<p class="klyuchalka__u' + (k.dulag ? ' dulag' : '') + '">'
+          +   ek(k.uslovie) + '</p>'
+          + '<div class="cifri">' + [0,1,2,3,4,5,6,7,8,9].map(function(c){
+              return '<button class="cifra' + (izbrana === c ? ' izbrana' : '') + '" '
+                   + 'data-k="' + k.kod + '" data-c="' + c + '">' + c + '</button>';
+            }).join('') + '</div>'
+          + '<div class="klyuchalka__dolu">'
+          +   '<button class="podskazka-b" data-h="' + k.kod + '">Подсказка</button>'
+          + '</div>'
+          + '<div class="podskazka" id="h-' + k.kod + '" hidden></div>'
+          + '<div class="podskazka" id="r-reshenie-' + k.kod + '" hidden></div>'
+          + '</section>';
+      }).join('')
+    + '<div class="vrata">'
+    +   '<button class="razbij" id="bRazbij">РАЗБИЙ КЛЮЧАЛКАТА</button>'
+    +   '<p class="otzvuk" id="otzvuk"></p>'
+    +   '<p class="opiti" id="opiti"></p>'
+    + '</div>'
+    + '<div class="kraj" id="kraj" hidden></div>';
+
+  $$('.cifra').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(S[t.kod + '-otvorena']) return;
+      const k = b.dataset.k, c = +b.dataset.c;
+      if(S[k] === c) delete S[k]; else S[k] = c;
+      zapazi();
+      risuvaiIgra(t);
+      osveji();
+      risuvaiTabove();
+    });
+  });
+  $$('.podskazka-b').forEach(function(b){
+    b.addEventListener('click', function(){
+      const el = $('#h-' + b.dataset.h);
+      const k = t.klyuchalki.filter(x => x.kod === b.dataset.h)[0];
+      if(!el.hidden){ el.hidden = true; b.textContent = 'Подсказка'; return; }
+      el.textContent = k.podskazka;
+      el.hidden = false;
+      b.textContent = 'Скрий подсказката';
+    });
+  });
+  $('#bRazbij').addEventListener('click', function(){ razbij(t); });
+  risuvaiKod(t);
+  if(otvorena) otvoriVratata(t, true);
+}
+
+function risuvaiKod(t){
+  const otvorena = !!S[t.kod + '-otvorena'];
+  $('#kod').innerHTML = t.klyuchalki.map(function(k){
+    const c = S[k.kod];
+    return '<span class="' + (otvorena ? 'otvoren' : (c != null ? 'ima' : '')) + '">'
+      + (c != null ? c : '?') + '</span>';
+  }).join('');
+  const pulen = t.klyuchalki.every(k => S[k.kod] != null);
+  const b = $('#bRazbij');
+  if(b) b.disabled = !pulen || otvorena;
+  const o = $('#opiti');
+  if(o) o.textContent = S[t.kod + '-opiti']
+    ? 'Опити: ' + S[t.kod + '-opiti'] : '';
+}
+
+function razbij(t){
+  const verni = t.klyuchalki.filter(k => S[k.kod] === k.cifra).length;
+  S[t.kod + '-opiti'] = (S[t.kod + '-opiti'] || 0) + 1;
+  const o = $('#otzvuk');
+  if(verni === t.klyuchalki.length){
+    S[t.kod + '-otvorena'] = 1;
+    zapazi();
+    otvoriVratata(t, false);
+  }else{
+    zapazi();
+    o.className = 'otzvuk greshka';
+    o.textContent = verni === 0
+      ? 'Ключалката не помръдва. Нито една цифра не е на мястото си.'
+      : 'Щрак… и спира. ' + verni + ' от ' + t.klyuchalki.length
+        + (verni === 1 ? ' цифра е вярна.' : ' цифри са верни.');
+    risuvaiKod(t);
+  }
+  osveji();
+  risuvaiTabove();
+}
+
+function otvoriVratata(t, tiho){
+  const kod = t.klyuchalki.map(k => k.cifra).join('');
+  const o = $('#otzvuk');
+  if(o){
+    o.className = 'otzvuk uspeh';
+    o.textContent = tiho ? 'Вратата вече е отворена.' : 'ЩРАК. Вратата се отваря!';
+  }
+  $$('.klyuchalka').forEach(el => el.classList.add('gotova'));
+  t.klyuchalki.forEach(function(k){
+    const el = $('#r-reshenie-' + k.kod);
+    if(el){
+      el.innerHTML = '<b>Цифра ' + k.cifra + '.</b> ' + ek(k.reshenie);
+      el.hidden = false;
+    }
+  });
+  const kraj = $('#kraj');
+  if(kraj){
+    kraj.innerHTML = '<h2>Свободни сте!</h2><p>'
+      + ek(t.kraj.replace('{kod}', kod)) + '</p>';
+    kraj.hidden = false;
+  }
+  const b = $('#bRazbij');
+  if(b) b.disabled = true;
+  risuvaiKod(t);
 }
 
 /* Отметката се вдига и сваля: ако сте я отметнали по погрешка, връща се. */
@@ -360,6 +545,27 @@ risuvai();
 """
 
 
+def cifrata(k) -> int:
+    """Цифрата на една ключалка — ИЗВЕДЕНА, не преписана.
+
+    Същото правило, по което проверката я смята наново: тук се пази
+    едно-единствено място, където цифрата се ражда.
+    """
+    from urok6.smetki import koreni, stoinost
+    if k['vid'] == 'posledna_cifra':
+        return pow(k['osnova'], k['pokazatel'], 10)
+    if k['vid'] == 'nuli':
+        t = str(int(stoinost(k['izraz'])))
+        return len(t) - len(t.rstrip('0'))
+    if k['vid'] == 'uravnenie':
+        return int(koreni(k['izraz'])[0])
+    if k['vid'] == 'pokazatel':
+        return int(koreni(k['izraz'], k.get('bukva', 'n'))[0])
+    if k['vid'] == 'tekst':
+        return int(koreni(k['uravnenie'])[0])
+    raise ValueError('непознат вид ключалка: ' + k['vid'])
+
+
 def danni():
     tabove = []
     for m in TABOVE:
@@ -378,6 +584,21 @@ def danni():
                 for r in m.RAZDELI
             ],
         })
+    tabove.append({
+        'kod': 'igra',
+        'vid': 'igra',
+        'ime': igra.IME,
+        'podnaslov': igra.PODNASLOV,
+        'uvod': igra.UVOD,
+        'kraj': igra.KRAJ,
+        'klyuchalki': [
+            {'kod': k['kod'], 'ime': k['ime'], 'tema': k['tema'],
+             'uslovie': k['uslovie'], 'dulag': k['vid'] == 'tekst',
+             'cifra': cifrata(k), 'podskazka': k['podskazka'],
+             'reshenie': k['reshenie']}
+            for k in igra.KLYUCHALKI
+        ],
+    })
     return {'slug': SLUG, 'tabove': tabove}
 
 
@@ -386,9 +607,12 @@ def main() -> None:
     stranica = GLAVA.replace('__DANNI__', NACHALO + '\n' + blok + '\n' + KRAI, 1)
     IZHOD.write_text(stranica, encoding='utf-8')
 
-    broi = sum(len(r['zadachi']) for t in danni()['tabove'] for r in t['razdeli'])
-    print('{} · табове: {} · задачи: {} · {} знака'.format(
-        IZHOD.name, len(TABOVE), broi, len(stranica)))
+    d = danni()
+    broi = sum(len(r['zadachi']) for t in d['tabove'] if 'razdeli' in t
+               for r in t['razdeli'])
+    kod = ''.join(str(k['cifra']) for k in d['tabove'][-1]['klyuchalki'])
+    print('{} · табове: {} · задачи: {} · код: {} · {} знака'.format(
+        IZHOD.name, len(d['tabove']), broi, kod, len(stranica)))
 
 
 if __name__ == '__main__':
