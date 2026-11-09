@@ -675,6 +675,51 @@ on conflict (slug) do update set
 
 
 -- Какво има до момента:
+
+
+-- ---------------------------------------------------------------------
+--  6. клас, седмица 11 — Степенуване и Уравнения, в един урок с два таба
+-- ---------------------------------------------------------------------
+--  Двете теми от програмата една до друга: „Степенуване“ (седмици 11–13)
+--  в първия таб и „Уравнения и цели изрази“ (седмици 14–16) във втория.
+--  81 задачи от лесни към трудни, с по един раздел ★ по-трудни във всеки
+--  таб.
+--
+--  Урокът се води НА ДЪСКАТА: никъде не се въвежда отговор. Всяка задача
+--  има кръгче за отметка „решено“ и бутон, който показва отговора заедно
+--  с решението — чак когато детето поиска. Отметките се помнят в
+--  браузъра, за да не се губи докъде е стигнал часът.
+--
+--  Страницата не иска вход и нищо не предава — затова max_points е 0.
+--  Закачена е за седмица 11, където започва темата.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('urok-6-stepeni-uravneniq',
+   'Урок — Степенуване и уравнения',
+   'lesson',
+   'uroci/urok_6_stepeni_uravneniq.html',
+   'Два таба, две теми: степенуване (свойства, числови изрази, стандартен запис) и уравнения с цели изрази (скоби, подобни членове, текстови задачи). 81 задачи от лесни към трудни, с отметка „решено“ за всяка — решават се на дъската.',
+   0,
+   false,
+   10611,
+   11,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва: решава се от таблото.
+
+
 select kind as вид,
        count(*) as брой,
        count(*) filter (where published) as в_библиотеката
