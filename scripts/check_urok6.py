@@ -30,7 +30,7 @@ KOREN = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOREN / 'scripts'))
 
 from sympy import Rational, expand, symbols                      # noqa: E402
-from urok6 import stepeni, uravneniq                             # noqa: E402
+from urok6 import igra, stepeni, uravneniq                       # noqa: E402
 from urok6.smetki import izraz, koreni, parse, stoinost          # noqa: E402
 from build_urok6 import IZHOD, SLUG, TABOVE                      # noqa: E402
 
@@ -178,6 +178,74 @@ def zvezdite():
                    tab.IME + ': по-трудните задачи са по-малко от седем')
 
 
+# ── ключалката ───────────────────────────────────────────────────────
+def klyuchalkite():
+    """Петте цифри, изведени ПО ДРУГ ПЪТ от този в сглобяването.
+
+    Тук нарочно не се вика build_urok6.cifrata(): ако и двете места
+    бъркат по един и същ начин, проверката не доказва нищо. Затова
+    цифрите се смятат наготово, с прости средства, и се сравняват с
+    това, което е влязло в страницата.
+    """
+    from build_urok6 import cifrata
+
+    tvurdi(len(igra.KLYUCHALKI) == 5, 'ключалките не са пет')
+    kodove = [k['kod'] for k in igra.KLYUCHALKI]
+    tvurdi(len(set(kodove)) == 5, 'повтарящо се име на ключалка')
+
+    for k in igra.KLYUCHALKI:
+        kade = 'ключалка ' + k['kod']
+        c = cifrata(k)
+        tvurdi(0 <= c <= 9, kade + ': цифрата не е цифра: ' + str(c))
+
+        if k['vid'] == 'posledna_cifra':
+            #  Наготово: вдига се степента и се гледа последната цифра.
+            tochno = int(str(k['osnova'] ** k['pokazatel'])[-1])
+            tvurdi(c == tochno,
+                   '{}: последната цифра е {}, а излиза {}'.format(kade, tochno, c))
+        elif k['vid'] == 'nuli':
+            n = int(stoinost(k['izraz']))
+            broi = 0
+            while n % 10 == 0:
+                n //= 10
+                broi += 1
+            tvurdi(c == broi, '{}: нулите са {}, а излиза {}'.format(kade, broi, c))
+        elif k['vid'] == 'uravnenie':
+            lqva, dqsna = k['izraz'].split('=')
+            x = symbols('x')
+            tvurdi(expand((parse(lqva) - parse(dqsna)).subs(x, c)) == 0,
+                   kade + ': цифрата не удовлетворява уравнението')
+            tvurdi(len(koreni(k['izraz'])) == 1, kade + ': коренът не е единствен')
+        elif k['vid'] == 'pokazatel':
+            lqva, dqsna = k['izraz'].split('=')
+            n = symbols(k.get('bukva', 'n'))
+            tvurdi(expand((parse(lqva) - parse(dqsna)).subs(n, c)) == 0,
+                   kade + ': цифрата не удовлетворява уравнението')
+        elif k['vid'] == 'tekst':
+            tvurdi(c == int(k['koren']),
+                   '{}: коренът е {}, а излиза {}'.format(kade, k['koren'], c))
+            lqva, dqsna = k['uravnenie'].split('=')
+            x = symbols('x')
+            tvurdi(expand((parse(lqva) - parse(dqsna)).subs(x, c)) == 0,
+                   kade + ': коренът не удовлетворява уравнението')
+            tvurdi(k['uslovie'].endswith('?'), kade + ': условието не е въпрос')
+        else:
+            GRESHKI.append(kade + ': непознат вид')
+
+        tvurdi(len(k['podskazka']) >= 30, kade + ': подсказката е къса')
+        tvurdi(len(k['reshenie']) >= 40, kade + ': решението е късо')
+        tvurdi(str(c) in k['reshenie'],
+               kade + ': решението не стига до цифрата ' + str(c))
+
+    #  Кодът трябва да е петцифрен и да не е нещо, което се познава.
+    kod = ''.join(str(cifrata(k)) for k in igra.KLYUCHALKI)
+    tvurdi(len(kod) == 5, 'кодът не е петцифрен: ' + kod)
+    tvurdi(len(set(kod)) >= 4, 'кодът се повтаря много: ' + kod)
+    tvurdi(kod != kod[0] * 5, 'кодът е от еднакви цифри')
+    tvurdi('{kod}' in igra.KRAJ, 'финалният текст не показва кода')
+    return kod
+
+
 # ── страницата ───────────────────────────────────────────────────────
 def stranicata():
     s = IZHOD.read_text(encoding='utf-8')
@@ -190,13 +258,19 @@ def stranicata():
     danni = json.loads(s[s.index('const UROK = ') + len('const UROK = '):
                          s.index(';\n/* ДАННИ:КРАЙ */')])
 
-    tvurdi(len(danni['tabove']) == 2, 'табовете не са два')
-    tvurdi([t['ime'] for t in danni['tabove']] == [stepeni.IME, uravneniq.IME],
-           'табовете не са в реда Степенуване → Уравнения')
+    tvurdi(len(danni['tabove']) == 3, 'табовете не са три')
+    tvurdi([t['ime'] for t in danni['tabove']] == [stepeni.IME, uravneniq.IME, igra.IME],
+           'табовете не са в реда Степенуване → Уравнения → Ключалката')
     tvurdi(danni['slug'] == SLUG, 'слугът не е ' + SLUG)
 
     #  Всяко условие и всеки отговор трябва да стоят в страницата.
     for t in danni['tabove']:
+        if t.get('vid') == 'igra':
+            for k in t['klyuchalki']:
+                for pole in ('uslovie', 'podskazka', 'reshenie'):
+                    tvurdi(json.dumps(k[pole], ensure_ascii=False)[1:-1] in s,
+                           'липсва от страницата: ' + k[pole][:40])
+            continue
         for r in t['razdeli']:
             for z in r['zadachi']:
                 for pole in ('izraz', 'otgovor', 'reshenie'):
@@ -226,11 +300,17 @@ def stranicata():
 
 
 def main():
+    kod = klyuchalkite()
     broi = razdelite()
     zvezdite()
     tvurdi(broi == sum(len(r['zadachi']) for t in (stepeni, uravneniq)
                        for r in t.RAZDELI),
            'броят задачи не съвпада')
+    #  Кодът не бива да стои никъде в страницата наготово — иначе се чете
+    #  от кода на страницата, вместо да се реши.
+    tekst = IZHOD.read_text(encoding='utf-8')
+    tvurdi(tekst.count(kod) == 0,
+           'кодът ' + kod + ' стои наготово в страницата')
     znaka = stranicata()
 
     if GRESHKI:
@@ -238,8 +318,9 @@ def main():
         for g in GRESHKI:
             print('  ·', g)
         sys.exit(1)
-    print('всеки отговор е пресметнат наново · проверки: {} · задачи: {} · {} знака'
-          .format(PROVERKI, broi, znaka))
+    print('всеки отговор е пресметнат наново · проверки: {} · задачи: {} '
+          '· код на ключалката: {} · {} знака'
+          .format(PROVERKI, broi, kod, znaka))
 
 
 if __name__ == '__main__':
