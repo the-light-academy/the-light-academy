@@ -104,12 +104,28 @@ focus, Review, Vocabulary) и без седмица.
 в `scripts/english5/`, а `scripts/check_english5.py` ги сверява наново
 с правилата на юнита.
 
+## Unit 2 за 5. клас — трите листа
+
+`domashni-angliyski-5-u2.sql` вкарва втората тема от учебника, „Days“,
+разделена на три листа: „A Day in the Life“ (всекидневие, at / on / in,
+наречия за честота), „Present Simple“ (третото лице с -s, don’t и
+doesn’t, въпроси и кратки отговори) и „Special Days“ (празниците,
+изразите за предложение, мястото на also и текст за Баба Марта).
+
+Третият има и четири въпроса с цели изречения — записват се в `part2` с
+`manual_max = 4` и излизат в таблото за ръчна оценка.
+
+Страниците се сглобяват от `scripts/build_english5_u2.py`, задачите стоят
+в `scripts/english5/u2_*.py`, а `scripts/check_english5_u2.py` ги сверява
+наново — нарочно по ДРУГ път, не със същите правила.
+
 ## Тестовете
 
 `tests/*.sql` са в транзакция, която завършва с `rollback`, и отказват
-да тръгнат, ако видят истински данни. Осем от тях (`rls-test`,
+да тръгнат, ако видят истински данни. Девет от тях (`rls-test`,
 `lessons-test`, `feedback-test`, `english-test`, `english-homework-test`,
-`english5-unit1-test`, `tracks-test`, `lesson-test`) вървят и върху
-съвсем празна база, направена само от файловете тук. Останалите четири (`race-test`, `academy-race-test`,
+`english5-unit1-test`, `english5-unit2-test`, `tracks-test`,
+`lesson-test`) вървят и върху съвсем празна база, направена само от
+файловете тук. Останалите четири (`race-test`, `academy-race-test`,
 `birthday-test`, `starcard-test`) очакват хора, които съществуват в
 черновата база — там се пускат.

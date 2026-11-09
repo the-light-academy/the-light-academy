@@ -89,7 +89,12 @@ with proverki(подредба, какво, готово, файл) as (
     (18, 'Петте листа за 5. клас, Unit 1 (English Plus 1)',
         (select count(*) = 5 from public.assignments
           where slug like 'en5-u1-%' and track = 'ep1_unit1'),
-        'supabase/domashni-angliyski-5-u1.sql')
+        'supabase/domashni-angliyski-5-u1.sql'),
+    --  Unit 2 „Days“: всекидневие, present simple и празници.
+    (19, 'Трите листа за 5. клас, Unit 2 (English Plus 1)',
+        (select count(*) = 3 from public.assignments
+          where slug like 'en5-u2-%' and track = 'ep1_unit2'),
+        'supabase/domashni-angliyski-5-u2.sql')
 )
 select подредба                                   as "№",
        какво,
