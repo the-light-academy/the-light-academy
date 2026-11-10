@@ -94,7 +94,13 @@ with proverki(подредба, какво, готово, файл) as (
     (19, 'Трите листа за 5. клас, Unit 2 (English Plus 1)',
         (select count(*) = 3 from public.assignments
           where slug like 'en5-u2-%' and track = 'ep1_unit2'),
-        'supabase/domashni-angliyski-5-u2.sql')
+        'supabase/domashni-angliyski-5-u2.sql'),
+    --  Вторите нива в 5. клас: по един по-труден лист на всяка тема,
+    --  32 на брой, всеки в седмицата на основния си лист.
+    (20, 'Вторите нива на домашните в 5. клас (32 листа)',
+        (select count(*) = 32 from public.assignments
+          where grades = array[5] and title like '%· ниво 2'),
+        'supabase/domashni-5-nivo2.sql')
 )
 select подредба                                   as "№",
        какво,
