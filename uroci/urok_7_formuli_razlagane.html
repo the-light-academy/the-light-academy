@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Формули за съкратено умножение · Разлагане на множители — 7. клас · The Light Academy</title>
+<meta name="description" content="Интерактивен урок по математика за 7. клас: всички формули за съкратено умножение и разлагане на множители в три подтаба — общ множител, групиране и формулите. Разходка в зоопарка с едър шрифт за споделен екран." />
+<link rel="icon" href="../favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* =====================================================================
+   УРОК ЗА 7. КЛАС — Формулите · Разлагане на множители
+   ---------------------------------------------------------------------
+   Урокът се гледа от ТЕЛЕФОН на споделен екран. Оттам идват всички
+   решения по вида:
+
+     · условията са с едър шрифт и НИКЪДЕ не се смаляват под 23px —
+       на тесен екран стават по-едри, не по-дребни;
+     · нищо не се въвежда: всяка задача има кръгче „решено“ и бутон,
+       който показва отговора заедно с решението;
+     · бутоните са поне 44px, за да се улучват с пръст;
+     · нищо не излиза встрани — дългите изрази се пренасят на нов ред.
+
+   Зоопаркът е подредбата: всеки раздел е спирка при едно животно, а
+   когато спирката се реши докрай, се отключва факт за него.
+
+   Отметките се помнят в този браузър (localStorage), за да не се губи
+   докъде е стигнал часът.
+
+   Задачите стоят в scripts/zoopark/ и се вграждат тук от
+   scripts/build_zoopark.py. Проверяват се от scripts/check_zoopark.py,
+   който ги пресмята НАНОВО със sympy.
+   ===================================================================== */
+:root{
+  --ink:#16233F; --ink-soft:#55658A;
+  --paper:#FFFDF7; --paper-raised:#FFFFFF;
+  --grid:#EFE3CC;
+  --accent:#F7AD19; --accent-ink:#8A5407; --accent-soft:#FDF0D5;
+  --pencil:#14402F; --pencil-soft:#E1EFE7;
+  --leaf:#1E7A52; --leaf-soft:#E3F3EA;
+  --success:#16603A; --success-soft:#E3F3EA;
+  --zvezda:#8E4BC4; --zvezda-soft:#F3E8FB;
+  --shadow:160 35% 18%;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Nunito',system-ui,sans-serif; font-size:19px; line-height:1.55;
+  -webkit-text-size-adjust:100%; overflow-x:hidden;
+}
+h1,h2,h3{font-family:'Fredoka',system-ui,sans-serif; margin:0}
+button{font:inherit; cursor:pointer}
+[hidden]{display:none !important}
+.wrap{max-width:900px; margin:0 auto; padding:0 clamp(14px,4vw,24px) 120px}
+
+/* ── шапка ──────────────────────────────────────────────────────── */
+.top{background:linear-gradient(160deg,#14402F,#1E7A52); color:#fff;
+  padding:16px 0 0; position:relative; overflow:hidden}
+.top .wrap{padding-bottom:0; position:relative; z-index:2}
+.top__red{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.top__back{color:#BFE6D2; text-decoration:none; font-weight:700; font-size:15px;
+  min-height:44px; display:inline-flex; align-items:center}
+.top__back:hover{color:#fff}
+.top__klas{color:#BFE6D2; font-size:15px; font-weight:700}
+.top h1{font-size:clamp(27px,7vw,40px); margin:6px 0 6px; line-height:1.08}
+.top__pod{color:#CFEEDD; font-size:clamp(16px,4.2vw,18px); max-width:58ch;
+  margin:0 0 14px}
+.listo{position:absolute; opacity:.13; pointer-events:none}
+.listo--1{top:-30px; right:-20px; width:200px; transform:rotate(18deg)}
+.listo--2{bottom:-50px; left:-30px; width:170px; transform:rotate(-24deg)}
+
+.tabove{display:flex; gap:8px; flex-wrap:wrap}
+.tab{border:none; background:rgba(255,255,255,.12); color:#DFF3E8;
+  padding:12px 18px; border-radius:16px 16px 0 0; font-weight:700;
+  font-size:clamp(16px,4.4vw,20px); font-family:'Fredoka',sans-serif;
+  min-height:50px; transition:.15s; display:flex; align-items:center; gap:8px}
+.tab:hover{background:rgba(255,255,255,.2); color:#fff}
+.tab.ima{background:var(--paper); color:var(--ink)}
+.tab__n{font-size:14px; opacity:.8; font-family:'Nunito',sans-serif;
+  font-weight:800}
+
+/* ── пътеката през зоопарка ─────────────────────────────────────── */
+.puteka{display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 4px}
+.spirka{border:2px solid var(--grid); background:#fff; border-radius:16px;
+  min-width:56px; min-height:56px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:1px; padding:4px 8px;
+  font-size:24px; line-height:1; transition:.15s}
+.spirka:hover{border-color:var(--accent)}
+.spirka b{font-size:11px; font-family:'Nunito',sans-serif; color:var(--ink-soft);
+  font-weight:800}
+.spirka.gotova{border-color:#5FB98A; background:var(--success-soft)}
+.spirka.gotova b{color:var(--success)}
+
+/* ── подтабове ──────────────────────────────────────────────────── */
+.podtabove{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 2px}
+.podtab{border:2px solid var(--grid); background:#fff; color:var(--ink-soft);
+  border-radius:999px; padding:10px 18px; font-weight:800;
+  font-size:clamp(15px,4.2vw,18px); min-height:46px; transition:.15s;
+  display:flex; align-items:center; gap:7px}
+.podtab:hover{border-color:var(--accent); color:var(--accent-ink)}
+.podtab.ima{background:var(--pencil); border-color:var(--pencil); color:#fff}
+.podtab__n{font-size:13px; opacity:.85; font-weight:800}
+
+/* ── напредък ───────────────────────────────────────────────────── */
+.napredak{display:flex; align-items:center; gap:12px; margin:16px 0 6px;
+  flex-wrap:wrap}
+.lenta{flex:1; min-width:140px; height:12px; border-radius:999px;
+  background:var(--pencil-soft); overflow:hidden}
+.lenta i{display:block; height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),#7ED3B2); transition:width .4s}
+.napredak b{font-size:16px; color:var(--ink-soft); white-space:nowrap}
+.nulirai{border:2px solid var(--grid); background:#fff; color:var(--ink-soft);
+  border-radius:999px; padding:9px 16px; font-size:15px; font-weight:700;
+  min-height:44px}
+.nulirai:hover{border-color:var(--accent); color:var(--accent-ink)}
+
+/* ── раздел (спирка) ────────────────────────────────────────────── */
+.razdel{background:var(--paper-raised); border:1px solid var(--grid);
+  border-radius:22px; padding:18px clamp(14px,3.5vw,24px); margin:18px 0;
+  box-shadow:0 10px 30px hsl(var(--shadow) / .07); scroll-margin-top:12px}
+.razdel.zvezda{border-color:#DCC4F0; background:linear-gradient(#FDFAFF,#fff)}
+.razdel__top{display:flex; align-items:center; gap:13px; flex-wrap:wrap}
+.razdel__z{width:58px; height:58px; border-radius:18px; display:grid;
+  place-items:center; background:var(--leaf-soft); font-size:32px; flex:none;
+  line-height:1}
+.razdel.zvezda .razdel__z{background:var(--zvezda-soft)}
+.razdel__ime{font-family:'Fredoka',sans-serif;
+  font-size:clamp(22px,5.6vw,28px); line-height:1.12}
+.razdel__tema{font-size:clamp(15px,4vw,17px); color:var(--ink-soft);
+  font-weight:700}
+.razdel__broi{margin-left:auto; font-size:15px; font-weight:800;
+  color:var(--ink-soft); background:var(--pencil-soft); border-radius:999px;
+  padding:6px 14px; white-space:nowrap}
+.razdel__ideq{margin:13px 0 0; color:var(--ink);
+  font-size:clamp(16.5px,4.3vw,19px)}
+/* Формулите вървят с основния шрифт: моноширинният няма истински горни
+   индекси и a² се разпада на „a ²“, а минусът става тире. */
+.pravilo{margin:13px 0 4px; padding:13px 16px; border-radius:16px;
+  background:var(--accent-soft); border:2px dashed var(--accent);
+  font-size:clamp(18px,4.8vw,23px); letter-spacing:.01em;
+  color:var(--accent-ink); font-weight:800; line-height:1.5;
+  overflow-wrap:break-word}
+.razdel.zvezda .pravilo{background:var(--zvezda-soft); border-color:#C89AE6;
+  color:#6B2E96}
+
+/* ── задача ─────────────────────────────────────────────────────── */
+.zadachi{display:grid; gap:12px; margin-top:16px}
+.zad{position:relative; border:1px solid var(--grid); border-radius:18px;
+  padding:14px 70px 14px 16px; background:#FBF8F1; transition:.15s}
+.zad.reshena{background:var(--success-soft); border-color:#BBE3CC}
+.zad__n{font-size:clamp(13.5px,3.6vw,15px); font-weight:800;
+  color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em}
+.zad__uslovie{font-size:clamp(23px,6.4vw,31px); font-weight:800;
+  color:var(--pencil); margin:6px 0 0; line-height:1.4;
+  overflow-wrap:break-word; letter-spacing:.01em}
+.zad__uslovie.dulag{font-size:clamp(19px,5.2vw,24px); font-weight:700;
+  line-height:1.45; color:var(--ink); letter-spacing:0}
+.zad__dolu{display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin-top:12px}
+.pokaji{border:2px solid var(--pencil-soft); background:#fff;
+  color:var(--pencil); border-radius:999px; padding:10px 18px;
+  font-size:16px; font-weight:800; min-height:46px}
+.pokaji:hover{border-color:var(--accent); color:var(--accent-ink)}
+.otg{margin-top:12px; padding:14px 16px; border-radius:16px; background:#fff;
+  border:1px solid var(--grid)}
+.otg__r{font-size:clamp(21px,5.6vw,27px); font-weight:800; color:var(--success);
+  line-height:1.4; overflow-wrap:break-word}
+.otg__k{margin:9px 0 0; font-size:clamp(16.5px,4.3vw,19px); color:var(--ink-soft)}
+.otg__k b{color:var(--ink)}
+
+/* кръгчето за отметка — голямо, за пръст */
+.otmetka{position:absolute; top:12px; right:12px; width:50px; height:50px;
+  border-radius:50%; border:2px solid var(--grid); background:#fff;
+  color:#C3CBD9; display:grid; place-items:center; font-size:24px;
+  font-weight:800; transition:.15s}
+.otmetka:hover{border-color:var(--accent); color:var(--accent-ink)}
+.otmetka.ima{border-color:#5FB98A; background:var(--success-soft);
+  color:var(--success)}
+
+/* ── стикерът с факта ───────────────────────────────────────────── */
+.stiker{margin-top:14px; padding:14px 16px; border-radius:16px;
+  background:var(--leaf-soft); border:2px solid #9CD4B7;
+  font-size:clamp(16.5px,4.3vw,19px); color:#124B33}
+.stiker b{color:var(--leaf)}
+.stiker--zaklyuchen{background:#F6F4EE; border-style:dashed;
+  border-color:var(--grid); color:var(--ink-soft)}
+
+/* ── краят на обиколката ────────────────────────────────────────── */
+.kraj{margin-top:20px; padding:24px; border-radius:24px; text-align:center;
+  background:var(--success-soft); border:2px solid #9CD4B7}
+.kraj h2{font-size:clamp(24px,6vw,30px); color:var(--success); margin-bottom:8px}
+.kraj p{margin:0 auto; max-width:52ch; font-size:clamp(16.5px,4.3vw,19px)}
+
+/* ── долната лента ──────────────────────────────────────────────── */
+.dolu{position:fixed; left:0; right:0; bottom:0; z-index:40; padding:10px 12px;
+  background:rgba(255,253,247,.95); backdrop-filter:blur(10px);
+  border-top:1px solid var(--grid)}
+.dolu__in{max-width:900px; margin:0 auto; display:flex; align-items:center;
+  gap:12px; font-size:16px}
+.dolu__t{font-weight:800}
+.dolu__p{flex:1}
+
+@media (max-width:620px){
+  .zad{padding-right:64px}
+  .razdel__broi{margin-left:0}
+  .dolu__in{font-size:15px}
+}
+@media print{
+  .tabove,.podtabove,.puteka,.dolu,.otmetka,.pokaji,.nulirai{display:none !important}
+  .razdel{break-inside:avoid; box-shadow:none}
+  .otg,.stiker{display:block !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+
+<header class="top">
+  <svg class="listo listo--1" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 5C20 25 10 60 20 95 55 85 85 55 50 5z" fill="#fff"/></svg>
+  <svg class="listo listo--2" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 5C20 25 10 60 20 95 55 85 85 55 50 5z" fill="#fff"/></svg>
+  <div class="wrap">
+    <div class="top__red">
+      <a class="top__back" href="../portal.html">← към профила</a>
+      <span style="color:#78B79A">·</span>
+      <span class="top__klas">Математика · 7. клас</span>
+    </div>
+    <h1>🦁 Ден в зоопарка</h1>
+    <p class="top__pod">Формулите и разлагането — спирка по спирка.
+      Решаваме на дъската, тук отмятаме готовото.</p>
+    <div class="tabove" id="tabove"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="podtabove" id="podtabove" hidden></div>
+  <div class="puteka" id="puteka"></div>
+  <div class="napredak">
+    <div class="lenta"><i id="lenta"></i></div>
+    <b id="broiach">0 / 0</b>
+    <button class="nulirai" id="bNulirai">Изчисти отметките</button>
+  </div>
+  <div id="sudurjanie"></div>
+  <div class="kraj" id="kraj" hidden>
+    <h2>🎉 Обиколката е завършена!</h2>
+    <p>Всички спирки са минати и всички животни са нахранени със задачи.
+      Формулите вече не се налучкват — виждат се.</p>
+  </div>
+</div>
+
+<div class="dolu">
+  <div class="dolu__in">
+    <span class="dolu__t" id="doluTema"></span>
+    <span class="dolu__p"></span>
+    <span class="dolu__t" id="doluBroi"></span>
+  </div>
+</div>
+
+<script>
+/* ДАННИ:НАЧАЛО — пише ги scripts/build_zoopark.py; задачите са в scripts/zoopark/ */
+const UROK = {
+ "slug": "urok-7-formuli-razlagane",
+ "tabove": [
+  {
+   "kod": "f",
+   "ime": "Формулите",
+   "podnaslov": "Съкратено умножение — шест спирки в зоопарка",
+   "razdeli": [
+    {
+     "kod": "f1",
+     "zhivotno": "🦁",
+     "ime": "Лъвската скала",
+     "tema": "Квадрат на двучлен",
+     "ideya": "Лъвът не си играе с единия квадрат — взима и двата, и двойното произведение по средата. Точно него забравят всички.",
+     "pravilo": "(a ± b)² = a² ± 2·a·b + b²",
+     "fakt": "Ревът на лъва се чува от 8 километра — толкова, колкото е разстоянието от зоопарка до центъра.",
+     "zvezda": false,
+     "zadachi": [
+      {
+       "id": "f1-1",
+       "glagol": "Развийте",
+       "izraz": "(3x − 5y)²",
+       "dulag": false,
+       "otgovor": "9x² − 30xy + 25y²",
+       "reshenie": "Първият на квадрат: (3x)² = 9x². Двойното произведение: 2 · 3x · 5y = 30xy, с минус. Вторият на квадрат: (5y)² = 25y²."
+      },
+      {
+       "id": "f1-2",
+       "glagol": "Развийте",
+       "izraz": "(2a² + 7b)²",
+       "dulag": false,
+       "otgovor": "4a⁴ + 28a²b + 49b²",
+       "reshenie": "(2a²)² = 4a⁴ — степента се умножава по 2. Средата е 2 · 2a² · 7b = 28a²b, а (7b)² = 49b²."
+      },
+      {
+       "id": "f1-3",
+       "glagol": "Развийте",
+       "izraz": "(7x − 10y)²",
+       "dulag": false,
+       "otgovor": "49x² − 140xy + 100y²",
+       "reshenie": "(7x)² = 49x², средата е 2 · 7x · 10y = 140xy с минус, а (10y)² = 100y²."
+      },
+      {
+       "id": "f1-4",
+       "glagol": "Пресметнете наум",
+       "izraz": "103²",
+       "dulag": false,
+       "otgovor": "10 609",
+       "reshenie": "103 = 100 + 3, значи 103² = 100² + 2 · 100 · 3 + 3² = 10 000 + 600 + 9 = 10 609."
+      },
+      {
+       "id": "f1-5",
+       "glagol": "Опростете",
+       "izraz": "(x + 4)² − (x − 4)²",
+       "dulag": false,
+       "otgovor": "16x",
+       "reshenie": "x² + 8x + 16 − (x² − 8x + 16) = 16x. Квадратите се унищожават, остават само двете среди."
+      },
+      {
+       "id": "f1-6",
+       "glagol": "Опростете",
+       "izraz": "(3a − 1)² + (3a + 1)²",
+       "dulag": false,
+       "otgovor": "18a² + 2",
+       "reshenie": "9a² − 6a + 1 + 9a² + 6a + 1 = 18a² + 2. Тук се унищожават средите, а квадратите се удвояват."
+      }
+     ]
+    },
+    {
+     "kod": "f2",
+     "zhivotno": "🐘",
+     "ime": "Слонската поляна",
+     "tema": "Разлика на квадрати",
+     "ideya": "Два израза, които се различават само по знака по средата. Умножиш ли ги, средата изчезва и остава разлика на квадрати.",
+     "pravilo": "(a − b) · (a + b) = a² − b²",
+     "fakt": "Слонът пие по 200 литра вода на ден — цяла вана.",
+     "zvezda": false,
+     "zadachi": [
+      {
+       "id": "f2-1",
+       "glagol": "Развийте",
+       "izraz": "(4x − 9y)(4x + 9y)",
+       "dulag": false,
+       "otgovor": "16x² − 81y²",
+       "reshenie": "Същите два израза с различен знак: (4x)² − (9y)² = 16x² − 81y²."
+      },
+      {
+       "id": "f2-2",
+       "glagol": "Развийте",
+       "izraz": "(5a² − 2b)(5a² + 2b)",
+       "dulag": false,
+       "otgovor": "25a⁴ − 4b²",
+       "reshenie": "(5a²)² = 25a⁴, а (2b)² = 4b². Между тях стои минус."
+      },
+      {
+       "id": "f2-3",
+       "glagol": "Пресметнете наум",
+       "izraz": "98 · 102",
+       "dulag": false,
+       "otgovor": "9 996",
+       "reshenie": "98 = 100 − 2, а 102 = 100 + 2, значи произведението е 100² − 2² = 10 000 − 4 = 9 996."
+      },
+      {
+       "id": "f2-4",
+       "glagol": "Опростете",
+       "izraz": "(x − 2)(x + 2)(x² + 4)",
+       "dulag": false,
+       "otgovor": "x⁴ − 16",
+       "reshenie": "Първо двете скоби: x² − 4. После (x² − 4)(x² + 4) = x⁴ − 16 — пак същата формула, с по-големи парчета."
+      },
+      {
+       "id": "f2-5",
+       "glagol": "Пресметнете",
+       "izraz": "2025² − 2024²",
+       "dulag": false,
+       "otgovor": "4 049",
+       "reshenie": "Това е (2025 − 2024)(2025 + 2024) = 1 · 4 049 = 4 049. Без формулата тук трябват две умножения с четири цифри."
+      },
+      {
+       "id": "f2-6",
+       "glagol": "Опростете",
+       "izraz": "(a − b)(a + b) − (a − b)²",
+       "dulag": false,
+       "otgovor": "2ab − 2b²",
+       "reshenie": "a² − b² − (a² − 2ab + b²) = a² − b² − a² + 2ab − b² = 2ab − 2b². Внимавай със знака пред цялата втора скоба."
+      }
+     ]
+    },
+    {
+     "kod": "f3",
+     "zhivotno": "🐒",
+     "ime": "Маймунският остров",
+     "tema": "Куб на двучлен",
+     "ideya": "Четири събираеми, а не две. Степените на първия слизат 3, 2, 1, 0, на втория се качват 0, 1, 2, 3, а коефициентите са 1, 3, 3, 1.",
+     "pravilo": "(a ± b)³ = a³ ± 3·a²·b + 3·a·b² ± b³",
+     "fakt": "Маймуните се разпознават по лицата си — точно като хората.",
+     "zvezda": false,
+     "zadachi": [
+      {
+       "id": "f3-1",
+       "glagol": "Развийте",
+       "izraz": "(x + 2)³",
+       "dulag": false,
+       "otgovor": "x³ + 6x² + 12x + 8",
+       "reshenie": "x³ + 3 · x² · 2 + 3 · x · 4 + 8 = x³ + 6x² + 12x + 8."
+      },
+      {
+       "id": "f3-2",
+       "glagol": "Развийте",
+       "izraz": "(2a − 3b)³",
+       "dulag": false,
+       "otgovor": "8a³ − 36a²b + 54ab² − 27b³",
+       "reshenie": "(2a)³ = 8a³; 3 · (2a)² · 3b = 36a²b с минус; 3 · 2a · (3b)² = 54ab²; (3b)³ = 27b³ с минус. Знаците се редуват."
+      },
+      {
+       "id": "f3-3",
+       "glagol": "Развийте",
+       "izraz": "(3 − x)³",
+       "dulag": false,
+       "otgovor": "27 − 27x + 9x² − x³",
+       "reshenie": "27 − 3 · 9 · x + 3 · 3 · x² − x³. Тук първото място е заето от числото, а не от буквата — редът не се обръща."
+      },
+      {
+       "id": "f3-4",
+       "glagol": "Пресметнете наум",
+       "izraz": "21³",
+       "dulag": false,
+       "otgovor": "9 261",
+       "reshenie": "(20 + 1)³ = 8 000 + 3 · 400 · 1 + 3 · 20 · 1 + 1 = 8 000 + 1 200 + 60 + 1 = 9 261."
+      },
+      {
+       "id": "f3-5",
+       "glagol": "Опростете",
+       "izraz": "(x + 1)³ − (x − 1)³",
+       "dulag": false,
+       "otgovor": "6x² + 2",
+       "reshenie": "Двата куба и двете средни събираеми с x се унищожават, а остават удвоените: 2 · 3x² + 2 · 1 = 6x² + 2."
+      },
+      {
+       "id": "f3-6",
+       "glagol": "Опростете",
+       "izraz": "(a + b)³ − a³ − b³",
+       "dulag": false,
+       "otgovor": "3a²b + 3ab²",
+       "reshenie": "От куба остават само средните две събираеми: 3a²b + 3ab². Може да се запише и като 3ab(a + b)."
+      }
+     ]
+    },
+    {
+     "kod": "f4",
+     "zhivotno": "🐧",
+     "ime": "Пингвините",
+     "tema": "Сбор и разлика на кубове",
+     "ideya": "Двучлен по тричлен. В тричлена средата е БЕЗ двойка и с обратния знак — тъкмо затова всичко излишно се съкращава.",
+     "pravilo": "a³ ± b³ = (a ± b) · (a² ∓ a·b + b²)",
+     "fakt": "Пингвините не могат да летят, но се гмуркат на 500 метра дълбочина.",
+     "zvezda": false,
+     "zadachi": [
+      {
+       "id": "f4-1",
+       "glagol": "Развийте",
+       "izraz": "(x − 3)(x² + 3x + 9)",
+       "dulag": false,
+       "otgovor": "x³ − 27",
+       "reshenie": "Това е разлика на кубове с a = x и b = 3: x³ − 3³ = x³ − 27."
+      },
+      {
+       "id": "f4-2",
+       "glagol": "Развийте",
+       "izraz": "(2a + 5)(4a² − 10a + 25)",
+       "dulag": false,
+       "otgovor": "8a³ + 125",
+       "reshenie": "Сбор на кубове с a = 2a и b = 5: (2a)³ + 5³ = 8a³ + 125."
+      },
+      {
+       "id": "f4-3",
+       "glagol": "Разложете",
+       "izraz": "27x³ − 8",
+       "dulag": false,
+       "otgovor": "(3x − 2)(9x² + 6x + 4)",
+       "reshenie": "27x³ = (3x)³ и 8 = 2³. Тогава (3x − 2)((3x)² + 3x · 2 + 2²) = (3x − 2)(9x² + 6x + 4)."
+      },
+      {
+       "id": "f4-4",
+       "glagol": "Разложете",
+       "izraz": "64 + a³b³",
+       "dulag": false,
+       "otgovor": "(4 + ab)(16 − 4ab + a²b²)",
+       "reshenie": "64 = 4³ и a³b³ = (ab)³. Сбор на кубове: (4 + ab)(16 − 4ab + a²b²)."
+      },
+      {
+       "id": "f4-5",
+       "glagol": "Опростете",
+       "izraz": "(x + 2)(x² − 2x + 4) − x³",
+       "dulag": false,
+       "otgovor": "8",
+       "reshenie": "Скобите дават x³ + 8, а x³ си отива: остава само 8."
+      },
+      {
+       "id": "f4-6",
+       "glagol": "Разложете",
+       "izraz": "x⁶ − 64",
+       "dulag": false,
+       "otgovor": "(x − 2)(x + 2)(x² − 2x + 4)(x² + 2x + 4)",
+       "reshenie": "Първо като разлика на квадрати: (x³ − 8)(x³ + 8). После всяка скоба е куб: (x − 2)(x² + 2x + 4) и (x + 2)(x² − 2x + 4)."
+      }
+     ]
+    },
+    {
+     "kod": "f5",
+     "zhivotno": "🐬",
+     "ime": "Шоу на делфините",
+     "tema": "Уравнения с формулите",
+     "ideya": "Изглеждат квадратни, но не са. Развиеш ли скобите, всички квадрати се унищожават и остава обикновено уравнение. Това е целият номер на шоуто.",
+     "pravilo": "Развий всяка скоба → съкрати това, което се повтаря → реши каквото остане",
+     "fakt": "Делфините спят с половин мозък — другата половина пази дишането.",
+     "zvezda": true,
+     "zadachi": [
+      {
+       "id": "f5-1",
+       "glagol": "Решете уравнението",
+       "izraz": "(x − 3)² − (x + 2)(x − 2) = 7",
+       "dulag": false,
+       "otgovor": "x = 1",
+       "reshenie": "x² − 6x + 9 − (x² − 4) = −6x + 13. Остава −6x + 13 = 7, значи 6x = 6 и x = 1."
+      },
+      {
+       "id": "f5-2",
+       "glagol": "Решете уравнението",
+       "izraz": "(2x + 1)² − 4x(x − 3) = 25",
+       "dulag": false,
+       "otgovor": "x = 1,5",
+       "reshenie": "4x² + 4x + 1 − 4x² + 12x = 16x + 1. Тогава 16x + 1 = 25, 16x = 24 и x = 1,5."
+      },
+      {
+       "id": "f5-3",
+       "glagol": "Решете уравнението",
+       "izraz": "(x + 4)³ − x³ = 12x² + 100",
+       "dulag": false,
+       "otgovor": "x = 0,75",
+       "reshenie": "Кубът дава x³ + 12x² + 48x + 64, а x³ се маха. Остава 12x² + 48x + 64 = 12x² + 100, тоест 48x = 36 и x = 0,75."
+      },
+      {
+       "id": "f5-4",
+       "glagol": "Решете уравнението",
+       "izraz": "(x − 5)(x + 5) − (x − 3)² = 2",
+       "dulag": false,
+       "otgovor": "x = 6",
+       "reshenie": "x² − 25 − (x² − 6x + 9) = 6x − 34. От 6x − 34 = 2 следва 6x = 36 и x = 6."
+      },
+      {
+       "id": "f5-5",
+       "glagol": "Решете уравнението",
+       "izraz": "(x + 1)³ − (x − 1)³ = 6x² + 20",
+       "dulag": false,
+       "otgovor": "няма решение",
+       "reshenie": "Лявата страна е 6x² + 2. Остава 6x² + 2 = 6x² + 20, тоест 2 = 20 — невярно за всяко x. Уравнението няма решение."
+      },
+      {
+       "id": "f5-6",
+       "glagol": "Решете уравнението",
+       "izraz": "(x + 2)² − (x − 2)² = 8x",
+       "dulag": false,
+       "otgovor": "всяко число",
+       "reshenie": "Лявата страна е точно 8x. Остава 8x = 8x — вярно за всяко x. Решение е всяко число."
+      }
+     ]
+    },
+    {
+     "kod": "f6",
+     "zhivotno": "🦉",
+     "ime": "Нощната къща",
+     "tema": "★ По-трудни",
+     "ideya": "Тук формулата не се вижда отвън. Първо трябва да я подредиш — или да видиш, че цялото нещо е един квадрат.",
+     "pravilo": "a² + b² = (a + b)² − 2ab    ·    a³ + b³ = (a + b)³ − 3ab(a + b)",
+     "fakt": "Бухалът върти глава на 270 градуса, защото очите му не мърдат.",
+     "zvezda": true,
+     "zadachi": [
+      {
+       "id": "f6-1",
+       "glagol": "Пресметнете",
+       "izraz": "(123² − 23²) : 100",
+       "dulag": false,
+       "otgovor": "146",
+       "reshenie": "123² − 23² = (123 − 23)(123 + 23) = 100 · 146. След делението на 100 остава 146."
+      },
+      {
+       "id": "f6-2",
+       "glagol": "",
+       "izraz": "Дадено е, че a + b = 7 и a · b = 10. Намерете a² + b².",
+       "dulag": true,
+       "otgovor": "29",
+       "reshenie": "a² + b² = (a + b)² − 2ab = 49 − 20 = 29. Самите a и b не трябват."
+      },
+      {
+       "id": "f6-3",
+       "glagol": "",
+       "izraz": "Дадено е, че a + b = 5 и a · b = 6. Намерете a³ + b³.",
+       "dulag": true,
+       "otgovor": "35",
+       "reshenie": "a³ + b³ = (a + b)³ − 3ab(a + b) = 125 − 3 · 6 · 5 = 125 − 90 = 35."
+      },
+      {
+       "id": "f6-4",
+       "glagol": "",
+       "izraz": "Дадено е, че x − y = 9. Намерете x² − 2xy + y².",
+       "dulag": true,
+       "otgovor": "81",
+       "reshenie": "Целият израз е (x − y)², а то е 9² = 81."
+      },
+      {
+       "id": "f6-5",
+       "glagol": "Пресметнете наум",
+       "izraz": "49 · 51 + 1",
+       "dulag": false,
+       "otgovor": "2 500",
+       "reshenie": "49 · 51 = (50 − 1)(50 + 1) = 2 500 − 1 = 2 499. С единицата отгоре: 2 500."
+      },
+      {
+       "id": "f6-6",
+       "glagol": "",
+       "izraz": "Коя е най-малката стойност на израза x² − 6x + 11 и при кое x се получава?",
+       "dulag": true,
+       "otgovor": "2 при x = 3",
+       "reshenie": "x² − 6x + 11 = (x − 3)² + 2. Квадратът не може да е отрицателен, затова най-малкото е 2 — при x = 3."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "r",
+   "ime": "Разлагане на множители",
+   "podnaslov": "Три начина, три кътчета в зоопарка",
+   "podtabove": [
+    {
+     "kod": "a",
+     "ime": "Общ множител",
+     "zhivotno": "🦒",
+     "razdeli": [
+      {
+       "kod": "ra1",
+       "zhivotno": "🦒",
+       "ime": "Жирафите",
+       "tema": "Изнасяне на общ множител",
+       "ideya": "Жирафът взима най-високото, до което стига всеки: най-голямата обща част от числата и най-малката степен на всяка буква. Това излиза пред скобата.",
+       "pravilo": "a·b + a·c = a · (b + c)",
+       "fakt": "Жирафът има същия брой прешлени на врата като човека — седем.",
+       "zvezda": false,
+       "zadachi": [
+        {
+         "id": "ra1-1",
+         "glagol": "Разложете",
+         "izraz": "12a³b − 18a²b²",
+         "dulag": false,
+         "otgovor": "6a²b(2a − 3b)",
+         "reshenie": "НОД(12, 18) = 6, от буквите се взима най-малката степен: a² и b. Пред скобата излиза 6a²b."
+        },
+        {
+         "id": "ra1-2",
+         "glagol": "Разложете",
+         "izraz": "15x⁴ + 25x³ + 35x²",
+         "dulag": false,
+         "otgovor": "5x²(3x² + 5x + 7)",
+         "reshenie": "Общото на 15, 25 и 35 е 5, а най-малката степен на x е x². Остава 3x² + 5x + 7, което повече не се разлага."
+        },
+        {
+         "id": "ra1-3",
+         "glagol": "Разложете",
+         "izraz": "8a(x − y) − 5b(x − y)",
+         "dulag": false,
+         "otgovor": "(x − y)(8a − 5b)",
+         "reshenie": "Общият множител не е буква, а цяла скоба: (x − y). Тя излиза отпред, а каквото е останало, се събира."
+        },
+        {
+         "id": "ra1-4",
+         "glagol": "Разложете",
+         "izraz": "3m(a − 2) + 7(2 − a)",
+         "dulag": false,
+         "otgovor": "(a − 2)(3m − 7)",
+         "reshenie": "Скобите изглеждат различни, но 2 − a = −(a − 2). Втората става −7(a − 2) и общото е (a − 2)."
+        },
+        {
+         "id": "ra1-5",
+         "glagol": "Разложете",
+         "izraz": "6x(x + 3)³ − 4x²(x + 3)²",
+         "dulag": false,
+         "otgovor": "2x(x + 3)²(x + 9)",
+         "reshenie": "Общото е 2x(x + 3)². Остава 3(x + 3) − 2x = x + 9."
+        },
+        {
+         "id": "ra1-6",
+         "glagol": "Пресметнете наум",
+         "izraz": "37 · 48 + 37 · 52",
+         "dulag": false,
+         "otgovor": "3 700",
+         "reshenie": "Изнасяме 37: 37 · (48 + 52) = 37 · 100 = 3 700."
+        }
+       ]
+      },
+      {
+       "kod": "ra2",
+       "zhivotno": "🦘",
+       "ime": "Кенгурата",
+       "tema": "★ По-трудни с общ множител",
+       "ideya": "Общият множител се крие: ту е обърнат наопаки, ту е цяла скоба на степен, ту след изнасянето остава нещо, което пак се разлага.",
+       "pravilo": "Изнеси → погледни остатъка → ако и той се разлага, продължи",
+       "fakt": "Кенгуруто не може да върви назад — затова е на герба на Австралия.",
+       "zvezda": true,
+       "zadachi": [
+        {
+         "id": "ra2-1",
+         "glagol": "Разложете",
+         "izraz": "a(a − b) + b(b − a)",
+         "dulag": false,
+         "otgovor": "(a − b)²",
+         "reshenie": "b − a = −(a − b), значи изразът е a(a − b) − b(a − b) = (a − b)(a − b), тоест (a − b)²."
+        },
+        {
+         "id": "ra2-2",
+         "glagol": "Разложете",
+         "izraz": "5(x − 2)² − 10(x − 2)",
+         "dulag": false,
+         "otgovor": "5(x − 2)(x − 4)",
+         "reshenie": "Общото е 5(x − 2). Остава (x − 2) − 2 = x − 4."
+        },
+        {
+         "id": "ra2-3",
+         "glagol": "Разложете",
+         "izraz": "x(x + 1)(x + 2) + (x + 1)(x + 2)",
+         "dulag": false,
+         "otgovor": "(x + 1)²(x + 2)",
+         "reshenie": "Общото е (x + 1)(x + 2), а остава x + 1. Значи (x + 1)(x + 2)(x + 1) = (x + 1)²(x + 2)."
+        },
+        {
+         "id": "ra2-4",
+         "glagol": "Разложете докрай",
+         "izraz": "2a⁴ − 2a",
+         "dulag": false,
+         "otgovor": "2a(a − 1)(a² + a + 1)",
+         "reshenie": "Първо 2a: 2a(a³ − 1). После разлика на кубове: a³ − 1 = (a − 1)(a² + a + 1)."
+        },
+        {
+         "id": "ra2-5",
+         "glagol": "Пресметнете",
+         "izraz": "(2²⁵ − 2²⁴) : 2²³",
+         "dulag": false,
+         "otgovor": "2",
+         "reshenie": "Изнасяме 2²⁴: 2²⁴(2 − 1) = 2²⁴. После 2²⁴ : 2²³ = 2."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "b",
+     "ime": "Групиране",
+     "zhivotno": "🐊",
+     "razdeli": [
+      {
+       "kod": "rb1",
+       "zhivotno": "🐊",
+       "ime": "Крокодилското блато",
+       "tema": "Групиране по двойки",
+       "ideya": "Четири събираеми — две по две. Крокодилът захапва първите две, после вторите две, и ако от двете захапки излезе една и съща скоба, разлагането е готово.",
+       "pravilo": "a·x + a·y + b·x + b·y = a(x + y) + b(x + y) = (a + b)(x + y)",
+       "fakt": "Крокодилът сменя зъбите си цял живот — до 3 000 на брой.",
+       "zvezda": false,
+       "zadachi": [
+        {
+         "id": "rb1-1",
+         "glagol": "Разложете",
+         "izraz": "ax + ay + bx + by",
+         "dulag": false,
+         "otgovor": "(a + b)(x + y)",
+         "reshenie": "a(x + y) + b(x + y), а после излиза общата скоба (x + y)."
+        },
+        {
+         "id": "rb1-2",
+         "glagol": "Разложете",
+         "izraz": "3x³ − 2x² + 15x − 10",
+         "dulag": false,
+         "otgovor": "(3x − 2)(x² + 5)",
+         "reshenie": "x²(3x − 2) + 5(3x − 2). Общата скоба е (3x − 2)."
+        },
+        {
+         "id": "rb1-3",
+         "glagol": "Разложете",
+         "izraz": "ab − 3a + 2b − 6",
+         "dulag": false,
+         "otgovor": "(b − 3)(a + 2)",
+         "reshenie": "a(b − 3) + 2(b − 3) = (b − 3)(a + 2)."
+        },
+        {
+         "id": "rb1-4",
+         "glagol": "Разложете докрай",
+         "izraz": "x³ + x² − 4x − 4",
+         "dulag": false,
+         "otgovor": "(x + 1)(x − 2)(x + 2)",
+         "reshenie": "x²(x + 1) − 4(x + 1) = (x + 1)(x² − 4). Но x² − 4 е разлика на квадрати и се разлага още."
+        },
+        {
+         "id": "rb1-5",
+         "glagol": "Разложете",
+         "izraz": "2m − 2n + mx − nx",
+         "dulag": false,
+         "otgovor": "(m − n)(2 + x)",
+         "reshenie": "2(m − n) + x(m − n) = (m − n)(2 + x)."
+        },
+        {
+         "id": "rb1-6",
+         "glagol": "Разложете",
+         "izraz": "5a − 5b − ac + bc",
+         "dulag": false,
+         "otgovor": "(a − b)(5 − c)",
+         "reshenie": "5(a − b) − c(a − b) = (a − b)(5 − c). Внимавай с минуса пред c — той влиза в изнасянето."
+        }
+       ]
+      },
+      {
+       "kod": "rb2",
+       "zhivotno": "🦓",
+       "ime": "Зебрите",
+       "tema": "★ Групиране с формула",
+       "ideya": "Групирането не е винаги две по две. Понякога трите събираеми образуват точен квадрат, а четвъртото стои само — тогава цялото се превръща в разлика на квадрати.",
+       "pravilo": "a² ± 2ab + b² − c² = (a ± b)² − c² = (a ± b − c)(a ± b + c)",
+       "fakt": "Няма две зебри с еднакви шарки — като пръстовите отпечатъци.",
+       "zvezda": true,
+       "zadachi": [
+        {
+         "id": "rb2-1",
+         "glagol": "Разложете",
+         "izraz": "x² − y² + 3x + 3y",
+         "dulag": false,
+         "otgovor": "(x + y)(x − y + 3)",
+         "reshenie": "(x − y)(x + y) + 3(x + y). Общата скоба е (x + y)."
+        },
+        {
+         "id": "rb2-2",
+         "glagol": "Разложете",
+         "izraz": "a² − 2ab + b² − 9",
+         "dulag": false,
+         "otgovor": "(a − b − 3)(a − b + 3)",
+         "reshenie": "Първите три са (a − b)². Остава (a − b)² − 9 — разлика на квадрати с 3."
+        },
+        {
+         "id": "rb2-3",
+         "glagol": "Разложете",
+         "izraz": "x² + 6x + 9 − y²",
+         "dulag": false,
+         "otgovor": "(x + 3 − y)(x + 3 + y)",
+         "reshenie": "x² + 6x + 9 = (x + 3)². После (x + 3)² − y²."
+        },
+        {
+         "id": "rb2-4",
+         "glagol": "Разложете",
+         "izraz": "4a² + 4a + 1 − b²",
+         "dulag": false,
+         "otgovor": "(2a + 1 − b)(2a + 1 + b)",
+         "reshenie": "Трите събираеми са (2a + 1)². Остава (2a + 1)² − b²."
+        },
+        {
+         "id": "rb2-5",
+         "glagol": "Разложете докрай",
+         "izraz": "x³ − x² − x + 1",
+         "dulag": false,
+         "otgovor": "(x − 1)²(x + 1)",
+         "reshenie": "x²(x − 1) − (x − 1) = (x − 1)(x² − 1), а x² − 1 = (x − 1)(x + 1). Значи (x − 1)²(x + 1)."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "v",
+     "ime": "С формулите",
+     "zhivotno": "🦜",
+     "razdeli": [
+      {
+       "kod": "rv1",
+       "zhivotno": "🦜",
+       "ime": "Къщата на папагалите",
+       "tema": "Разлагане по формула",
+       "ideya": "Формулите се четат и отзад напред. Папагалът повтаря същото, само че обърнато: там, където преди развивахме, сега сглобяваме.",
+       "pravilo": "a² − b² = (a − b)(a + b)    ·    a² ± 2ab + b² = (a ± b)²    ·    a³ ± b³ = (a ± b)(a² ∓ ab + b²)",
+       "fakt": "Папагалът жако запомня над 100 думи и ги използва по смисъл.",
+       "zvezda": false,
+       "zadachi": [
+        {
+         "id": "rv1-1",
+         "glagol": "Разложете",
+         "izraz": "49x² − 64y²",
+         "dulag": false,
+         "otgovor": "(7x − 8y)(7x + 8y)",
+         "reshenie": "49x² = (7x)² и 64y² = (8y)². Разлика на квадрати."
+        },
+        {
+         "id": "rv1-2",
+         "glagol": "Разложете",
+         "izraz": "9a² + 24ab + 16b²",
+         "dulag": false,
+         "otgovor": "(3a + 4b)²",
+         "reshenie": "Крайните са (3a)² и (4b)², а средата е 2 · 3a · 4b = 24ab — точно съвпада. Значи е (3a + 4b)²."
+        },
+        {
+         "id": "rv1-3",
+         "glagol": "Разложете",
+         "izraz": "25m² − 40m + 16",
+         "dulag": false,
+         "otgovor": "(5m − 4)²",
+         "reshenie": "(5m)² − 2 · 5m · 4 + 4² = (5m − 4)²."
+        },
+        {
+         "id": "rv1-4",
+         "glagol": "Разложете",
+         "izraz": "8x³ + 27",
+         "dulag": false,
+         "otgovor": "(2x + 3)(4x² − 6x + 9)",
+         "reshenie": "8x³ = (2x)³ и 27 = 3³. Сбор на кубове — в тричлена средата е с минус и без двойка."
+        },
+        {
+         "id": "rv1-5",
+         "glagol": "Разложете",
+         "izraz": "125 − a³b³",
+         "dulag": false,
+         "otgovor": "(5 − ab)(25 + 5ab + a²b²)",
+         "reshenie": "125 = 5³ и a³b³ = (ab)³. Разлика на кубове."
+        },
+        {
+         "id": "rv1-6",
+         "glagol": "Разложете докрай",
+         "izraz": "x⁴ − 81",
+         "dulag": false,
+         "otgovor": "(x² + 9)(x − 3)(x + 3)",
+         "reshenie": "(x² − 9)(x² + 9), а x² − 9 се разлага още на (x − 3)(x + 3). Скобата x² + 9 не се разлага."
+        }
+       ]
+      },
+      {
+       "kod": "rv2",
+       "zhivotno": "🐯",
+       "ime": "Тигровата пътека",
+       "tema": "★ Трите начина заедно",
+       "ideya": "Накрая никой не ти казва кой начин е редният. Правилото е едно: първо изнеси общото, после търси формула или групиране — и провери дали всяка скоба е стигнала докрай.",
+       "pravilo": "1) общ множител  →  2) формула или групиране  →  3) провери всяка скоба",
+       "fakt": "Тигърът има райета и по кожата, не само по козината.",
+       "zvezda": true,
+       "zadachi": [
+        {
+         "id": "rv2-1",
+         "glagol": "Разложете докрай",
+         "izraz": "3x³ − 12x",
+         "dulag": false,
+         "otgovor": "3x(x − 2)(x + 2)",
+         "reshenie": "Изнасяме 3x: 3x(x² − 4). После разлика на квадрати."
+        },
+        {
+         "id": "rv2-2",
+         "glagol": "Разложете докрай",
+         "izraz": "2a³ + 16",
+         "dulag": false,
+         "otgovor": "2(a + 2)(a² − 2a + 4)",
+         "reshenie": "Изнасяме 2: 2(a³ + 8). После сбор на кубове с 2."
+        },
+        {
+         "id": "rv2-3",
+         "glagol": "Разложете докрай",
+         "izraz": "x⁵ − x",
+         "dulag": false,
+         "otgovor": "x(x − 1)(x + 1)(x² + 1)",
+         "reshenie": "x(x⁴ − 1) = x(x² − 1)(x² + 1), а x² − 1 = (x − 1)(x + 1)."
+        },
+        {
+         "id": "rv2-4",
+         "glagol": "Разложете докрай",
+         "izraz": "a⁴ − 2a² + 1",
+         "dulag": false,
+         "otgovor": "(a − 1)²(a + 1)²",
+         "reshenie": "Това е (a² − 1)², а a² − 1 = (a − 1)(a + 1). Значи (a − 1)²(a + 1)²."
+        },
+        {
+         "id": "rv2-5",
+         "glagol": "Разложете",
+         "izraz": "4x² − 12xy + 9y² − 25",
+         "dulag": false,
+         "otgovor": "(2x − 3y − 5)(2x − 3y + 5)",
+         "reshenie": "Първите три са (2x − 3y)². Остава (2x − 3y)² − 25."
+        },
+        {
+         "id": "rv2-6",
+         "glagol": "Пресметнете",
+         "izraz": "(37² − 13²) : 50",
+         "dulag": false,
+         "otgovor": "24",
+         "reshenie": "37² − 13² = (37 − 13)(37 + 13) = 24 · 50. След делението на 50 остава 24."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+};
+/* ДАННИ:КРАЙ */
+</script>
+<script>
+"use strict";
+/* =====================================================================
+   Двигателят: два таба, три подтаба във втория, отметки и показване на
+   отговора. Нищо не се въвежда — урокът се води на дъската.
+   ===================================================================== */
+const $ = (s, p) => (p || document).querySelector(s);
+const $$ = (s, p) => Array.prototype.slice.call((p || document).querySelectorAll(s));
+function ek(t){
+  return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+const KLYUCH = 'tla-' + UROK.slug;
+let tabSega = 0;
+let podSega = {};                 /* кой подтаб е отворен във всеки таб */
+let S = {};
+try { S = JSON.parse(localStorage.getItem(KLYUCH) || '{}') || {}; } catch(e) { S = {}; }
+function zapazi(){
+  try { localStorage.setItem(KLYUCH, JSON.stringify(S)); } catch(e) {}
+}
+
+/* Разделите, които се показват сега: или направо на таба, или на
+   отворения негов подтаб. */
+function razdeliNa(t){
+  if(t.podtabove) return t.podtabove[podSega[t.kod] || 0].razdeli;
+  return t.razdeli;
+}
+/* Всички раздели на един таб — за брояча отгоре той брои целия таб,
+   а не само отворения подтаб. */
+function vsichkiRazdeli(t){
+  if(t.podtabove) return t.podtabove.reduce((a, p) => a.concat(p.razdeli), []);
+  return t.razdeli;
+}
+function zadachiNa(razdeli){
+  return razdeli.reduce((a, r) => a.concat(r.zadachi), []);
+}
+function resheni(razdeli){
+  return zadachiNa(razdeli).filter(z => S[z.id]).length;
+}
+
+/* ── табове ─────────────────────────────────────────────────────── */
+function risuvaiTabove(){
+  $('#tabove').innerHTML = UROK.tabove.map(function(t, i){
+    const r = vsichkiRazdeli(t);
+    return '<button class="tab' + (i === tabSega ? ' ima' : '') + '" data-t="' + i + '">'
+      + ek(t.ime)
+      + '<span class="tab__n">' + resheni(r) + '/' + zadachiNa(r).length + '</span>'
+      + '</button>';
+  }).join('');
+  $$('#tabove .tab').forEach(function(b){
+    b.addEventListener('click', function(){
+      tabSega = +b.dataset.t;
+      risuvai();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function risuvaiPodtabove(){
+  const t = UROK.tabove[tabSega], kutiq = $('#podtabove');
+  if(!t.podtabove){ kutiq.hidden = true; kutiq.innerHTML = ''; return; }
+  const sega = podSega[t.kod] || 0;
+  kutiq.hidden = false;
+  kutiq.innerHTML = t.podtabove.map(function(p, i){
+    return '<button class="podtab' + (i === sega ? ' ima' : '') + '" data-p="' + i + '">'
+      + '<span>' + p.zhivotno + '</span>' + ek(p.ime)
+      + '<span class="podtab__n">' + resheni(p.razdeli) + '/'
+      + zadachiNa(p.razdeli).length + '</span></button>';
+  }).join('');
+  $$('#podtabove .podtab').forEach(function(b){
+    b.addEventListener('click', function(){
+      podSega[t.kod] = +b.dataset.p;
+      risuvai();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+/* ── пътеката: спирките на отворения (под)таб ───────────────────── */
+function risuvaiPuteka(){
+  const r = razdeliNa(UROK.tabove[tabSega]);
+  $('#puteka').innerHTML = r.map(function(x){
+    const gotovi = x.zadachi.filter(z => S[z.id]).length;
+    return '<button class="spirka' + (gotovi === x.zadachi.length ? ' gotova' : '')
+      + '" data-s="' + x.kod + '" title="' + ek(x.ime) + '">'
+      + x.zhivotno + '<b>' + gotovi + '/' + x.zadachi.length + '</b></button>';
+  }).join('');
+  $$('#puteka .spirka').forEach(function(b){
+    b.addEventListener('click', function(){
+      const el = $('#r-' + b.dataset.s);
+      if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+/* ── разделите и задачите ───────────────────────────────────────── */
+function risuvaiTqlo(){
+  const razdeli = razdeliNa(UROK.tabove[tabSega]);
+  $('#sudurjanie').innerHTML = razdeli.map(function(r){
+    const gotovi = r.zadachi.filter(z => S[z.id]).length;
+    const vsички = r.zadachi.length;
+    return '<section class="razdel' + (r.zvezda ? ' zvezda' : '') + '" id="r-' + r.kod + '">'
+      + '<div class="razdel__top">'
+      +   '<div class="razdel__z">' + r.zhivotno + '</div>'
+      +   '<div><div class="razdel__ime">' + ek(r.ime) + '</div>'
+      +     '<div class="razdel__tema">' + ek(r.tema) + '</div></div>'
+      +   '<span class="razdel__broi">' + gotovi + ' / ' + vsички + '</span>'
+      + '</div>'
+      + '<p class="razdel__ideq">' + ek(r.ideya) + '</p>'
+      + '<div class="pravilo">' + ek(r.pravilo) + '</div>'
+      + '<div class="zadachi">' + r.zadachi.map(function(z, zi){
+          return '<div class="zad' + (S[z.id] ? ' reshena' : '') + '" id="z-' + z.id + '">'
+            + '<div class="zad__n">Задача ' + (zi + 1)
+            +   (z.glagol ? ' · ' + ek(z.glagol) : '') + '</div>'
+            + '<p class="zad__uslovie' + (z.dulag ? ' dulag' : '') + '">'
+            +   ek(z.izraz) + '</p>'
+            + '<div class="zad__dolu">'
+            +   '<button class="pokaji" data-p="' + z.id + '">Покажи отговора</button>'
+            + '</div>'
+            + '<div class="otg" id="o-' + z.id + '" hidden></div>'
+            + '<button class="otmetka' + (S[z.id] ? ' ima' : '') + '" data-o="' + z.id + '" '
+            +   'title="Отметни като решена" aria-label="Отметни като решена">✓</button>'
+            + '</div>';
+        }).join('') + '</div>'
+      + stiker(r)
+      + '</section>';
+  }).join('');
+
+  $$('.otmetka').forEach(function(b){
+    b.addEventListener('click', function(){ otmetni(b.dataset.o); });
+  });
+  $$('.pokaji').forEach(function(b){
+    b.addEventListener('click', function(){ pokaji(b.dataset.p, b); });
+  });
+}
+
+/* Фактът за животното се отключва чак когато спирката е минала цялата —
+   инак наградата идва преди работата. */
+function stiker(r){
+  const gotovi = r.zadachi.filter(z => S[z.id]).length;
+  if(gotovi < r.zadachi.length){
+    return '<div class="stiker stiker--zaklyuchen" id="s-' + r.kod + '">'
+      + '🔒 Остават ' + (r.zadachi.length - gotovi)
+      + (r.zadachi.length - gotovi === 1 ? ' задача' : ' задачи')
+      + ' до стикера на тази спирка.</div>';
+  }
+  return '<div class="stiker" id="s-' + r.kod + '">' + r.zhivotno
+    + ' <b>Стикер събран!</b> ' + ek(r.fakt) + '</div>';
+}
+
+/* Отметката се вдига и сваля: ако е отметната по погрешка, връща се. */
+function otmetni(id){
+  if(S[id]) delete S[id]; else S[id] = 1;
+  zapazi();
+  const zad = $('#z-' + id), b = $('.otmetka[data-o="' + id + '"]');
+  if(zad) zad.classList.toggle('reshena', !!S[id]);
+  if(b) b.classList.toggle('ima', !!S[id]);
+  osvejiRazdeli();
+  risuvaiTabove();
+  risuvaiPodtabove();
+  risuvaiPuteka();
+  osveji();
+}
+
+function pokaji(id, but){
+  const z = namiri(id), kutiq = $('#o-' + id);
+  if(!z || !kutiq) return;
+  if(!kutiq.hidden){ kutiq.hidden = true; but.textContent = 'Покажи отговора'; return; }
+  kutiq.innerHTML = '<div class="otg__r">' + ek(z.otgovor) + '</div>'
+    + '<p class="otg__k"><b>Как се стига дотам:</b> ' + ek(z.reshenie) + '</p>';
+  kutiq.hidden = false;
+  but.textContent = 'Скрий отговора';
+}
+
+function namiri(id){
+  for(const t of UROK.tabove)
+    for(const r of vsichkiRazdeli(t))
+      for(const z of r.zadachi)
+        if(z.id === id) return z;
+  return null;
+}
+
+function osvejiRazdeli(){
+  razdeliNa(UROK.tabove[tabSega]).forEach(function(r){
+    const broi = $('#r-' + r.kod + ' .razdel__broi');
+    if(broi) broi.textContent = r.zadachi.filter(z => S[z.id]).length
+      + ' / ' + r.zadachi.length;
+    const st = $('#s-' + r.kod);
+    if(st) st.outerHTML = stiker(r);
+  });
+}
+
+function osveji(){
+  const t = UROK.tabove[tabSega];
+  const tuk = razdeliNa(t);
+  const vsички = zadachiNa(tuk).length, gotovi = resheni(tuk);
+  $('#lenta').style.width = (vsички ? Math.round(100 * gotovi / vsички) : 0) + '%';
+  $('#broiach').textContent = gotovi + ' / ' + vsички;
+  /* В долната лента стои името на отвореното кътче, а не целият път:
+     на телефон „Разлагане на множители · Общ множител“ се пренася на
+     два реда и лентата изяжда екран. */
+  $('#doluTema').textContent = t.podtabove
+    ? t.podtabove[podSega[t.kod] || 0].ime : t.ime;
+  const vsi = UROK.tabove.reduce((a, x) => a + resheni(vsichkiRazdeli(x)), 0);
+  const obshto = UROK.tabove.reduce(
+    (a, x) => a + zadachiNa(vsichkiRazdeli(x)).length, 0);
+  $('#doluBroi').textContent = 'Общо решени: ' + vsi + ' / ' + obshto;
+  $('#kraj').hidden = (vsi < obshto);
+}
+
+function risuvai(){
+  risuvaiTabove();
+  risuvaiPodtabove();
+  risuvaiPuteka();
+  risuvaiTqlo();
+  osveji();
+}
+
+$('#bNulirai').addEventListener('click', function(){
+  if(!confirm('Да изчистя ли всички отметки за този урок?')) return;
+  S = {}; zapazi(); risuvai();
+});
+
+risuvai();
+</script>
+</body>
+</html>
