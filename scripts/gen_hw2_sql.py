@@ -124,6 +124,26 @@ select a.week                                as sedmica,
         [", ".join(["'%s'" % WEEKS[k]['slug'] for k in sorted(WEEKS)[i:i + 4]])
          for i in range(0, len(WEEKS), 4)])))
 
+    #  hw6-w10b е изключението: листът е сглобен отделно и редът му
+    #  открай време стои в assignments.sql. Пренасяме го ТУК дословно,
+    #  вместо да го преписваме — така изворът остава един, а файлът за
+    #  вторите нива става пълен: пуснеш ли само него, в базата влизат
+    #  всичките 32 листа, а не 31.
+    kluch = "  ('hw6-w10b',"
+    if kluch not in SQL:
+        sys.exit('няма ред за hw6-w10b в assignments.sql')
+    nachalo = SQL.rindex('insert into public.assignments', 0, SQL.index(kluch))
+    kraj = SQL.index('grades      = excluded.grades;', nachalo) + len(
+        'grades      = excluded.grades;')
+    out.append("""
+-- 6. клас, седмица 7 — ВТОРИЯТ лист за същата седмица, ниво 2.
+-- Този ред е пренесен дословно от supabase/assignments.sql, където стои
+-- открай време: листът е сглобен отделно от останалите. Стои и тук, за
+-- да е пълен файлът — пуснеш ли само него, влизат всичките 32 листа.
+""" + SQL[nachalo:kraj] + """
+  -- published нарочно липсва тук: то се управлява от таблото.
+""")
+
     if missing:
         sys.exit('няма ред в assignments.sql за: ' + ', '.join(missing))
     path = ROOT / 'supabase' / 'domashni-nivo2.sql'
