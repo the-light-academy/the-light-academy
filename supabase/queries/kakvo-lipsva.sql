@@ -111,7 +111,14 @@ with proverki(подредба, какво, готово, файл) as (
     (22, 'Нивото „В група“ в 6. клас (32 листа)',
         (select count(*) = 32 from public.assignments
           where grades = array[6] and title like '%· ниво В%'),
-        'supabase/domashni-nivo-v.sql')
+        'supabase/domashni-nivo-v.sql'),
+    --  Unit 1 има седем части. Докато тези четири листа ги нямаше,
+    --  Speaking, Writing и English Plus options стояха без домашно.
+    (23, 'Четирите листа за празните части на Unit 1',
+        (select count(*) = 4 from public.assignments
+          where slug in ('en5-u1-places', 'en5-u1-speaking',
+                         'en5-u1-writing', 'en5-u1-extra')),
+        'supabase/domashni-angliyski-5-u1b.sql')
 )
 select подредба                                   as "№",
        какво,

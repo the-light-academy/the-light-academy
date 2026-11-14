@@ -71,8 +71,13 @@ def red_greshka(izr, vqrno, zashto):
 
 
 def red_red(razb, vqrno, zashto):
-    """Ред за подреждане: думите остават разбъркани както на хартия."""
-    chasti = [d for d in razb.split(' / ') if d != '?']
+    """Ред за подреждане: думите остават разбъркани както на хартия.
+
+    Препинателният знак в края НЕ е дума за щракане: той идва заедно с
+    изречението. Ако остане сред парчетата, редът не може да се подреди
+    докрай и винаги излиза грешен.
+    """
+    chasti = [d for d in razb.split(' / ') if d not in ('?', '.', '!')]
     return {'otgovor': vqrno, 'razburkano': chasti, 'zashto': zashto}
 
 
