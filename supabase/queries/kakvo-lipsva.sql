@@ -100,7 +100,18 @@ with proverki(подредба, какво, готово, файл) as (
     (20, 'Вторите нива на домашните в 5. клас (32 листа)',
         (select count(*) = 32 from public.assignments
           where grades = array[5] and title like '%· ниво 2'),
-        'supabase/domashni-5-nivo2.sql')
+        'supabase/domashni-5-nivo2.sql'),
+    --  Шести клас има по три листа на тема: основен, ниво 2 и ниво В
+    --  група. Ако някое от нивата е непълно, се вижда тук, а точно кои
+    --  седмици са засегнати казва supabase/queries/nivata-6-klas.sql.
+    (21, 'Вторите нива на домашните в 6. клас (32 листа)',
+        (select count(*) = 32 from public.assignments
+          where grades = array[6] and title like '%· ниво 2'),
+        'supabase/domashni-nivo2.sql'),
+    (22, 'Нивото „В група“ в 6. клас (32 листа)',
+        (select count(*) = 32 from public.assignments
+          where grades = array[6] and title like '%· ниво В%'),
+        'supabase/domashni-nivo-v.sql')
 )
 select подредба                                   as "№",
        какво,

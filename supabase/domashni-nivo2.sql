@@ -1033,3 +1033,35 @@ select a.week                                as sedmica,
                   'hw6-w10b')
  order by a.week, a.title;
 
+
+-- 6. клас, седмица 7 — ВТОРИЯТ лист за същата седмица, ниво 2.
+-- Този ред е пренесен дословно от supabase/assignments.sql, където стои
+-- открай време: листът е сглобен отделно от останалите. Стои и тук, за
+-- да е пълен файлът — пуснеш ли само него, влизат всичките 32 листа.
+insert into public.assignments
+  (slug, title, kind, url, description, max_points, published, sort_order,
+   week, subject_id, grades)
+values
+  ('hw6-w10b',
+   'Домашно — Събиране и изваждане · ниво 2',
+   'homework',
+   'homework_6_w10b.html',
+   'По-трудното от темата, с четири задачи върху числовата ос',
+   12,
+   false,
+   395,
+   7,
+   (select id from public.subjects where slug = 'matematika'),
+   '{6}')
+on conflict (slug) do update set
+  title       = excluded.title,
+  kind        = excluded.kind,
+  url         = excluded.url,
+  description = excluded.description,
+  max_points  = excluded.max_points,
+  sort_order  = excluded.sort_order,
+  week        = excluded.week,
+  subject_id  = excluded.subject_id,
+  grades      = excluded.grades;
+  -- published нарочно липсва тук: то се управлява от таблото.
+
