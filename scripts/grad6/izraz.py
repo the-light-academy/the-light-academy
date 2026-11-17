@@ -8,7 +8,7 @@ HTML-ът: горните индекси са истински <sup>, а дро�
 """
 import re
 
-TOKEN = re.compile(r'\s*(\d+\.?\d*|[A-Za-z]+|\*\*|[-+*/^()=])')
+TOKEN = re.compile(r'\s*(\d+\.?\d*|[A-Za-z]+|\*\*|[-+*/^(),=])')
 
 
 def tokeni(s):
@@ -86,6 +86,17 @@ class Chet:
         if re.fullmatch(r'\d+\.?\d*', z):
             return ('num', z)
         if re.fullmatch(r'[A-Za-z]+', z):
+            #  mx(2,1,4) е смесеното число 2 1/4 — цяло и дроб до него.
+            if z == 'mx' and self.vzemi() == '(':
+                self.i += 1
+                chasti = [self.izraz()]
+                while self.vzemi() == ',':
+                    self.i += 1
+                    chasti.append(self.izraz())
+                self.iskam(')')
+                if len(chasti) != 3:
+                    raise ValueError('mx иска точно три числа')
+                return ('mx', chasti[0], chasti[1], chasti[2])
             return ('var', z)
         raise ValueError('не очаквах „%s“' % z)
 
@@ -106,6 +117,25 @@ def _ime(v):
     return v[0] == 'var'
 
 
+def _vidima_drob(v):
+    """Носи ли този израз ВИДИМА дроб най-отгоре.
+
+    Дроб, разделена на дроб, не се пише на три етажа: тогава външното
+    деление става двоеточие, точно както е в учебника за 5. клас.
+    Скобите около самата дроб падат — чертата вече групира.
+    """
+    if v[0] in ('/', 'mx'):
+        return True
+    return v[0] == '()' and v[1][0] in ('/', 'mx')
+
+
+def _bez_skobi(v):
+    """Скобите около гола дроб са излишни пред очите."""
+    if v[0] == '()' and v[1][0] in ('/', 'mx'):
+        return v[1]
+    return v
+
+
 def html(v, drobi=True):
     """Дървото → HTML. drobi=False изписва делението с двоеточие."""
     z = v[0]
@@ -117,20 +147,27 @@ def html(v, drobi=True):
         return '(' + html(v[1], drobi) + ')'
     if z == 'neg':
         return '−' + html(v[1], drobi)
+    if z == 'mx':
+        return (html(v[1], drobi)
+                + '<span class="frac smes"><span class="chis">%s</span>'
+                  '<span class="znam">%s</span></span>'
+                  % (html(v[2], drobi), html(v[3], drobi)))
     if z == '^':
         return html(v[1], drobi) + '<sup>' + html(v[2], drobi) + '</sup>'
     if z == '=':
         return html(v[1], drobi) + ' = ' + html(v[2], drobi)
     if z in ('+', '-'):
-        return (html(v[1], drobi) + (' + ' if z == '+' else ' − ')
-                + html(v[2], drobi))
+        return (html(_bez_skobi(v[1]), drobi) + (' + ' if z == '+' else ' − ')
+                + html(_bez_skobi(v[2]), drobi))
     if z == '*':
         #  Число пред буква или пред скоба се пише слято: 2x, 2(x − 1).
         slqto = _chislo(v[1]) and v[2][0] in ('var', '()')
-        return html(v[1], drobi) + ('' if slqto else ' · ') + html(v[2], drobi)
+        return (html(_bez_skobi(v[1]), drobi) + ('' if slqto else ' · ')
+                + html(_bez_skobi(v[2]), drobi))
     if z == '/':
-        if not drobi:
-            return html(v[1], drobi) + ' : ' + html(v[2], drobi)
+        if not drobi or _vidima_drob(v[1]) or _vidima_drob(v[2]):
+            return (html(_bez_skobi(v[1]), drobi) + ' : '
+                    + html(_bez_skobi(v[2]), drobi))
         #  Чертата на дробта сама групира — скобите отгоре са излишни.
         gore = v[1][1] if v[1][0] == '()' else v[1]
         dolu = v[2][1] if v[2][0] == '()' else v[2]
