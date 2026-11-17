@@ -1,0 +1,649 @@
+<title>Дроби в сладкарницата</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" />
+<style>
+/* Разположение: една колона — шапка с три нарязани торти, лента с двата
+   таба, после нивата едно под друго. Всяка задача е картичка с едър
+   израз и бутон, който отваря решението под него. */
+:root{
+  --mastilo:#3B2418;        /* какао — основният текст */
+  --mastilo-blqdo:#7A5C49;
+  --hartiq:#FFF9F1;         /* фон на страницата */
+  --karta:#FFFFFF;
+  --ramka:#F0DFC9;
+  --malina:#C2185B;         /* акцентът — малиновият пълнеж */
+  --malina-meko:#FCE7EF;
+  --karamel:#B9681A;
+  --karamel-meko:#FBEBD8;
+  --testo:#F6E3C8;          /* тестото на тортите */
+  --kora:#5A3A26;
+  --zeleno:#1C6B45;
+  --zeleno-meko:#E2F3EA;
+  --senka:24 40% 30%;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --mastilo:#F6E8DA; --mastilo-blqdo:#C2A58F;
+    --hartiq:#1A120D; --karta:#271A13; --ramka:#443023;
+    --malina:#F48FB1; --malina-meko:#3C1526;
+    --karamel:#E8A765; --karamel-meko:#3A2614;
+    --testo:#4A3321; --kora:#F6E8DA;
+    --zeleno:#7BD7A6; --zeleno-meko:#15301F;
+    --senka:24 60% 4%;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --mastilo:#F6E8DA; --mastilo-blqdo:#C2A58F;
+  --hartiq:#1A120D; --karta:#271A13; --ramka:#443023;
+  --malina:#F48FB1; --malina-meko:#3C1526;
+  --karamel:#E8A765; --karamel-meko:#3A2614;
+  --testo:#4A3321; --kora:#F6E8DA;
+  --zeleno:#7BD7A6; --zeleno-meko:#15301F;
+  --senka:24 60% 4%;
+  color-scheme: dark;
+}
+*,*::before,*::after{ box-sizing:border-box }
+body{
+  margin:0; background:var(--hartiq); color:var(--mastilo);
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;
+  font-size:18px; line-height:1.55; -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px);
+  z-index:10; background:var(--malina);
+}
+h1,h2,h3{ font-family:'Fredoka',system-ui,sans-serif; margin:0; text-wrap:balance }
+button{ font:inherit; cursor:pointer }
+[hidden]{ display:none !important }
+
+.ramka{
+  max-width:860px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ── шапка ─────────────────────────────────────────────────────── */
+.shapka{ background:var(--malina); color:#FFF4F8 }
+.shapka .ramka{ padding-block:20px 0; display:flex; gap:20px; align-items:flex-end;
+  flex-wrap:wrap }
+.shapka__text{ flex:1 1 320px; min-width:0; padding-bottom:16px }
+.shapka h1{ font-size:clamp(27px,7vw,42px); line-height:1.06; margin-bottom:8px }
+.shapka p{ margin:0; color:#FBD9E5; font-size:clamp(16px,4.2vw,18px); max-width:52ch }
+.nadpis{ font-size:14px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:#F6B9CE; margin-bottom:6px }
+.torti{ flex:0 0 auto; width:min(230px, 68vw); height:auto; align-self:flex-end;
+  margin-bottom:-2px }
+
+/* ── лентата с табовете ────────────────────────────────────────── */
+.tabove{ position:sticky; top:env(safe-area-inset-top, 0px); z-index:9;
+  background:var(--malina) }
+.tabove .ramka{ display:flex; gap:8px; padding-block:0; flex-wrap:wrap }
+.tab-b{ border:none; background:rgba(255,255,255,.16); color:#FFF0F5;
+  padding:12px 16px; border-radius:16px 16px 0 0; font-family:'Fredoka',sans-serif;
+  font-size:clamp(15px,4vw,19px); font-weight:600; min-height:52px;
+  display:flex; align-items:center; gap:9px; transition:background .15s, color .15s }
+.tab-b:hover{ background:rgba(255,255,255,.26); color:#fff }
+.tab-b[aria-selected="true"]{ background:var(--hartiq); color:var(--mastilo) }
+.tab-b .znak{ font-family:'Fredoka',sans-serif; font-size:20px; color:#FFD9E6 }
+.tab-b[aria-selected="true"] .znak{ color:var(--malina) }
+.tab-b .broi{ font-family:'Nunito',sans-serif; font-size:13px; font-weight:800;
+  opacity:.9 }
+
+/* ── идеята на таба ────────────────────────────────────────────── */
+.ideq{ background:var(--karta); border:1px solid var(--ramka); border-radius:20px;
+  padding:18px clamp(14px,3.4vw,22px); margin:20px 0 6px;
+  box-shadow:0 10px 28px hsl(var(--senka) / .08) }
+.ideq h2{ font-size:clamp(20px,5.2vw,25px); margin-bottom:8px }
+.ideq p{ margin:0; color:var(--mastilo-blqdo); font-size:clamp(16px,4.2vw,18px) }
+.pravila{ display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; padding:0;
+  list-style:none }
+.pravila li{ background:var(--karamel-meko); border:1.5px dashed var(--karamel);
+  color:var(--karamel); border-radius:999px; padding:9px 16px; font-weight:800;
+  font-size:clamp(15.5px,4.1vw,19px) }
+
+/* ── ниво ──────────────────────────────────────────────────────── */
+.nivo{ margin-top:26px }
+.nivo__red{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+  margin-bottom:4px }
+.nivo__ime{ font-family:'Fredoka',sans-serif; font-size:clamp(20px,5.2vw,26px) }
+.znachka{ font-size:13px; font-weight:800; letter-spacing:.06em;
+  text-transform:uppercase; border-radius:999px; padding:5px 12px;
+  background:var(--zeleno-meko); color:var(--zeleno) }
+.znachka--2{ background:var(--karamel-meko); color:var(--karamel) }
+.znachka--3{ background:var(--malina-meko); color:var(--malina) }
+.nivo__opis{ margin:0 0 12px; color:var(--mastilo-blqdo);
+  font-size:clamp(15.5px,4vw,17px) }
+
+/* ── задача ────────────────────────────────────────────────────── */
+.zadachi{ display:grid; gap:12px }
+.zad{ position:relative; background:var(--karta); border:1px solid var(--ramka);
+  border-radius:18px; padding:14px 64px 14px clamp(14px,3.4vw,18px);
+  transition:background .15s, border-color .15s }
+.zad.reshena{ background:var(--zeleno-meko); border-color:var(--zeleno) }
+.zad__n{ font-size:13.5px; font-weight:800; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--mastilo-blqdo) }
+.izraz{ font-size:clamp(25px,6.6vw,34px); font-weight:700; line-height:1.5;
+  margin:10px 0 0; letter-spacing:.01em; overflow-wrap:break-word }
+.frac{ display:inline-flex; flex-direction:column; align-items:center;
+  vertical-align:middle; text-align:center; margin:0 .2em }
+.frac .chis{ padding:0 .3em .06em; border-bottom:.075em solid currentColor }
+.frac .znam{ padding:.06em .3em 0 }
+.frac.smes{ margin-left:.14em }
+.pokaji{ margin-top:12px; border:2px solid var(--malina); background:var(--malina-meko);
+  color:var(--malina); border-radius:999px; padding:11px 20px; font-weight:800;
+  font-size:16px; min-height:46px }
+.pokaji:hover{ filter:brightness(1.04) }
+.reshenie{ margin-top:12px; background:var(--hartiq); border:1px solid var(--ramka);
+  border-radius:14px; padding:14px 16px }
+.reshenie .otg{ font-family:'Fredoka',sans-serif; font-size:clamp(21px,5.4vw,27px);
+  color:var(--zeleno); line-height:1.4 }
+.reshenie .otg .frac{ font-family:'Nunito',sans-serif }
+.reshenie .stupki{ margin:8px 0 0; color:var(--mastilo-blqdo);
+  font-size:clamp(16px,4.2vw,18px) }
+.otmetka{ position:absolute; top:12px; right:12px; width:46px; height:46px;
+  border-radius:50%; border:2px solid var(--ramka); background:var(--karta);
+  color:var(--ramka); display:grid; place-items:center; font-size:22px;
+  font-weight:800; line-height:1; transition:.15s }
+.otmetka:hover{ border-color:var(--malina); color:var(--malina) }
+.otmetka[aria-pressed="true"]{ border-color:var(--zeleno);
+  background:var(--zeleno-meko); color:var(--zeleno) }
+
+/* ── долната лента ─────────────────────────────────────────────── */
+.dolu{ position:fixed; left:0; right:0; bottom:0; z-index:8;
+  background:color-mix(in srgb, var(--hartiq) 92%, transparent);
+  backdrop-filter:blur(10px); border-top:1px solid var(--ramka);
+  padding-bottom:env(safe-area-inset-bottom, 0px) }
+.dolu .ramka{ display:flex; align-items:center; gap:12px; padding-block:10px }
+.lenta{ flex:1; min-width:80px; height:10px; border-radius:999px;
+  background:var(--ramka); overflow:hidden }
+.lenta i{ display:block; height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg, var(--malina), var(--zeleno));
+  transition:width .35s }
+.broiach{ font-weight:800; font-size:15.5px; white-space:nowrap;
+  font-variant-numeric:tabular-nums }
+.izchisti{ border:1.5px solid var(--ramka); background:transparent;
+  color:var(--mastilo-blqdo); border-radius:999px; padding:8px 14px;
+  font-size:14px; font-weight:700; min-height:40px }
+.izchisti:hover{ border-color:var(--malina); color:var(--malina) }
+
+.kraj{ margin:22px 0 0; padding:22px; border-radius:20px; text-align:center;
+  background:var(--zeleno-meko); border:2px solid var(--zeleno) }
+.kraj h2{ font-size:clamp(22px,5.6vw,28px); color:var(--zeleno); margin-bottom:6px }
+.kraj p{ margin:0 auto; max-width:48ch; color:var(--mastilo) }
+
+:focus-visible{ outline:3px solid var(--malina); outline-offset:2px }
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important } }
+.sled{ height:96px }
+</style>
+
+<header class="shapka">
+  <div class="ramka">
+    <div class="shapka__text">
+      <div class="nadpis">Математика · 5. клас</div>
+      <h1>Дроби в сладкарницата</h1>
+      <p>Два таба и шест нива — от най-лесното към най-трудното.
+        Всяка задача си носи решението: натискаш бутона и то се отваря.</p>
+    </div>
+    <svg class="torti" viewBox="0 0 220 78" aria-hidden="true">
+      <circle cx="36" cy="34" r="25" fill="var(--testo)" />
+      <path d="M 36.00 34.00 L 36.00 9.00 A 25 25 0 0 1 36.00 59.00 Z" fill="var(--malina)" />
+      <line x1="36" y1="34" x2="36.00" y2="9.00" stroke="var(--kora)" stroke-width="1.6" />
+      <line x1="36" y1="34" x2="36.00" y2="59.00" stroke="var(--kora)" stroke-width="1.6" />
+      <circle cx="36" cy="34" r="25" fill="none" stroke="var(--kora)" stroke-width="2.4" />
+      <text x="36" y="70" text-anchor="middle" fill="var(--kora)" font-size="13" font-weight="700" font-family="Nunito, sans-serif">1/2</text>
+      <circle cx="110" cy="34" r="25" fill="var(--testo)" />
+      <path d="M 110.00 34.00 L 110.00 9.00 A 25 25 0 0 1 131.65 46.50 Z" fill="var(--malina)" />
+      <line x1="110" y1="34" x2="110.00" y2="9.00" stroke="var(--kora)" stroke-width="1.6" />
+      <line x1="110" y1="34" x2="131.65" y2="46.50" stroke="var(--kora)" stroke-width="1.6" />
+      <line x1="110" y1="34" x2="88.35" y2="46.50" stroke="var(--kora)" stroke-width="1.6" />
+      <circle cx="110" cy="34" r="25" fill="none" stroke="var(--kora)" stroke-width="2.4" />
+      <text x="110" y="70" text-anchor="middle" fill="var(--kora)" font-size="13" font-weight="700" font-family="Nunito, sans-serif">1/3</text>
+      <circle cx="184" cy="34" r="25" fill="var(--testo)" />
+      <path d="M 184.00 34.00 L 184.00 9.00 A 25 25 0 0 1 209.00 34.00 Z" fill="var(--malina)" />
+      <path d="M 184.00 34.00 L 209.00 34.00 A 25 25 0 0 1 184.00 59.00 Z" fill="var(--malina)" />
+      <path d="M 184.00 34.00 L 184.00 59.00 A 25 25 0 0 1 159.00 34.00 Z" fill="var(--malina)" />
+      <line x1="184" y1="34" x2="184.00" y2="9.00" stroke="var(--kora)" stroke-width="1.6" />
+      <line x1="184" y1="34" x2="209.00" y2="34.00" stroke="var(--kora)" stroke-width="1.6" />
+      <line x1="184" y1="34" x2="184.00" y2="59.00" stroke="var(--kora)" stroke-width="1.6" />
+      <line x1="184" y1="34" x2="159.00" y2="34.00" stroke="var(--kora)" stroke-width="1.6" />
+      <circle cx="184" cy="34" r="25" fill="none" stroke="var(--kora)" stroke-width="2.4" />
+      <text x="184" y="70" text-anchor="middle" fill="var(--kora)" font-size="13" font-weight="700" font-family="Nunito, sans-serif">3/4</text>
+    </svg>
+  </div>
+</header>
+
+<nav class="tabove" aria-label="Теми">
+  <div class="ramka" id="tabove" role="tablist"></div>
+</nav>
+
+<main class="ramka" id="sudurjanie"></main>
+<div class="ramka sled"></div>
+
+<div class="dolu">
+  <div class="ramka">
+    <span class="broiach" id="imeTab"></span>
+    <span class="lenta"><i id="lenta"></i></span>
+    <span class="broiach" id="broiach">0 / 30</span>
+    <button class="izchisti" id="izchisti" type="button">Изчисти</button>
+  </div>
+</div>
+
+<script>
+var DANNI = {
+ "tabove": [
+  {
+   "kod": "t1",
+   "ime": "Събиране и изваждане",
+   "kratko": "Събиране и изваждане",
+   "znak": "+",
+   "ideya": "Дроби се събират и изваждат само когато парчетата са еднакво големи — тоест когато знаменателите са еднакви. Затова първата работа е да ги приведем под общ знаменател, а чак после се събират ЧИСЛИТЕЛИТЕ. Знаменателят не се събира никога.",
+   "pravila": [
+    "a/c + b/c = (a + b)/c",
+    "Общият знаменател е НОК на знаменателите",
+    "Накрая съкрати и извади цялото"
+   ],
+   "niva": [
+    {
+     "ime": "Еднакви знаменатели",
+     "opis": "Парчетата вече са еднакви — събираме само числителите.",
+     "zadachi": [
+      {
+       "id": "t1-1",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">8</span></span> + <span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">8</span></span>",
+       "otgovor": "5/8",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">8</span></span>",
+       "reshenie": "Знаменателите са еднакви, значи събираме само числителите: 3 + 2 = 5. Отговорът е 5/8 и не се съкращава, защото 5 и 8 нямат общ делител."
+      },
+      {
+       "id": "t1-2",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">7</span><span class=\"znam\">9</span></span> − <span class=\"frac\"><span class=\"chis\">4</span><span class=\"znam\">9</span></span>",
+       "otgovor": "1/3",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">3</span></span>",
+       "reshenie": "Изваждаме числителите: 7 − 4 = 3, значи 3/9. Но 3/9 се съкращава на 3: 3 : 3 = 1 и 9 : 3 = 3. Отговорът е 1/3."
+      },
+      {
+       "id": "t1-3",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">12</span></span> + <span class=\"frac\"><span class=\"chis\">7</span><span class=\"znam\">12</span></span>",
+       "otgovor": "1",
+       "otgovor_ekran": "1",
+       "reshenie": "5 + 7 = 12, значи 12/12. А дроб, на която числителят и знаменателят са равни, е точно едно цяло."
+      },
+      {
+       "id": "t1-4",
+       "ekran": "2<span class=\"frac smes\"><span class=\"chis\">3</span><span class=\"znam\">7</span></span> + 1<span class=\"frac smes\"><span class=\"chis\">2</span><span class=\"znam\">7</span></span>",
+       "otgovor": "3 5/7",
+       "otgovor_ekran": "3<span class=\"frac smes\"><span class=\"chis\">5</span><span class=\"znam\">7</span></span>",
+       "reshenie": "Събираме целите: 2 + 1 = 3. После дробите: 3/7 + 2/7 = 5/7. Отговорът е 3 5/7."
+      },
+      {
+       "id": "t1-5",
+       "ekran": "5<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">6</span></span> − 2<span class=\"frac smes\"><span class=\"chis\">4</span><span class=\"znam\">6</span></span>",
+       "otgovor": "2 1/2",
+       "otgovor_ekran": "2<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "reshenie": "1/6 е по-малко от 4/6, затова ЗАЕМАМЕ едно цяло: 5 1/6 = 4 7/6. Тогава 4 7/6 − 2 4/6 = 2 3/6, а 3/6 се съкращава на 1/2. Отговорът е 2 1/2."
+      }
+     ]
+    },
+    {
+     "ime": "Единият знаменател се дели на другия",
+     "opis": "Общият знаменател е по-големият — разширява се само едната дроб.",
+     "zadachi": [
+      {
+       "id": "t1-6",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>",
+       "otgovor": "3/4",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span>",
+       "reshenie": "4 се дели на 2, значи общият знаменател е 4. Разширяваме първата дроб с 2: 1/2 = 2/4. После 2/4 + 1/4 = 3/4."
+      },
+      {
+       "id": "t1-7",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">6</span></span> − <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">3</span></span>",
+       "otgovor": "1/2",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "reshenie": "Общият знаменател е 6. Разширяваме 1/3 с 2: 1/3 = 2/6. После 5/6 − 2/6 = 3/6 = 1/2."
+      },
+      {
+       "id": "t1-8",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span> + <span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">8</span></span>",
+       "otgovor": "1 3/8",
+       "otgovor_ekran": "1<span class=\"frac smes\"><span class=\"chis\">3</span><span class=\"znam\">8</span></span>",
+       "reshenie": "Общият знаменател е 8: 3/4 = 6/8. Тогава 6/8 + 5/8 = 11/8. Дробта е неправилна, затова вадим цялото: 11 : 8 = 1 и остатък 3, значи 1 3/8."
+      },
+      {
+       "id": "t1-9",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">7</span><span class=\"znam\">10</span></span> − <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">5</span></span>",
+       "otgovor": "1/2",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "reshenie": "Общият знаменател е 10: 1/5 = 2/10. После 7/10 − 2/10 = 5/10, което се съкращава на 1/2."
+      },
+      {
+       "id": "t1-10",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span> + <span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">9</span></span>",
+       "otgovor": "1 2/9",
+       "otgovor_ekran": "1<span class=\"frac smes\"><span class=\"chis\">2</span><span class=\"znam\">9</span></span>",
+       "reshenie": "Общият знаменател е 9: 2/3 = 6/9. Тогава 6/9 + 5/9 = 11/9 = 1 2/9."
+      }
+     ]
+    },
+    {
+     "ime": "Различни знаменатели",
+     "opis": "Общият знаменател е НОК — и за двете дроби трябва разширител.",
+     "zadachi": [
+      {
+       "id": "t1-11",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span> + <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span>",
+       "otgovor": "1 5/12",
+       "otgovor_ekran": "1<span class=\"frac smes\"><span class=\"chis\">5</span><span class=\"znam\">12</span></span>",
+       "reshenie": "НОК(3, 4) = 12. Разширяваме: 2/3 = 8/12 и 3/4 = 9/12. Тогава 8/12 + 9/12 = 17/12 = 1 5/12."
+      },
+      {
+       "id": "t1-12",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">6</span></span> − <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">8</span></span>",
+       "otgovor": "11/24",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">11</span><span class=\"znam\">24</span></span>",
+       "reshenie": "НОК(6, 8) = 24. Разширяваме: 5/6 = 20/24 и 3/8 = 9/24. Тогава 20/24 − 9/24 = 11/24 — не се съкращава."
+      },
+      {
+       "id": "t1-13",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">3</span></span> + <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>",
+       "otgovor": "1 1/12",
+       "otgovor_ekran": "1<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">12</span></span>",
+       "reshenie": "НОК(2, 3, 4) = 12. Разширяваме и трите: 6/12 + 4/12 + 3/12 = 13/12 = 1 1/12."
+      },
+      {
+       "id": "t1-14",
+       "ekran": "3<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span> + 2<span class=\"frac smes\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span>",
+       "otgovor": "5 11/12",
+       "otgovor_ekran": "5<span class=\"frac smes\"><span class=\"chis\">11</span><span class=\"znam\">12</span></span>",
+       "reshenie": "Целите: 3 + 2 = 5. Дробите под общ знаменател 12: 1/4 = 3/12 и 2/3 = 8/12, значи 3/12 + 8/12 = 11/12. Отговорът е 5 11/12."
+      },
+      {
+       "id": "t1-15",
+       "ekran": "5<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">6</span></span> − 2<span class=\"frac smes\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span>",
+       "otgovor": "2 5/12",
+       "otgovor_ekran": "2<span class=\"frac smes\"><span class=\"chis\">5</span><span class=\"znam\">12</span></span>",
+       "reshenie": "Общ знаменател 12: 5 1/6 = 5 2/12 и 2 3/4 = 2 9/12. 2/12 е по-малко от 9/12, затова заемаме цяло: 5 2/12 = 4 14/12. Тогава 4 14/12 − 2 9/12 = 2 5/12."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "t2",
+   "ime": "Умножение и деление",
+   "kratko": "Умножение и деление",
+   "znak": "×",
+   "ideya": "При умножение общ знаменател НЕ трябва: числител по числител, знаменател по знаменател. А делението е същото умножение, само че втората дроб се обръща с главата надолу.",
+   "pravila": [
+    "a/b · c/d = (a·c)/(b·d)",
+    "a/b : c/d = a/b · d/c",
+    "Съкращавай ПРЕДИ да умножиш"
+   ],
+   "niva": [
+    {
+     "ime": "Умножение",
+     "opis": "Направо, без общ знаменател — но със съкращаване преди умножението.",
+     "zadachi": [
+      {
+       "id": "t2-1",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span> · <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">5</span></span>",
+       "otgovor": "2/5",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">5</span></span>",
+       "reshenie": "Числител по числител и знаменател по знаменател: (2 · 3)/(3 · 5) = 6/15 = 2/5. По-бързо е да съкратим тройките предварително."
+      },
+      {
+       "id": "t2-2",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span> · 8",
+       "otgovor": "6",
+       "otgovor_ekran": "6",
+       "reshenie": "Цялото число е 8/1: (3 · 8)/4 = 24/4 = 6. Или първо съкращаваме 8 с 4 и остава 3 · 2 = 6."
+      },
+      {
+       "id": "t2-3",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">6</span></span> · <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">10</span></span>",
+       "otgovor": "1/4",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>",
+       "reshenie": "Съкращаваме преди умножението: 5 с 10 (остават 1 и 2) и 3 с 6 (остават 1 и 2). Остава (1 · 1)/(2 · 2) = 1/4."
+      },
+      {
+       "id": "t2-4",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">7</span></span> · <span class=\"frac\"><span class=\"chis\">7</span><span class=\"znam\">9</span></span>",
+       "otgovor": "2/9",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">9</span></span>",
+       "reshenie": "Седмиците се съкращават една с друга и остава 2/9."
+      },
+      {
+       "id": "t2-5",
+       "ekran": "1<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span> · <span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span>",
+       "otgovor": "1",
+       "otgovor_ekran": "1",
+       "reshenie": "Смесеното число става неправилна дроб: 1 1/2 = 3/2. После 3/2 · 2/3 = 6/6 = 1."
+      }
+     ]
+    },
+    {
+     "ime": "Деление",
+     "opis": "Обръщаме втората дроб и умножаваме.",
+     "zadachi": [
+      {
+       "id": "t2-6",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span> : <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "otgovor": "1 1/2",
+       "otgovor_ekran": "1<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "reshenie": "Обръщаме втората дроб: 3/4 · 2/1 = 6/4 = 3/2 = 1 1/2. (Питаме колко половинки има в три четвърти.)"
+      },
+      {
+       "id": "t2-7",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">8</span></span> : <span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">16</span></span>",
+       "otgovor": "2",
+       "otgovor_ekran": "2",
+       "reshenie": "5/8 · 16/5 = 80/40 = 2. Петиците се съкращават, а 16 : 8 = 2."
+      },
+      {
+       "id": "t2-8",
+       "ekran": "6 : <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span>",
+       "otgovor": "8",
+       "otgovor_ekran": "8",
+       "reshenie": "6 е 6/1, значи 6/1 · 4/3 = 24/3 = 8. (Колко три-четвърти има в 6.)"
+      },
+      {
+       "id": "t2-9",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">4</span><span class=\"znam\">9</span></span> : 2",
+       "otgovor": "2/9",
+       "otgovor_ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">9</span></span>",
+       "reshenie": "Делението на 2 е умножение по 1/2: 4/9 · 1/2 = 4/18 = 2/9."
+      },
+      {
+       "id": "t2-10",
+       "ekran": "2<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span> : 1<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "otgovor": "1 1/2",
+       "otgovor_ekran": "1<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "reshenie": "И двете стават неправилни: 2 1/4 = 9/4 и 1 1/2 = 3/2. После 9/4 · 2/3 = 18/12 = 3/2 = 1 1/2."
+      }
+     ]
+    },
+    {
+     "ime": "Изрази и смесени числа",
+     "opis": "Няколко действия наведнъж — скобите първо.",
+     "zadachi": [
+      {
+       "id": "t2-11",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span> · <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">8</span></span> : <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>",
+       "otgovor": "1",
+       "otgovor_ekran": "1",
+       "reshenie": "Отляво надясно: 2/3 · 3/8 = 6/24 = 1/4. После 1/4 : 1/4 = 1/4 · 4/1 = 1."
+      },
+      {
+       "id": "t2-12",
+       "ekran": "(<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">3</span></span>) · <span class=\"frac\"><span class=\"chis\">6</span><span class=\"znam\">5</span></span>",
+       "otgovor": "1",
+       "otgovor_ekran": "1",
+       "reshenie": "В скобата общ знаменател 6: 3/6 + 2/6 = 5/6. После 5/6 · 6/5 = 1."
+      },
+      {
+       "id": "t2-13",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span> : (<span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span> − <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">6</span></span>)",
+       "otgovor": "2 1/4",
+       "otgovor_ekran": "2<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>",
+       "reshenie": "В скобата общ знаменател 6: 3/6 − 1/6 = 2/6 = 1/3. После 3/4 : 1/3 = 3/4 · 3/1 = 9/4 = 2 1/4."
+      },
+      {
+       "id": "t2-14",
+       "ekran": "1<span class=\"frac smes\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span> · 2<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>",
+       "otgovor": "3 3/4",
+       "otgovor_ekran": "3<span class=\"frac smes\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span>",
+       "reshenie": "Превръщаме: 1 2/3 = 5/3 и 2 1/4 = 9/4. Съкращаваме 9 с 3 и остава 5 · 3 / 4 = 15/4 = 3 3/4."
+      },
+      {
+       "id": "t2-15",
+       "ekran": "(2<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span> − 1<span class=\"frac smes\"><span class=\"chis\">1</span><span class=\"znam\">4</span></span>) : <span class=\"frac\"><span class=\"chis\">5</span><span class=\"znam\">8</span></span>",
+       "otgovor": "2",
+       "otgovor_ekran": "2",
+       "reshenie": "В скобата: 2 1/2 = 2 2/4, значи 2 2/4 − 1 1/4 = 1 1/4 = 5/4. После 5/4 : 5/8 = 5/4 · 8/5 = 40/20 = 2."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+};
+</script>
+<script>
+"use strict";
+/* Урокът се води на дъската: никъде не се въвежда отговор. Всяка задача
+   има бутон „Покажи решението“ и кръгче за отметка „решено“. Отметките
+   се помнят в този браузър, за да не се губи докъде е стигнал часът. */
+var $ = function(s, p){ return (p || document).querySelector(s); };
+var $$ = function(s, p){
+  return Array.prototype.slice.call((p || document).querySelectorAll(s));
+};
+function ek(t){
+  return String(t).replace(/[&<>"]/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];
+  });
+}
+
+var KLYUCH = 'tla-urok-5-drobi';
+var S = {};
+try { S = JSON.parse(localStorage.getItem(KLYUCH) || '{}') || {}; } catch(e){ S = {}; }
+function zapazi(){
+  try { localStorage.setItem(KLYUCH, JSON.stringify(S)); } catch(e){}
+}
+
+var sega = 0;
+function zadachiNa(tab){
+  return tab.niva.reduce(function(a, n){ return a.concat(n.zadachi); }, []);
+}
+function resheni(tab){
+  return zadachiNa(tab).filter(function(z){ return S[z.id]; }).length;
+}
+var VSICHKI = DANNI.tabove.reduce(function(a, t){
+  return a + zadachiNa(t).length; }, 0);
+
+function risuvaiTabove(){
+  $('#tabove').innerHTML = DANNI.tabove.map(function(t, i){
+    return '<button class="tab-b" type="button" role="tab" data-t="' + i + '" '
+      + 'aria-selected="' + (i === sega) + '">'
+      + '<span class="znak">' + ek(t.znak) + '</span>'
+      + '<span>' + ek(t.kratko) + '</span>'
+      + '<span class="broi">' + resheni(t) + '/' + zadachiNa(t).length + '</span>'
+      + '</button>';
+  }).join('');
+  $$('#tabove .tab-b').forEach(function(b){
+    b.addEventListener('click', function(){
+      sega = +b.dataset.t;
+      risuvai();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function risuvaiTqlo(){
+  var t = DANNI.tabove[sega];
+  $('#sudurjanie').innerHTML =
+    '<section class="ideq">'
+    + '<h2>' + ek(t.ime) + '</h2>'
+    + '<p>' + ek(t.ideya) + '</p>'
+    + '<ul class="pravila">' + t.pravila.map(function(p){
+        return '<li>' + ek(p) + '</li>'; }).join('') + '</ul>'
+    + '</section>'
+    + t.niva.map(function(n, ni){
+        var gotovi = n.zadachi.filter(function(z){ return S[z.id]; }).length;
+        return '<section class="nivo">'
+          + '<div class="nivo__red">'
+          +   '<h3 class="nivo__ime">' + ek(n.ime) + '</h3>'
+          +   '<span class="znachka znachka--' + (ni + 1) + '">ниво ' + (ni + 1)
+          +     ' · ' + gotovi + ' от ' + n.zadachi.length + '</span>'
+          + '</div>'
+          + '<p class="nivo__opis">' + ek(n.opis) + '</p>'
+          + '<div class="zadachi">' + n.zadachi.map(function(z, zi){
+              return '<article class="zad' + (S[z.id] ? ' reshena' : '') + '" '
+                +   'id="z-' + z.id + '">'
+                + '<div class="zad__n">Задача ' + (zi + 1) + '</div>'
+                + '<p class="izraz">' + z.ekran + ' =</p>'
+                + '<button class="pokaji" type="button" data-p="' + z.id + '" '
+                +   'aria-expanded="false" aria-controls="r-' + z.id + '">'
+                +   'Покажи решението</button>'
+                + '<div class="reshenie" id="r-' + z.id + '" hidden>'
+                +   '<div class="otg">' + z.otgovor_ekran + '</div>'
+                +   '<p class="stupki">' + ek(z.reshenie) + '</p>'
+                + '</div>'
+                + '<button class="otmetka" type="button" data-o="' + z.id + '" '
+                +   'aria-pressed="' + (S[z.id] ? 'true' : 'false') + '" '
+                +   'title="Отметни като решена" aria-label="Отметни като решена">'
+                +   '✓</button>'
+                + '</article>';
+            }).join('') + '</div>'
+          + '</section>';
+      }).join('')
+    + (DANNI.tabove.reduce(function(a, x){ return a + resheni(x); }, 0) === VSICHKI
+       ? '<div class="kraj"><h2>Сладкарницата е изядена!</h2>'
+         + '<p>И двата таба са минати — дробите се събират под общ знаменател, '
+         + 'умножават се направо и се делят с обръщане.</p></div>'
+       : '');
+
+  $$('.pokaji').forEach(function(b){
+    b.addEventListener('click', function(){ pokaji(b); });
+  });
+  $$('.otmetka').forEach(function(b){
+    b.addEventListener('click', function(){ otmetni(b.dataset.o); });
+  });
+}
+
+function pokaji(b){
+  var kutiq = $('#r-' + b.dataset.p);
+  if(!kutiq) return;
+  var otvoreno = !kutiq.hidden;
+  kutiq.hidden = otvoreno;
+  b.setAttribute('aria-expanded', String(!otvoreno));
+  b.textContent = otvoreno ? 'Покажи решението' : 'Скрий решението';
+}
+
+function otmetni(id){
+  if(S[id]) delete S[id]; else S[id] = 1;
+  zapazi();
+  risuvaiTabove();
+  risuvaiTqlo();
+  osveji();
+}
+
+function osveji(){
+  var t = DANNI.tabove[sega];
+  var vsi = DANNI.tabove.reduce(function(a, x){ return a + resheni(x); }, 0);
+  $('#lenta').style.width = Math.round(100 * vsi / VSICHKI) + '%';
+  $('#broiach').textContent = vsi + ' / ' + VSICHKI;
+  $('#imeTab').textContent = t.kratko;
+}
+
+function risuvai(){ risuvaiTabove(); risuvaiTqlo(); osveji(); }
+
+$('#izchisti').addEventListener('click', function(){
+  S = {}; zapazi(); risuvai();
+});
+
+risuvai();
+</script>
