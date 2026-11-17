@@ -1,0 +1,728 @@
+<title>Градът на степените</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" />
+<style>
+/* Разположение: една колона — шапка със силует на града, лента с трите
+   етапа, после етажите на етапа един под друг. Всяка задача е картичка
+   с едър израз и бутон, който отваря решението под него. */
+:root{
+  --mastilo:#15233D;        /* основен текст */
+  --mastilo-blqdo:#56678C;  /* второстепенен текст */
+  --hartiq:#FFFCF5;         /* фон на страницата */
+  --karta:#FFFFFF;          /* фон на картичките */
+  --ramka:#EADFC9;          /* тънките линии */
+  --zlato:#E8921B;          /* акцентът — уличните лампи */
+  --zlato-meko:#FDF0D7;
+  --nebe:#1B3358;           /* нощното небе в шапката */
+  --silueti:#0A1322;        /* сградите пред небето */
+  --zeleno:#15663D;         /* решено */
+  --zeleno-meko:#E2F2E9;
+  --lila:#7C3FB4;           /* трудното ниво */
+  --lila-meko:#F2E9FB;
+  --senka:214 38% 22%;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --mastilo:#E8EFFA; --mastilo-blqdo:#9FB2D0;
+    --hartiq:#0D1726; --karta:#16233A; --ramka:#2A3A58;
+    --zlato:#F7B23F; --zlato-meko:#3A2C12;
+    --nebe:#0A1322; --silueti:#243C64;
+    --zeleno:#7BD7A6; --zeleno-meko:#13301F;
+    --lila:#C79BEE; --lila-meko:#2A1C3C;
+    --senka:214 60% 4%;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --mastilo:#E8EFFA; --mastilo-blqdo:#9FB2D0;
+  --hartiq:#0D1726; --karta:#16233A; --ramka:#2A3A58;
+  --zlato:#F7B23F; --zlato-meko:#3A2C12;
+  --nebe:#0A1322; --silueti:#243C64;
+  --zeleno:#7BD7A6; --zeleno-meko:#13301F;
+  --lila:#C79BEE; --lila-meko:#2A1C3C;
+  --senka:214 60% 4%;
+  color-scheme: dark;
+}
+*,*::before,*::after{ box-sizing:border-box }
+body{
+  margin:0; background:var(--hartiq); color:var(--mastilo);
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;
+  font-size:18px; line-height:1.55; -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+/* лентата над залепената навигация, за да не прозира съдържание */
+body::before{
+  content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px);
+  z-index:10; background:var(--nebe);
+}
+h1,h2,h3{ font-family:'Fredoka',system-ui,sans-serif; margin:0; text-wrap:balance }
+button{ font:inherit; cursor:pointer }
+i{ font-style:italic }
+[hidden]{ display:none !important }
+
+.ramka{
+  max-width:860px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ── шапка ─────────────────────────────────────────────────────── */
+.shapka{ background:var(--nebe); color:#F4F8FF; position:relative; overflow:hidden }
+.shapka .ramka{ padding-block:22px 0; position:relative; z-index:2 }
+.shapka h1{ font-size:clamp(28px,7.4vw,44px); line-height:1.05; margin-bottom:8px }
+.shapka h1 em{ color:var(--zlato); font-style:normal }
+.shapka p{ margin:0 0 16px; color:#B9CCEA; font-size:clamp(16px,4.2vw,18px); max-width:54ch }
+.nadpis{ font-size:14px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+  color:#89A6D0 }
+.silueti{ display:block; width:100%; height:auto; margin-top:4px }
+
+/* ── лентата с етапите ─────────────────────────────────────────── */
+.etapi{ position:sticky; top:env(safe-area-inset-top, 0px); z-index:9;
+  background:var(--nebe); }
+.etapi .ramka{ display:flex; gap:8px; padding-block:0; flex-wrap:wrap }
+.etap-b{ border:none; background:rgba(255,255,255,.1); color:#CFE0F7;
+  padding:12px 16px; border-radius:16px 16px 0 0; font-family:'Fredoka',sans-serif;
+  font-size:clamp(15px,4.1vw,19px); font-weight:600; min-height:52px;
+  display:flex; align-items:center; gap:9px; transition:background .15s, color .15s }
+.etap-b:hover{ background:rgba(255,255,255,.18); color:#fff }
+.etap-b[aria-selected="true"]{ background:var(--hartiq); color:var(--mastilo) }
+.etap-b .znak{ font-family:'Fredoka',sans-serif; font-size:19px; color:var(--zlato) }
+.etap-b[aria-selected="true"] .znak{ color:var(--zlato) }
+.etap-b .broi{ font-family:'Nunito',sans-serif; font-size:13px; font-weight:800; opacity:.85 }
+
+/* ── идеята на етапа ───────────────────────────────────────────── */
+.ideq{ background:var(--karta); border:1px solid var(--ramka); border-radius:20px;
+  padding:18px clamp(14px,3.4vw,22px); margin:20px 0 6px;
+  box-shadow:0 10px 28px hsl(var(--senka) / .07) }
+.ideq h2{ font-size:clamp(20px,5.2vw,25px); margin-bottom:8px }
+.ideq p{ margin:0; color:var(--mastilo-blqdo); font-size:clamp(16px,4.2vw,18px) }
+.pravila{ display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; padding:0; list-style:none }
+.pravila li{ background:var(--zlato-meko); border:1.5px dashed var(--zlato);
+  color:var(--zlato); border-radius:999px; padding:9px 16px; font-weight:800;
+  font-size:clamp(16px,4.3vw,20px); letter-spacing:.01em }
+
+/* ── етаж (ниво) ───────────────────────────────────────────────── */
+.etaj{ margin-top:26px }
+.etaj__red{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:4px }
+.etaj__ime{ font-family:'Fredoka',sans-serif; font-size:clamp(20px,5.2vw,26px) }
+.znachka{ font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  border-radius:999px; padding:5px 12px; background:var(--zeleno-meko); color:var(--zeleno) }
+.znachka--2{ background:var(--zlato-meko); color:var(--zlato) }
+.znachka--3{ background:var(--lila-meko); color:var(--lila) }
+.etaj__opis{ margin:0 0 12px; color:var(--mastilo-blqdo); font-size:clamp(15.5px,4vw,17px) }
+
+/* ── задача ────────────────────────────────────────────────────── */
+.zadachi{ display:grid; gap:12px }
+.zad{ position:relative; background:var(--karta); border:1px solid var(--ramka);
+  border-radius:18px; padding:14px 64px 14px clamp(14px,3.4vw,18px);
+  transition:background .15s, border-color .15s }
+.zad.reshena{ background:var(--zeleno-meko); border-color:var(--zeleno) }
+.zad__n{ font-size:13.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--mastilo-blqdo) }
+.izraz{ font-size:clamp(25px,6.6vw,34px); font-weight:700; line-height:1.5;
+  margin:8px 0 0; letter-spacing:.01em; overflow-wrap:break-word }
+.izraz sup{ font-size:.58em; vertical-align:super; line-height:0 }
+.frac{ display:inline-flex; flex-direction:column; align-items:center;
+  vertical-align:middle; text-align:center; margin:0 .2em }
+.frac .chis{ padding:0 .3em .06em; border-bottom:.075em solid currentColor }
+.frac .znam{ padding:.06em .3em 0 }
+.pokaji{ margin-top:12px; border:2px solid var(--zlato); background:var(--zlato-meko);
+  color:var(--zlato); border-radius:999px; padding:11px 20px; font-weight:800;
+  font-size:16px; min-height:46px }
+.pokaji:hover{ filter:brightness(1.04) }
+.reshenie{ margin-top:12px; background:var(--hartiq); border:1px solid var(--ramka);
+  border-radius:14px; padding:14px 16px }
+.reshenie .otg{ font-family:'Fredoka',sans-serif; font-size:clamp(21px,5.4vw,27px);
+  color:var(--zeleno); line-height:1.4 }
+.reshenie .stupki{ margin:8px 0 0; color:var(--mastilo-blqdo);
+  font-size:clamp(16px,4.2vw,18px) }
+.otmetka{ position:absolute; top:12px; right:12px; width:46px; height:46px;
+  border-radius:50%; border:2px solid var(--ramka); background:var(--karta);
+  color:var(--ramka); display:grid; place-items:center; font-size:22px; font-weight:800;
+  line-height:1; transition:.15s }
+.otmetka:hover{ border-color:var(--zlato); color:var(--zlato) }
+.otmetka[aria-pressed="true"]{ border-color:var(--zeleno); background:var(--zeleno-meko);
+  color:var(--zeleno) }
+
+/* ── долната лента ─────────────────────────────────────────────── */
+.dolu{ position:fixed; left:0; right:0; bottom:0; z-index:8;
+  background:color-mix(in srgb, var(--hartiq) 92%, transparent);
+  backdrop-filter:blur(10px); border-top:1px solid var(--ramka);
+  padding-bottom:env(safe-area-inset-bottom, 0px) }
+.dolu .ramka{ display:flex; align-items:center; gap:12px; padding-block:10px }
+.lenta{ flex:1; min-width:90px; height:10px; border-radius:999px;
+  background:var(--ramka); overflow:hidden }
+.lenta i{ display:block; height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg, var(--zlato), var(--zeleno)); transition:width .35s }
+.broiach{ font-weight:800; font-size:15.5px; white-space:nowrap;
+  font-variant-numeric:tabular-nums }
+.izchisti{ border:1.5px solid var(--ramka); background:transparent;
+  color:var(--mastilo-blqdo); border-radius:999px; padding:8px 14px;
+  font-size:14px; font-weight:700; min-height:40px }
+.izchisti:hover{ border-color:var(--zlato); color:var(--zlato) }
+
+.kraj{ margin:22px 0 0; padding:22px; border-radius:20px; text-align:center;
+  background:var(--zeleno-meko); border:2px solid var(--zeleno) }
+.kraj h2{ font-size:clamp(22px,5.6vw,28px); color:var(--zeleno); margin-bottom:6px }
+.kraj p{ margin:0 auto; max-width:48ch; color:var(--mastilo) }
+
+:focus-visible{ outline:3px solid var(--zlato); outline-offset:2px }
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important } }
+.sled{ height:96px }
+</style>
+
+<header class="shapka">
+  <div class="ramka">
+    <div class="nadpis">Математика · 6. клас</div>
+    <h1>Градът на <em>степените</em></h1>
+    <p>Три етапа, по три етажа всеки — от лесните задачи към трудните.
+      Всяка задача си носи решението: натискаш бутона и то се отваря.</p>
+  </div>
+  <svg class="silueti" viewBox="0 0 860 70" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="var(--silueti)" opacity=".85">
+      <rect x="0" y="34" width="70" height="36" /><rect x="78" y="22" width="52" height="48" />
+      <rect x="138" y="40" width="64" height="30" /><rect x="210" y="16" width="46" height="54" />
+      <rect x="264" y="38" width="74" height="32" /><rect x="346" y="26" width="48" height="44" />
+      <rect x="402" y="44" width="68" height="26" /><rect x="478" y="20" width="44" height="50" />
+      <rect x="530" y="36" width="72" height="34" /><rect x="610" y="28" width="50" height="42" />
+      <rect x="668" y="46" width="66" height="24" /><rect x="742" y="24" width="48" height="46" />
+      <rect x="798" y="38" width="62" height="32" />
+    </g>
+    <g fill="var(--zlato)" opacity=".95">
+      <rect x="92" y="32" width="6" height="7" /><rect x="106" y="32" width="6" height="7" />
+      <rect x="92" y="46" width="6" height="7" /><rect x="222" y="28" width="6" height="7" />
+      <rect x="236" y="28" width="6" height="7" /><rect x="222" y="44" width="6" height="7" />
+      <rect x="360" y="38" width="6" height="7" /><rect x="374" y="38" width="6" height="7" />
+      <rect x="490" y="32" width="6" height="7" /><rect x="504" y="32" width="6" height="7" />
+      <rect x="490" y="48" width="6" height="7" /><rect x="624" y="40" width="6" height="7" />
+      <rect x="638" y="40" width="6" height="7" /><rect x="754" y="36" width="6" height="7" />
+      <rect x="768" y="36" width="6" height="7" /><rect x="754" y="50" width="6" height="7" />
+    </g>
+  </svg>
+</header>
+
+<nav class="etapi" aria-label="Етапи">
+  <div class="ramka" id="etapi" role="tablist"></div>
+</nav>
+
+<main class="ramka" id="sudurjanie"></main>
+<div class="ramka sled"></div>
+
+<div class="dolu">
+  <div class="ramka">
+    <span class="broiach" id="imeEtap"></span>
+    <span class="lenta"><i id="lenta"></i></span>
+    <span class="broiach" id="broiach">0 / 45</span>
+    <button class="izchisti" id="izchisti" type="button">Изчисти</button>
+  </div>
+</div>
+
+<script>
+var DANNI = {
+ "etapi": [
+  {
+   "kod": "e1",
+   "ime": "Умножение на степени",
+   "kratko": "Етап 1",
+   "znak": "×",
+   "ideya": "При умножение на степени с ЕДНАКВА основа показателите се СЪБИРАТ. Основата не се пипа — тя остава същата.",
+   "pravila": [
+    "aᵐ · aⁿ = aᵐ⁺ⁿ",
+    "aⁿ · bⁿ = (a · b)ⁿ",
+    "a¹ = a"
+   ],
+   "niva": [
+    {
+     "ime": "Лесни",
+     "opis": "Една основа, показателите се събират.",
+     "zadachi": [
+      {
+       "id": "e1-1",
+       "ekran": "2<sup>3</sup> · 2<sup>4</sup>",
+       "otgovor": "2⁷ = 128",
+       "reshenie": "Основата е еднаква (2), затова показателите се събират: 3 + 4 = 7. Значи 2³ · 2⁴ = 2⁷ = 128."
+      },
+      {
+       "id": "e1-2",
+       "ekran": "5<sup>2</sup> · 5",
+       "otgovor": "5³ = 125",
+       "reshenie": "Самото 5 е 5¹. Тогава 2 + 1 = 3 и 5² · 5 = 5³ = 125."
+      },
+      {
+       "id": "e1-3",
+       "ekran": "<i>x</i><sup>5</sup> · <i>x</i><sup>3</sup>",
+       "otgovor": "x⁸",
+       "reshenie": "Същото правило важи и с букви: 5 + 3 = 8, значи x⁵ · x³ = x⁸."
+      },
+      {
+       "id": "e1-4",
+       "ekran": "3<sup>2</sup> · 3<sup>3</sup> · 3",
+       "otgovor": "3⁶ = 729",
+       "reshenie": "Три множителя с една основа: 2 + 3 + 1 = 6. Значи 3² · 3³ · 3 = 3⁶ = 729."
+      },
+      {
+       "id": "e1-5",
+       "ekran": "<i>a</i><sup>4</sup> · <i>a</i> · <i>a</i><sup>2</sup>",
+       "otgovor": "a⁷",
+       "reshenie": "Събираме и трите показателя: 4 + 1 + 2 = 7, значи a⁷."
+      }
+     ]
+    },
+    {
+     "ime": "Средни",
+     "opis": "Основите изглеждат различни — но не са.",
+     "zadachi": [
+      {
+       "id": "e1-6",
+       "ekran": "(−2)<sup>3</sup> · (−2)<sup>2</sup>",
+       "otgovor": "(−2)⁵ = −32",
+       "reshenie": "Основата е (−2) и при двете: 3 + 2 = 5. (−2)⁵ = −32, защото показателят е нечетен."
+      },
+      {
+       "id": "e1-7",
+       "ekran": "2<sup>3</sup> · 5<sup>3</sup>",
+       "otgovor": "10³ = 1000",
+       "reshenie": "Тук основите са различни, но ПОКАЗАТЕЛИТЕ са еднакви: aⁿ · bⁿ = (a · b)ⁿ. Значи 2³ · 5³ = (2 · 5)³ = 10³ = 1000."
+      },
+      {
+       "id": "e1-8",
+       "ekran": "4<sup>2</sup> · 2<sup>3</sup>",
+       "otgovor": "2⁷ = 128",
+       "reshenie": "4 е 2², значи 4² = (2²)² = 2⁴. Тогава 2⁴ · 2³ = 2⁷ = 128."
+      },
+      {
+       "id": "e1-9",
+       "ekran": "9 · 27",
+       "otgovor": "3⁵ = 243",
+       "reshenie": "9 = 3² и 27 = 3³. Тогава 3² · 3³ = 3⁵ = 243."
+      },
+      {
+       "id": "e1-10",
+       "ekran": "(3<i>x</i>)<sup>2</sup> · <i>x</i>",
+       "otgovor": "9x³",
+       "reshenie": "(3x)² = 3² · x² = 9x². После 9x² · x = 9x³."
+      }
+     ]
+    },
+    {
+     "ime": "Трудни",
+     "opis": "Неизвестен показател и скрити основи.",
+     "zadachi": [
+      {
+       "id": "e1-11",
+       "ekran": "2<sup><i>n</i></sup> · 2<sup>3</sup> = 2<sup>7</sup>",
+       "otgovor": "n = 4",
+       "reshenie": "Отляво показателите се събират: n + 3. Щом основите са еднакви, показателите също: n + 3 = 7, значи n = 4."
+      },
+      {
+       "id": "e1-12",
+       "ekran": "<i>x</i><sup>2</sup> · <i>x</i><sup><i>n</i></sup> = <i>x</i><sup>9</sup>",
+       "otgovor": "n = 7",
+       "reshenie": "Основата x е еднаква, затова показателите се събират: 2 + n = 9. Значи n = 7."
+      },
+      {
+       "id": "e1-13",
+       "ekran": "8 · 2<sup><i>n</i></sup> = 2<sup>6</sup>",
+       "otgovor": "n = 3",
+       "reshenie": "Първо 8 = 2³. Тогава 2³ · 2ⁿ = 2³⁺ⁿ = 2⁶, значи 3 + n = 6 и n = 3."
+      },
+      {
+       "id": "e1-14",
+       "ekran": "(2<sup>3</sup>)<sup>2</sup> · 2",
+       "otgovor": "2⁷ = 128",
+       "reshenie": "При степен на степен показателите се УМНОЖАВАТ: (2³)² = 2⁶. После 2⁶ · 2 = 2⁷ = 128."
+      },
+      {
+       "id": "e1-15",
+       "ekran": "2<sup>4</sup> · 8<sup>2</sup> · 4",
+       "otgovor": "2¹² = 4096",
+       "reshenie": "Всичко се свежда до основа 2: 8² = (2³)² = 2⁶ и 4 = 2². Тогава 2⁴ · 2⁶ · 2² = 2¹² = 4096."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "e2",
+   "ime": "Деление на степени",
+   "kratko": "Етап 2",
+   "znak": "÷",
+   "ideya": "При деление на степени с ЕДНАКВА основа показателите се ИЗВАЖДАТ — показателят на делителя се маха от показателя на делимото.",
+   "pravila": [
+    "aᵐ : aⁿ = aᵐ⁻ⁿ",
+    "aⁿ : bⁿ = (a : b)ⁿ",
+    "a⁰ = 1"
+   ],
+   "niva": [
+    {
+     "ime": "Лесни",
+     "opis": "Една основа, показателите се изваждат.",
+     "zadachi": [
+      {
+       "id": "e2-1",
+       "ekran": "2<sup>7</sup> : 2<sup>3</sup>",
+       "otgovor": "2⁴ = 16",
+       "reshenie": "Основата е еднаква: 7 − 3 = 4. Значи 2⁷ : 2³ = 2⁴ = 16."
+      },
+      {
+       "id": "e2-2",
+       "ekran": "5<sup>6</sup> : 5<sup>4</sup>",
+       "otgovor": "5² = 25",
+       "reshenie": "6 − 4 = 2, значи 5⁶ : 5⁴ = 5² = 25."
+      },
+      {
+       "id": "e2-3",
+       "ekran": "<i>x</i><sup>9</sup> : <i>x</i><sup>4</sup>",
+       "otgovor": "x⁵",
+       "reshenie": "9 − 4 = 5, значи x⁹ : x⁴ = x⁵."
+      },
+      {
+       "id": "e2-4",
+       "ekran": "3<sup>5</sup> : 3<sup>5</sup>",
+       "otgovor": "3⁰ = 1",
+       "reshenie": "5 − 5 = 0, а всяка степен с показател 0 е равна на 1."
+      },
+      {
+       "id": "e2-5",
+       "ekran": "10<sup>8</sup> : 10<sup>5</sup>",
+       "otgovor": "10³ = 1000",
+       "reshenie": "8 − 5 = 3, значи 10⁸ : 10⁵ = 10³ = 1000."
+      }
+     ]
+    },
+    {
+     "ime": "Средни",
+     "opis": "Еднакви показатели и две действия наведнъж.",
+     "zadachi": [
+      {
+       "id": "e2-6",
+       "ekran": "6<sup>4</sup> : 2<sup>4</sup>",
+       "otgovor": "3⁴ = 81",
+       "reshenie": "Показателите са еднакви: aⁿ : bⁿ = (a : b)ⁿ. Значи 6⁴ : 2⁴ = 3⁴ = 81."
+      },
+      {
+       "id": "e2-7",
+       "ekran": "<i>a</i><sup>7</sup> : <i>a</i><sup>3</sup> : <i>a</i><sup>2</sup>",
+       "otgovor": "a²",
+       "reshenie": "Изваждаме поред: 7 − 3 = 4, после 4 − 2 = 2. Значи a²."
+      },
+      {
+       "id": "e2-8",
+       "ekran": "12<sup>5</sup> : 4<sup>5</sup>",
+       "otgovor": "3⁵ = 243",
+       "reshenie": "12 : 4 = 3, а показателят остава 5: 3⁵ = 243."
+      },
+      {
+       "id": "e2-9",
+       "ekran": "2<sup>10</sup> : (2<sup>3</sup> · 2<sup>4</sup>)",
+       "otgovor": "2³ = 8",
+       "reshenie": "В скобата: 2³ · 2⁴ = 2⁷. После 2¹⁰ : 2⁷ = 2³ = 8."
+      },
+      {
+       "id": "e2-10",
+       "ekran": "3<sup>8</sup> : 9<sup>2</sup>",
+       "otgovor": "3⁴ = 81",
+       "reshenie": "9² = (3²)² = 3⁴. Тогава 3⁸ : 3⁴ = 3⁴ = 81."
+      }
+     ]
+    },
+    {
+     "ime": "Трудни",
+     "opis": "Неизвестен показател и смесени основи.",
+     "zadachi": [
+      {
+       "id": "e2-11",
+       "ekran": "2<sup><i>n</i></sup> : 2<sup>3</sup> = 2<sup>5</sup>",
+       "otgovor": "n = 8",
+       "reshenie": "Отляво показателят е n − 3. Значи n − 3 = 5 и n = 8."
+      },
+      {
+       "id": "e2-12",
+       "ekran": "<i>x</i><sup>9</sup> : <i>x</i><sup><i>n</i></sup> = <i>x</i><sup>4</sup>",
+       "otgovor": "n = 5",
+       "reshenie": "При деление показателите се изваждат: 9 − n = 4. Значи n = 5."
+      },
+      {
+       "id": "e2-13",
+       "ekran": "(5<sup>6</sup> · 5<sup>2</sup>) : 5<sup>4</sup>",
+       "otgovor": "5⁴ = 625",
+       "reshenie": "Горе: 5⁶ · 5² = 5⁸. После 5⁸ : 5⁴ = 5⁴ = 625."
+      },
+      {
+       "id": "e2-14",
+       "ekran": "4<sup>5</sup> : 2<sup>7</sup>",
+       "otgovor": "2³ = 8",
+       "reshenie": "4⁵ = (2²)⁵ = 2¹⁰. Тогава 2¹⁰ : 2⁷ = 2³ = 8."
+      },
+      {
+       "id": "e2-15",
+       "ekran": "(2<sup>3</sup> · 3<sup>3</sup>) : 6<sup>2</sup>",
+       "otgovor": "6",
+       "reshenie": "Горе: 2³ · 3³ = (2 · 3)³ = 6³. После 6³ : 6² = 6¹ = 6."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "e3",
+   "ime": "Уравнения с дроби",
+   "kratko": "Етап 3",
+   "znak": "=",
+   "ideya": "Дробите в уравнението се махат наведнъж: двете страни се умножават по най-малкото общо кратно на знаменателите. Оттам нататък уравнението е обикновено.",
+   "pravila": [
+    "Умножи ВСИЧКО по НОК на знаменателите",
+    "Разкрий скобите, събери подобните",
+    "Неизвестното отляво, числата отдясно"
+   ],
+   "niva": [
+    {
+     "ime": "Лесни",
+     "opis": "Една дроб, едно действие.",
+     "zadachi": [
+      {
+       "id": "e3-1",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">3</span></span> = 4",
+       "otgovor": "x = 12",
+       "reshenie": "Умножаваме двете страни по 3: x = 12. Проверка: 12 : 3 = 4. ✓"
+      },
+      {
+       "id": "e3-2",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2<i>x</i></span><span class=\"znam\">5</span></span> = 6",
+       "otgovor": "x = 15",
+       "reshenie": "Умножаваме по 5: 2x = 30, после делим на 2: x = 15."
+      },
+      {
+       "id": "e3-3",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i> + 1</span><span class=\"znam\">4</span></span> = 3",
+       "otgovor": "x = 11",
+       "reshenie": "Умножаваме по 4: x + 1 = 12, значи x = 11."
+      },
+      {
+       "id": "e3-4",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">6</span></span> = <span class=\"frac\"><span class=\"chis\">1</span><span class=\"znam\">2</span></span>",
+       "otgovor": "x = 3",
+       "reshenie": "Умножаваме по 6: x = 6 : 2 = 3."
+      },
+      {
+       "id": "e3-5",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">3</span></span> = 5",
+       "otgovor": "x = 6",
+       "reshenie": "НОК(2, 3) = 6. Умножаваме всичко по 6: 3x + 2x = 30, значи 5x = 30 и x = 6."
+      }
+     ]
+    },
+    {
+     "ime": "Средни",
+     "opis": "Дроб от двете страни и числа отделно.",
+     "zadachi": [
+      {
+       "id": "e3-6",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2<i>x</i> − 1</span><span class=\"znam\">3</span></span> = 5",
+       "otgovor": "x = 8",
+       "reshenie": "Умножаваме по 3: 2x − 1 = 15, значи 2x = 16 и x = 8."
+      },
+      {
+       "id": "e3-7",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">2</span></span> − 1 = <span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">4</span></span>",
+       "otgovor": "x = 3,5",
+       "reshenie": "НОК(2, 4) = 4. По 4: 2x − 4 = 3, значи 2x = 7 и x = 3,5 (или 7/2)."
+      },
+      {
+       "id": "e3-8",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">3</span></span> + 2 = <span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">2</span></span> − 1",
+       "otgovor": "x = 18",
+       "reshenie": "НОК(3, 2) = 6. По 6: 2x + 12 = 3x − 6. Неизвестното отляво: 12 + 6 = 3x − 2x, значи x = 18."
+      },
+      {
+       "id": "e3-9",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">3</span></span> + <span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">6</span></span> = 12",
+       "otgovor": "x = 12",
+       "reshenie": "НОК = 6. По 6: 3x + 2x + x = 72, значи 6x = 72 и x = 12. (Половина, трета и шеста заедно правят едно цяло.)"
+      },
+      {
+       "id": "e3-10",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i> + 1</span><span class=\"znam\">3</span></span> − <span class=\"frac\"><span class=\"chis\"><i>x</i> + 1</span><span class=\"znam\">4</span></span> = 2",
+       "otgovor": "x = 23",
+       "reshenie": "НОК(3, 4) = 12. По 12: 4(x + 1) − 3(x + 1) = 24. Отляво остава (x + 1) = 24, значи x = 23."
+      }
+     ]
+    },
+    {
+     "ime": "Трудни",
+     "opis": "Скоби, различни знаменатели и два капана.",
+     "zadachi": [
+      {
+       "id": "e3-11",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i> + 2</span><span class=\"znam\">3</span></span> − <span class=\"frac\"><span class=\"chis\"><i>x</i> − 1</span><span class=\"znam\">4</span></span> = 1",
+       "otgovor": "x = 1",
+       "reshenie": "НОК(3, 4) = 12. По 12: 4(x + 2) − 3(x − 1) = 12. Разкриваме: 4x + 8 − 3x + 3 = 12, тоест x + 11 = 12 и x = 1. Внимавай с минуса пред втората скоба!"
+      },
+      {
+       "id": "e3-12",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">3<i>x</i> − 2</span><span class=\"znam\">5</span></span> = <span class=\"frac\"><span class=\"chis\"><i>x</i> + 4</span><span class=\"znam\">3</span></span>",
+       "otgovor": "x = 6,5",
+       "reshenie": "Кръстосано умножение: 3(3x − 2) = 5(x + 4), значи 9x − 6 = 5x + 20. Тогава 4x = 26 и x = 6,5."
+      },
+      {
+       "id": "e3-13",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2(<i>x</i> − 1)</span><span class=\"znam\">3</span></span> = <span class=\"frac\"><span class=\"chis\"><i>x</i> + 2</span><span class=\"znam\">2</span></span>",
+       "otgovor": "x = 10",
+       "reshenie": "НОК(3, 2) = 6. По 6: 4(x − 1) = 3(x + 2), значи 4x − 4 = 3x + 6 и x = 10."
+      },
+      {
+       "id": "e3-14",
+       "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i> − 1</span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\"><i>x</i> + 1</span><span class=\"znam\">3</span></span> = <span class=\"frac\"><span class=\"chis\">5<i>x</i> − 1</span><span class=\"znam\">6</span></span>",
+       "otgovor": "всяко число",
+       "reshenie": "НОК = 6. По 6: 3(x − 1) + 2(x + 1) = 5x − 1, тоест 3x − 3 + 2x + 2 = 5x − 1. Отляво излиза 5x − 1, а отдясно стои пак 5x − 1. Вярно е за ВСЯКО x."
+      },
+      {
+       "id": "e3-15",
+       "ekran": "<span class=\"frac\"><span class=\"chis\">2<i>x</i> + 1</span><span class=\"znam\">3</span></span> − <span class=\"frac\"><span class=\"chis\"><i>x</i> − 2</span><span class=\"znam\">2</span></span> = <span class=\"frac\"><span class=\"chis\"><i>x</i> + 7</span><span class=\"znam\">6</span></span>",
+       "otgovor": "няма решение",
+       "reshenie": "НОК = 6. По 6: 2(2x + 1) − 3(x − 2) = x + 7, тоест 4x + 2 − 3x + 6 = x + 7. Отляво x + 8, отдясно x + 7. Остава 8 = 7 — невярно, значи уравнението няма решение."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+};
+</script>
+<script>
+"use strict";
+/* Урокът се води на дъската: никъде не се въвежда отговор. Всяка задача
+   има бутон „Покажи решението“ и кръгче за отметка „решено“. Отметките
+   се помнят в този браузър, за да не се губи докъде е стигнал часът. */
+var $ = function(s, p){ return (p || document).querySelector(s); };
+var $$ = function(s, p){
+  return Array.prototype.slice.call((p || document).querySelectorAll(s));
+};
+function ek(t){
+  return String(t).replace(/[&<>"]/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];
+  });
+}
+
+var KLYUCH = 'tla-urok-6-grad-stepeni';
+var S = {};
+try { S = JSON.parse(localStorage.getItem(KLYUCH) || '{}') || {}; } catch(e){ S = {}; }
+function zapazi(){
+  try { localStorage.setItem(KLYUCH, JSON.stringify(S)); } catch(e){}
+}
+
+var sega = 0;
+function zadachiNa(etap){
+  return etap.niva.reduce(function(a, n){ return a.concat(n.zadachi); }, []);
+}
+function resheni(etap){
+  return zadachiNa(etap).filter(function(z){ return S[z.id]; }).length;
+}
+var VSICHKI = DANNI.etapi.reduce(function(a, e){ return a + zadachiNa(e).length; }, 0);
+
+function risuvaiEtapi(){
+  $('#etapi').innerHTML = DANNI.etapi.map(function(e, i){
+    return '<button class="etap-b" type="button" role="tab" data-e="' + i + '" '
+      + 'aria-selected="' + (i === sega) + '">'
+      + '<span class="znak">' + ek(e.znak) + '</span>'
+      + '<span>' + ek(e.kratko) + '</span>'
+      + '<span class="broi">' + resheni(e) + '/' + zadachiNa(e).length + '</span>'
+      + '</button>';
+  }).join('');
+  $$('#etapi .etap-b').forEach(function(b){
+    b.addEventListener('click', function(){
+      sega = +b.dataset.e;
+      risuvai();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function risuvaiTqlo(){
+  var e = DANNI.etapi[sega];
+  $('#sudurjanie').innerHTML =
+    '<section class="ideq">'
+    + '<h2>' + ek(e.ime) + '</h2>'
+    + '<p>' + ek(e.ideya) + '</p>'
+    + '<ul class="pravila">' + e.pravila.map(function(p){
+        return '<li>' + p + '</li>'; }).join('') + '</ul>'
+    + '</section>'
+    + e.niva.map(function(n, ni){
+        var gotovi = n.zadachi.filter(function(z){ return S[z.id]; }).length;
+        return '<section class="etaj">'
+          + '<div class="etaj__red">'
+          +   '<h3 class="etaj__ime">' + ek(n.ime) + '</h3>'
+          +   '<span class="znachka znachka--' + (ni + 1) + '">етаж ' + (ni + 1)
+          +     ' · ' + gotovi + ' от ' + n.zadachi.length + '</span>'
+          + '</div>'
+          + '<p class="etaj__opis">' + ek(n.opis) + '</p>'
+          + '<div class="zadachi">' + n.zadachi.map(function(z, zi){
+              return '<article class="zad' + (S[z.id] ? ' reshena' : '') + '" '
+                +   'id="z-' + z.id + '">'
+                + '<div class="zad__n">Задача ' + (zi + 1) + '</div>'
+                + '<p class="izraz">' + z.ekran + '</p>'
+                + '<button class="pokaji" type="button" data-p="' + z.id + '" '
+                +   'aria-expanded="false" aria-controls="r-' + z.id + '">'
+                +   'Покажи решението</button>'
+                + '<div class="reshenie" id="r-' + z.id + '" hidden>'
+                +   '<div class="otg">' + z.otgovor + '</div>'
+                +   '<p class="stupki">' + ek(z.reshenie) + '</p>'
+                + '</div>'
+                + '<button class="otmetka" type="button" data-o="' + z.id + '" '
+                +   'aria-pressed="' + (S[z.id] ? 'true' : 'false') + '" '
+                +   'title="Отметни като решена" aria-label="Отметни като решена">'
+                +   '✓</button>'
+                + '</article>';
+            }).join('') + '</div>'
+          + '</section>';
+      }).join('')
+    + (resheni(DANNI.etapi[0]) + resheni(DANNI.etapi[1]) + resheni(DANNI.etapi[2])
+        === VSICHKI
+       ? '<div class="kraj"><h2>Целият град е минат!</h2>'
+         + '<p>И трите етапа са готови — степените се умножават, делят и '
+         + 'уравненията с дроби вече не хапят.</p></div>'
+       : '');
+
+  $$('.pokaji').forEach(function(b){
+    b.addEventListener('click', function(){ pokaji(b); });
+  });
+  $$('.otmetka').forEach(function(b){
+    b.addEventListener('click', function(){ otmetni(b.dataset.o); });
+  });
+}
+
+function pokaji(b){
+  var kutiq = $('#r-' + b.dataset.p);
+  if(!kutiq) return;
+  var otvoreno = !kutiq.hidden;
+  kutiq.hidden = otvoreno;
+  b.setAttribute('aria-expanded', String(!otvoreno));
+  b.textContent = otvoreno ? 'Покажи решението' : 'Скрий решението';
+}
+
+function otmetni(id){
+  if(S[id]) delete S[id]; else S[id] = 1;
+  zapazi();
+  risuvaiEtapi();
+  risuvaiTqlo();
+  osveji();
+}
+
+function osveji(){
+  var e = DANNI.etapi[sega];
+  var vsi = DANNI.etapi.reduce(function(a, x){ return a + resheni(x); }, 0);
+  $('#lenta').style.width = Math.round(100 * vsi / VSICHKI) + '%';
+  $('#broiach').textContent = vsi + ' / ' + VSICHKI;
+  $('#imeEtap').textContent = e.kratko;
+}
+
+function risuvai(){ risuvaiEtapi(); risuvaiTqlo(); osveji(); }
+
+$('#izchisti').addEventListener('click', function(){
+  S = {}; zapazi(); risuvai();
+});
+
+risuvai();
+</script>
