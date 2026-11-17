@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Запазете час за индивидуален урок | The Light Academy</title>
+  <meta name="description" content="Изберете свободен час за индивидуален урок в The Light Academy, Лозенец — виждате кога преподавателят наистина е свободен и запазвате часа онлайн." />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sun: #f5a623; --sun-light: #fff3d6; --sun-dark: #b9701a;
+      --orange: #e8580a; --orange-light: #fff0e8;
+      --cream: #fffaf3; --dark: #2d1f0e; --mid: #785d43;
+      --white: #ffffff; --line: rgba(43, 30, 20, 0.10);
+      --shadow: 0 18px 42px rgba(61, 39, 18, 0.12);
+      --green: #16603A; --green-soft: #E9F7EF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--dark); line-height: 1.7; }
+    a { color: var(--orange); }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+    .head { text-align: center; padding: 2.2rem 0 1.4rem; }
+    .head h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 38px); line-height: 1.25; }
+    .head p { color: var(--mid); margin-top: 0.5rem; font-weight: 600; }
+    .back { display: inline-block; margin-top: 0.9rem; font-weight: 800; font-size: 0.92rem; }
+
+    .card { background: var(--white); border: 1px solid var(--line); border-radius: 20px;
+            box-shadow: var(--shadow); padding: 1.3rem 1.2rem; margin-bottom: 1.1rem; }
+    .step { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+    .step b { display: inline-flex; align-items: center; justify-content: center;
+              width: 28px; height: 28px; border-radius: 50%; background: var(--sun);
+              color: var(--dark); font-size: 0.86rem; flex: none; }
+    .step h2 { font-size: 1.05rem; font-weight: 800; }
+
+    .pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pill { border: 1.5px solid var(--line); background: var(--white); color: var(--dark);
+            border-radius: 999px; padding: 0.55rem 1.1rem; font: inherit; font-weight: 800;
+            cursor: pointer; min-height: 44px; }
+    .pill:hover { border-color: var(--sun); }
+    .pill[aria-pressed="true"] { background: var(--sun); border-color: var(--sun); }
+    .pill:focus-visible { outline: 3px solid var(--sun-dark); outline-offset: 2px; }
+
+    .day { border-top: 1px solid var(--line); padding: 0.85rem 0 0.2rem; }
+    .day:first-of-type { border-top: none; }
+    .day h3 { font-size: 0.95rem; font-weight: 800; color: var(--mid); margin-bottom: 0.5rem; }
+    .slots { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    .slot { border: 1.5px solid var(--line); background: var(--white); border-radius: 12px;
+            padding: 0.5rem 0.8rem; font: inherit; cursor: pointer; text-align: left;
+            min-height: 44px; line-height: 1.25; }
+    .slot b { display: block; font-size: 1rem; font-weight: 800; }
+    .slot span { font-size: 0.78rem; color: var(--mid); font-weight: 600; }
+    .slot:hover { border-color: var(--sun); background: var(--sun-light); }
+    .slot[aria-pressed="true"] { border-color: var(--sun-dark); background: var(--sun-light); }
+    .slot:focus-visible { outline: 3px solid var(--sun-dark); outline-offset: 2px; }
+
+    .field { margin-bottom: 0.8rem; }
+    .field label { display: block; font-weight: 800; font-size: 0.86rem; margin-bottom: 0.25rem; }
+    .field input, .field select, .field textarea {
+      width: 100%; font: inherit; padding: 0.6rem 0.8rem; border-radius: 12px;
+      border: 1.5px solid var(--line); background: var(--white); color: var(--dark); min-height: 44px; }
+    .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible {
+      outline: 3px solid var(--sun-dark); outline-offset: 1px; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+    @media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+           min-height: 48px; padding: 0.7rem 1.5rem; border-radius: 999px; border: none;
+           font: inherit; font-weight: 800; cursor: pointer; background: var(--sun); color: var(--dark); }
+    .btn:hover { background: var(--sun-dark); color: var(--white); }
+    .btn:disabled { opacity: 0.55; cursor: default; }
+    .btn:focus-visible { outline: 3px solid var(--sun-dark); outline-offset: 2px; }
+    .btn--ghost { background: transparent; border: 1.5px solid var(--line); }
+    .btn--ghost:hover { background: var(--sun-light); color: var(--dark); }
+
+    .msg { border-radius: 14px; padding: 0.8rem 1rem; font-weight: 700; margin-bottom: 0.9rem; }
+    .msg--err { background: var(--orange-light); color: #A8330A; }
+    .msg--ok  { background: var(--green-soft); color: var(--green); }
+    .muted { color: var(--mid); font-weight: 600; font-size: 0.9rem; }
+    .chosen { background: var(--sun-light); border-radius: 14px; padding: 0.7rem 0.95rem;
+              font-weight: 800; margin-bottom: 0.9rem; }
+    [hidden] { display: none !important; }
+    /* Стрелките се показват само когато има накъде. С малко отворени
+       часове страниците са една и лентата стои празна и подвеждаща. */
+    .nav { display: flex; gap: 0.5rem; align-items: center; justify-content: space-between;
+           margin-bottom: 0.6rem; }
+    .nav .btn { padding: 0.5rem 0.9rem; min-height: 42px; }
+    @media (max-width: 460px) {
+      .nav .btn { padding: 0.5rem 0.7rem; font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <h1>Запазете час за индивидуален урок</h1>
+      <p>Виждате само часове, в които преподавателят наистина е свободен.</p>
+      <a class="back" href="all_courses.html">← Обратно към курсовете</a>
+    </header>
+
+    <div id="fatal" class="msg msg--err" hidden></div>
+
+    <!-- 1 ── предмет -->
+    <section class="card" id="cardSubject">
+      <div class="step"><b>1</b><h2>По кой предмет?</h2></div>
+      <div class="pills" id="subjects"><span class="muted">Зареждане…</span></div>
+    </section>
+
+    <!-- 2 ── час -->
+    <section class="card" id="cardSlots" hidden>
+      <div class="step"><b>2</b><h2>Изберете час</h2></div>
+      <div class="nav">
+        <button type="button" class="btn btn--ghost" id="prevWeek">← По-рано</button>
+        <span class="muted" id="weekLabel"></span>
+        <button type="button" class="btn btn--ghost" id="nextWeek">По-късно →</button>
+      </div>
+      <div id="slots"><p class="muted">Зареждане…</p></div>
+    </section>
+
+    <!-- 3 ── кой -->
+    <section class="card" id="cardForm" hidden>
+      <div class="step"><b>3</b><h2>За кого е часът?</h2></div>
+      <div class="chosen" id="chosen"></div>
+      <div class="msg msg--err" id="formErr" hidden></div>
+      <form id="bookForm" novalidate>
+        <div class="two">
+          <div class="field"><label for="pName">Вашето име</label>
+            <input type="text" id="pName" required autocomplete="name" placeholder="Мария Иванова" /></div>
+          <div class="field"><label for="pPhone">Телефон</label>
+            <input type="tel" id="pPhone" required autocomplete="tel" placeholder="0888 123 456" /></div>
+        </div>
+        <div class="field"><label for="pEmail">Имейл (по желание)</label>
+          <input type="email" id="pEmail" autocomplete="email" placeholder="maria@abv.bg" /></div>
+        <div class="two">
+          <div class="field"><label for="cName">Име на детето</label>
+            <input type="text" id="cName" required placeholder="Иван" /></div>
+          <div class="field"><label for="cGrade">Клас</label>
+            <select id="cGrade"><option value="">изберете…</option></select></div>
+        </div>
+        <div class="field"><label for="pNote">С какво да помогнем? (по желание)</label>
+          <textarea id="pNote" rows="3" placeholder="Затруднява се с дробите…"></textarea></div>
+        <button type="submit" class="btn" id="sendBtn">Запазете часа</button>
+        <p class="muted" style="margin-top:0.6rem;">Часът се запазва веднага, а ние Ви потвърждаваме до един работен ден.</p>
+      </form>
+    </section>
+
+    <!-- 4 ── готово -->
+    <section class="card" id="cardDone" hidden>
+      <div class="msg msg--ok" id="doneMsg"></div>
+      <p class="muted">Ако нещо се промени, обадете се на
+        <a href="tel:+359885501283">0885 501 283</a>.</p>
+      <p style="margin-top:0.9rem;"><a class="btn btn--ghost" href="all_courses.html">Към курсовете</a></p>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
+  <script src="assets/auth.js"></script>
+  <script src="assets/email-check.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    /* Формата на сайта праща тук имейл, за да не зависи известяването от
+       това дали някой гледа таблото. Ако Formspree откаже, заявката пак е
+       записана — грешката пада в безобидната посока. */
+    var NOTIFY = 'https://formspree.io/f/mnpawlbd';
+
+    var state = { subjects: [], subject: null, slots: [], week: 0, chosen: null };
+    var esc = function (v) { return TLA.escapeHtml(v); };
+    var $ = function (id) { return document.getElementById(id); };
+
+    function fatal(msg) { $('fatal').textContent = msg; $('fatal').hidden = false; }
+
+    /* Часовете се показват в софийско време изрично, а не в зоната на
+       устройството: родител в чужбина иначе вижда друг час от този, в
+       който детето трябва да е в кабинета. */
+    var DAY_FMT = { timeZone: 'Europe/Sofia', weekday: 'long', day: 'numeric', month: 'long' };
+    var TIME_FMT = { timeZone: 'Europe/Sofia', hour: '2-digit', minute: '2-digit' };
+    function dayKey(iso) {
+      return new Date(iso).toLocaleDateString('sv-SE', { timeZone: 'Europe/Sofia' });
+    }
+    function dayLabel(iso) {
+      var s = new Date(iso).toLocaleDateString('bg-BG', DAY_FMT);
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    function timeLabel(iso) {
+      return new Date(iso).toLocaleTimeString('bg-BG', TIME_FMT);
+    }
+
+    /* ---- 1. предметите ---- */
+    async function loadSubjects() {
+      try {
+        state.subjects = await TLA.bookableSubjects();
+      } catch (err) {
+        fatal('Часовете не се заредиха: ' + (err.message || err));
+        $('subjects').innerHTML = '';
+        return;
+      }
+      if (!state.subjects.length) {
+        $('subjects').innerHTML = '<p class="muted">Засега няма отворени часове. ' +
+          'Обадете се на <a href="tel:+359885501283">0885 501 283</a> и ще Ви намерим час.</p>';
+        return;
+      }
+      $('subjects').innerHTML = state.subjects.map(function (s) {
+        return '<button type="button" class="pill" data-subject="' + esc(s.id) +
+               '" aria-pressed="false">' + esc(s.name) + '</button>';
+      }).join('');
+
+      /* ?subject=matematika идва от бутоните в all_courses.html */
+      var want = (new URLSearchParams(location.search)).get('subject');
+      if (want) {
+        var hit = state.subjects.filter(function (s) { return s.slug === want; })[0];
+        if (hit) pickSubject(hit.id);
+      }
+    }
+
+    $('subjects').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-subject]');
+      if (b) pickSubject(b.getAttribute('data-subject'));
+    });
+
+    async function pickSubject(id) {
+      state.subject = id;
+      state.week = 0;
+      state.chosen = null;
+      $('cardForm').hidden = true;
+      $('cardDone').hidden = true;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-subject]'), function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-subject') === id));
+      });
+      $('cardSlots').hidden = false;
+      $('slots').innerHTML = '<p class="muted">Зареждане…</p>';
+      try {
+        state.slots = await TLA.freeSlots(id, null, null);
+      } catch (err) {
+        $('slots').innerHTML = '<p class="muted">Часовете не се заредиха: ' +
+          esc(err.message || String(err)) + '</p>';
+        return;
+      }
+      renderSlots();
+    }
+
+    /* ---- 2. часовете, по седмици ---- */
+    function weeks() {
+      /* Групиране по дни, после по седмици от по седем дни, за да не се
+         изсипят трийсет дни наведнъж върху телефона. */
+      var byDay = {};
+      state.slots.forEach(function (s) {
+        var k = dayKey(s.starts_at);
+        (byDay[k] = byDay[k] || []).push(s);
+      });
+      var days = Object.keys(byDay).sort();
+      var out = [];
+      for (var i = 0; i < days.length; i += 5) {
+        out.push(days.slice(i, i + 5).map(function (d) {
+          return { day: d, slots: byDay[d] };
+        }));
+      }
+      return out;
+    }
+
+    function renderSlots() {
+      var pages = weeks();
+      var nav = document.querySelector('.nav');
+      if (!pages.length) {
+        $('slots').innerHTML = '<p class="muted">В следващите дни няма свободен час по този предмет. ' +
+          'Обадете се на <a href="tel:+359885501283">0885 501 283</a> и ще Ви намерим.</p>';
+        nav.hidden = true;
+        return;
+      }
+      nav.hidden = pages.length < 2;
+      if (state.week >= pages.length) state.week = pages.length - 1;
+      if (state.week < 0) state.week = 0;
+      var page = pages[state.week];
+
+      $('prevWeek').disabled = state.week === 0;
+      $('nextWeek').disabled = state.week >= pages.length - 1;
+      $('weekLabel').textContent = (state.week + 1) + ' от ' + pages.length;
+
+      $('slots').innerHTML = page.map(function (d) {
+        return '<div class="day"><h3>' + esc(dayLabel(d.slots[0].starts_at)) + '</h3>' +
+          '<div class="slots">' + d.slots.map(function (s) {
+            return '<button type="button" class="slot" aria-pressed="false" ' +
+              'data-slot="' + esc(s.starts_at) + '|' + esc(s.teacher_id) + '">' +
+              '<b>' + esc(timeLabel(s.starts_at)) + '</b>' +
+              '<span>' + esc(s.teacher_name || 'преподавател') + '</span></button>';
+          }).join('') + '</div></div>';
+      }).join('');
+    }
+
+    $('prevWeek').addEventListener('click', function () { state.week--; renderSlots(); });
+    $('nextWeek').addEventListener('click', function () { state.week++; renderSlots(); });
+
+    $('slots').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-slot]');
+      if (!b) return;
+      var parts = b.getAttribute('data-slot').split('|');
+      var hit = state.slots.filter(function (s) {
+        return s.starts_at === parts[0] && s.teacher_id === parts[1];
+      })[0];
+      if (!hit) return;
+      state.chosen = hit;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-slot]'), function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      var subj = state.subjects.filter(function (s) { return s.id === state.subject; })[0];
+      $('chosen').textContent = dayLabel(hit.starts_at) + ', ' + timeLabel(hit.starts_at) +
+        ' · ' + (hit.teacher_name || '') + ' · ' + (subj ? subj.name : '');
+      $('cardForm').hidden = false;
+      $('formErr').hidden = true;
+      $('cardForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    /* ---- 3. заявката ---- */
+    var GRADES = [['-1','Предучилищна (5 г.)'],['0','Предучилищна (6 г.)']];
+    for (var g = 1; g <= 12; g++) GRADES.push([String(g), g + '. клас']);
+    $('cGrade').innerHTML = '<option value="">изберете…</option>' +
+      GRADES.map(function (p) { return '<option value="' + p[0] + '">' + p[1] + '</option>'; }).join('');
+
+    $('bookForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var err = $('formErr');
+      err.hidden = true;
+      if (!state.chosen) { err.textContent = 'Изберете час.'; err.hidden = false; return; }
+
+      var parentName = $('pName').value.trim();
+      var phone = $('pPhone').value.trim();
+      var email = $('pEmail').value.trim();
+      var childName = $('cName').value.trim();
+
+      if (!parentName) { err.textContent = 'Въведете Вашето име.'; err.hidden = false; $('pName').focus(); return; }
+      if (phone.replace(/[^0-9]/g, '').length < 6) {
+        err.textContent = 'Въведете телефон, на който да Ви потърсим.'; err.hidden = false; $('pPhone').focus(); return; }
+      if (!childName) { err.textContent = 'Въведете името на детето.'; err.hidden = false; $('cName').focus(); return; }
+      /* Същата проверка като на входящия тест — виж assets/email-check.js. */
+      if (email && typeof TLAEmail !== 'undefined') {
+        var v = TLAEmail.check(email);
+        if (!v.ok) { err.textContent = v.message; err.hidden = false; $('pEmail').focus(); return; }
+      }
+
+      var btn = $('sendBtn');
+      btn.disabled = true; btn.textContent = 'Запазване…';
+      try {
+        await TLA.requestLesson({
+          teacherId: state.chosen.teacher_id,
+          subjectId: state.subject,
+          startsAt: state.chosen.starts_at,
+          parentName: parentName, parentPhone: phone, parentEmail: email,
+          childName: childName, childGrade: $('cGrade').value, note: $('pNote').value.trim()
+        });
+      } catch (ex) {
+        /* „Този час току-що беше зает“ идва оттук. Мрежата се опреснява,
+           за да не се опитва родителят пак в същия квадрат. */
+        err.textContent = ex.message || String(ex);
+        err.hidden = false;
+        btn.disabled = false; btn.textContent = 'Запазете часа';
+        state.chosen = null;
+        $('cardForm').hidden = true;
+        try { state.slots = await TLA.freeSlots(state.subject, null, null); renderSlots(); } catch (e2) {}
+        $('fatal').textContent = err.textContent;
+        $('fatal').hidden = false;
+        $('cardSlots').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      var subj = state.subjects.filter(function (s) { return s.id === state.subject; })[0];
+      $('doneMsg').textContent = 'Часът е запазен: ' + $('chosen').textContent +
+        '. Ще Ви потвърдим до един работен ден.';
+      $('cardSubject').hidden = true;
+      $('cardSlots').hidden = true;
+      $('cardForm').hidden = true;
+      $('cardDone').hidden = false;
+      $('cardDone').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      /* Звънецът. Ако не иззвъни, заявката пак е в таблото. */
+      try {
+        var body = new FormData();
+        body.append('Родител', parentName);
+        body.append('Телефон', phone);
+        body.append('Имейл', email || '—');
+        body.append('Дете', childName + (($('cGrade').value) ? ' · ' + $('cGrade').selectedOptions[0].text : ''));
+        body.append('Предмет', subj ? subj.name : '—');
+        body.append('Час', $('chosen').textContent);
+        body.append('Бележка', $('pNote').value.trim() || '—');
+        body.append('_subject', '📅 Нова заявка за час — ' + childName);
+        await fetch(NOTIFY, { method: 'POST', headers: { Accept: 'application/json' }, body: body });
+      } catch (e3) { /* нарочно мълчи */ }
+    });
+
+    if (!TLA.isConfigured()) {
+      fatal('Страницата още не е свързана с база данни.');
+    } else {
+      loadSubjects();
+    }
+  })();
+  </script>
+</body>
+</html>
