@@ -1617,6 +1617,57 @@
         if (!box.checked) sel.value = '';
       });
 
+      /* Полето за нова парола се отваря на САМИЯ ред, а не в прозорец:
+         confirm() и prompt() не работят навсякъде, а тук трябва и да се
+         въведе нещо. Двете таблици — учениците и преподавателите — го
+         ползват общо, затова стои тук, а не в слушателя на едната.
+         Броят колони е различен в двете, оттам идва вторият параметър. */
+      function otvoriParola(but, koloni) {
+        var pid = but.getAttribute('data-pw');
+        var row = but.closest('tr');
+        if (row.nextElementSibling && row.nextElementSibling.dataset.pwrow === pid) {
+          row.nextElementSibling.remove(); return;
+        }
+        var kojto = state.profiles[pid] || {};
+        var prepodavatel = kojto.role === 'teacher';
+        var extra = document.createElement('tr');
+        extra.dataset.pwrow = pid;
+        extra.innerHTML = '<td colspan="' + koloni + '">' +
+          '<div class="tla-pickrow">' +
+            '<label for="pwnew-' + esc(pid) + '" class="tla-muted">Нова парола за ' +
+              esc(kojto.full_name || 'профила') + ':</label> ' +
+            '<input type="text" id="pwnew-' + esc(pid) + '" class="tla-sel" ' +
+              'minlength="8" placeholder="поне 8 знака" style="min-width:12rem;" /> ' +
+            '<button type="button" class="tla-btn tla-btn--sm" data-pwsave="' + esc(pid) + '">Задай</button>' +
+          '</div>' +
+          '<p class="tla-muted" style="margin:0.4rem 0 0;">Запишете си я — показва се само сега. ' +
+            (prepodavatel ? 'Преподавателят' : 'Ученикът') +
+            ' може да си я смени от своя профил.</p>' +
+        '</td>';
+        row.insertAdjacentElement('afterend', extra);
+        document.getElementById('pwnew-' + pid).focus();
+      }
+
+      async function zapishiParola(but) {
+        var pid = but.getAttribute('data-pwsave');
+        var fld = document.getElementById('pwnew-' + pid);
+        var val = fld ? fld.value : '';
+        if (val.length < 8) {
+          say('err', 'Паролата трябва да е поне 8 знака.');
+          if (fld) fld.focus();
+          return;
+        }
+        but.disabled = true;
+        try {
+          var out = await adminCall('PATCH', { user_id: pid, password: val });
+          say('ok', 'Паролата на ' + ((out && out.name) || 'профила') +
+                    ' е сменена. Дайте му я — показва се само сега.');
+          var r2 = but.closest('tr');
+          if (r2) r2.remove();
+        } catch (err) { say('err', String(err.message || err)); }
+        but.disabled = false;
+      }
+
       document.getElementById('rosterTable').addEventListener('click', async function (e) {
         var tgl = e.target.closest('[data-toggle]');
         var del = e.target.closest('[data-del]');
@@ -1663,51 +1714,12 @@
         }
 
         /* Семейство забравя паролата по-често от всичко друго тук. Без
-           това единственият път е администрацията на Supabase. Полето се
-           отваря на самия ред, вместо в прозорец — confirm() и prompt()
-           не работят навсякъде, а и тук трябва да се ВЪВЕДЕ нещо. */
+           това единственият път е администрацията на Supabase. */
         var pw = e.target.closest('[data-pw]');
-        if (pw) {
-          var pid = pw.getAttribute('data-pw');
-          var row = pw.closest('tr');
-          if (row.nextElementSibling && row.nextElementSibling.dataset.pwrow === pid) {
-            row.nextElementSibling.remove(); return;
-          }
-          var extra = document.createElement('tr');
-          extra.dataset.pwrow = pid;
-          extra.innerHTML = '<td colspan="9">' +
-            '<div class="tla-pickrow">' +
-              '<label for="pwnew-' + esc(pid) + '" class="tla-muted">Нова парола за ' +
-                esc((state.profiles[pid] || {}).full_name || 'ученика') + ':</label> ' +
-              '<input type="text" id="pwnew-' + esc(pid) + '" class="tla-sel" ' +
-                'minlength="8" placeholder="поне 8 знака" style="min-width:12rem;" /> ' +
-              '<button type="button" class="tla-btn tla-btn--sm" data-pwsave="' + esc(pid) + '">Задай</button>' +
-            '</div>' +
-            '<p class="tla-muted" style="margin:0.4rem 0 0;">Запишете си я — показва се само сега. ' +
-              'Ученикът може да си я смени от своя профил.</p>' +
-          '</td>';
-          row.insertAdjacentElement('afterend', extra);
-          document.getElementById('pwnew-' + pid).focus();
-          return;
-        }
+        if (pw) { otvoriParola(pw, 9); return; }
 
         var pwsave = e.target.closest('[data-pwsave]');
-        if (pwsave) {
-          var sid2 = pwsave.getAttribute('data-pwsave');
-          var fld = document.getElementById('pwnew-' + sid2);
-          var val = fld ? fld.value : '';
-          if (val.length < 8) { say('err', 'Паролата трябва да е поне 8 знака.'); if (fld) fld.focus(); return; }
-          pwsave.disabled = true;
-          try {
-            var out = await adminCall('PATCH', { user_id: sid2, password: val });
-            say('ok', 'Паролата на ' + ((out && out.name) || 'ученика') +
-                      ' е сменена. Дайте му я — показва се само сега.');
-            var r2 = pwsave.closest('tr');
-            if (r2) r2.remove();
-          } catch (err) { say('err', String(err.message || err)); }
-          pwsave.disabled = false;
-          return;
-        }
+        if (pwsave) { await zapishiParola(pwsave); return; }
 
         var setsub = e.target.closest('[data-setsubj]');
         if (setsub) {
@@ -3778,9 +3790,14 @@
               '<td>' + (t.active
                   ? '<span class="tla-badge tla-badge--graded">Активен</span>'
                   : '<span class="tla-badge tla-badge--off">Спрян</span>') + '</td>' +
+              /*  Паролата на администратор не се сменя оттук — Edge
+                  функцията също я отказва. Затова при админ редът остава
+                  без бутони, както беше. */
               '<td>' + (t.is_admin ? '' :
                 '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-toggle="' +
                   esc(t.id) + '">' + (t.active ? 'Спри достъпа' : 'Върни достъпа') + '</button> ' +
+                '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" data-pw="' +
+                  esc(t.id) + '">Нова парола</button> ' +
                 '<button type="button" class="tla-btn tla-btn--danger tla-btn--sm" data-del="' +
                   esc(t.id) + '">Изтрий</button>') + '</td>' +
             '</tr>';
@@ -3867,6 +3884,14 @@
       document.getElementById('teachersTable').addEventListener('click', async function (e) {
         var tgl = e.target.closest('[data-toggle]');
         var del = e.target.closest('[data-del]');
+
+        /*  Същото поле за нова парола, както при учениците. Таблицата тук
+            е с пет колони, оттам идва петицата. */
+        var pw = e.target.closest('[data-pw]');
+        if (pw) { clearMsgs(); otvoriParola(pw, 5); return; }
+
+        var pwsave = e.target.closest('[data-pwsave]');
+        if (pwsave) { clearMsgs(); await zapishiParola(pwsave); return; }
         clearMsgs();
         if (tgl) {
           var id = tgl.getAttribute('data-toggle');
