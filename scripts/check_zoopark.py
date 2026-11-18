@@ -33,7 +33,7 @@ from sympy.parsing.sympy_parser import (convert_xor,
 KOREN = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOREN / 'scripts'))
 
-from zoopark import formuli, razlagane            # noqa: E402
+from zoopark import formuli, razlagane, uravneniq  # noqa: E402
 
 T = standard_transformations + (convert_xor, split_symbols,
                                 implicit_multiplication_application)
@@ -245,9 +245,55 @@ def proveri_min(kude, z):
         ok(kude + ': постига се при същото x', chislo(m.group(2)) == x0, x0)
 
 
+def proveri_parametur(kude, z):
+    """Буквата се намира, като коренът се ЗАМЕСТИ в уравнението."""
+    b = sympy.Symbol(z['bukva'])
+    x = sympy.Symbol('x')
+    koren = chislo(z['koren'])
+    ok(kude + ': коренът е число', koren is not None, z['koren'])
+    if koren is None:
+        return
+    l, d = z['mat'].split('=')
+    reshenia = sympy.solve(
+        sympy.Eq(sp(l).subs(x, koren), sp(d).subs(x, koren)), b)
+    ok(kude + ': има точно една стойност', len(reshenia) == 1, reshenia)
+    m = re.fullmatch(z['bukva'] + r'\s*=\s*(.+)', z['otgovor'].strip())
+    ok(kude + ': отговорът е записан като %s = …' % z['bukva'], bool(m),
+       z['otgovor'])
+    if m and len(reshenia) == 1:
+        ok(kude + ': стойността съвпада', chislo(m.group(1)) == reshenia[0],
+           'решено „%s“' % reshenia[0])
+    #  Уравнението, което решаваме, трябва да е същото, което стои в текста
+    #  пред детето — инак проверката пази нещо, което никой не вижда.
+    golo = re.sub(r'[\s·*]', '', z['mat']).replace('−', '-')
+    v_teksta = re.sub(r'[\s·*]', '', z['izraz']).replace('−', '-')
+    ok(kude + ': уравнението в текста е същото', golo in v_teksta, golo)
+
+
+def proveri_tekst(kude, z):
+    """Текстовата задача носи уравнението си — то се решава наново."""
+    x = sympy.Symbol('x')
+    l, d = z['uravnenie'].split('=')
+    koreni = sympy.solve(sympy.Eq(sp(l), sp(d)), x)
+    ok(kude + ': уравнението има точно един корен', len(koreni) == 1, koreni)
+    chisla = re.findall(r'-?\d+(?:[.,]\d+)?', z['otgovor'])
+    ok(kude + ': отговорът носи точно едно число', len(chisla) == 1, chisla)
+    if len(koreni) == 1 and len(chisla) == 1:
+        ok(kude + ': отговорът съвпада с корена',
+           chislo(chisla[0]) == koreni[0], 'решено „%s“' % koreni[0])
+        ok(kude + ': отговорът има смисъл (положителен)', koreni[0] > 0,
+           koreni[0])
+    #  Решението пред детето трябва да показва СЪЩОТО уравнение.
+    golo = re.sub(r'[\s·*]', '', z['uravnenie']).replace('−', '-')
+    v_reshenieto = re.sub(r'[\s·*]', '', z['reshenie']).replace('−', '-')
+    ok(kude + ': решението показва същото уравнение', golo in v_reshenieto,
+       golo)
+
+
 PROVERKI = {'razvij': proveri_razvij, 'razloji': proveri_razloji,
             'uravnenie': proveri_uravnenie, 'smetka': proveri_smetka,
-            'sistema': proveri_sistema, 'min': proveri_min}
+            'sistema': proveri_sistema, 'min': proveri_min,
+            'parametur': proveri_parametur, 'tekst': proveri_tekst}
 
 
 # ── обхождане ────────────────────────────────────────────────────────
@@ -257,6 +303,7 @@ def razdeli_na_urok():
     for p in razlagane.PODTABOVE:
         for r in p['razdeli']:
             out.append(('Разлагане · ' + p['ime'], r))
+    out += [('Уравнения', r) for r in uravneniq.RAZDELI]
     return out
 
 
@@ -319,7 +366,9 @@ def main():
         lipsvat = []
         for _put, _r in razdeli_na_urok():
             for _z in _r['zadachi']:
-                if _z['vid'] in ('sistema', 'min'):
+                if _z['vid'] in ('sistema', 'min', 'tekst', 'parametur'):
+                    #  Тези носят условието си като цяло изречение; то се
+                    #  проверява по-горе, заедно с всичко останало.
                     continue
                 glagol, _, mat = _z['izraz'].partition(':')
                 if mat.strip() not in html or glagol.strip() not in html:

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Сглобява uroci/urok_7_formuli_razlagane.html — урокът за 7. клас.
 
-Два таба: „Формулите“ (съкратено умножение) и „Разлагане на множители“,
-а вторият има три подтаба — общ множител, групиране и формулите.
+Три таба: „Формулите“ (съкратено умножение), „Разлагане на множители“
+(с три подтаба — общ множител, групиране и формулите) и „Линейни
+уравнения“ (ax + b = 0 и свеждащите се до него).
 Всичко е вързано за една разходка в зоопарка: всеки раздел е спирка при
 едно животно, а когато спирката се реши докрай, се отключва факт за него.
 
@@ -22,7 +23,7 @@ import sys
 KOREN = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOREN / 'scripts'))
 
-from zoopark import formuli, razlagane                     # noqa: E402
+from zoopark import formuli, razlagane, uravneniq          # noqa: E402
 
 SLUG = 'urok-7-formuli-razlagane'
 IZHOD = KOREN / 'uroci/urok_7_formuli_razlagane.html'
@@ -563,6 +564,10 @@ def uslovie(z: dict) -> tuple:
     if z['vid'] == 'min':
         return ('', 'Коя е най-малката стойност на израза ' + z['izraz_m']
                 + ' и при кое x се получава?', True)
+    if z['vid'] in ('tekst', 'parametur'):
+        #  Тук условието е изречение, а не израз: върви с по-дребния шрифт
+        #  и БЕЗ залепване на интервали, което е за формули.
+        return ('', z['izraz'], True)
     if ':' in z['izraz']:
         glagol, mat = z['izraz'].split(':', 1)
         return (glagol.strip(), nelomko(mat.strip()), False)
@@ -591,6 +596,8 @@ def danni() -> dict:
              {'kod': p['kod'], 'ime': p['ime'], 'zhivotno': p['zhivotno'],
               'razdeli': [razdel(r) for r in p['razdeli']]}
              for p in razlagane.PODTABOVE]},
+        {'kod': 'u', 'ime': uravneniq.IME, 'podnaslov': uravneniq.PODNASLOV,
+         'razdeli': [razdel(r) for r in uravneniq.RAZDELI]},
     ]}
 
 
