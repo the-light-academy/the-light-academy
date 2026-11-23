@@ -1,0 +1,824 @@
+<title>Топящото се домашно</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" />
+<style>
+/* Разположение: една колона — шапка, залепена лента с шестте таба,
+   после задачите на отворения таб една под друга. Долу стои лента с
+   напредъка, която е и броячът на домашното. */
+:root{
+  --mastilo:#16302B;        /* тъмнозелено мастило */
+  --mastilo-blqdo:#5B7A72;
+  --hartiq:#FBF8F0;         /* топла хартия */
+  --karta:#FFFFFF;
+  --ramka:#E4DCC8;
+  --more:#0F6E5C;           /* акцентът */
+  --more-meko:#E0F2ED;
+  --zlato:#B8791A;
+  --zlato-meko:#FBEEDA;
+  --zeleno:#166B3E;
+  --zeleno-meko:#E2F2E8;
+  --senka:168 35% 20%;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --mastilo:#E6F2EE; --mastilo-blqdo:#9DBAB2;
+    --hartiq:#0C1715; --karta:#15241F; --ramka:#2B3E38;
+    --more:#4FD0B0; --more-meko:#11312A;
+    --zlato:#E8B35F; --zlato-meko:#33280F;
+    --zeleno:#7BD7A6; --zeleno-meko:#12301F;
+    --senka:168 60% 3%;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --mastilo:#E6F2EE; --mastilo-blqdo:#9DBAB2;
+  --hartiq:#0C1715; --karta:#15241F; --ramka:#2B3E38;
+  --more:#4FD0B0; --more-meko:#11312A;
+  --zlato:#E8B35F; --zlato-meko:#33280F;
+  --zeleno:#7BD7A6; --zeleno-meko:#12301F;
+  --senka:168 60% 3%;
+  color-scheme: dark;
+}
+*,*::before,*::after{ box-sizing:border-box }
+body{
+  margin:0; background:var(--hartiq); color:var(--mastilo);
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;
+  font-size:18px; line-height:1.55; -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px);
+  z-index:10; background:var(--more);
+}
+h1,h2,h3{ font-family:'Fredoka',system-ui,sans-serif; margin:0; text-wrap:balance }
+button{ font:inherit; cursor:pointer }
+[hidden]{ display:none !important }
+
+.ramka{
+  max-width:1040px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ── шапка ─────────────────────────────────────────────────────── */
+.shapka{ background:var(--more); color:#F2FBF8 }
+.shapka .ramka{ padding-block:20px 0 }
+.nadpis{ font-size:14px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:#A9E3D5 }
+.shapka h1{ font-size:clamp(27px,7vw,42px); line-height:1.06; margin:6px 0 8px }
+.shapka p{ margin:0 0 16px; color:#CDEDE4; font-size:clamp(16px,4.2vw,18px);
+  max-width:56ch }
+.shapka b{ color:#fff }
+
+/* ── лентата с табовете ────────────────────────────────────────── */
+.tabove{ position:sticky; top:env(safe-area-inset-top, 0px); z-index:9;
+  background:var(--more) }
+/*  Шестте таба стоят на един ред и се плъзгат настрани. На телефон
+    това спестява два реда височина — а там се гледа урокът. */
+.tabove .ramka{ display:flex; gap:6px; padding-block:0; flex-wrap:nowrap;
+  overflow-x:auto; scrollbar-width:none; scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch }
+.tabove .ramka::-webkit-scrollbar{ display:none }
+.tab-b{ border:none; background:rgba(255,255,255,.14); color:#E6F6F1;
+  padding:11px 12px; border-radius:15px 15px 0 0; font-family:'Fredoka',sans-serif;
+  font-size:clamp(14.5px,3.9vw,17px); font-weight:600; min-height:50px;
+  display:flex; align-items:center; gap:7px; flex:0 0 auto; white-space:nowrap;
+  scroll-snap-align:start; transition:background .15s, color .15s }
+.tab-b:hover{ background:rgba(255,255,255,.24); color:#fff }
+.tab-b[aria-selected="true"]{ background:var(--hartiq); color:var(--mastilo) }
+.tab-b .znak{ font-family:'Fredoka',sans-serif; color:#B7E8DB; font-size:17px }
+.tab-b[aria-selected="true"] .znak{ color:var(--more) }
+.tab-b .broi{ font-family:'Nunito',sans-serif; font-size:12.5px; font-weight:800;
+  opacity:.9 }
+
+/* ── идеята на таба ────────────────────────────────────────────── */
+.ideq{ background:var(--karta); border:1px solid var(--ramka); border-radius:20px;
+  padding:18px clamp(14px,3.4vw,22px); margin:20px 0 6px;
+  box-shadow:0 10px 28px hsl(var(--senka) / .07) }
+.ideq h2{ font-size:clamp(20px,5.2vw,25px); margin-bottom:8px }
+.ideq p{ margin:0; color:var(--mastilo-blqdo); font-size:clamp(16px,4.2vw,18px) }
+.pravila{ display:flex; flex-wrap:wrap; gap:9px; margin:14px 0 0; padding:0;
+  list-style:none }
+.pravila li{ background:var(--zlato-meko); border:1.5px dashed var(--zlato);
+  color:var(--zlato); border-radius:999px; padding:9px 16px; font-weight:800;
+  font-size:clamp(15.5px,4.1vw,19px) }
+.stupalo{ margin:18px 0 10px; font-size:14px; font-weight:800;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--mastilo-blqdo);
+  display:flex; align-items:center; gap:10px }
+.stupalo::after{ content:""; flex:1; height:2px; border-radius:2px;
+  background:linear-gradient(90deg, var(--more-meko), var(--zlato-meko)) }
+
+/* ── задача ────────────────────────────────────────────────────── */
+.zadachi{ display:grid; gap:12px }
+.zad{ position:relative; background:var(--karta); border:1px solid var(--ramka);
+  border-radius:18px; padding:14px 64px 14px clamp(14px,3.4vw,18px);
+  transition:background .15s, border-color .15s }
+.zad.reshena{ background:var(--zeleno-meko); border-color:var(--zeleno) }
+.zad__n{ font-size:13.5px; font-weight:800; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--mastilo-blqdo) }
+.izraz{ font-size:clamp(25px,6.5vw,33px); font-weight:700; line-height:1.5;
+  margin:8px 0 0; letter-spacing:.01em; overflow-wrap:break-word }
+.izraz.dulag{ font-size:clamp(18.5px,4.9vw,22px); font-weight:600;
+  line-height:1.5; color:var(--mastilo) }
+.izraz sup{ font-size:.58em; vertical-align:super; line-height:0 }
+.frac{ display:inline-flex; flex-direction:column; align-items:center;
+  vertical-align:middle; text-align:center; margin:0 .2em }
+.frac .chis{ padding:0 .3em .06em; border-bottom:.075em solid currentColor }
+.frac .znam{ padding:.06em .3em 0 }
+.pokaji{ margin-top:12px; border:2px solid var(--more); background:var(--more-meko);
+  color:var(--more); border-radius:999px; padding:11px 20px; font-weight:800;
+  font-size:16px; min-height:46px }
+.pokaji:hover{ filter:brightness(1.04) }
+.reshenie{ margin-top:12px; background:var(--hartiq); border:1px solid var(--ramka);
+  border-radius:14px; padding:14px 16px }
+.reshenie .otg{ font-family:'Fredoka',sans-serif; font-size:clamp(21px,5.4vw,27px);
+  color:var(--zeleno); line-height:1.4; overflow-wrap:break-word }
+.reshenie .stupki{ margin:8px 0 0; color:var(--mastilo-blqdo);
+  font-size:clamp(16px,4.2vw,18px) }
+.otmetka{ position:absolute; top:12px; right:12px; width:46px; height:46px;
+  border-radius:50%; border:2px solid var(--ramka); background:var(--karta);
+  color:var(--ramka); display:grid; place-items:center; font-size:22px;
+  font-weight:800; line-height:1; transition:.15s }
+.otmetka:hover{ border-color:var(--more); color:var(--more) }
+.otmetka[aria-pressed="true"]{ border-color:var(--zeleno);
+  background:var(--zeleno-meko); color:var(--zeleno) }
+
+/* ── домашното ─────────────────────────────────────────────────── */
+.domashno{ margin:20px 0 0; background:var(--karta); border:2px solid var(--zlato);
+  border-radius:20px; padding:18px clamp(14px,3.4vw,22px) }
+.domashno h2{ font-size:clamp(20px,5.2vw,25px); color:var(--zlato);
+  margin-bottom:6px }
+.domashno p{ margin:0 0 10px; color:var(--mastilo-blqdo);
+  font-size:clamp(16px,4.2vw,18px) }
+.domashno ul{ margin:0; padding-left:1.2em; font-size:clamp(16px,4.2vw,18px) }
+.domashno li{ margin:4px 0 }
+.domashno b{ color:var(--mastilo) }
+
+.kraj{ margin:20px 0 0; padding:22px; border-radius:20px; text-align:center;
+  background:var(--zeleno-meko); border:2px solid var(--zeleno) }
+.kraj h2{ font-size:clamp(22px,5.6vw,28px); color:var(--zeleno); margin-bottom:6px }
+.kraj p{ margin:0 auto; max-width:46ch }
+
+/* ── долната лента ─────────────────────────────────────────────── */
+.dolu{ position:fixed; left:0; right:0; bottom:0; z-index:8;
+  background:color-mix(in srgb, var(--hartiq) 93%, transparent);
+  backdrop-filter:blur(10px); border-top:1px solid var(--ramka);
+  padding-bottom:env(safe-area-inset-bottom, 0px) }
+.dolu .ramka{ display:flex; align-items:center; gap:10px; padding-block:10px;
+  flex-wrap:wrap }
+.lenta{ flex:1; min-width:90px; height:12px; border-radius:999px;
+  background:var(--ramka); overflow:hidden }
+.lenta i{ display:block; height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg, var(--more), var(--zeleno));
+  transition:width .35s }
+.broiach{ font-weight:800; font-size:15px; white-space:nowrap;
+  font-variant-numeric:tabular-nums }
+.broiach em{ font-style:normal; color:var(--zlato) }
+.mal{ border:1.5px solid var(--ramka); background:transparent;
+  color:var(--mastilo-blqdo); border-radius:999px; padding:8px 14px;
+  font-size:14px; font-weight:700; min-height:40px }
+.mal:hover{ border-color:var(--more); color:var(--more) }
+
+:focus-visible{ outline:3px solid var(--more); outline-offset:2px }
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important } }
+.sled{ height:110px }
+</style>
+
+<header class="shapka">
+  <div class="ramka">
+    <div class="nadpis">Математика · 6. клас</div>
+    <h1>Топящото се домашно</h1>
+    <p>Шест теми, 45 задачи — от лесни към тежки.
+      <b>Решеното в час се отмята и изчезва от домашното.</b></p>
+  </div>
+</header>
+
+<nav class="tabove" aria-label="Теми">
+  <div class="ramka" id="tabove" role="tablist"></div>
+</nav>
+
+<main class="ramka" id="sudurjanie"></main>
+<div class="ramka" id="kutiqDomashno"></div>
+<div class="ramka sled"></div>
+
+<div class="dolu">
+  <div class="ramka">
+    <span class="lenta"><i id="lenta"></i></span>
+    <span class="broiach" id="broiach">решени 0 · <em>за домашно 45</em></span>
+    <button class="mal" id="bDomashno" type="button">Домашното</button>
+    <button class="mal" id="bIzchisti" type="button">Изчисти</button>
+  </div>
+</div>
+
+<script>
+var DANNI = {
+ "tabove": [
+  {
+   "kod": "sk",
+   "ime": "Разкриване на скоби",
+   "kratko": "Скоби",
+   "znak": "( )",
+   "ideya": "Множителят пред скобата влиза при ВСЕКИ член вътре. А минусът пред скоба е същото като умножение по −1: обръща знака на всичко вътре, не само на първото.",
+   "pravila": [
+    "a(b + c) = ab + ac",
+    "−(a − b) = −a + b",
+    "Подобните членове се събират накрая"
+   ],
+   "zadachi": [
+    {
+     "id": "sk-1",
+     "glagol": "Разкрийте скобите",
+     "ekran": "3(<i>x</i> + 4)",
+     "dulag": false,
+     "otgovor": "3x + 12",
+     "reshenie": "Тройката влиза при двата члена: 3 · x + 3 · 4 = 3x + 12."
+    },
+    {
+     "id": "sk-2",
+     "glagol": "Разкрийте скобите",
+     "ekran": "−2 · (<i>a</i> − 5)",
+     "dulag": false,
+     "otgovor": "−2a + 10",
+     "reshenie": "−2 · a = −2a, а −2 · (−5) = +10. Два минуса дават плюс, затова излиза −2a + 10."
+    },
+    {
+     "id": "sk-3",
+     "glagol": "Опростете",
+     "ekran": "4(<i>x</i> − 1) + 3",
+     "dulag": false,
+     "otgovor": "4x − 1",
+     "reshenie": "4x − 4 + 3 = 4x − 1. Числата се събират помежду си."
+    },
+    {
+     "id": "sk-4",
+     "glagol": "Опростете",
+     "ekran": "5<i>a</i> − (2<i>a</i> + 7)",
+     "dulag": false,
+     "otgovor": "3a − 7",
+     "reshenie": "Минусът пред скобата обръща ВСИЧКО вътре: 5a − 2a − 7 = 3a − 7."
+    },
+    {
+     "id": "sk-5",
+     "glagol": "Опростете",
+     "ekran": "2(3<i>x</i> − 1) − 3(<i>x</i> − 4)",
+     "dulag": false,
+     "otgovor": "3x + 10",
+     "reshenie": "6x − 2 − 3x + 12. Внимавай: −3 · (−4) = +12. Остава 3x + 10."
+    },
+    {
+     "id": "sk-6",
+     "glagol": "Опростете",
+     "ekran": "−(4 − 2<i>y</i>) − (3<i>y</i> − 6)",
+     "dulag": false,
+     "otgovor": "−y + 2",
+     "reshenie": "Първата скоба дава −4 + 2y, втората −3y + 6. Заедно: 2y − 3y = −y и −4 + 6 = 2, тоест −y + 2."
+    },
+    {
+     "id": "sk-7",
+     "glagol": "Опростете",
+     "ekran": "3(2<i>a</i> − <i>b</i>) − 2(<i>a</i> − 3<i>b</i>)",
+     "dulag": false,
+     "otgovor": "4a + 3b",
+     "reshenie": "6a − 3b − 2a + 6b. Подобните поотделно: 6a − 2a = 4a и −3b + 6b = 3b, тоест 4a + 3b."
+    },
+    {
+     "id": "sk-8",
+     "glagol": "Опростете",
+     "ekran": "2(3 − 4(<i>x</i> − 1)) + 5<i>x</i>",
+     "dulag": false,
+     "otgovor": "14 − 3x",
+     "reshenie": "Отвътре навън: 3 − 4x + 4 = 7 − 4x. После 2(7 − 4x) = 14 − 8x, а с 5x остава 14 − 3x."
+    }
+   ]
+  },
+  {
+   "kod": "rc",
+   "ime": "Рационални числа",
+   "kratko": "Числа",
+   "znak": "±",
+   "ideya": "При събиране с различни знаци печели по-голямото по модул, а знакът е неговият. При умножение и деление се брои БРОЯТ на минусите: четен брой дава плюс, нечетен — минус.",
+   "pravila": [
+    "a − (−b) = a + b",
+    "(−) · (−) = (+),   (−) · (+) = (−)",
+    "−2² = −4, но (−2)² = 4"
+   ],
+   "zadachi": [
+    {
+     "id": "rc-1",
+     "glagol": "Пресметнете",
+     "ekran": "−7 + 12",
+     "dulag": false,
+     "otgovor": "5",
+     "reshenie": "Знаците са различни: вадим модулите 12 − 7 = 5 и взимаме знака на по-голямото, тоест плюс."
+    },
+    {
+     "id": "rc-2",
+     "glagol": "Пресметнете",
+     "ekran": "−15 − (−6)",
+     "dulag": false,
+     "otgovor": "−9",
+     "reshenie": "Минус пред минус дава плюс: −15 + 6 = −9."
+    },
+    {
+     "id": "rc-3",
+     "glagol": "Пресметнете",
+     "ekran": "(−4) · (−6)",
+     "dulag": false,
+     "otgovor": "24",
+     "reshenie": "Два минуса — четен брой, значи резултатът е положителен: 4 · 6 = 24."
+    },
+    {
+     "id": "rc-4",
+     "glagol": "Пресметнете",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">−36</span><span class=\"znam\">9</span></span>",
+     "dulag": false,
+     "otgovor": "−4",
+     "reshenie": "Един минус — нечетен брой, значи отговорът е отрицателен: −4."
+    },
+    {
+     "id": "rc-5",
+     "glagol": "Пресметнете",
+     "ekran": "−2,5 + 1,75",
+     "dulag": false,
+     "otgovor": "−0,75",
+     "reshenie": "Различни знаци: 2,5 − 1,75 = 0,75, а знакът е на по-голямото по модул, тоест минус — отговорът е −0,75."
+    },
+    {
+     "id": "rc-6",
+     "glagol": "Пресметнете",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">−1</span><span class=\"znam\">2</span></span> + <span class=\"frac\"><span class=\"chis\">2</span><span class=\"znam\">3</span></span>",
+     "dulag": false,
+     "otgovor": "1/6",
+     "reshenie": "Общ знаменател 6: −3/6 + 4/6 = 1/6."
+    },
+    {
+     "id": "rc-7",
+     "glagol": "Пресметнете",
+     "ekran": "(−3)<sup>2</sup> − (−3)<sup>3</sup>",
+     "dulag": false,
+     "otgovor": "36",
+     "reshenie": "(−3)² = 9, а (−3)³ = −27. Тогава 9 − (−27) = 9 + 27 = 36."
+    },
+    {
+     "id": "rc-8",
+     "glagol": "Пресметнете",
+     "ekran": "−2<sup>2</sup> + (−2)<sup>2</sup> · 3 − (−2)<sup>3</sup>",
+     "dulag": false,
+     "otgovor": "16",
+     "reshenie": "Внимавай с първото: −2² значи −(2²) = −4, защото степента хваща само двойката. После (−2)² · 3 = 4 · 3 = 12, а −(−2)³ = −(−8) = +8. Общо −4 + 12 + 8 = 16."
+    }
+   ]
+  },
+  {
+   "kod": "st",
+   "ime": "Степенуване",
+   "kratko": "Степени",
+   "znak": "aⁿ",
+   "ideya": "Еднакви основи: при умножение показателите се събират, при деление се изваждат. Степен на степен — умножават се. А когато основите са различни, но показателите еднакви, основите се умножават.",
+   "pravila": [
+    "aᵐ · aⁿ = aᵐ⁺ⁿ",
+    "aᵐ : aⁿ = aᵐ⁻ⁿ",
+    "(aᵐ)ⁿ = aᵐ·ⁿ",
+    "aⁿ · bⁿ = (a · b)ⁿ"
+   ],
+   "zadachi": [
+    {
+     "id": "st-1",
+     "glagol": "Пресметнете",
+     "ekran": "3<sup>2</sup> · 3<sup>3</sup>",
+     "dulag": false,
+     "otgovor": "3⁵ = 243",
+     "reshenie": "Еднаква основа: 2 + 3 = 5, значи 3⁵ = 243."
+    },
+    {
+     "id": "st-2",
+     "glagol": "Пресметнете",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">5<sup>7</sup></span><span class=\"znam\">5<sup>5</sup></span></span>",
+     "dulag": false,
+     "otgovor": "5² = 25",
+     "reshenie": "При деление показателите се изваждат: 7 − 5 = 2, значи 5² = 25."
+    },
+    {
+     "id": "st-3",
+     "glagol": "Пресметнете",
+     "ekran": "(2<sup>3</sup>)<sup>2</sup>",
+     "dulag": false,
+     "otgovor": "2⁶ = 64",
+     "reshenie": "Степен на степен — показателите се УМНОЖАВАТ: 3 · 2 = 6, значи 2⁶ = 64."
+    },
+    {
+     "id": "st-4",
+     "glagol": "Пресметнете",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">(−3)<sup>4</sup></span><span class=\"znam\">(−3)<sup>2</sup></span></span>",
+     "dulag": false,
+     "otgovor": "(−3)² = 9",
+     "reshenie": "4 − 2 = 2, значи (−3)² = 9. Четен показател прави резултата положителен."
+    },
+    {
+     "id": "st-5",
+     "glagol": "Пресметнете",
+     "ekran": "2<sup>4</sup> · 5<sup>4</sup>",
+     "dulag": false,
+     "otgovor": "10⁴ = 10 000",
+     "reshenie": "Показателите са еднакви, затова основите се умножават: (2 · 5)⁴ = 10⁴ = 10 000."
+    },
+    {
+     "id": "st-6",
+     "glagol": "Опростете",
+     "ekran": "(<i>a</i><sup>3</sup>)<sup>2</sup> · <i>a</i><sup>4</sup>",
+     "dulag": false,
+     "otgovor": "a¹⁰",
+     "reshenie": "(a³)² = a⁶, после a⁶ · a⁴ = a¹⁰."
+    },
+    {
+     "id": "st-7",
+     "glagol": "Пресметнете",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">10<sup>8</sup></span><span class=\"znam\">10<sup>3</sup> · 10<sup>2</sup></span></span>",
+     "dulag": false,
+     "otgovor": "10³ = 1000",
+     "reshenie": "В скобата: 10³ · 10² = 10⁵. После 10⁸ : 10⁵ = 10³ = 1000."
+    },
+    {
+     "id": "st-8",
+     "glagol": "Пресметнете",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">2<sup>20</sup></span><span class=\"znam\">4<sup>5</sup> · 8<sup>2</sup></span></span>",
+     "dulag": false,
+     "otgovor": "2⁴ = 16",
+     "reshenie": "Всичко към основа 2: 4⁵ = (2²)⁵ = 2¹⁰ и 8² = (2³)² = 2⁶. В скобата 2¹⁰ · 2⁶ = 2¹⁶, значи 2²⁰ : 2¹⁶ = 2⁴ = 16."
+    }
+   ]
+  },
+  {
+   "kod": "ur",
+   "ime": "Уравнения",
+   "kratko": "Уравнения",
+   "znak": "x",
+   "ideya": "Първо махаме това, което пречи: скоби, после дроби. След това неизвестните отиват отляво, числата отдясно, и накрая се дели на коефициента пред x.",
+   "pravila": [
+    "скоби → дроби → подобни членове",
+    "каквото мине от другата страна, сменя знака си",
+    "накрая: x = число : коефициент"
+   ],
+   "zadachi": [
+    {
+     "id": "ur-1",
+     "glagol": "Решете уравнението",
+     "ekran": "4<i>x</i> − 12 = 0",
+     "dulag": false,
+     "otgovor": "x = 3",
+     "reshenie": "4x = 12, значи x = 3. Проверка: 4 · 3 − 12 = 0. ✓"
+    },
+    {
+     "id": "ur-2",
+     "glagol": "Решете уравнението",
+     "ekran": "3<i>x</i> + 7 = <i>x</i> + 19",
+     "dulag": false,
+     "otgovor": "x = 6",
+     "reshenie": "Неизвестните отляво, числата отдясно: 3x − x = 19 − 7, тоест 2x = 12 и x = 6."
+    },
+    {
+     "id": "ur-3",
+     "glagol": "Решете уравнението",
+     "ekran": "2(<i>x</i> − 3) = 10",
+     "dulag": false,
+     "otgovor": "x = 8",
+     "reshenie": "Разкриваме: 2x − 6 = 10, значи 2x = 16 и x = 8."
+    },
+    {
+     "id": "ur-4",
+     "glagol": "Решете уравнението",
+     "ekran": "5(<i>x</i> + 1) − 3(<i>x</i> − 2) = 21",
+     "dulag": false,
+     "otgovor": "x = 5",
+     "reshenie": "5x + 5 − 3x + 6 = 21. Внимавай с минуса пред втората скоба. Остава 2x + 11 = 21, значи 2x = 10 и x = 5."
+    },
+    {
+     "id": "ur-5",
+     "glagol": "Решете уравнението",
+     "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">3</span></span> + 1 = <span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">2</span></span> − 2",
+     "dulag": false,
+     "otgovor": "x = 18",
+     "reshenie": "НОК(3, 2) = 6. Умножаваме всичко по 6: 2x + 6 = 3x − 12, значи 18 = x."
+    },
+    {
+     "id": "ur-6",
+     "glagol": "Решете уравнението",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">2<i>x</i> − 1</span><span class=\"znam\">4</span></span> = <span class=\"frac\"><span class=\"chis\"><i>x</i> + 2</span><span class=\"znam\">3</span></span>",
+     "dulag": false,
+     "otgovor": "x = 5,5",
+     "reshenie": "Кръстосано: 3(2x − 1) = 4(x + 2), тоест 6x − 3 = 4x + 8. Остава 2x = 11 и x = 5,5."
+    },
+    {
+     "id": "ur-7",
+     "glagol": "",
+     "ekran": "Намислено число умножаваме по 5 и от резултата вадим 8. Получава се 27. Кое е намисленото число?",
+     "dulag": true,
+     "otgovor": "7",
+     "reshenie": "Нека числото е x. Тогава 5x − 8 = 27, значи 5x = 35 и x = 7. Проверка: 5 · 7 − 8 = 27. ✓"
+    }
+   ]
+  },
+  {
+   "kod": "pr",
+   "ime": "Пропорции и процент",
+   "kratko": "Пропорции",
+   "znak": "%",
+   "ideya": "Пропорцията се решава с кръстосано умножение: произведението на крайните е равно на произведението на средните. Процентът е частен случай — сравнение със сто.",
+   "pravila": [
+    "a : b = c : d  →  a · d = b · c",
+    "p% от A  =  A · p : 100",
+    "При ОБРАТНА пропорционалност произведението е постоянно"
+   ],
+   "zadachi": [
+    {
+     "id": "pr-1",
+     "glagol": "Намерете x от пропорцията",
+     "ekran": "<span class=\"frac\"><span class=\"chis\">3</span><span class=\"znam\">5</span></span> = <span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">20</span></span>",
+     "dulag": false,
+     "otgovor": "x = 12",
+     "reshenie": "Кръстосано: 3 · 20 = 5 · x, тоест 60 = 5x и x = 12."
+    },
+    {
+     "id": "pr-2",
+     "glagol": "Намерете x от пропорцията",
+     "ekran": "<span class=\"frac\"><span class=\"chis\"><i>x</i></span><span class=\"znam\">6</span></span> = <span class=\"frac\"><span class=\"chis\">10</span><span class=\"znam\">4</span></span>",
+     "dulag": false,
+     "otgovor": "x = 15",
+     "reshenie": "Кръстосано: 4x = 60, значи x = 15."
+    },
+    {
+     "id": "pr-3",
+     "glagol": "",
+     "ekran": "Намерете 15% от 240.",
+     "dulag": true,
+     "otgovor": "36",
+     "reshenie": "Един процент е 240 : 100 = 2,4. Тогава 240 · 15 / 100 = 36."
+    },
+    {
+     "id": "pr-4",
+     "glagol": "",
+     "ekran": "20% от едно число са 35. Кое е числото?",
+     "dulag": true,
+     "otgovor": "175",
+     "reshenie": "Нека числото е x. Тогава x · 20 / 100 = 35, тоест 0,2x = 35 и x = 175."
+    },
+    {
+     "id": "pr-5",
+     "glagol": "",
+     "ekran": "Колко процента от 80 е числото 20?",
+     "dulag": true,
+     "otgovor": "25",
+     "reshenie": "Търсим x процента: 80 · x / 100 = 20, тоест 0,8x = 20 и x = 25 процента."
+    },
+    {
+     "id": "pr-6",
+     "glagol": "",
+     "ekran": "Яке струва 60 лв. и е намалено с 15%. Колко лева струва сега?",
+     "dulag": true,
+     "otgovor": "51 лв.",
+     "reshenie": "Намалението е 60 · 15 / 100 = 9 лв. Остава 60 − 9 = 51 лв."
+    },
+    {
+     "id": "pr-7",
+     "glagol": "",
+     "ekran": "Четирима работници свършват една работа за 9 дни. За колко дни ще я свършат шестима, ако работят еднакво бързо?",
+     "dulag": true,
+     "otgovor": "6 дни",
+     "reshenie": "Повече работници — по-малко дни, значи зависимостта е ОБРАТНА и произведението е постоянно: 6x = 4 · 9 = 36, тоест x = 6 дни."
+    }
+   ]
+  },
+  {
+   "kod": "go",
+   "ime": "Лице и обем",
+   "kratko": "Лице и обем",
+   "znak": "◯",
+   "ideya": "Кръгът се мери с π ≈ 3,14: обиколката расте с радиуса, а лицето — с квадрата му. При телата обемът винаги е „лице на основата по височина“.",
+   "pravila": [
+    "Обиколка: C = 2 · π · r",
+    "Лице на кръг: S = π · r²",
+    "Обем на призма и цилиндър: V = S основа · h"
+   ],
+   "zadachi": [
+    {
+     "id": "go-1",
+     "glagol": "",
+     "ekran": "Колко е дължината на окръжност с радиус 5 cm? (π ≈ 3,14)",
+     "dulag": true,
+     "otgovor": "31,4 cm",
+     "reshenie": "По формулата C = 2 · π · r излиза 2 · 3,14 · 5 = 31,4 cm."
+    },
+    {
+     "id": "go-2",
+     "glagol": "",
+     "ekran": "Колко е лицето на кръг с радиус 5 cm? (π ≈ 3,14)",
+     "dulag": true,
+     "otgovor": "78,5 cm²",
+     "reshenie": "По формулата S = π · r² излиза 3,14 · 5² = 3,14 · 25 = 78,5 cm²."
+    },
+    {
+     "id": "go-3",
+     "glagol": "",
+     "ekran": "Кръг има диаметър 12 cm. Колко е лицето му? (π ≈ 3,14)",
+     "dulag": true,
+     "otgovor": "113,04 cm²",
+     "reshenie": "Радиусът е половината от диаметъра: 12 : 2 = 6 cm. Тогава S = 3,14 · 6² = 3,14 · 36 = 113,04 cm²."
+    },
+    {
+     "id": "go-4",
+     "glagol": "",
+     "ekran": "Права призма има лице на основата 24 cm² и височина 7 cm. Колко е обемът ѝ?",
+     "dulag": true,
+     "otgovor": "168 cm³",
+     "reshenie": "Обемът е лице на основата по височина: 24 · 7 = 168 cm³."
+    },
+    {
+     "id": "go-5",
+     "glagol": "",
+     "ekran": "Цилиндър има радиус на основата 3 cm и височина 10 cm. Колко е обемът му? (π ≈ 3,14)",
+     "dulag": true,
+     "otgovor": "282,6 cm³",
+     "reshenie": "Основата е кръг: S = 3,14 · 3² = 28,26 cm². Тогава V = 3,14 · 3² · 10 = 282,6 cm³."
+    },
+    {
+     "id": "go-6",
+     "glagol": "",
+     "ekran": "Правилен шестоъгълник има страна 4 cm и апотема 3,46 cm. Колко е лицето му?",
+     "dulag": true,
+     "otgovor": "41,52 cm²",
+     "reshenie": "Периметърът е 6 · 4 = 24 cm, а лицето е периметър по апотема, делено на две: 6 · 4 · 3,46 / 2 = 41,52 cm²."
+    },
+    {
+     "id": "go-7",
+     "glagol": "",
+     "ekran": "От кръг с радиус 10 cm е изрязан кръг с радиус 6 cm. Колко е лицето на останалата част? (π ≈ 3,14)",
+     "dulag": true,
+     "otgovor": "200,96 cm²",
+     "reshenie": "Голямото лице минус малкото: 3,14 · 10² − 3,14 · 6² = 314 − 113,04 = 200,96 cm²."
+    }
+   ]
+  }
+ ]
+};
+</script>
+<script>
+"use strict";
+/* Урокът се води на дъската: никъде не се въвежда отговор. Всяка задача
+   има тикче „решена“ и бутон, който отваря решението. Отметките се
+   помнят в този браузър, за да не се губи докъде е стигнал часът. */
+var $ = function(s, p){ return (p || document).querySelector(s); };
+var $$ = function(s, p){
+  return Array.prototype.slice.call((p || document).querySelectorAll(s));
+};
+function ek(t){
+  return String(t).replace(/[&<>"]/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];
+  });
+}
+
+var KLYUCH = 'tla-urok-6-shest-temi';
+var S = {};
+try { S = JSON.parse(localStorage.getItem(KLYUCH) || '{}') || {}; } catch(e){ S = {}; }
+function zapazi(){
+  try { localStorage.setItem(KLYUCH, JSON.stringify(S)); } catch(e){}
+}
+
+var sega = 0, pokazanoDomashno = false;
+var VSICHKI = DANNI.tabove.reduce(function(a, t){ return a + t.zadachi.length; }, 0);
+function resheni(t){
+  return t.zadachi.filter(function(z){ return S[z.id]; }).length;
+}
+function vsiResheni(){
+  return DANNI.tabove.reduce(function(a, t){ return a + resheni(t); }, 0);
+}
+
+function risuvaiTabove(){
+  $('#tabove').innerHTML = DANNI.tabove.map(function(t, i){
+    return '<button class="tab-b" type="button" role="tab" data-t="' + i + '" '
+      + 'aria-selected="' + (i === sega) + '">'
+      + '<span class="znak">' + ek(t.znak) + '</span>'
+      + '<span>' + ek(t.kratko) + '</span>'
+      + '<span class="broi">' + resheni(t) + '/' + t.zadachi.length + '</span>'
+      + '</button>';
+  }).join('');
+  $$('#tabove .tab-b').forEach(function(b){
+    b.addEventListener('click', function(){
+      sega = +b.dataset.t;
+      risuvai();
+      var nov = $('#tabove .tab-b[data-t="' + sega + '"]');
+      if(nov && nov.scrollIntoView){
+        nov.scrollIntoView({ behavior: 'smooth', block: 'nearest',
+                             inline: 'center' });
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function risuvaiTqlo(){
+  var t = DANNI.tabove[sega];
+  $('#sudurjanie').innerHTML =
+    '<section class="ideq">'
+    + '<h2>' + ek(t.ime) + '</h2>'
+    + '<p>' + ek(t.ideya) + '</p>'
+    + '<ul class="pravila">' + t.pravila.map(function(p){
+        return '<li>' + ek(p) + '</li>'; }).join('') + '</ul>'
+    + '</section>'
+    + '<div class="stupalo">от по-лесни към по-трудни</div>'
+    + '<div class="zadachi">' + t.zadachi.map(function(z, zi){
+        return '<article class="zad' + (S[z.id] ? ' reshena' : '') + '" '
+          +   'id="z-' + z.id + '">'
+          + '<div class="zad__n">Задача ' + (zi + 1)
+          +   (z.glagol ? ' · ' + ek(z.glagol) : '') + '</div>'
+          + '<p class="izraz' + (z.dulag ? ' dulag' : '') + '">' + z.ekran + '</p>'
+          + '<button class="pokaji" type="button" data-p="' + z.id + '" '
+          +   'aria-expanded="false" aria-controls="r-' + z.id + '">'
+          +   'Покажи решението</button>'
+          + '<div class="reshenie" id="r-' + z.id + '" hidden>'
+          +   '<div class="otg">' + z.otgovor + '</div>'
+          +   '<p class="stupki">' + ek(z.reshenie) + '</p>'
+          + '</div>'
+          + '<button class="otmetka" type="button" data-o="' + z.id + '" '
+          +   'aria-pressed="' + (S[z.id] ? 'true' : 'false') + '" '
+          +   'title="Отметни като решена в час" '
+          +   'aria-label="Отметни като решена в час">✓</button>'
+          + '</article>';
+      }).join('') + '</div>';
+
+  $$('.pokaji').forEach(function(b){
+    b.addEventListener('click', function(){ pokaji(b); });
+  });
+  $$('.otmetka').forEach(function(b){
+    b.addEventListener('click', function(){ otmetni(b.dataset.o); });
+  });
+}
+
+/* Домашното е просто това, което НЕ е отметнато — изписано по теми и по
+   номера, за да се продиктува накрая на часа. */
+function risuvaiDomashno(){
+  var kutiq = $('#kutiqDomashno');
+  if(!pokazanoDomashno){ kutiq.innerHTML = ''; return; }
+  var ostavat = 0;
+  var redove = DANNI.tabove.map(function(t){
+    var nomera = [];
+    t.zadachi.forEach(function(z, i){ if(!S[z.id]) nomera.push(i + 1); });
+    ostavat += nomera.length;
+    if(!nomera.length) return '<li><b>' + ek(t.ime) + ':</b> няма — всичко е решено в час</li>';
+    return '<li><b>' + ek(t.ime) + ':</b> задачи ' + nomera.join(', ') + '</li>';
+  }).join('');
+  if(ostavat === 0){
+    kutiq.innerHTML = '<div class="kraj"><h2>Няма домашно!</h2>'
+      + '<p>И 45-те задачи са решени в час.</p></div>';
+    return;
+  }
+  kutiq.innerHTML = '<section class="domashno"><h2>За домашно: '
+    + ostavat + (ostavat === 1 ? ' задача' : ' задачи') + '</h2>'
+    + '<p>Това са задачите, които НЕ отметнахме в час.</p>'
+    + '<ul>' + redove + '</ul></section>';
+}
+
+function pokaji(b){
+  var kutiq = $('#r-' + b.dataset.p);
+  if(!kutiq) return;
+  var otvoreno = !kutiq.hidden;
+  kutiq.hidden = otvoreno;
+  b.setAttribute('aria-expanded', String(!otvoreno));
+  b.textContent = otvoreno ? 'Покажи решението' : 'Скрий решението';
+}
+
+function otmetni(id){
+  if(S[id]) delete S[id]; else S[id] = 1;
+  zapazi();
+  var zad = $('#z-' + id), b = $('.otmetka[data-o="' + id + '"]');
+  if(zad) zad.classList.toggle('reshena', !!S[id]);
+  if(b) b.setAttribute('aria-pressed', S[id] ? 'true' : 'false');
+  risuvaiTabove();
+  risuvaiDomashno();
+  osveji();
+}
+
+function osveji(){
+  var vsi = vsiResheni(), ostavat = VSICHKI - vsi;
+  $('#lenta').style.width = Math.round(100 * vsi / VSICHKI) + '%';
+  $('#broiach').innerHTML = 'решени ' + vsi + ' · <em>за домашно '
+    + ostavat + '</em>';
+}
+
+function risuvai(){ risuvaiTabove(); risuvaiTqlo(); risuvaiDomashno(); osveji(); }
+
+$('#bDomashno').addEventListener('click', function(){
+  pokazanoDomashno = !pokazanoDomashno;
+  $('#bDomashno').textContent = pokazanoDomashno ? 'Скрий домашното' : 'Домашното';
+  risuvaiDomashno();
+  if(pokazanoDomashno){
+    $('#kutiqDomashno').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+$('#bIzchisti').addEventListener('click', function(){
+  S = {}; zapazi(); risuvai();
+});
+
+risuvai();
+</script>
