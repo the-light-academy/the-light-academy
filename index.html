@@ -1903,9 +1903,15 @@
         width: 100%;
         gap: 0.75rem;
         padding: 1rem 0.9rem 1.2rem;
-        background: rgba(255,255,255,0.36);
+        background: rgba(255,253,247,0.98);
         backdrop-filter: blur(32px) saturate(180%);
         -webkit-backdrop-filter: blur(32px) saturate(180%);
+        /* На тесен телефон списъкът не се побира, а лентата е залепена
+           горе — без това долният ред оставаше недостижим. */
+        max-height: calc(100vh - 64px);
+        max-height: calc(100dvh - 64px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
         border: 1px solid rgba(255,255,255,0.55);
         border-top: none;
         border-radius: 0 0 18px 18px;
@@ -1916,12 +1922,35 @@
         display: flex;
       }
 
+      /* Докато менюто е отворено, страницата зад него потъмнява и се
+         замъглява. Само полупрозрачно меню не стига: буквите му се
+         четат върху заглавието и снимките отдолу. Завесата стои ПОД
+         менюто и ПОД лентата отгоре (тя е на 100), затова и двете
+         остават чисти. Браузър без :has() просто няма завеса, а менюто
+         си остава плътно и четимо. */
+      body:has(.nav-links.open)::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 99;
+        background: rgba(58, 46, 31, 0.5);
+        backdrop-filter: blur(12px) saturate(120%);
+        -webkit-backdrop-filter: blur(12px) saturate(120%);
+        pointer-events: none;
+      }
+
       .nav-links a {
         padding: 12px 14px;
         font-size: 17px;
         color: var(--dark);
         border-radius: 999px;
       }
+
+      /* Жълто-кафявото на активния ред е твърде бледо върху светлия
+         панел — 3,8:1. По-тъмно от същото семейство: 5,2:1. Горе на
+         лентата, където редът е на цветно хапче, цветът не се пипа. */
+      .nav-links.open a:hover,
+      .nav-links.open a.active { color: #8A5F12; }
 
       .nav-links a.cta {
         margin-left: 0;
@@ -1973,9 +2002,15 @@
         width: 100%;
         gap: 0.75rem;
         padding: 1rem 0.9rem 1.2rem;
-        background: rgba(255,255,255,0.36);
+        background: rgba(255,253,247,0.98);
         backdrop-filter: blur(32px) saturate(180%);
         -webkit-backdrop-filter: blur(32px) saturate(180%);
+        /* На тесен телефон списъкът не се побира, а лентата е залепена
+           горе — без това долният ред оставаше недостижим. */
+        max-height: calc(100vh - 64px);
+        max-height: calc(100dvh - 64px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
         border: 1px solid rgba(255,255,255,0.55);
         border-top: none;
         border-radius: 0 0 18px 18px;
@@ -1986,12 +2021,35 @@
         display: flex;
       }
 
+      /* Докато менюто е отворено, страницата зад него потъмнява и се
+         замъглява. Само полупрозрачно меню не стига: буквите му се
+         четат върху заглавието и снимките отдолу. Завесата стои ПОД
+         менюто и ПОД лентата отгоре (тя е на 100), затова и двете
+         остават чисти. Браузър без :has() просто няма завеса, а менюто
+         си остава плътно и четимо. */
+      body:has(.nav-links.open)::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 99;
+        background: rgba(58, 46, 31, 0.5);
+        backdrop-filter: blur(12px) saturate(120%);
+        -webkit-backdrop-filter: blur(12px) saturate(120%);
+        pointer-events: none;
+      }
+
       .nav-links a {
         padding: 12px 14px;
         font-size: 17px;
         color: var(--dark);
         border-radius: 999px;
       }
+
+      /* Жълто-кафявото на активния ред е твърде бледо върху светлия
+         панел — 3,8:1. По-тъмно от същото семейство: 5,2:1. Горе на
+         лентата, където редът е на цветно хапче, цветът не се пипа. */
+      .nav-links.open a:hover,
+      .nav-links.open a.active { color: #8A5F12; }
 
       .nav-links a.cta {
         margin-left: 0;

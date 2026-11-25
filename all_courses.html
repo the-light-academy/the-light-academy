@@ -77,8 +77,21 @@
     .nav-links a.cta-nvo:hover { background: #ffbe45; color: #1A1206; }
     .hamburger { display: none; flex-direction: column; gap: 5px; background: transparent; border: none; cursor: pointer; padding: 6px; }
     .hamburger span { display: block; width: 24px; height: 3px; background: #D8E1F5; border-radius: 3px; }
-    .mobile-menu { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; max-height: calc(100vh - 64px); overflow-y: auto; background: rgba(10,18,36,0.92); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding: 1rem 1.2rem; gap: 0.6rem; z-index: 40; }
+    .mobile-menu { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; max-height: calc(100vh - 64px); overflow-y: auto; background: rgba(10,18,36,0.985); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.12); box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding: 1rem 1.2rem; gap: 0.6rem; z-index: 40; }
     .mobile-menu.open { display: flex; }
+    /* Тъмна страница, тъмно меню — завесата също е тъмна, но по-плътна
+       от фона, за да личи, че отзад има страница, а не продължение на
+       менюто. */
+    body:has(.mobile-menu.open)::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 39;
+      background: rgba(4, 8, 18, 0.62);
+      backdrop-filter: blur(12px) saturate(120%);
+      -webkit-backdrop-filter: blur(12px) saturate(120%);
+      pointer-events: none;
+    }
     .mobile-menu a { color: #D8E1F5; font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
     .mobile-menu a.cta-nvo { background: var(--accent); color: #1A1206; text-align: center; }
     .nav-item-dropdown { position: relative; display: flex; align-items: center; }

@@ -192,7 +192,7 @@
       right: 0;
       max-height: calc(100vh - 64px);
       overflow-y: auto;
-      background: rgba(255,255,255,0.4);
+      background: rgba(255,253,247,0.98);
       backdrop-filter: blur(30px) saturate(180%);
       -webkit-backdrop-filter: blur(30px) saturate(180%);
       border-bottom: 1px solid rgba(255,255,255,0.5);
@@ -202,6 +202,22 @@
       z-index: 90;
     }
     .mobile-menu.open { display: flex; }
+
+    /* Докато менюто е отворено, страницата зад него потъмнява и се
+       замъглява. Само полупрозрачно меню не стига: буквите му се четат
+       върху каквото е останало отдолу. Завесата стои ПОД менюто и ПОД
+       лентата отгоре, затова и двете остават чисти. Браузър без :has()
+       просто няма завеса, а менюто си остава плътно и четимо. */
+    body:has(.mobile-menu.open)::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 89;
+      background: rgba(58, 46, 31, 0.5);
+      backdrop-filter: blur(12px) saturate(120%);
+      -webkit-backdrop-filter: blur(12px) saturate(120%);
+      pointer-events: none;
+    }
     .mobile-menu a {
       text-decoration: none;
       color: var(--mid);
@@ -210,8 +226,11 @@
       padding: 10px 16px;
       border-radius: var(--radius-sm);
     }
+    /* Оранжевото на бутона е твърде светло под бели букви — 3,6:1.
+       Тук е същото оранжево, но по-тъмно (то вече се ползва при
+       посочване): 5,1:1. */
     .mobile-menu a.cta-nvo {
-      background: var(--orange);
+      background: #C24508;
       color: var(--white);
       text-align: center;
     }
