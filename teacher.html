@@ -37,6 +37,7 @@
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelHours">Часове</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelFeedback">Обратна връзка</button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelRace">Формула 1</button>
+      <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelQuestions" data-admin hidden>Въпроси <span class="tla-badge tla-badge--off" id="pqCount" hidden></span></button>
       <button class="tla-tab" role="tab" aria-selected="false" data-panel="panelTeachers" data-admin hidden>Преподаватели</button>
     </div>
 
@@ -591,6 +592,39 @@
     </section>
 
     <!-- ── TEACHERS (admin only) ──────────────────────────────── -->
+    <!-- ── ВЪПРОСИ ОТ РОДИТЕЛИ ────────────────────────────────
+         Пристигат от формата най-долу на index.html. Вижда ги само
+         администраторът: това са запитвания към академията, не работа
+         по конкретно дете. -->
+    <section class="tla-panel" id="panelQuestions" hidden>
+      <div class="tla-card">
+        <h2 class="tla-card__title">Въпроси от родители</h2>
+        <p class="tla-muted" style="margin-bottom:1rem;">
+          Идват от формата „Имате въпрос? Пишете ни“ в дъното на сайта.
+          Отметни въпроса, щом му отговориш, и си остави бележка какво е
+          станало — следващия път ще знаеш.
+        </p>
+
+        <div class="tla-msg tla-msg--warn" id="pqMigrate" hidden>
+          Въпросите още няма къде да се пазят: в базата липсва таблицата
+          <code>parent_questions</code>. Пусни <code>supabase/schema-v17.sql</code>
+          в Supabase. Дотогава формата на сайта също няма да работи.
+        </div>
+
+        <div class="tla-filters">
+          <label for="pqFilter">Показвай:</label>
+          <select class="tla-sel" id="pqFilter">
+            <option value="new" selected>Само неотговорените</option>
+            <option value="all">Всички</option>
+            <option value="done">Само отговорените</option>
+          </select>
+          <button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" id="pqReload">Опресни</button>
+        </div>
+
+        <div id="pqList"><p class="tla-empty">Зареждане…</p></div>
+      </div>
+    </section>
+
     <section class="tla-panel" id="panelTeachers" hidden>
       <div class="tla-card">
         <h2 class="tla-card__title">Добавяне на преподавател</h2>
@@ -784,6 +818,11 @@
              скрит елемент не анимира нищо и картината щеше да стои
              замръзнала на първия кадър. */
           if (tab.dataset.panel === 'panelRace' && typeof renderRace === 'function') renderRace();
+          if (tab.dataset.panel === 'panelQuestions' && typeof pqLoad === 'function') {
+            pqLoad().catch(function (err) {
+              say('err', 'Въпросите не се заредиха: ' + (err.message || err));
+            });
+          }
         });
       });
 
@@ -5862,6 +5901,158 @@
         });
       }
 
+      /* ── ВЪПРОСИ ОТ РОДИТЕЛИ ───────────────────────────────────
+         Пристигат от формата в дъното на index.html. Тук се четат,
+         отмятат се и им се пише бележка. Вижда ги само администраторът
+         — така е и в базата, а не само на екрана. */
+      var pq = { vsi: [], tablica: true, busy: false };
+
+      function pqEl(id) { return document.getElementById(id); }
+
+      function pqKoga(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        if (isNaN(d)) return String(iso);
+        var dnes = new Date();
+        var samo = function (x) { return x.toISOString().slice(0, 10); };
+        var chas = d.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' });
+        if (samo(d) === samo(dnes)) return 'днес, ' + chas;
+        return d.toLocaleDateString('bg-BG',
+          { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' + chas;
+      }
+
+      function pqBroi() {
+        var n = pq.vsi.filter(function (r) { return !r.handled; }).length;
+        var b = pqEl('pqCount');
+        if (!b) return;
+        b.textContent = String(n);
+        b.hidden = (n === 0);
+        b.className = 'tla-badge ' + (n ? 'tla-badge--graded' : 'tla-badge--off');
+      }
+
+      function pqRender() {
+        var kak = pqEl('pqFilter').value;
+        var redove = pq.vsi.filter(function (r) {
+          return kak === 'all' || (kak === 'done' ? r.handled : !r.handled);
+        });
+        var kutiq = pqEl('pqList');
+        if (!redove.length) {
+          kutiq.innerHTML = '<p class="tla-empty">' + (kak === 'done'
+            ? 'Още няма отговорен въпрос.'
+            : (kak === 'new' ? 'Няма нови въпроси — всичко е отговорено.'
+                             : 'Още никой не е писал през формата.')) + '</p>';
+          return;
+        }
+        kutiq.innerHTML = redove.map(function (r) {
+          var vruzki = [];
+          if (r.imeyl) {
+            vruzki.push('<a href="mailto:' + esc(r.imeyl) + '">' + esc(r.imeyl) + '</a>');
+          }
+          if (r.telefon) {
+            vruzki.push('<a href="tel:' + esc(String(r.telefon).replace(/\s+/g, '')) +
+                        '">' + esc(r.telefon) + '</a>');
+          }
+          return '<div class="tla-card" style="margin-bottom:1rem;">' +
+            '<div style="display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;">' +
+              '<b>' + esc(r.ime) + '</b>' +
+              '<span class="tla-badge ' + (r.handled ? 'tla-badge--graded' : 'tla-badge--off') +
+                '">' + (r.handled ? 'отговорено' : 'ново') + '</span>' +
+              '<span class="tla-muted">' + esc(pqKoga(r.created_at)) + '</span>' +
+              '<span class="tla-muted">' + vruzki.join(' · ') + '</span>' +
+            '</div>' +
+            '<p style="white-space:pre-wrap;margin:.75rem 0;">' + esc(r.vupros) + '</p>' +
+            '<div class="tla-field">' +
+              '<label for="pqN-' + esc(r.id) + '">Бележка (вижда се само тук)</label>' +
+              '<textarea id="pqN-' + esc(r.id) + '" rows="2" maxlength="4000" ' +
+                'data-pqnote="' + esc(r.id) + '">' + esc(r.belejka || '') + '</textarea>' +
+            '</div>' +
+            '<div style="display:flex;gap:.5rem;flex-wrap:wrap;">' +
+              '<button type="button" class="tla-btn tla-btn--sm" data-pqdone="' + esc(r.id) +
+                '">' + (r.handled ? 'Върни като ново' : 'Отметни като отговорено') + '</button>' +
+              '<button type="button" class="tla-btn tla-btn--ghost tla-btn--sm" ' +
+                'data-pqsave="' + esc(r.id) + '">Запази бележката</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      async function pqLoad() {
+        if (!state.isAdmin) return;
+        var res = await TLA.client.from('parent_questions')
+          .select('id, created_at, ime, imeyl, telefon, vupros, handled, ' +
+                  'handled_at, belejka')
+          .order('created_at', { ascending: false })
+          .limit(500);
+        if (res.error) {
+          /* 42P01 — таблицата още я няма: миграцията не е пусната. */
+          if (res.error.code === '42P01' ||
+              /parent_questions/.test(String(res.error.message || ''))) {
+            pq.tablica = false;
+            var m = pqEl('pqMigrate'); if (m) m.hidden = false;
+            pqEl('pqList').innerHTML = '';
+            return;
+          }
+          throw res.error;
+        }
+        pq.tablica = true;
+        pq.vsi = res.data || [];
+        pqBroi();
+        pqRender();
+      }
+
+      async function pqOtmetni(id) {
+        var r = pq.vsi.filter(function (x) { return x.id === id; })[0];
+        if (!r || pq.busy) return;
+        pq.busy = true;
+        try {
+          var sega = !r.handled;
+          var res = await TLA.client.from('parent_questions').update({
+            handled: sega,
+            handled_at: sega ? new Date().toISOString() : null,
+            handled_by: sega ? state.me.id : null
+          }).eq('id', id);
+          if (res.error) throw res.error;
+          r.handled = sega;
+          pqBroi(); pqRender();
+          say('ok', sega ? 'Отметнато като отговорено.' : 'Върнато като ново.');
+        } catch (err) {
+          say('err', 'Не се запази: ' + (err.message || err));
+        } finally { pq.busy = false; }
+      }
+
+      async function pqZapazi(id) {
+        var pole = document.querySelector('[data-pqnote="' + id + '"]');
+        var r = pq.vsi.filter(function (x) { return x.id === id; })[0];
+        if (!pole || !r || pq.busy) return;
+        pq.busy = true;
+        try {
+          var res = await TLA.client.from('parent_questions')
+            .update({ belejka: pole.value.trim() || null }).eq('id', id);
+          if (res.error) throw res.error;
+          r.belejka = pole.value.trim() || null;
+          say('ok', 'Бележката е запазена.');
+        } catch (err) {
+          say('err', 'Бележката не се запази: ' + (err.message || err));
+        } finally { pq.busy = false; }
+      }
+
+      function pqSetup() {
+        var kutiq = pqEl('pqList');
+        if (!kutiq) return;
+        kutiq.addEventListener('click', function (e) {
+          var d = e.target.closest('[data-pqdone]');
+          if (d) { pqOtmetni(d.dataset.pqdone); return; }
+          var s = e.target.closest('[data-pqsave]');
+          if (s) { pqZapazi(s.dataset.pqsave); }
+        });
+        pqEl('pqFilter').addEventListener('change', pqRender);
+        pqEl('pqReload').addEventListener('click', function () {
+          pqLoad().catch(function (err) {
+            say('err', 'Въпросите не се заредиха: ' + (err.message || err));
+          });
+        });
+      }
+
       (async function () {
         if (!TLA.isConfigured()) { say('err', TLA.notConfiguredMessage()); return; }
         var auth = await TLA.requireAuth({ role: 'teacher' });
@@ -5894,6 +6085,17 @@
           document.body.classList.add('tla-noadmin');
         } else {
           document.getElementById('pageTitle').textContent = 'Табло на академията';
+        }
+
+        /* Въпросите от родителите тръгват ПРЕДИ всичко останало. Те не
+           зависят от нищо друго, а броячът до раздела трябва да се види
+           още при влизане — инак нов въпрос чака някой да се сети да
+           отвори раздела. Ако пък друг раздел се счупи, този остава. */
+        if (state.isAdmin) {
+          pqSetup();
+          pqLoad().catch(function (err) {
+            console.warn('Въпросите не се заредиха:', err);
+          });
         }
 
         fillGradeSelects();
