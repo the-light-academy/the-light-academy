@@ -1772,6 +1772,82 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
+    /* ── ПИТАЙТЕ НИ ──
+       Формата стои най-долу, под адреса и картата, на същия тъмен фон.
+       Самата карта е светла: върху тъмното едно поле за писане трябва
+       да личи, че е поле, иначе родителят не разбира, че може да пише. */
+    .ask {
+      max-width: 1100px;
+      margin: 3.5rem auto 0;
+      border-top: 1px solid rgba(232, 200, 144, 0.25);
+      padding-top: 2.5rem;
+    }
+    .ask__head { text-align: center; margin-bottom: 1.75rem; }
+    .ask__head .divider { margin-left: auto; margin-right: auto; }
+    .ask__head p:last-child { max-width: 52ch; margin: 0 auto; }
+    .ask__form {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--cream);
+      border-radius: var(--radius);
+      padding: clamp(1.25rem, 3vw, 2rem);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    }
+    .ask__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ask__field { display: flex; flex-direction: column; margin-bottom: 0.9rem; }
+    .ask__field label {
+      font-weight: 700; color: var(--dark); margin-bottom: 0.35rem;
+      font-size: 0.95rem;
+    }
+    .ask__field label span { color: var(--sun-dark); font-weight: 600; }
+    .ask__field input,
+    .ask__field textarea {
+      font-family: inherit; font-size: 1rem; color: var(--dark);
+      background: var(--white);
+      border: 2px solid #E6D6BC; border-radius: var(--radius-sm);
+      padding: 0.7rem 0.85rem; width: 100%;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ask__field textarea { min-height: 130px; resize: vertical; line-height: 1.6; }
+    .ask__field input:focus,
+    .ask__field textarea:focus {
+      outline: none; border-color: var(--sun);
+      box-shadow: 0 0 0 3px rgba(247, 173, 25, 0.25);
+    }
+    .ask__field input[aria-invalid="true"],
+    .ask__field textarea[aria-invalid="true"] { border-color: #B3261E; }
+    .ask__err { color: #8C1D18; font-size: 0.88rem; margin-top: 0.25rem;
+      min-height: 1em; line-height: 1.3; }
+    /* Примамката не се вижда и не се стига с табулатора — попълни ли я
+       нещо, това не е родител. */
+    .ask__trap {
+      position: absolute; left: -9999px; width: 1px; height: 1px;
+      overflow: hidden;
+    }
+    .ask__send {
+      background: var(--sun); color: var(--dark); border: none;
+      border-radius: 999px; padding: 0.85rem 2.2rem;
+      font-family: inherit; font-size: 1.05rem; font-weight: 800;
+      cursor: pointer; transition: filter 0.15s ease, transform 0.15s ease;
+      min-height: 48px;
+    }
+    .ask__send:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+    .ask__send:disabled { opacity: 0.6; cursor: progress; transform: none; }
+    .ask__foot {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 1rem; justify-content: space-between; margin-top: 0.5rem;
+    }
+    .ask__note { color: var(--light-text); font-size: 0.85rem; margin: 0; max-width: 42ch; }
+    .ask__msg { margin: 1rem 0 0; font-weight: 700; border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem; }
+    .ask__msg--ok { background: #E6F4EA; color: #14532D; }
+    .ask__msg--bad { background: #FBEAE9; color: #8C1D18; }
+    @media (max-width: 640px) {
+      .ask__row { grid-template-columns: 1fr; gap: 0; }
+      .ask__foot { flex-direction: column-reverse; align-items: stretch; }
+      .ask__send { width: 100%; }
+    }
+
     .map-placeholder {
       background: #3D2E1A;
       border-radius: var(--radius);
@@ -2731,6 +2807,64 @@ The Light Academy прави впечатление с малките групи
       </div>
 
     </div>
+
+    <!-- ПИТАЙТЕ НИ — въпросът отива в базата на академията и се чете в
+         таблото. Никъде навън. -->
+    <div class="ask">
+      <div class="ask__head">
+        <p class="section-title" data-i18n="ask.title">Имате въпрос? Пишете ни</p>
+        <div class="divider"></div>
+        <p data-i18n="ask.intro">Оставете въпроса си тук и ще Ви отговорим възможно най-скоро. Ако бързате, обадете ни се — телефоните са отгоре.</p>
+      </div>
+
+      <form class="ask__form" id="askForm" novalidate>
+        <div class="ask__row">
+          <div class="ask__field">
+            <label for="askName" data-i18n="ask.name">Вашето име <span>*</span></label>
+            <input type="text" id="askName" name="name" maxlength="120"
+                   autocomplete="name" data-i18n-ph="ask.namePh"
+                   placeholder="Мария Иванова" />
+            <p class="ask__err" id="askNameErr" aria-live="polite"></p>
+          </div>
+          <div class="ask__field">
+            <label for="askEmail" data-i18n="ask.email">Имейл</label>
+            <input type="email" id="askEmail" name="email" maxlength="200"
+                   autocomplete="email" data-i18n-ph="ask.emailPh"
+                   placeholder="maria@example.com" />
+            <p class="ask__err" id="askEmailErr" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="ask__field">
+          <label for="askPhone" data-i18n="ask.phone">Телефон</label>
+          <input type="tel" id="askPhone" name="phone" maxlength="60"
+                 autocomplete="tel" data-i18n-ph="ask.phonePh"
+                 placeholder="0888 123 456" />
+          <p class="ask__err" id="askPhoneErr" aria-live="polite"></p>
+        </div>
+
+        <div class="ask__field">
+          <label for="askText" data-i18n="ask.question">Вашият въпрос <span>*</span></label>
+          <textarea id="askText" name="question" maxlength="4000"
+                    data-i18n-ph="ask.questionPh"
+                    placeholder="Здравейте, има ли свободни места за 5. клас по математика?"></textarea>
+          <p class="ask__err" id="askTextErr" aria-live="polite"></p>
+        </div>
+
+        <!-- Примамка за машини: човек не я вижда и не я попълва. -->
+        <div class="ask__trap" aria-hidden="true">
+          <label for="askWebsite">Не попълвайте това поле</label>
+          <input type="text" id="askWebsite" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="ask__foot">
+          <p class="ask__note" data-i18n="ask.note">Нужен е имейл или телефон, за да Ви отговорим. Данните се пазят само за това и не отиват никъде другаде.</p>
+          <button type="submit" class="ask__send" id="askSend" data-i18n="ask.send">Изпрати</button>
+        </div>
+
+        <p class="ask__msg" id="askMsg" role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
   </div>
 
   <!-- FOOTER -->
@@ -2996,6 +3130,26 @@ The Light Academy прави впечатление с малките групи
         "contact.address": "Lozenets, Gorski Patnik 56",
         "contact.hours": "Mon–Fri: 8:30 – 17:30 | Sat: 9:00 – 16:00 | Sun: Closed",
         "contact.mapPlaceholder": "Open in Google Maps",
+        "ask.title": "Have a question? Write to us",
+        "ask.intro": "Leave your question here and we will get back to you as soon as we can. If it is urgent, give us a call — the numbers are above.",
+        "ask.name": "Your name <span>*</span>",
+        "ask.namePh": "Maria Ivanova",
+        "ask.email": "Email",
+        "ask.emailPh": "maria@example.com",
+        "ask.phone": "Phone",
+        "ask.phonePh": "+359 888 123 456",
+        "ask.question": "Your question <span>*</span>",
+        "ask.questionPh": "Hello, do you have places left for Year 5 maths?",
+        "ask.note": "We need an email or a phone number to reply. The details are kept only for that and go nowhere else.",
+        "ask.send": "Send",
+        "ask.sending": "Sending…",
+        "ask.errName": "Please write your name.",
+        "ask.errContact": "Please leave an email or a phone number.",
+        "ask.errEmail": "This email does not look right.",
+        "ask.errText": "Please write your question — a sentence is enough.",
+        "ask.ok": "Thank you! Your question has arrived. We will reply to you shortly.",
+        "ask.bad": "The question did not go through. Please try again, or write to the.light.academy56@gmail.com.",
+        "ask.busy": "Too many questions at once. Please try again in a minute.",
         "footer.copyright": "© 2026 The Light Academy. All rights reserved.",
         "footer.home": "Home",
         "footer.nvo7": "NVO Grade 7",
@@ -3145,6 +3299,26 @@ The Light Academy прави впечатление с малките групи
         "contact.address": "Лозенец, Горски пътник 56",
         "contact.hours": "Понеделник-петък: 8:30 – 17:30 | Събота: 9:00 – 16:00 | Неделя: И най-добрите почиват",
         "contact.mapPlaceholder": "Отворете в Google Maps",
+        "ask.title": "Имате въпрос? Пишете ни",
+        "ask.intro": "Оставете въпроса си тук и ще Ви отговорим възможно най-скоро. Ако бързате, обадете ни се — телефоните са отгоре.",
+        "ask.name": "Вашето име <span>*</span>",
+        "ask.namePh": "Мария Иванова",
+        "ask.email": "Имейл",
+        "ask.emailPh": "maria@example.com",
+        "ask.phone": "Телефон",
+        "ask.phonePh": "0888 123 456",
+        "ask.question": "Вашият въпрос <span>*</span>",
+        "ask.questionPh": "Здравейте, има ли свободни места за 5. клас по математика?",
+        "ask.note": "Нужен е имейл или телефон, за да Ви отговорим. Данните се пазят само за това и не отиват никъде другаде.",
+        "ask.send": "Изпрати",
+        "ask.sending": "Изпращам…",
+        "ask.errName": "Напишете името си.",
+        "ask.errContact": "Оставете имейл или телефон.",
+        "ask.errEmail": "Този имейл не изглежда редовен.",
+        "ask.errText": "Напишете въпроса си — едно изречение стига.",
+        "ask.ok": "Благодарим! Въпросът пристигна. Ще Ви отговорим скоро.",
+        "ask.bad": "Въпросът не мина. Опитайте пак или ни пишете на the.light.academy56@gmail.com.",
+        "ask.busy": "Твърде много въпроси наведнъж. Опитайте пак след минута.",
         "footer.copyright": "© 2026 The Light Academy. Всички права запазени.",
         "footer.home": "Начало",
         "footer.nvo7": "НВО 7 клас",
@@ -3489,6 +3663,16 @@ The Light Academy прави впечатление с малките групи
           else element.innerHTML = translations[lang][key];
         } else {
           element.innerHTML = translations[lang][key];
+        }
+      });
+
+      /* Подсказките вътре в полетата също се превеждат. Те не са
+         съдържание, затова стоят на свой атрибут и се пишат като текст,
+         не като HTML. */
+      document.querySelectorAll('[data-i18n-ph]').forEach(element => {
+        const key = element.getAttribute('data-i18n-ph');
+        if (translations[lang] && translations[lang][key]) {
+          element.setAttribute('placeholder', translations[lang][key]);
         }
       });
     }
@@ -3940,6 +4124,157 @@ The Light Academy прави впечатление с малките групи
           showHeroToast(on ? (document.documentElement.lang === 'en' ? 'Ambient motion is on.' : 'Анимациите са включени.') : (document.documentElement.lang === 'en' ? 'Ambient motion is paused.' : 'Анимациите са спрени.'));
         });
       }
+    })();
+  </script>
+
+  <!-- ── ПИТАЙТЕ НИ: изпращането ──────────────────────────────────
+       Въпросът отива право в базата на академията. Библиотеката на
+       Supabase не се зарежда тук — на начална страница тя е излишен
+       товар за едно писане. Вместо това се праща обикновен POST към
+       същия адрес, с публичния ключ. Какво може да се направи с този
+       ключ решават политиките в базата: от сайта може САМО да се
+       добави въпрос, не и да се прочете нещо. -->
+  <script src="assets/supabase-config.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var forma = document.getElementById('askForm');
+      if (!forma) return;
+
+      var el = function (id) { return document.getElementById(id); };
+      var ime = el('askName'), imeyl = el('askEmail'), telefon = el('askPhone'),
+          vupros = el('askText'), primamka = el('askWebsite'),
+          butonut = el('askSend'), kutiq = el('askMsg');
+
+      /* Текстовете идват от същата таблица, от която е и целият сайт,
+         за да се сменят заедно с езика. */
+      function dumi(klyuch, podrazbirane) {
+        var ezik = (localStorage.getItem('language') || 'bg');
+        if (typeof translations !== 'undefined'
+            && translations[ezik] && translations[ezik][klyuch]) {
+          return translations[ezik][klyuch];
+        }
+        return podrazbirane;
+      }
+
+      function greshka(pole, kutiyka, tekst) {
+        el(kutiyka).textContent = tekst || '';
+        if (tekst) { pole.setAttribute('aria-invalid', 'true'); }
+        else { pole.removeAttribute('aria-invalid'); }
+        return !tekst;
+      }
+
+      function kaji(vid, tekst) {
+        kutiq.hidden = false;
+        kutiq.className = 'ask__msg ask__msg--' + vid;
+        kutiq.textContent = tekst;
+      }
+
+      /* Нарочно свободна проверка: иска се да има нещо, кучка и точка
+         след нея. Строгите образци отхвърлят истински адреси. */
+      function lichi_na_imeyl(s) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
+      }
+
+      function naredno() {
+        var i = ime.value.trim(), e = imeyl.value.trim(),
+            tl = telefon.value.trim(), v = vupros.value.trim();
+        var dobre = true;
+        dobre = greshka(ime, 'askNameErr',
+                 i.length >= 2 ? '' : dumi('ask.errName', 'Напишете името си.')) && dobre;
+        dobre = greshka(vupros, 'askTextErr',
+                 v.length >= 10 ? '' : dumi('ask.errText',
+                   'Напишете въпроса си — едно изречение стига.')) && dobre;
+        if (e && !lichi_na_imeyl(e)) {
+          dobre = greshka(imeyl, 'askEmailErr',
+                   dumi('ask.errEmail', 'Този имейл не изглежда редовен.')) && dobre;
+        } else {
+          greshka(imeyl, 'askEmailErr', '');
+        }
+        if (!e && !tl) {
+          var kazano = dumi('ask.errContact', 'Оставете имейл или телефон.');
+          greshka(imeyl, 'askEmailErr', kazano);
+          greshka(telefon, 'askPhoneErr', kazano);
+          dobre = false;
+        } else {
+          greshka(telefon, 'askPhoneErr', '');
+        }
+        return dobre;
+      }
+
+      forma.addEventListener('submit', function (sub) {
+        sub.preventDefault();
+        if (butonut.disabled) return;
+
+        /* Примамката е попълнена: това не е родител. Казва се същото
+           като при успех — машината не научава нищо, а човек така или
+           иначе не вижда полето. */
+        if (primamka && primamka.value.trim() !== '') {
+          kaji('ok', dumi('ask.ok', 'Благодарим! Въпросът пристигна.'));
+          forma.reset();
+          return;
+        }
+
+        kutiq.hidden = true;
+        if (!naredno()) return;
+
+        var nastroiki = window.TLA_SUPABASE;
+        if (!nastroiki || !nastroiki.url || !nastroiki.anonKey) {
+          kaji('bad', dumi('ask.bad', 'Въпросът не мина. Опитайте пак или ни '
+               + 'пишете на the.light.academy56@gmail.com.'));
+          return;
+        }
+
+        var kazvashe = butonut.textContent;
+        butonut.disabled = true;
+        butonut.textContent = dumi('ask.sending', 'Изпращам…');
+
+        fetch(nastroiki.url + '/rest/v1/parent_questions', {
+          method: 'POST',
+          headers: {
+            'apikey': nastroiki.anonKey,
+            'Authorization': 'Bearer ' + nastroiki.anonKey,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            ime: ime.value.trim(),
+            imeyl: imeyl.value.trim() || null,
+            telefon: telefon.value.trim() || null,
+            vupros: vupros.value.trim()
+          })
+        }).then(function (otg) {
+          if (otg.ok) return null;
+          return otg.text().then(function (telo) { throw new Error(telo || otg.status); });
+        }).then(function () {
+          kaji('ok', dumi('ask.ok',
+               'Благодарим! Въпросът пристигна. Ще Ви отговорим скоро.'));
+          forma.reset();
+        }).catch(function (err) {
+          /* Пазачът в базата спира машина, която удря в кръг. На жив
+             човек това се случва само ако пише едновременно с още
+             десетима — затова му се казва да опита пак. */
+          var tekst = String(err && err.message || '');
+          if (tekst.indexOf('53400') !== -1 || /Твърде много/.test(tekst)) {
+            kaji('bad', dumi('ask.busy',
+                 'Твърде много въпроси наведнъж. Опитайте пак след минута.'));
+          } else {
+            kaji('bad', dumi('ask.bad', 'Въпросът не мина. Опитайте пак или ни '
+                 + 'пишете на the.light.academy56@gmail.com.'));
+          }
+        }).then(function () {
+          butonut.disabled = false;
+          butonut.textContent = kazvashe;
+        });
+      });
+
+      /* Червеното под полето си отива веднага щом човекът поправи. */
+      [ime, imeyl, telefon, vupros].forEach(function (pole) {
+        pole.addEventListener('input', function () {
+          if (pole.getAttribute('aria-invalid') === 'true') naredno();
+        });
+      });
     })();
   </script>
 </body>
