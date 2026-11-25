@@ -56,10 +56,30 @@
     .nav-links a.cta-nvo:hover { background: #c24508; }
     .hamburger { display: none; flex-direction: column; align-items: flex-end; justify-content: center; gap: 5px; background: transparent; border: none; cursor: pointer; padding: 6px; }
     .hamburger span { display: block; width: 24px; height: 3px; background: var(--mid); border-radius: 3px; }
-    .mobile-menu { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; max-height: calc(100vh - 64px); overflow-y: auto; background: rgba(255,255,255,0.4); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.12); padding: 1rem 1.2rem; gap: 0.6rem; z-index: 40; }
+    .mobile-menu { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; max-height: calc(100vh - 64px); overflow-y: auto; background: rgba(255,253,247,0.98); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.12); padding: 1rem 1.2rem; gap: 0.6rem; z-index: 40; }
     .mobile-menu.open { display: flex; }
+/* Докато менюто е отворено, страницата зад него потъмнява и се
+   замъглява. Само полупрозрачно меню не стига: буквите му се четат
+   върху каквото е останало отдолу — снимка, заглавие, каквото дойде.
+   Завесата стои ПОД менюто и ПОД лентата отгоре, затова и двете остават
+   чисти. Браузър без :has() просто няма завеса, а менюто си остава
+   плътно и четимо. */
+body:has(.mobile-menu.open)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: rgba(58, 46, 31, 0.5);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  pointer-events: none;
+}
+
     .mobile-menu a { color: var(--mid); font-weight: 700; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
-    .mobile-menu a.cta-nvo { background: var(--orange); color: var(--white); text-align: center; }
+    /* Оранжевото на бутона е твърде светло под бели букви —
+       3,6:1. Тук е същото оранжево, но по-тъмно (то вече се
+       ползва при посочване): 5,1:1. */
+    .mobile-menu a.cta-nvo { background: #C24508; color: var(--white); text-align: center; }
     .nav-item-dropdown { position: relative; display: flex; align-items: center; }
     .dropdown-toggle { background: none; border: none; cursor: pointer; padding: 6px; margin-left: -4px; color: var(--mid); display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
     .dropdown-toggle:hover { color: #A17522; background: #FFF4D9; }
