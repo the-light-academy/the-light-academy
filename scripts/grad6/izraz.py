@@ -136,8 +136,29 @@ def _bez_skobi(v):
     return v
 
 
-def html(v, drobi=True):
-    """Дървото → HTML. drobi=False изписва делението с двоеточие."""
+def _bukvena(v):
+    """Чете ли се този множител като буква — x, (x + 1), x².
+
+    Дроб в скоби не се чете така: две дроби една до друга трябва да
+    останат разделени с точка, инак се сливат в едно петно.
+    """
+    if v[0] == 'var':
+        return True
+    if v[0] == '()':
+        return not _vidima_drob(v)
+    return v[0] == '^' and _bukvena(v[1])
+
+
+def html(v, drobi=True, bukvi=False):
+    """Дървото → HTML.
+
+    drobi=False изписва делението с двоеточие.
+
+    bukvi=True слепва множителите в алгебрата, както ги пише учебникът
+    за 7. клас: 49m², 3x²(4x³ − x + 2), (x + 3)(x + 5). Без него се
+    пише точка — така е по-ясно в 5. и 6. клас, където се учи самото
+    умножение, затова и стойността по подразбиране е старата.
+    """
     z = v[0]
     if z == 'num':
         #  Десетичната запетая е запетая, а не точка — така се пише на
@@ -146,38 +167,40 @@ def html(v, drobi=True):
     if z == 'var':
         return '<i>%s</i>' % v[1]
     if z == '()':
-        return '(' + html(v[1], drobi) + ')'
+        return '(' + html(v[1], drobi, bukvi) + ')'
     if z == 'neg':
-        return '−' + html(v[1], drobi)
+        return '−' + html(v[1], drobi, bukvi)
     if z == 'mx':
-        return (html(v[1], drobi)
+        return (html(v[1], drobi, bukvi)
                 + '<span class="frac smes"><span class="chis">%s</span>'
                   '<span class="znam">%s</span></span>'
-                  % (html(v[2], drobi), html(v[3], drobi)))
+                  % (html(v[2], drobi, bukvi), html(v[3], drobi, bukvi)))
     if z == '^':
-        return html(v[1], drobi) + '<sup>' + html(v[2], drobi) + '</sup>'
+        return html(v[1], drobi, bukvi) + '<sup>' + html(v[2], drobi, bukvi) + '</sup>'
     if z == '=':
-        return html(v[1], drobi) + ' = ' + html(v[2], drobi)
+        return html(v[1], drobi, bukvi) + ' = ' + html(v[2], drobi, bukvi)
     if z in ('+', '-'):
-        return (html(_bez_skobi(v[1]), drobi) + (' + ' if z == '+' else ' − ')
-                + html(_bez_skobi(v[2]), drobi))
+        return (html(_bez_skobi(v[1]), drobi, bukvi) + (' + ' if z == '+' else ' − ')
+                + html(_bez_skobi(v[2]), drobi, bukvi))
     if z == '*':
         #  Число пред буква или пред скоба се пише слято: 2x, 2(x − 1).
-        slqto = _chislo(v[1]) and v[2][0] in ('var', '()')
-        return (html(_bez_skobi(v[1]), drobi) + ('' if slqto else ' · ')
-                + html(_bez_skobi(v[2]), drobi))
+        #  В алгебрата слято се пише всичко пред буква: 49m², 3x²(…).
+        slqto = (_bukvena(v[2]) if bukvi
+                 else _chislo(v[1]) and v[2][0] in ('var', '()'))
+        return (html(_bez_skobi(v[1]), drobi, bukvi) + ('' if slqto else ' · ')
+                + html(_bez_skobi(v[2]), drobi, bukvi))
     if z == '/':
         if not drobi or _vidima_drob(v[1]) or _vidima_drob(v[2]):
-            return (html(_bez_skobi(v[1]), drobi) + ' : '
-                    + html(_bez_skobi(v[2]), drobi))
+            return (html(_bez_skobi(v[1]), drobi, bukvi) + ' : '
+                    + html(_bez_skobi(v[2]), drobi, bukvi))
         #  Чертата на дробта сама групира — скобите отгоре са излишни.
         gore = v[1][1] if v[1][0] == '()' else v[1]
         dolu = v[2][1] if v[2][0] == '()' else v[2]
         return ('<span class="frac"><span class="chis">%s</span>'
                 '<span class="znam">%s</span></span>'
-                % (html(gore, drobi), html(dolu, drobi)))
+                % (html(gore, drobi, bukvi), html(dolu, drobi, bukvi)))
     raise ValueError('непознат възел: ' + z)
 
 
-def izobrazi(mat, drobi=True):
-    return html(razchet(mat), drobi)
+def izobrazi(mat, drobi=True, bukvi=False):
+    return html(razchet(mat), drobi, bukvi)
