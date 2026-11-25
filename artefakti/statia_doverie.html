@@ -1,0 +1,381 @@
+<title>Числата зад доверието</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" />
+<style>
+/* Разположение: тясна колона за четене, от която числата излизат като
+   отделни карти. Те са гръбнакът на статията, не украса, затова всяко
+   число си носи и откъде идва. Палитрата е на академията — мастилено
+   кафяво, топла хартия, слънчево жълто. */
+:root{
+  --mastilo:#2A2214;
+  --mastilo-blqdo:#6F5B3E;
+  --hartiq:#FEF7EB;
+  --karta:#FFFFFF;
+  --ramka:#EADCC2;
+  --slunce:#F7AD19;
+  --slunce-meko:#FFF4D9;
+  --slunce-tekst:#8A5F12;
+  --sinio:#16233F;
+  --sinio-bukvi:#F3EFE6;
+  --senka:38 45% 22%;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --mastilo:#F2EADB;
+    --mastilo-blqdo:#B3A287;
+    --hartiq:#16120B;
+    --karta:#211B11;
+    --ramka:#3A3020;
+    --slunce:#F7AD19;
+    --slunce-meko:#33280F;
+    --slunce-tekst:#F0BA4A;
+    --sinio:#0F1829;
+    --sinio-bukvi:#EDE7DA;
+    --senka:38 60% 2%;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --mastilo:#F2EADB;
+  --mastilo-blqdo:#B3A287;
+  --hartiq:#16120B;
+  --karta:#211B11;
+  --ramka:#3A3020;
+  --slunce:#F7AD19;
+  --slunce-meko:#33280F;
+  --slunce-tekst:#F0BA4A;
+  --sinio:#0F1829;
+  --sinio-bukvi:#EDE7DA;
+  --senka:38 60% 2%;
+  color-scheme: dark;
+}
+*,*::before,*::after{ box-sizing:border-box }
+body{
+  margin:0; background:var(--hartiq); color:var(--mastilo);
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;
+  font-size:18px; line-height:1.75; -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+h1,h2,.chislo__broi{ font-family:'Fredoka',system-ui,sans-serif;
+  text-wrap:balance; margin:0 }
+
+.ramka{
+  max-width:680px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ── шапка ─────────────────────────────────────────────────────── */
+.shapka{ background:var(--sinio); color:var(--sinio-bukvi) }
+.shapka .ramka{ padding-block:clamp(36px,8vw,64px) clamp(32px,7vw,56px) }
+.nadpis{ font-size:13.5px; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--slunce); margin:0 0 14px }
+.shapka h1{ font-size:clamp(30px,7.4vw,48px); line-height:1.1 }
+.shapka .podzaglavie{ margin:18px 0 0; font-size:clamp(17px,4.4vw,20px);
+  color:#CFC6B4; max-width:46ch }
+.cherta{ width:64px; height:5px; border-radius:5px; background:var(--slunce);
+  margin:22px 0 0 }
+
+/* ── текстът ───────────────────────────────────────────────────── */
+main .ramka{ padding-block:clamp(28px,6vw,44px) }
+p{ margin:0 0 1.15em }
+main h2{ font-size:clamp(22px,5.4vw,29px); line-height:1.25;
+  margin:2em 0 .65em }
+main h2:first-of-type{ margin-top:.4em }
+strong{ font-weight:800 }
+em{ font-style:italic }
+.vodach{ font-size:clamp(19px,4.8vw,22px); font-weight:600;
+  color:var(--mastilo) }
+
+/* ── числата ───────────────────────────────────────────────────── */
+.chislo{
+  margin:1.8em 0; padding:20px clamp(16px,4vw,26px);
+  background:var(--karta); border:1px solid var(--ramka);
+  border-left:6px solid var(--slunce); border-radius:0 18px 18px 0;
+  box-shadow:0 10px 26px hsl(var(--senka) / .07);
+}
+.chislo__broi{ display:block; font-size:clamp(34px,9vw,46px);
+  line-height:1; color:var(--slunce-tekst); font-variant-numeric:tabular-nums }
+.chislo__kakvo{ display:block; margin-top:10px; font-size:clamp(16.5px,4.3vw,18px);
+  font-weight:600 }
+.chislo__otkude{ display:block; margin-top:12px; font-size:14px;
+  line-height:1.55; color:var(--mastilo-blqdo) }
+
+blockquote{
+  margin:1.8em 0; padding:4px 0 4px 22px;
+  border-left:4px solid var(--slunce-meko);
+  font-size:clamp(19px,4.8vw,22px); font-weight:600; font-style:italic;
+}
+
+/* ── краят ─────────────────────────────────────────────────────── */
+.kraj{
+  margin:2.4em 0 0; padding:26px clamp(18px,4.5vw,30px);
+  background:var(--slunce-meko); border:2px solid var(--slunce);
+  border-radius:22px; text-align:center;
+}
+.kraj p:last-child{ margin:0 }
+.kraj .deviz{ font-family:'Fredoka',sans-serif; font-size:clamp(19px,5vw,23px);
+  color:var(--slunce-tekst) }
+
+.chestno{ margin-top:3em; padding-top:1.6em; border-top:1px solid var(--ramka) }
+.chestno h2{ font-size:clamp(19px,4.6vw,22px); margin-top:0 }
+.chestno p, .izvori li{ font-size:16px; line-height:1.65;
+  color:var(--mastilo-blqdo) }
+.izvori{ margin:1em 0 0; padding-left:1.1em }
+.izvori li{ margin-bottom:.7em }
+.izvori a{ color:var(--slunce-tekst); word-break:break-word }
+a{ color:var(--slunce-tekst) }
+a:hover{ text-decoration-thickness:2px }
+:focus-visible{ outline:3px solid var(--slunce); outline-offset:3px }
+footer{ padding-block:34px 44px; text-align:center; color:var(--mastilo-blqdo);
+  font-size:15px }
+</style>
+
+<header class="shapka">
+  <div class="ramka">
+    <p class="nadpis">The Light Academy · за родители</p>
+    <h1>Резултатите идват, когато детето се чувства разбрано и уверено</h1>
+    <p class="podzaglavie">Това не е само наша философия. От години то се
+      мери — в десетки хиляди класни стаи и стотици изследвания. Ето
+      числата.</p>
+    <div class="cherta"></div>
+  </div>
+</header>
+
+<main>
+  <div class="ramka">
+    <p class="vodach">Когато работим с деца, е лесно да се съсредоточим
+      върху това, което трябва да бъде постигнато — следващата тема,
+      домашната работа, тестът, оценката, изпитът.</p>
+
+    <p>Но зад всяка задача стои дете, което има своите притеснения,
+      съмнения и моменти, в които не вярва достатъчно в себе си. Някои
+      идват с увереност. Други се страхуват да сгрешат, притесняват се да
+      зададат въпрос или още преди да опитат, казват: „Не мога.“</p>
+
+    <p>И точно тогава за нас започва истинската работа.</p>
+
+    <h2>Страхът може да движи детето. Но му взема много</h2>
+
+    <p>Най-голямото международно изследване на училищното образование,
+      PISA на ОИСР, измерва и колко тревожни се чувстват децата от
+      математиката. Резултатът е еднозначен.</p>
+
+    <div class="chislo">
+      <span class="chislo__broi">−18 точки</span>
+      <span class="chislo__kakvo">по математика за всяко деление нагоре по
+        скалата за тревожност — след като се отчете от какво семейство и
+        от какво училище идва детето. В мащаба на PISA това е близо
+        половин учебна година.</span>
+      <span class="chislo__otkude">PISA 2022, средно за страните от ОИСР
+        (Таблица I.B1.2.17)</span>
+    </div>
+
+    <p>Има обаче и нещо по-неудобно, което си струва да се каже честно.
+      В 37 от 68 образователни системи по-силният страх от провал върви
+      <strong>едновременно</strong> с по-добри резултати по четене и с
+      по-ниска удовлетвореност от живота. Тоест страхът наистина може да
+      накара едно дете да учи. Просто сметката идва после — и я плащат
+      най-вече отличниците и момичетата, при които страхът от провал е
+      по-висок в почти всяка страна по света, а разликата е най-голяма
+      точно сред най-добрите ученици.</p>
+
+    <p>Ние не искаме да работим с тази валута.</p>
+
+    <h2>Първо изграждаме доверие</h2>
+
+    <p>Детето учи по-спокойно, когато знае, че не е нужно да бъде
+      перфектно. Че може да не разбира, може да сгреши, може да попита
+      отново и няма да бъде оценявано като човек заради това.</p>
+
+    <p>Връзката между учител и ученик е едно от най-добре измерените неща
+      в образованието.</p>
+
+    <div class="chislo">
+      <span class="chislo__broi">0,52</span>
+      <span class="chislo__kakvo">е силата на връзката учител–ученик в
+        обобщението на Джон Хати върху хиляди изследвания. За сравнение:
+        0,40 е толкова, колкото е нормалният напредък за цяла учебна
+        година. В първото издание на работата му числото беше 0,72.</span>
+      <span class="chislo__otkude">John Hattie, Visible Learning</span>
+    </div>
+
+    <p>PISA го показва и по друг начин: всяко деление нагоре по скалата
+      „учителят ми помага, когато ми трябва“ носи средно по
+      <strong>5 точки</strong> повече по математика, а в страни като
+      Австралия, Корея и Норвегия — по 10 и повече. И най-много печелят
+      не отличниците, а децата, които се справят най-трудно.</p>
+
+    <p>Затова не бързаме. Понякога обясняваме нещо за трети път. Понякога
+      се връщаме към материал отпреди няколко месеца. Понякога оставяме
+      детето само да стигне до отговора, макар да бихме могли да го кажем
+      много по-бързо.</p>
+
+    <h2>Грижата не означава да правим всичко лесно</h2>
+
+    <p>Да се отнасяме с разбиране към децата не означава да не изискваме
+      нищо от тях. Напротив — вярваме в тях достатъчно, за да ги
+      насърчаваме да опитват, да мислят и да не се отказват при първата
+      трудност.</p>
+
+    <p>Има домашни. Има задачи, които искат повече усилия. Има моменти, в
+      които трябва да се върнем и да упражним още. Разликата е в това
+      какво мисли детето, докато го прави.</p>
+
+    <div class="chislo">
+      <span class="chislo__broi">+18 точки</span>
+      <span class="chislo__kakvo">постигат по математика децата, които
+        вярват, че способностите им се развиват, в сравнение с онези,
+        които смятат, че „или го можеш, или не го можеш“.</span>
+      <span class="chislo__otkude">PISA 2022, средно за ОИСР, след
+        отчитане на социалния произход</span>
+    </div>
+
+    <p>И това не е само наблюдение. През 2019 г. в списание <em>Nature</em>
+      излезе изследване върху близо <strong>12 500 деветокласници</strong>
+      в представителна извадка от американски училища. Две кратки онлайн
+      занимания по 25 минути, в които децата научават, че мозъкът се
+      променя с усилие, повишават средния успех с 0,10 по четворна скала,
+      а при по-слабите ученици с <strong>5,3 процентни пункта</strong>
+      намаляват онези, които завършват годината „извън релсите“.</p>
+
+    <p>Честно казано: това са малки числа за толкова голямо изследване. И
+      самите автори обясняват защо — нагласата сама по себе си не стига.
+      Тя работи там, където средата я потвърждава: където съучениците,
+      учителят и класът приемат, че способностите се изграждат. Нагласа,
+      която се опровергава всеки ден в класната стая, не издържа дълго.</p>
+
+    <p>Затова работата е наша, не само на детето.</p>
+
+    <h2>Обратната връзка тежи повече от оценката</h2>
+
+    <div class="chislo">
+      <span class="chislo__broi">0,48</span>
+      <span class="chislo__kakvo">е силата на обратната връзка в
+        най-голямото обобщение по темата: 435 изследвания, близо хиляда
+        измервания и над 61 000 ученици. Отново добре над прага за една
+        учебна година.</span>
+      <span class="chislo__otkude">Wisniewski, Zierer &amp; Hattie, 2020</span>
+    </div>
+
+    <p>Същото изследване казва и кое прави разликата. Силата на обратната
+      връзка не идва от това колко е насърчителна, а от това
+      <strong>колко информация носи</strong>. „Браво“ не учи никого на
+      нищо. „Тук знакът пред скобата влиза при всеки член, не само при
+      първия“ — учи.</p>
+
+    <p>Ние се стараем да даваме второто. С тон, който не плаши.</p>
+
+    <h2>Резултатите изискват време, защото паметта работи така</h2>
+
+    <p>Увереността не се изгражда за един час. Пропуските не се запълват
+      за седмица. И това не е въпрос на добра воля — така работи
+      човешката памет.</p>
+
+    <p>Голям преглед на десет популярни техники за учене оценява само
+      <strong>две</strong> като наистина ефективни за всички възрасти и
+      предмети: упражняването чрез припомняне — детето да се опита да
+      извади знанието от главата си, вместо да го препрочита — и
+      повторението, разпределено във времето. Подчертаването с маркер и
+      препрочитането, двете най-обичани техники, са в дъното на
+      списъка.</p>
+
+    <div class="chislo">
+      <span class="chislo__broi">0,74 и 0,50</span>
+      <span class="chislo__kakvo">е силата съответно на разреденото във
+        времето повторение и на редовното припомняне в клас — две от
+        най-добре доказаните неща, които може да се направят за едно
+        дете.</span>
+      <span class="chislo__otkude">Latimier и др., 2021; Yang и др., 2021</span>
+    </div>
+
+    <p>И тук има едно условие, което ни връща в началото. Припомнянето
+      помага само когато детето успява да си спомни или получи обратна
+      връзка веднага. Дете, което се опитва, не успява и остава само с
+      грешката си, не научава нищо — или научава, че не може.</p>
+
+    <p>Затова до него трябва да има някой.</p>
+
+    <h2>Защото ни е грижа не само докъде ще стигне, но и как</h2>
+
+    <p>Искаме децата да напредват, да усвояват знания и да се справят
+      уверено с предизвикателствата. Но искаме да го правят, без да губят
+      увереността в себе си по пътя.</p>
+
+    <p>Понякога резултатът е по-висока оценка. Друг път е дете, което за
+      първи път само започва задача, която преди е отказвало да опита.
+      Дете, което вече пита, вместо да мълчи. Или дете, което се е
+      научило да не се отказва след първата грешка.</p>
+
+    <p>Тези моменти са също толкова важни за нас.</p>
+
+    <blockquote>В The Light Academy не вярваме, че трябва да избираме
+      между добри резултати и добро отношение. Числата показват, че не се
+      налага.</blockquote>
+
+    <p>И да, това отнема време. Изисква усилия и от детето, и от учителя.
+      Но си заслужава. Защото най-хубавото не е просто детето да реши
+      задачата.</p>
+
+    <p>А да погледне след нея и да знае: <em>„Справих се. И следващия път
+      мога отново.“</em></p>
+
+    <div class="kraj">
+      <p class="deviz">💛 Учим с усмивка. Тръгваме си уверени.</p>
+    </div>
+
+    <div class="chestno">
+      <h2>Какво стои зад числата</h2>
+      <p>Няколко думи, за да е честно докрай. Данните от PISA показват
+        <strong>връзки</strong>, а не доказана причина: те не доказват, че
+        спокойното дете става по-силен математик, а че двете вървят
+        заедно. Експериментът в <em>Nature</em> и обобщенията на ефектите
+        са по-силно доказателство, но и там числата са средни стойности —
+        зад тях стоят училища, в които ефектът е бил голям, и такива, в
+        които го е нямало.</p>
+      <p>Затова не обещаваме чудеса. Обещаваме начин на работа, който се
+        опира на най-доброто, което се знае днес.</p>
+
+      <h2>Източници</h2>
+      <ul class="izvori">
+        <li>OECD, <em>PISA 2022 Results (Volume I)</em> — тревожността от
+          математика и математическите резултати, Таблица I.B1.2.17.
+          <a href="https://www.oecd.org/en/publications/pisa-2022-results-volume-i_53f23881-en.html">oecd.org</a></li>
+        <li>OECD, <em>PISA 2022 Results (Volume V)</em> — нагласа за
+          развитие, тревожност и подкрепа от учителя.
+          <a href="https://www.oecd.org/en/publications/pisa-2022-results-volume-v_c2e44201-en/full-report/component-16.html">oecd.org</a></li>
+        <li>OECD, <em>What can we learn about teacher support for students
+          from PISA data?</em> (2025).
+          <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/what-can-we-learn-about-teacher-support-for-students-from-pisa-data_94f0eb24/506b03a1-en.pdf">oecd.org (PDF)</a></li>
+        <li>OECD, <em>PISA 2018 Results (Volume III)</em> — страхът от
+          провал, разликите между момчета и момичета и удовлетвореността
+          от живота.
+          <a href="https://www.oecd.org/en/publications/pisa-2018-results-volume-iii_acd78851-en/full-report/component-19.html">oecd.org</a></li>
+        <li>Yeager, D. S. и др. (2019). <em>A national experiment reveals
+          where a growth mindset improves achievement.</em> Nature, 573,
+          364–369.
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6786290">pmc.ncbi.nlm.nih.gov</a></li>
+        <li>Wisniewski, B., Zierer, K. &amp; Hattie, J. (2020). <em>The
+          Power of Feedback Revisited.</em> Frontiers in Psychology,
+          10:3087.
+          <a href="https://www.frontiersin.org/articles/10.3389/fpsyg.2019.03087/full">frontiersin.org</a></li>
+        <li>Hattie, J. <em>Visible Learning</em> — ефектът на връзката
+          учител–ученик и прагът 0,40.
+          <a href="https://visiblelearningmetaxstg.sagepub.com/research_methodology">visiblelearningmetax.com</a></li>
+        <li>Dunlosky, J. и др. (2013). <em>Improving Students' Learning
+          With Effective Learning Techniques.</em> Psychological Science
+          in the Public Interest, 14(1), 4–58.
+          <a href="https://journals.sagepub.com/doi/10.1177/1529100612453266">journals.sagepub.com</a></li>
+        <li>Latimier и др. (2021) и Yang и др. (2021), обобщени в
+          <em>Current Directions in Psychological Science</em>.
+          <a href="https://journals.sagepub.com/doi/full/10.1177/09637214221100484">journals.sagepub.com</a></li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="ramka">The Light Academy · Лозенец, Горски пътник 56</div>
+</footer>
