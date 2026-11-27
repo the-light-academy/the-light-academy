@@ -2305,6 +2305,20 @@
          fails and the slot says so rather than taking the panel down. */
       var calAll = [], calWeekColumn = true;
 
+      /* Коя тема е отворена се пазеше само в самия HTML, като клас върху
+         картата. Но всяко действие — „Сложи в библиотеката“, „Дай на
+         моите“, „Закачи“, „Откачи“ — презарежда календара и пренаписва
+         този HTML, тоест отвореното се губеше и на екрана се връщаше
+         темата по подразбиране. Затова изборът стои тук, извън HTML-а, и
+         презаписването не го помита.
+
+         Ключът носи и класа: седмица 5 съществува и в 5., и в 7. клас, а
+         когато филтърът е „всички класове“, двете програми са на екрана
+         едновременно. */
+      var calOtvoreni = {};
+
+      function calKlyuch(grade, themeNo) { return grade + ':' + themeNo; }
+
       /* url се чете, защото редът в календара вика previewLink(), а тя
          връща празно без него — точно заради това бутонът „Отвори“ го
          нямаше тук, докато в „Задания“ си беше на място. */
@@ -2628,11 +2642,18 @@
               (theme.term === 1 ? 'Първи срок' : 'Втори срок') + '</h3>';
           }
           var to = theme.from + theme.weeks.length - 1;
-          /* open the theme you are actually in; before the year starts, the first */
-          var open = (now != null) ? (now >= theme.from && now <= to) : (theme.no === 1);
+          /* Отворена е темата, в която си сега; преди да е почнала
+             годината — първата. Но ако преподавателят вече е отворил или
+             затворил нещо с ръка, неговият избор е по-силен от
+             подразбирането. */
+          var klyuch = calKlyuch(prog.grade, theme.no);
+          var open = (klyuch in calOtvoreni)
+            ? calOtvoreni[klyuch]
+            : ((now != null) ? (now >= theme.from && now <= to) : (theme.no === 1));
 
           html += '<div class="tlc__theme' + (open ? ' is-open' : '') + '">' +
-            '<button type="button" class="tlc__head" aria-expanded="' + open + '">' +
+            '<button type="button" class="tlc__head" aria-expanded="' + open + '" ' +
+              'data-theme-key="' + esc(klyuch) + '">' +
               '<span class="tlc__no">Тема ' + theme.no + '</span>' +
               '<span class="tlc__t">' + esc(theme.title) + '</span>' +
               '<span class="tlc__range">' +
@@ -2701,6 +2722,8 @@
           var card = head.closest('.tlc__theme');
           var open = card.classList.toggle('is-open');
           head.setAttribute('aria-expanded', String(open));
+          /* Запомня се, за да преживее следващото презареждане. */
+          if (head.dataset.themeKey) calOtvoreni[head.dataset.themeKey] = open;
           return;
         }
 
@@ -3586,8 +3609,25 @@
       /* Таблото на разделите. Чертае ВСЕКИ раздел от каталога с всичките
          му подраздели, пълни или празни — празният кръг е мястото, в
          което предстои да се сложи лист, и трябва да се вижда. */
+      /* Отворените подробности също живеят само в HTML-а и също се
+         губят при всяко презаписване. Тук се запомнят преди него и се
+         връщат след това — по ключ, не по ред, защото филтърът може да е
+         разместил списъка. */
+      function kakvoEOtvoreno(el) {
+        var otvoreni = {};
+        Array.prototype.forEach.call(el.querySelectorAll('details[data-keep]'),
+          function (d) { if (d.open) otvoreni[d.dataset.keep] = true; });
+        return otvoreni;
+      }
+
+      function vurniOtvorenite(el, otvoreni) {
+        Array.prototype.forEach.call(el.querySelectorAll('details[data-keep]'),
+          function (d) { if (otvoreni[d.dataset.keep]) d.open = true; });
+      }
+
       function renderAssignAdmin() {
         var el = document.getElementById('assignAdmin');
+        var bqhaOtvoreni = kakvoEOtvoreno(el);
         var all = Object.keys(state.assignments).map(function (k) { return state.assignments[k]; });
         all.sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
 
@@ -3617,7 +3657,8 @@
                 esc(a.url || 'без адрес') + ' · ' +
                 (a.published ? 'в библиотеката' : 'чернова') + '</div>' +
               (state.isAdmin ?
-              '<details class="tla-help" style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
+              '<details class="tla-help" data-keep="scope:' + esc(a.id) + '"' +
+                ' style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
                 '<summary>Клас и предмет</summary>' +
                 '<label class="tla-check tla-check--all">' +
                   '<input type="checkbox" data-all-grades="' + esc(a.id) + '"' +
@@ -3661,7 +3702,8 @@
                  repository leaves the old one behind. Editing it here beats
                  an SQL statement in the Supabase console. */
               (state.isAdmin ?
-              '<details class="tla-help" style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
+              '<details class="tla-help" data-keep="url:' + esc(a.id) + '"' +
+                ' style="margin-top:0.6rem;border-top:none;padding-top:0;">' +
                 '<summary>Промени адреса</summary>' +
                 '<div class="tla-field--inline" style="margin-top:0.6rem;">' +
                   '<div class="tla-field" style="margin:0;">' +
@@ -3702,6 +3744,7 @@
             '</div>' +
           '</li>';
         }).join('');
+        vurniOtvorenite(el, bqhaOtvoreni);
       }
 
       document.getElementById('assignAdmin').addEventListener('change', function (e) {
